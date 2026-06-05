@@ -340,6 +340,37 @@ incremental/delta loads (last loaded timestamp/id), so reruns are correct and id
 - **Cost note:** a small key-value store; no model cost. A reusable building block.
 - **Maps to:** incremental / delta ingestion.
 
+### 46. `airflow-state-probe` — read-only DAG/run state ⭐⭐ 🔌 💻
+Query an orchestrator's state — via the Airflow **stable REST API** (preferred) or read-only against
+its metadata tables (`dag_run`, `task_instance`) — to answer "is this DAG running / succeeded /
+failed?", when it started/ended, and whether it's **late vs. its schedule**. Expose as MCP tools
+(`dag_status`, `last_run`, `is_late`).
+- **Learn:** Airflow's run/task data model, REST-API vs. direct-DB tradeoffs, and *strictly
+  read-only* access (no triggering/mutation) as a safety boundary.
+- **Cost note:** plain queries; no model cost. Cache run state briefly to avoid hammering the API/DB.
+- **Maps to:** orchestration / pipeline-state observability. *(Pattern generalizes to any scheduler.)*
+
+### 47. `dag-failure-digest` — explain a failed run ⭐⭐ 💻 ☁️
+Given a failed DAG run, find the failing task(s), pull their logs, extract the exception/traceback and
+the few lines that actually matter, and produce a crisp failure summary (what broke, where, likely
+cause). Deterministic extraction first; LLM only to phrase the gnarly ones.
+- **Learn:** navigating task-instance logs, traceback/error extraction, turning noisy logs into a
+  one-paragraph diagnosis — keeping the model advisory, not authoritative.
+- **Cost note:** log fetch/parse is local; call an API model only for ambiguous failures. Pairs with
+  `etl-doctor` (#17) when you want runbook-grounded fixes.
+- **Maps to:** pipeline failure triage.
+
+### 48. `pipeline-ops-copilot` — chat with your orchestrator ⭐⭐⭐ 🔌 🧠 ☁️
+Compose #46 + #47 (and optionally `etl-doctor` #17 / `runlog-anomaly` #37) behind MCP so an ops user
+can ask in plain English: "did the nightly party load finish?", "is feed X late against its SLA?",
+"what errored last night and why?" Answers are grounded in **live tool calls**, with an honest
+"I don't know / still running" when state is unknown.
+- **Learn:** the retrieve-*via-tools* pattern — composing live MCP tools into a grounded conversational
+  agent — plus SLA/lateness reasoning and "don't hallucinate state" guardrails.
+- **Cost note:** state/log lookups are local tool calls; a small local or API model drives the chat;
+  cache status lookups. Off the critical path — read-only, never triggers or mutates DAGs.
+- **Maps to:** AIOps / conversational pipeline ops.
+
 ---
 
 ## Suggested build order (for learning)
