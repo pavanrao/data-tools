@@ -194,6 +194,185 @@ chunking affect retrieval quality (paired with #9's metrics).
 
 ---
 
+## E. Pipeline-framework tools (generic; useful for metadata-driven platforms)
+
+Plumbing for any config/metadata-driven data pipeline — ingestion, lineage, quality, reference
+data, and extracts. Each is generic and standalone; the **Maps to** line names the pipeline need
+it serves (handy if you're building a larger platform on top of these).
+
+### 26. `flatfile-parser` — schema-driven extract parser ⭐⭐ 💻
+Parse fixed-width / CSV / vendor-XML extracts into typed records using a declared field spec;
+nonconforming rows go to a reject file with reasons. The unglamorous front door of legacy ingestion.
+- **Learn:** spec-driven parsing, type coercion, and the reject/quarantine pattern.
+- **Cost note:** pure code (no model) — fast and free; stream large files line-by-line.
+- **Maps to:** legacy/COTS flat-file ingestion.
+
+### 27. `schema-drift-detector` — diff two schema snapshots ⭐⭐ 💻
+Compare a captured schema against the previous one; classify each change (add / drop / type-change /
+nullability) and emit a drift report with a severity per change.
+- **Learn:** schema fingerprinting and modeling "what kind of change is this, and how bad."
+- **Cost note:** deterministic diffing; LLM optional, only to narrate a report.
+- **Maps to:** per-feed schema-drift policy (auto-evolve / quarantine / fail-fast).
+
+### 28. `load-reconciler` — source↔target reconciliation ⭐⭐ 💻
+Compare row counts and control totals (sum/hash of key columns) between a source and its loaded
+target, within configurable tolerances; output pass/fail + a delta report.
+- **Learn:** control-total reconciliation, the backbone of trustworthy loads.
+- **Cost note:** all arithmetic; no model cost.
+- **Maps to:** DQ reconciliation / audit logging.
+
+### 29. `config-linter` — validate pipeline config ⭐ 💻 🔌
+Validate YAML/JSON pipeline config against a JSON-schema, plus cross-reference checks (does this
+feed reference a transform/connector that exists?). Optionally expose as an MCP `lint_config` tool.
+- **Learn:** JSON-schema validation + semantic cross-checks; config-as-code guardrails.
+- **Cost note:** pure validation; free. A reusable gate for every other tool.
+- **Maps to:** config-as-code control plane.
+
+### 30. `sql-lineage` — column-level lineage from SQL ⭐⭐⭐ 💻
+Parse SQL/SparkSQL and build a column-level lineage graph (which source columns feed which target
+columns), handling joins, CTEs, and subqueries.
+- **Learn:** SQL parsing (sqlglot), graph construction — the hard, high-value part of lineage.
+- **Cost note:** static analysis, no model needed; cache by query hash.
+- **Maps to:** OpenLineage / column-level lineage.
+
+### 31. `iceberg-inspector` — table metadata as an MCP server ⭐⭐ 🔌 💻
+MCP server exposing `snapshots`, `partitions`, `schema_history`, and `files` tools over an
+Iceberg/Parquet table so an agent can inspect table state and time-travel without bespoke scripts.
+- **Learn:** exposing read-only introspection safely as MCP; table-format internals.
+- **Cost note:** metadata reads only; no scan cost, no model cost.
+- **Maps to:** lake manager / time-travel.
+
+### 32. `tokenizer` — reversible tokenization vault ⭐⭐ 💻
+Deterministic, format-preserving tokenization for sensitive fields (same input → same token), with
+a local vault for detokenization under access control. The companion to a PII *scanner*.
+- **Learn:** format-preserving tokenization vs. hashing vs. encryption; key/vault separation.
+- **Cost note:** pure crypto/lookup; free. Keep the vault local and access-gated.
+- **Maps to:** PII tokenization (e.g. SSN).
+
+### 33. `refdata-manager` — code sets + cross-references ⭐⭐ 💻 🔌
+Manage code/lookup sets and source↔master cross-reference (xref) tables, versioned with effective
+dates and history; expose `lookup` / `resolve_xref` as MCP tools.
+- **Learn:** reference-data lifecycle and stable cross-keys across systems.
+- **Cost note:** a small DB + API; no model cost.
+- **Maps to:** reference-data / cross-reference management.
+
+### 34. `catalog-search-rag` — semantic dataset/column finder ⭐⭐ 🧠 💻
+Embed a data catalog (table/column names, descriptions, glossary terms) and answer "which dataset
+has policyholder addresses?" with the matching tables/columns and their definitions.
+- **Learn:** RAG over *metadata* (short, structured text) rather than prose; hybrid name+vector match.
+- **Cost note:** tiny corpus → local embeddings; re-embed only on catalog change.
+- **Maps to:** data-catalog / glossary discovery.
+
+### 35. `dq-rule-suggester` — propose data-quality rules ⭐⭐ 🧠 💻
+Profile a dataset (types, ranges, nulls, uniqueness, enums) and suggest Great Expectations/Soda
+rules, each with a plain-English rationale; you review and accept. The model suggests, never enforces.
+- **Learn:** profiling → rule synthesis; keeping the LLM advisory, not authoritative.
+- **Cost note:** profiling is pandas/polars; local model drafts the rationale.
+- **Maps to:** data-quality rule authoring.
+
+### 36. `scd2-differ` — generate SCD2 merges ⭐⭐ 💻
+Given before/after snapshots and a business key, produce the SCD Type-2 change set (close old row,
+open new row with effective dates + current flag). Deterministic, testable historization.
+- **Learn:** slowly-changing-dimension mechanics end to end.
+- **Cost note:** set arithmetic; no model cost.
+- **Maps to:** SCD2 historization in marts.
+
+### 37. `runlog-anomaly` — spot weird pipeline runs ⭐⭐ 💻 ☁️
+Ingest pipeline run history (durations, row counts, statuses) and flag anomalies — a load 10× slower
+than usual, a row count that halved — with a short explanation.
+- **Learn:** simple statistical baselining (z-score/IQR) before reaching for ML.
+- **Cost note:** stats are local; API model only to phrase the alert.
+- **Maps to:** pipeline observability / AIOps.
+
+### 38. `lineage-explorer` — query a lineage graph via MCP ⭐⭐⭐ 🔌 🧠
+Load OpenLineage events into a graph and expose MCP tools (`upstream`, `downstream`,
+`impact_of_change`) so an agent can answer "what feeds `dim_party`?" or "what breaks if I drop this column?"
+- **Learn:** turning lineage data into agent-callable graph queries; impact analysis.
+- **Cost note:** graph queries local; generation handled by whatever client connects.
+- **Maps to:** AIOps lineage / impact analysis.
+
+### 39. `cdc-inspector` — make sense of change events ⭐⭐ 💻
+Parse Debezium/DMS-style change events, summarize per-table insert/update/delete counts, diff a
+record's before↔after, and replay a time window for debugging.
+- **Learn:** CDC event shapes and the before/after semantics that trip people up.
+- **Cost note:** parsing only; no model cost.
+- **Maps to:** CDC ingestion.
+
+### 40. `feed-scaffolder` — generate a new feed package ⭐⭐ 💻 🔌
+From a sample file + a few prompts, generate a self-contained feed package (config + a starter
+SQL transform + DQ rules + a test) following a template. Expose as MCP for agentic onboarding.
+- **Learn:** scaffolding/codegen from a template; the self-service onboarding pattern.
+- **Cost note:** templating is free; optional local LLM to draft starter SQL/DQ.
+- **Maps to:** self-service feed onboarding.
+
+### 41. `finops-attributor` — cost per feed/domain ⭐⭐ 💻
+Join billing/usage data with pipeline run logs to attribute compute/storage cost to each feed or
+domain; output a ranked report of where the money goes.
+- **Learn:** cost attribution joins and the FinOps "unit economics per pipeline" view.
+- **Cost note:** pure aggregation; no model cost.
+- **Maps to:** FinOps / cost observability.
+
+### 42. `sql-test-harness` — unit-test your transforms ⭐⭐ 💻
+Golden-file testing for SQL/SparkSQL: provide input fixtures + expected output, run the transform
+against a local engine (DuckDB/SQLite/Spark), and diff results. Red/green for data transforms.
+- **Learn:** fixture-based testing of SQL; making transforms safe to change.
+- **Cost note:** local engines; no model cost. Pairs naturally with `eval-harness` (#9).
+- **Maps to:** transform-engine testing.
+
+### 43. `data-dictionary-gen` — auto-document datasets ⭐⭐ 🧠 💻
+RAG over schema + sample values + any glossary to generate human-readable dataset/column
+documentation (what each column means, example values, caveats), with the source facts cited.
+- **Learn:** grounded generation over derived/structured facts; keeping docs traceable.
+- **Cost note:** profiling local; local model drafts the prose.
+- **Maps to:** catalog / glossary documentation.
+
+### 44. `extract-spec-gen` — scaffold outbound extracts ⭐⭐ 💻 🔌
+From a target spec (file/DB/API/SFTP layout) generate an outbound extract config plus a sample
+output file so you can validate the shape before wiring the real delivery.
+- **Learn:** treating extract generation as the symmetric twin of ingestion config.
+- **Cost note:** templating + a dry-run sample; no model cost required.
+- **Maps to:** outbound extract engine.
+
+### 45. `watermark-tracker` — high-water-mark state ⭐ 💻 🔌
+A tiny service/library to store, advance, reset, and audit the high-water-mark per feed for
+incremental/delta loads (last loaded timestamp/id), so reruns are correct and idempotent.
+- **Learn:** the state management that makes incremental loads reliable; idempotency.
+- **Cost note:** a small key-value store; no model cost. A reusable building block.
+- **Maps to:** incremental / delta ingestion.
+
+### 46. `airflow-state-probe` — read-only DAG/run state ⭐⭐ 🔌 💻
+Query an orchestrator's state — via the Airflow **stable REST API** (preferred) or read-only against
+its metadata tables (`dag_run`, `task_instance`) — to answer "is this DAG running / succeeded /
+failed?", when it started/ended, and whether it's **late vs. its schedule**. Expose as MCP tools
+(`dag_status`, `last_run`, `is_late`).
+- **Learn:** Airflow's run/task data model, REST-API vs. direct-DB tradeoffs, and *strictly
+  read-only* access (no triggering/mutation) as a safety boundary.
+- **Cost note:** plain queries; no model cost. Cache run state briefly to avoid hammering the API/DB.
+- **Maps to:** orchestration / pipeline-state observability. *(Pattern generalizes to any scheduler.)*
+
+### 47. `dag-failure-digest` — explain a failed run ⭐⭐ 💻 ☁️
+Given a failed DAG run, find the failing task(s), pull their logs, extract the exception/traceback and
+the few lines that actually matter, and produce a crisp failure summary (what broke, where, likely
+cause). Deterministic extraction first; LLM only to phrase the gnarly ones.
+- **Learn:** navigating task-instance logs, traceback/error extraction, turning noisy logs into a
+  one-paragraph diagnosis — keeping the model advisory, not authoritative.
+- **Cost note:** log fetch/parse is local; call an API model only for ambiguous failures. Pairs with
+  `etl-doctor` (#17) when you want runbook-grounded fixes.
+- **Maps to:** pipeline failure triage.
+
+### 48. `pipeline-ops-copilot` — chat with your orchestrator ⭐⭐⭐ 🔌 🧠 ☁️
+Compose #46 + #47 (and optionally `etl-doctor` #17 / `runlog-anomaly` #37) behind MCP so an ops user
+can ask in plain English: "did the nightly party load finish?", "is feed X late against its SLA?",
+"what errored last night and why?" Answers are grounded in **live tool calls**, with an honest
+"I don't know / still running" when state is unknown.
+- **Learn:** the retrieve-*via-tools* pattern — composing live MCP tools into a grounded conversational
+  agent — plus SLA/lateness reasoning and "don't hallucinate state" guardrails.
+- **Cost note:** state/log lookups are local tool calls; a small local or API model drives the chat;
+  cache status lookups. Off the critical path — read-only, never triggers or mutates DAGs.
+- **Maps to:** AIOps / conversational pipeline ops.
+
+---
+
 ## Suggested build order (for learning)
 
 1. **#1 `docs-rag`** — get the whole RAG loop working once, locally and free.
