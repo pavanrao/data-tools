@@ -1,0 +1,27 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+build/
+dist/
+
+# uv / virtualenv
+.venv/
+
+# Test / coverage
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Local indexes / scratch data produced by tools
+*.db
+*.sqlite
+*.sqlite3
+.data/
+sample_docs/
+
+# OS / editor
+.DS_Store
+.idea/
+.vscode/
