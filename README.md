@@ -29,8 +29,13 @@ Every tool in this repo aims to be:
 
 ## Where to start
 
-See [`IDEAS.md`](./IDEAS.md) for the running backlog of tool ideas. Pick one,
+See [`IDEAS.md`](./IDEAS.md) for the running backlog of **48** tool ideas. Pick one,
 move it into a `tools/<name>/` directory, and build.
+
+Sections **A–D** are RAG/MCP-focused tools and infrastructure. Section **E**
+(*Pipeline-framework tools*) adds generic data-pipeline plumbing — ingestion,
+lineage, data quality, reference data, and extracts — that any metadata-driven
+platform can reuse.
 
 ## Repo layout (planned)
 
