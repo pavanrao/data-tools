@@ -219,12 +219,12 @@ formats are where this tool adds something.
 
 ## Where to go next
 
-- **[`tools/ingest-ledger/README.md`](../tools/ingest-ledger/README.md)** — the
+- **[`README.md`](./README.md)** — the
   detailed reference: architecture, the hostile corpus, prior art, and what is
   still unbuilt.
-- **[`CONVENTIONS.md`](../CONVENTIONS.md)** — how tools in this repo are shaped,
+- **[`CONVENTIONS.md`](../../CONVENTIONS.md)** — how tools in this repo are shaped,
   and how to add one.
-- **[`IDEAS.md`](../IDEAS.md)** — 49 tool ideas. Pick one and build it.
+- **[`IDEAS.md`](../../IDEAS.md)** — 49 tool ideas. Pick one and build it.
 
 ```bash
 make test   # 48 tests, including the hostile corpus

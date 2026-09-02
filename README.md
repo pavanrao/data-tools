@@ -34,7 +34,7 @@ document pipeline was *given* against what it actually *read*, so partial
 extraction stops being silent, and refuses to answer a question whose evidence
 never made it into the index.
 
-**New here?** [`docs/getting-started.md`](./docs/getting-started.md) is a
+**New here?** [`tools/ingest-ledger/GETTING-STARTED.md`](./tools/ingest-ledger/GETTING-STARTED.md) is a
 five-minute walkthrough that ends with the tool refusing to answer a question —
 no prior RAG knowledge needed.
 

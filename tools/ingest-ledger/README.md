@@ -29,7 +29,7 @@ If the two counts came from the same system, their agreement would prove
 nothing. That constraint drives the whole design.
 
 New to the repo? Start with
-**[docs/getting-started.md](../../docs/getting-started.md)** — a five-minute
+**[GETTING-STARTED.md](./GETTING-STARTED.md)** — a five-minute
 walkthrough with no prerequisites. This file is the reference.
 
 ## Usage
