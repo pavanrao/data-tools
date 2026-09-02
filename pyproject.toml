@@ -1,0 +1,35 @@
+# uv workspace root for the data-tools collection.
+#
+# This project is NOT a package. It exists to (a) declare the workspace so
+# `uv sync` gives you a dev environment spanning every tool, and (b) hold the
+# shared lint/format/test configuration each tool inherits.
+#
+# Each tool under tools/ is an independently installable distribution. Nothing
+# here is required to run one.
+
+[tool.uv.workspace]
+members = ["shared/*", "tools/*"]
+
+[tool.uv.sources]
+data-tools-core = { workspace = true }
+
+[dependency-groups]
+dev = [
+    "pytest>=8.0",
+    "pytest-cov>=5.0",
+    "ruff>=0.6",
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "SIM"]
+
+[tool.pytest.ini_options]
+testpaths = ["tools", "shared"]
+addopts = "-q --strict-markers"
+markers = [
+    "hostile: asserts a known-bad fixture is detected rather than silently passing",
+]

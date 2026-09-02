@@ -29,21 +29,49 @@ Every tool in this repo aims to be:
 
 ## Where to start
 
-See [`IDEAS.md`](./IDEAS.md) for the running backlog of **48** tool ideas. Pick one,
-move it into a `tools/<name>/` directory, and build.
+**Built so far:** [`ingest-ledger`](./tools/ingest-ledger/) — reconciles what a
+document pipeline was *given* against what it actually *read*, so partial
+extraction stops being silent.
+
+See [`IDEAS.md`](./IDEAS.md) for the running backlog of **49** tool ideas. Pick
+one, move it into a `tools/<name>/` directory, and build. [`CONVENTIONS.md`](./CONVENTIONS.md)
+describes the shape every tool follows.
 
 Sections **A–D** are RAG/MCP-focused tools and infrastructure. Section **E**
 (*Pipeline-framework tools*) adds generic data-pipeline plumbing — ingestion,
 lineage, data quality, reference data, and extracts — that any metadata-driven
 platform can reuse.
 
-## Repo layout (planned)
+## Repo layout
+
+A [uv workspace](https://docs.astral.sh/uv/concepts/projects/workspaces/) of
+independent packages. The root is not a package — it exists so `uv sync` gives
+you a dev environment spanning every tool.
 
 ```
 data-tools/
-├── IDEAS.md              # backlog of tool ideas
-├── README.md
-├── shared/               # shared LLM/embeddings/MCP helpers (added as needed)
+├── IDEAS.md                  # backlog of tool ideas
+├── CONVENTIONS.md            # the shape every tool follows
+├── pyproject.toml            # workspace root; shared lint/test config
+├── shared/
+│   └── data-tools-core/      # provenance, ledger schema, the `dt` meta-CLI
 └── tools/
-    └── <tool-name>/      # one self-contained tool per directory
+    └── ingest-ledger/        # one installable distribution per tool
+```
+
+## Using the collection — whole or in parts
+
+Tools never import each other. They compose along three seams, so any one of
+them is useful alone and all of them are useful together.
+
+| Seam | In parts | As a whole |
+| --- | --- | --- |
+| **CLI** | `uvx --from "git+https://github.com/pavanrao/data-tools#subdirectory=tools/ingest-ledger" ingest-ledger` | `dt ls` discovers every installed tool via the `data_tools.tools` entry-point group |
+| **Data** | each tool reads and writes plain files | a shared SQLite ledger and JSONL records carrying a common `Provenance` type |
+| **MCP** | a tool may expose `<package>.mcp:server` | `mcp-gateway` (#16) mounts every installed one behind a single endpoint |
+
+```bash
+make sync    # dev environment for the whole collection
+make test    # every tool's tests
+make demo    # build the hostile corpus and reconcile it
 ```

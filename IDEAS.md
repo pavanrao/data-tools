@@ -12,6 +12,8 @@ and RAG. Pick any one — they don't depend on each other.
 
 Difficulty: ⭐ starter · ⭐⭐ intermediate · ⭐⭐⭐ involved
 
+**Built:** ✅ marks an idea that now lives under `tools/`.
+
 ---
 
 ## A. RAG-focused tools
@@ -81,6 +83,18 @@ Ingest transcripts (VTT/SRT/txt), speaker-aware chunking, then answer "what did
 we decide about pricing?" with quotes + timestamps.
 - **Learn:** speaker/diarization-aware chunking, temporal retrieval.
 - **Cost note:** local Whisper for transcription if you add audio ingest.
+
+### 49. `ingest-ledger` — prove what the pipeline actually read ✅ ⭐⭐⭐ 🧠 💻
+Reconcile the units a corpus *declares* (PDF pages, XLSX sheets, DOCX blocks
+including footnotes, XML nodes, CSV rows, nested archive members) against what
+extraction actually recovered, quarantining anything short instead of indexing
+it silently. Delegates PDF page-level silent-drop detection to
+[pdfmux](https://github.com/NameetP/pdfmux); contributes the formats nothing
+else covers, plus a hostile corpus that asserts each failure is caught.
+- **Learn:** reconciliation as a defense against non-deterministic systems,
+  subprocess resource isolation, and adversarial fixtures as a product claim.
+- **Cost note:** deterministic and model-free end to end.
+- **Built:** [`tools/ingest-ledger/`](./tools/ingest-ledger/)
 
 ---
 
