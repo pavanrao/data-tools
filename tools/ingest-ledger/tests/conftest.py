@@ -9,10 +9,15 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "corpus"))
 
 import generate  # noqa: E402
 
+#: Large enough that an eager parse exceeds OOM_CAP_MB, small enough to write
+#: in well under a second. Verified reproducible at 96MB; see test_extract.py.
+OVERSIZED_RECORDS = 200_000
+OOM_CAP_MB = 96
+
 
 def _small_oversized_xml(path: Path) -> bool:
-    """Same defect, fewer records -- big enough to blow a small cap, quick to write."""
-    return generate.oversized_xml(path, records=40_000)
+    """Same defect, sized for the cap the extraction tests use."""
+    return generate.oversized_xml(path, records=OVERSIZED_RECORDS)
 
 
 @pytest.fixture(scope="session")
@@ -37,3 +42,41 @@ def fixture_path(hostile):
         return hostile[name]
 
     return _get
+
+
+@pytest.fixture(scope="session")
+def rfp(tmp_path_factory) -> dict[str, Path]:
+    """A small realistic corpus whose answer lives in a sheet that never read."""
+    out = tmp_path_factory.mktemp("rfp")
+    built = generate.rfp_corpus(out)
+    if not built.get("pricing.xlsx"):
+        pytest.skip("rfp corpus needs openpyxl")
+    return {name: out / name for name in built}
+
+
+@pytest.fixture
+def indexed_rfp(rfp):
+    """Reconcile and index the RFP corpus into an in-memory ledger."""
+    import sqlite3
+
+    from data_tools_core import ledger
+    from ingest_ledger import index as index_mod
+    from ingest_ledger.manifest import walk
+    from ingest_ledger.probes import for_path
+    from ingest_ledger.reconcile import reconcile
+
+    root = next(iter(rfp.values())).parent
+    rows = []
+    for entry in walk(root):
+        probe = for_path(entry.path) if entry.declared is not None else None
+        rows.append(reconcile(entry, probe.extract(entry.path) if probe else None))
+
+    conn = sqlite3.connect(":memory:")
+    conn.row_factory = sqlite3.Row
+    conn.executescript(ledger.SCHEMA)
+    run_id = ledger.start_run(conn, "test", [])
+    index_mod.build(conn, run_id, rows)
+    try:
+        yield conn, run_id, rows
+    finally:
+        conn.close()

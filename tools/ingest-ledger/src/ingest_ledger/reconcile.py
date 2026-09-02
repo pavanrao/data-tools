@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from ingest_ledger.extract import DEFAULT_MEMORY_MB, DEFAULT_TIMEOUT_S
 from ingest_ledger.extract import run as run_extraction
 from ingest_ledger.manifest import ManifestEntry
 from ingest_ledger.models import Extracted, FileReconciliation, Status
@@ -15,6 +16,8 @@ def reconcile(
     extracted: Extracted | None = None,
     *,
     threshold: float = DEFAULT_THRESHOLD,
+    memory_mb: int = DEFAULT_MEMORY_MB,
+    timeout_s: int = DEFAULT_TIMEOUT_S,
 ) -> FileReconciliation:
     if entry.declared is None:
         return FileReconciliation(
@@ -29,7 +32,7 @@ def reconcile(
         )
 
     if extracted is None:
-        extracted = run_extraction(entry)
+        extracted = run_extraction(entry, memory_mb=memory_mb, timeout_s=timeout_s)
 
     declared_units = entry.declared.units
     if declared_units == 0:

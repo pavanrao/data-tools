@@ -1,9 +1,10 @@
 """Run extraction under supervision.
 
 The point of the subprocess is not speed -- it is that a killed extraction
-leaves a signal. In-process, an OOM takes the whole run down or, worse, the
-extractor catches it and returns a fragment. Out of process, we get an exit
-code, and a fragment becomes a measurable shortfall against the manifest.
+leaves a signal. In-process, an OOM either takes the whole run down or, worse,
+the extractor catches it and returns a fragment that looks like success. Out of
+process we get an exit code, and a fragment becomes a measurable shortfall
+against the manifest.
 """
 
 from __future__ import annotations
@@ -25,40 +26,54 @@ def run(
     memory_mb: int = DEFAULT_MEMORY_MB,
     timeout_s: int = DEFAULT_TIMEOUT_S,
 ) -> Extracted:
-    proc = subprocess.run(  # noqa: S603 - fixed argv, no shell
-        [sys.executable, "-m", "ingest_ledger.worker", str(entry.path), str(memory_mb)],
-        capture_output=True,
-        timeout=None,
-        check=False,
-        **_timeout_kwargs(timeout_s),
-    )
+    limits = {"memory_cap_mb": memory_mb, "timeout_s": timeout_s}
+    argv = [sys.executable, "-m", "ingest_ledger.worker", str(entry.path), str(memory_mb)]
+
+    try:
+        proc = subprocess.run(  # noqa: S603 - fixed argv, no shell
+            argv, capture_output=True, timeout=timeout_s, check=False
+        )
+    except subprocess.TimeoutExpired:
+        return Extracted(
+            0,
+            evidence={**limits, "auditor": "subprocess"},
+            error=f"timed out after {timeout_s}s",
+        )
 
     if proc.returncode != 0:
         return Extracted(
             0,
-            evidence={"exit_code": proc.returncode, "memory_cap_mb": memory_mb},
+            evidence={**limits, "auditor": "subprocess", "exit_code": proc.returncode},
             error=_diagnose(proc.returncode, proc.stderr.decode(errors="replace")),
         )
 
-    payload = json.loads(proc.stdout)
+    try:
+        payload = json.loads(proc.stdout)
+    except json.JSONDecodeError:
+        # A worker that exits 0 with unreadable output is still a failure --
+        # treating it as empty would be the silent behaviour we exist to stop.
+        return Extracted(
+            0,
+            evidence={**limits, "auditor": "subprocess"},
+            error="worker produced unreadable output",
+        )
+
     return Extracted(
         units=payload["units"],
         text=payload["text"],
         missing=tuple(payload["missing"]),
-        evidence={**payload["evidence"], "memory_cap_mb": memory_mb},
+        evidence={**payload["evidence"], **limits},
         error=payload["error"],
     )
 
 
-def _timeout_kwargs(timeout_s: int) -> dict[str, object]:
-    return {"timeout": timeout_s}
-
-
 def _diagnose(code: int, stderr: str) -> str:
     """Turn an exit code into something a human can act on."""
-    if code == -9:
-        return "killed (SIGKILL) - likely out of memory"
+    if code in (-9, 137):
+        return "killed (SIGKILL) - out of memory"
     if "MemoryError" in stderr:
-        return "MemoryError - exceeded the configured cap"
-    tail = stderr.strip().splitlines()[-1:] or ["no stderr"]
-    return f"exit {code}: {tail[0]}"
+        return "MemoryError - exceeded the configured memory cap"
+    if "ProbeUnavailable" in stderr:
+        return "probe dependency not installed"
+    tail = [line for line in stderr.strip().splitlines() if line.strip()]
+    return f"exit {code}: {tail[-1] if tail else 'no stderr'}"

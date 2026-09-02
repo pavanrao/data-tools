@@ -28,14 +28,21 @@ Two counts, from **independent code paths**:
 If the two counts came from the same system, their agreement would prove
 nothing. That constraint drives the whole design.
 
+New to the repo? Start with
+**[docs/getting-started.md](../../docs/getting-started.md)** — a five-minute
+walkthrough with no prerequisites. This file is the reference.
+
 ## Usage
 
 ```bash
 uv sync --all-extras
-make demo                                  # build the hostile corpus, reconcile it
+make demo                                  # reconcile, compare, then ask
 
 ingest-ledger manifest ./corpus            # declare only; never extracts
 ingest-ledger report ./rfp.zip --strict    # non-zero exit if anything quarantined
+ingest-ledger compare ./corpus             # naive extractor, side by side
+ingest-ledger index ./corpus --ledger l.db # index reconciled content + the gaps
+ingest-ledger ask --ledger l.db "..."      # answer, disclose, or refuse
 ```
 
 ```
@@ -56,6 +63,35 @@ files: 6 of 9 complete, 3 quarantined
 Coverage is reported **per unit kind and never summed across kinds**. One
 corpus-wide ratio is a trap: 240,000 XML nodes drown out three lost PDF pages
 and the headline reads 100% while the table below lists quarantined files.
+
+## Query-time abstention
+
+`index` writes two tables. `chunks` holds what was read. `gaps` holds a
+searchable descriptor of what was not — filename, container, declared unit ids
+(sheet names are often the exact words a question uses), the failure reason, and
+any partial text.
+
+That second table is the point. Retrieval alone cannot see an ingestion gap: an
+unread file contributes no chunks, so similarity search never ranks it and the
+system answers confidently from the remainder. `ask` scores every question
+twice — against what was read, and against what was not — and refuses when the
+best match is something ingestion failed to read.
+
+```
+$ ingest-ledger ask --ledger rfp.db "what are the payment schedule milestones?"
+
+[ABSTAINED] Refused: the most relevant material for this question was not
+successfully read. pricing.xlsx (missing sheets: Payment Schedule).
+```
+
+Three verdicts: `ANSWERED` (no gap bears on the question), `ANSWERED_WITH_GAPS`
+(answered, gaps disclosed in the statement), `ABSTAINED` (exit code `3`). Every
+answer carries a coverage statement regardless.
+
+Embeddings sit behind an `Embedder` protocol. The default is a dependency-free
+hashing bag-of-words: not competitive with a trained encoder, and not meant to
+be — it exists so the gating logic is testable offline on any machine. What the
+tool refuses to answer must not depend on which embedder is installed.
 
 ## The hostile corpus
 
@@ -89,11 +125,19 @@ reimplement it:
 
 - **[pdfmux](https://github.com/NameetP/pdfmux)** (MIT) finds pages where source
   text exists but the engine returned nothing while reporting success, and
-  audits *other* extractors' output too. The PDF lane delegates to it behind
-  `probes/pdf.py`, pinned to `1.8.7`, with a native PyMuPDF fallback that
-  records which path ran. The declared count stays ours — pdfmux's verdict
-  comes from re-extraction, so using it for both sides would collapse two
-  measurements into one system's opinion of itself.
+  audits *other* extractors' output. We extract, hand it our per-page output,
+  and record its verdict as evidence. Pinned to `1.8.7` and confined to
+  `probes/pdf.py`; without it installed, that evidence line reads
+  `fidelity_audit: unavailable` rather than being silently absent.
+
+  **The two tools answer different questions**, which is worth stating plainly
+  because it justifies not simply deferring to it. pdfmux measures *fidelity*:
+  given this source and this output, did the engine drop text that was there?
+  On our 3-page scanned fixture it returns `PASS` at coverage `1.00` — correctly,
+  because a page with no text layer has nothing to drop. Measured against the
+  declared page count, that same file yielded **zero** content, which is exactly
+  the gap an index would inherit. So we measure *yield*, pdfmux measures
+  fidelity, and a page is missing if either says so.
 - **[Docling](https://github.com/docling-project/docling)** grades conversion
   quality per page (`mean_grade`, `low_grade`). That's a heuristic on what it
   produced; it cannot tell you a file was never opened.
@@ -121,11 +165,20 @@ answers](https://www.unsiloed.ai/blog/unsiloed-ai-vs-extend-reducto-mistral-clau
 
 ## Status
 
-Scaffold. Manifest, extract, reconcile, report, ledger and the hostile corpus
-work end to end. Not yet built:
+Working end to end, with 48 tests. Manifest, supervised extraction, reconcile,
+report, ledger, chunk, index, query-time abstention, the naive baseline
+comparison, and the hostile corpus are all built.
 
-- [ ] Wire the subprocess memory cap into the walk (one `xfail` marks the gap)
-- [ ] Verify the pdfmux `verify_extraction()` signature against the installed wheel
-- [ ] Chunk + embed + index over reconciled content only
-- [ ] Query path: coverage statement per answer, abstention on overlapping gaps
-- [ ] Baseline comparison in `make demo` (naive extractor vs. this, side by side)
+Known limits and next steps:
+
+- **The default embedder is a hashing bag-of-words**, so gap matching is
+  lexical. A question that shares no vocabulary with a gap descriptor will not
+  trigger abstention. Swapping in a real encoder is a one-line change and would
+  materially improve recall on paraphrase.
+- **`ABSTAIN_RATIO` and `GAP_RELEVANCE` are policy constants**, tuned against
+  the demo corpus rather than derived. They deserve an eval set.
+- **No generation step.** `ask` returns grounded passages and a verdict; wiring
+  an LLM behind `data_tools_core.llm` is deliberately left to the caller, so the
+  deterministic core stays model-free and testable.
+- Archive members are unpacked into a caller-supplied `workdir`; without one
+  their paths dangle after the walk. The CLI passes one, library callers must.

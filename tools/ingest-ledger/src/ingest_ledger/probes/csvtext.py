@@ -16,22 +16,19 @@ from ingest_ledger.models import Declared, Extracted
 
 
 def _count_lines(path: Path) -> int:
-    """Newlines counted on raw bytes, so encoding cannot change the answer."""
+    """Non-blank lines, counted on raw bytes so encoding cannot change the answer.
+
+    Blank lines are excluded deliberately: the extract pass drops them, and a
+    declared count that measures something the extract pass never returns
+    manufactures a shortfall on every well-formed file. Both sides must count
+    the same thing or the reconciliation is noise.
+    """
     count = 0
     with path.open("rb") as handle:
-        while block := handle.read(1 << 20):
-            count += block.count(b"\n")
-    # A final line without a trailing newline still counts.
-    with path.open("rb") as handle:
-        handle.seek(0, 2)
-        if handle.tell() and _last_byte(handle) != b"\n":
-            count += 1
+        for line in handle:
+            if line.strip():
+                count += 1
     return count
-
-
-def _last_byte(handle) -> bytes:
-    handle.seek(-1, 2)
-    return handle.read(1)
 
 
 class _LineProbe:

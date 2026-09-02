@@ -12,5 +12,6 @@ build/
 
 # generated at test time from corpus/generate.py; never commit binaries
 tools/ingest-ledger/corpus/hostile/
+tools/ingest-ledger/corpus/rfp/
 # local ledgers
 *.ledger.db

@@ -149,6 +149,54 @@ def whitebox_pdf(path: Path) -> bool:
     return True
 
 
+# -- a small realistic corpus, for demonstrating query-time abstention --------
+#
+# The hostile corpus proves detection. This one proves what detection is *for*:
+# the answer to a plausible question lives in a file that did not survive
+# ingestion, and the tool refuses instead of answering from the remainder.
+
+
+def rfp_corpus(out: Path) -> dict[str, bool]:
+    out.mkdir(parents=True, exist_ok=True)
+
+    (out / "scope_of_work.md").write_text(
+        "# Scope of Work\n\n"
+        "The vendor shall provide integration services for the statewide "
+        "eligibility platform, including data migration, interface development "
+        "and user training.\n\n"
+        "## Staffing\n\nA named project manager and two senior engineers are "
+        "required on site for the duration of the engagement.\n\n"
+        "## Acceptance\n\nDeliverables are accepted after a thirty day pilot.\n",
+        encoding="utf-8",
+    )
+    (out / "general_terms.md").write_text(
+        "# General Terms\n\n"
+        "Governing law is the State of Indiana. Intellectual property created "
+        "under this agreement vests in the State. The vendor shall indemnify "
+        "the State against third party claims.\n",
+        encoding="utf-8",
+    )
+
+    built = {"scope_of_work.md": True, "general_terms.md": True}
+
+    # The payment schedule: a workbook whose rates sheet never populated. The
+    # sheet name survives in the manifest even though its contents did not.
+    try:
+        import openpyxl
+
+        book = openpyxl.Workbook()
+        book.active.title = "Cover"
+        book["Cover"]["A1"] = "Pricing workbook"
+        book.create_sheet("Payment Schedule")
+        book.create_sheet("Vendor Contacts")["A1"] = "procurement@example.gov"
+        book.save(out / "pricing.xlsx")
+        built["pricing.xlsx"] = True
+    except ImportError:
+        built["pricing.xlsx"] = False
+
+    return built
+
+
 BUILDERS = {
     "multi_sheet.xlsx": multi_sheet_xlsx,
     "textbox_footnote.docx": textbox_footnote_docx,
@@ -167,7 +215,15 @@ def build(out: Path) -> dict[str, bool]:
 
 
 def main(argv: list[str]) -> int:
-    out = Path(argv[0]) if argv else Path(__file__).parent / "hostile"
+    """``generate.py [outdir] [--rfp]`` -- hostile corpus by default."""
+    args = [a for a in argv if not a.startswith("-")]
+    out = Path(args[0]) if args else Path(__file__).parent / "hostile"
+
+    if "--rfp" in argv:
+        for name, built in rfp_corpus(out).items():
+            print(f"{name:<26} {'ok' if built else 'skipped'}")
+        return 0
+
     for name, built in build(out).items():
         status = "ok" if built else "skipped (optional dependency missing)"
         print(f"{name:<26} {status:<44} {DEFECTS[name]}")

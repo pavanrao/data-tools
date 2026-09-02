@@ -31,7 +31,12 @@ Every tool in this repo aims to be:
 
 **Built so far:** [`ingest-ledger`](./tools/ingest-ledger/) — reconciles what a
 document pipeline was *given* against what it actually *read*, so partial
-extraction stops being silent.
+extraction stops being silent, and refuses to answer a question whose evidence
+never made it into the index.
+
+**New here?** [`docs/getting-started.md`](./docs/getting-started.md) is a
+five-minute walkthrough that ends with the tool refusing to answer a question —
+no prior RAG knowledge needed.
 
 See [`IDEAS.md`](./IDEAS.md) for the running backlog of **49** tool ideas. Pick
 one, move it into a `tools/<name>/` directory, and build. [`CONVENTIONS.md`](./CONVENTIONS.md)

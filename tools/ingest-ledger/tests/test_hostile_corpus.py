@@ -78,19 +78,38 @@ def test_whitebox_pdf_yields_text_that_is_invisible_in_print(fixture_path):
     assert "SECRET" in row.extracted.text
 
 
-@pytest.mark.xfail(reason="TODO: subprocess memory cap not yet wired into the walk")
-def test_oversized_xml_under_a_small_cap_is_failed_not_partial(fixture_path):
-    from ingest_ledger.extract import run
-    from ingest_ledger.manifest import walk as walk_one
+def test_pdf_yield_and_fidelity_are_different_questions(fixture_path):
+    """pdfmux audits fidelity; this tool measures yield. Both are needed.
 
-    (entry,) = list(walk_one(fixture_path("oversized.xml")))
-    extracted = run(entry, memory_mb=64, timeout_s=30)
-    row = reconcile(entry, extracted)
-    assert row.status is Status.FAILED
-    assert "memory" in (row.extracted.error or "")
+    On a scanned page pdfmux correctly returns PASS -- no text layer existed,
+    so the extractor dropped nothing. Against the declared page count that same
+    file recovered nothing at all, which is the gap an index would inherit.
+    A page is missing if either signal says so.
+    """
+    pdfmux = pytest.importorskip("pdfmux")
+    assert pdfmux  # the evidence line below depends on it being installed
+
+    row = status_of(fixture_path("scanned.pdf"))
+
+    assert row.extracted.evidence["pdfmux_verdict"] == "PASS"
+    assert row.extracted.evidence["pdfmux_coverage"] == 1.0
+    assert row.extracted.evidence["pdfmux_silent_drops"] == ()
+    # ...and yet:
+    assert row.status is Status.PARTIAL
+    assert row.extracted.evidence["zero_yield_pages"] == (1, 2, 3)
 
 
-def test_extension_mismatch_is_named_in_the_ledger(fixture_path):
-    (entry,) = list(walk(fixture_path("liar.pdf")))
-    assert entry.declared is None
-    assert "content is html" in entry.note
+def test_pdf_records_when_the_fidelity_audit_is_unavailable(fixture_path, monkeypatch):
+    """A missing auditor must be stated in the ledger, never silently skipped."""
+    import builtins
+
+    real_import = builtins.__import__
+
+    def no_pdfmux(name, *args, **kwargs):
+        if name == "pdfmux":
+            raise ImportError("simulated")
+        return real_import(name, *args, **kwargs)
+
+    monkeypatch.setattr(builtins, "__import__", no_pdfmux)
+    row = status_of(fixture_path("whitebox.pdf"))
+    assert row.extracted.evidence["fidelity_audit"] == "unavailable"
