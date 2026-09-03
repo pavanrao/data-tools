@@ -3,21 +3,20 @@
 from __future__ import annotations
 
 import pytest
-from conftest import OOM_CAP_MB
 from ingest_ledger.extract import _diagnose, run
 from ingest_ledger.manifest import walk
 from ingest_ledger.models import Status
 from ingest_ledger.reconcile import reconcile
 
 
-def test_memory_cap_turns_an_oom_into_a_failed_status(fixture_path):
+def test_memory_cap_turns_an_oom_into_a_failed_status(fixture_path, oom_cap_mb):
     """The podcast's failure: the parse dies, the pipeline reports success.
 
     Under the cap this must surface as FAILED with a memory diagnosis -- never
     as PARTIAL with whatever happened to be parsed before the kill.
     """
     (entry,) = list(walk(fixture_path("oversized.xml")))
-    extracted = run(entry, memory_mb=OOM_CAP_MB, timeout_s=120)
+    extracted = run(entry, memory_mb=oom_cap_mb, timeout_s=120)
     row = reconcile(entry, extracted)
 
     assert row.status is Status.FAILED

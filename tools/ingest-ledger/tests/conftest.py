@@ -20,6 +20,16 @@ def _small_oversized_xml(path: Path) -> bool:
     return generate.oversized_xml(path, records=OVERSIZED_RECORDS)
 
 
+@pytest.fixture
+def oom_cap_mb() -> int:
+    """Exposed as a fixture so tests need no sys.path-dependent import.
+
+    The suite runs under --import-mode=importlib (three tools ship a
+    test_cli.py), where a bare ``from conftest import ...`` does not resolve.
+    """
+    return OOM_CAP_MB
+
+
 @pytest.fixture(scope="session")
 def hostile(tmp_path_factory) -> dict[str, Path]:
     """Build the hostile corpus once per session.
