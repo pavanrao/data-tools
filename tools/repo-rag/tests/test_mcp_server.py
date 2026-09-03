@@ -46,3 +46,58 @@ def test_build_server_exposes_only_readonly_tools():
     names = {t.name for t in tools}
 
     assert names == {"search_code", "get_chunk"}
+
+
+def test_tools_dispatch_through_the_server():
+    """Registration passing does not prove dispatch works.
+
+    The mcp 1.x -> 2.x break was invisible to a registration-only assertion, so
+    this drives a real call through the server and reads the result back.
+    """
+    server = build_server(_FakeStore(), _FakeEmbedder())
+
+    result = asyncio.run(server.call_tool("search_code", {"query": "auth", "k": 3}))
+
+    assert not result.is_error
+    assert result.structured_content["result"][0]["chunk_id"] == 7
+    assert result.structured_content["result"][0]["symbol"] == "authenticate"
+
+
+def test_get_chunk_dispatches_and_returns_full_text():
+    server = build_server(_FakeStore(), _FakeEmbedder())
+
+    result = asyncio.run(server.call_tool("get_chunk", {"chunk_id": 7}))
+
+    assert not result.is_error
+    assert result.structured_content["text"] == "def authenticate(): return 1"
+
+
+def test_tools_work_against_a_real_store_from_a_worker_thread(tmp_path):
+    """Guards the mcp 2.x thread-affinity trap.
+
+    The SDK dispatches tool calls on a worker thread while the store's SQLite
+    connection is opened on the main one. A fake store cannot catch that, so
+    this drives a real CodeStore through the server; before CodeStore took
+    check_same_thread=False plus a lock, this raised "SQLite objects created in
+    a thread can only be used in that same thread" for every call.
+    """
+    from repo_rag.chunk import CodeChunk
+    from repo_rag.store import CodeStore
+
+    store = CodeStore(tmp_path / "t.db", dim=3)
+    store.add(
+        [CodeChunk("def authenticate(): return 1", "auth.py", 1, 2, "authenticate", "function")],
+        [[1.0, 0.0, 0.0]],
+    )
+
+    server = build_server(store, _FakeEmbedder())
+
+    chunk = asyncio.run(server.call_tool("get_chunk", {"chunk_id": 1}))
+    assert not chunk.is_error
+    assert chunk.structured_content["path"] == "auth.py"
+
+    found = asyncio.run(server.call_tool("search_code", {"query": "authenticate", "k": 2}))
+    assert not found.is_error
+    assert found.structured_content["result"][0]["symbol"] == "authenticate"
+
+    store.close()

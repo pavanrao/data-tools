@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import re
 import sqlite3
+import threading
 from collections.abc import Sequence
 from dataclasses import dataclass
 from pathlib import Path
@@ -35,9 +36,20 @@ class CodeHit:
 
 
 class CodeStore:
+    """Hybrid store over one SQLite connection, usable from several threads.
+
+    ``check_same_thread=False`` plus a re-entrant lock, because the MCP server
+    dispatches tool calls on worker threads while the connection is opened on
+    the main one. Without both, every ``search_code``/``get_chunk`` over the
+    wire fails with "SQLite objects created in a thread can only be used in
+    that same thread" -- a failure no in-process test with a fake store sees.
+    The lock is re-entrant since ``search`` calls the two searches beneath it.
+    """
+
     def __init__(self, path: str | Path, dim: int | None = None) -> None:
         self.path = str(path)
-        self.db = sqlite3.connect(self.path)
+        self._lock = threading.RLock()
+        self.db = sqlite3.connect(self.path, check_same_thread=False)
         self.db.enable_load_extension(True)
         sqlite_vec.load(self.db)
         self.db.enable_load_extension(False)
@@ -84,6 +96,10 @@ class CodeStore:
 
     # -- writes ----------------------------------------------------------
     def add(self, chunks: Sequence[CodeChunk], embeddings: Sequence[Sequence[float]]) -> None:
+        with self._lock:
+            self._add(chunks, embeddings)
+
+    def _add(self, chunks: Sequence[CodeChunk], embeddings: Sequence[Sequence[float]]) -> None:
         for chunk, embedding in zip(chunks, embeddings, strict=True):
             cur = self.db.execute(
                 "INSERT INTO chunks (text, path, start_line, end_line, symbol, kind) "
@@ -114,35 +130,39 @@ class CodeStore:
         return CodeHit(cid, text, path, start, end, symbol, kind, score)
 
     def get_chunk(self, chunk_id: int) -> CodeHit:
-        row = self.db.execute(
-            "SELECT id, text, path, start_line, end_line, symbol, kind FROM chunks WHERE id = ?",
-            (chunk_id,),
-        ).fetchone()
+        with self._lock:
+            row = self.db.execute(
+                "SELECT id, text, path, start_line, end_line, symbol, kind "
+                "FROM chunks WHERE id = ?",
+                (chunk_id,),
+            ).fetchone()
         if row is None:
             raise KeyError(f"no chunk with id {chunk_id}")
         return self._hit(row, 0.0)
 
     def search_vector(self, query_embedding: Sequence[float], k: int = 5) -> list[CodeHit]:
-        rows = self.db.execute(
-            "SELECT c.id, c.text, c.path, c.start_line, c.end_line, c.symbol, "
-            "c.kind, v.distance FROM ("
-            "  SELECT rowid, distance FROM vec_chunks "
-            "  WHERE embedding MATCH ? AND k = ?"
-            ") v JOIN chunks c ON c.id = v.rowid ORDER BY v.distance",
-            (sqlite_vec.serialize_float32(list(query_embedding)), k),
-        ).fetchall()
+        with self._lock:
+            rows = self.db.execute(
+                "SELECT c.id, c.text, c.path, c.start_line, c.end_line, c.symbol, "
+                "c.kind, v.distance FROM ("
+                "  SELECT rowid, distance FROM vec_chunks "
+                "  WHERE embedding MATCH ? AND k = ?"
+                ") v JOIN chunks c ON c.id = v.rowid ORDER BY v.distance",
+                (sqlite_vec.serialize_float32(list(query_embedding)), k),
+            ).fetchall()
         return [self._hit(r[:7], r[7]) for r in rows]
 
     def search_keyword(self, query: str, k: int = 5) -> list[CodeHit]:
         match = self._to_match(query)
         if not match:
             return []
-        rows = self.db.execute(
-            "SELECT c.id, c.text, c.path, c.start_line, c.end_line, c.symbol, "
-            "c.kind, f.rank FROM fts f JOIN chunks c ON c.id = f.rowid "
-            "WHERE fts MATCH ? ORDER BY f.rank LIMIT ?",
-            (match, k),
-        ).fetchall()
+        with self._lock:
+            rows = self.db.execute(
+                "SELECT c.id, c.text, c.path, c.start_line, c.end_line, c.symbol, "
+                "c.kind, f.rank FROM fts f JOIN chunks c ON c.id = f.rowid "
+                "WHERE fts MATCH ? ORDER BY f.rank LIMIT ?",
+                (match, k),
+            ).fetchall()
         return [self._hit(r[:7], r[7]) for r in rows]
 
     def search(
@@ -169,4 +189,5 @@ class CodeStore:
         return " OR ".join(tokens)
 
     def close(self) -> None:
-        self.db.close()
+        with self._lock:
+            self.db.close()

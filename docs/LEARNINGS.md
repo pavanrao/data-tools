@@ -9,6 +9,55 @@ sprint; keep entries concrete.
 
 ---
 
+## Iteration 3 — 2026-09-03 — MCP SDK 1.x -> 2.x
+
+### Migrating an SDK major
+- Read the **installed package**, not the error message's summary. The 2.x error
+  helpfully names the rename but mentions none of what actually broke us. An
+  hour with `inspect.signature` in a throwaway venv beat guessing from release
+  notes.
+- `inspect.signature` does **not** render `async`. `list_tools` printed as a
+  plain function and is a coroutine; check `inspect.iscoroutinefunction` before
+  concluding an API went sync.
+- Prototype the new API in a scratch venv *before* touching the repo. Three
+  ten-line probes established the whole migration surface: the rename, the
+  structured-output behaviour, and the `CallToolResult` shape.
+
+### Registration is not dispatch
+- A test that asserts `await server.list_tools()` returns the right names proves
+  the **decorator ran**. It says nothing about whether a call survives the
+  dispatch path — argument coercion, threading, result serialisation.
+- Our whole suite passed on 2.x while the server was broken for **every** call
+  over the wire. Both defects were invisible to registration-only tests with a
+  fake store.
+- **Drive one real call through the seam, against your real resources.** The
+  fake store could not exhibit SQLite's thread affinity; a real `CodeStore`
+  through `call_tool` reproduced the failure instantly.
+- Then prove the regression test earns its place: revert the fix, watch it fail,
+  restore. A regression test never seen red is a guess.
+
+### Threading reaches through your abstractions
+- mcp 2.x runs tool handlers on a **worker thread**. SQLite connections are
+  thread-affine, so a connection opened at server construction is unusable in
+  the handler: *"SQLite objects created in a thread can only be used in that
+  same thread."*
+- Fix: `sqlite3.connect(..., check_same_thread=False)` **plus** a lock — the flag
+  alone only silences the check, it does not serialise access. Use an `RLock`
+  when a guarded method calls other guarded methods (`search` calls
+  `search_vector` and `search_keyword`).
+- The general shape: **isolating a dependency behind one adapter module bounds
+  the API surface you must edit, not the runtime assumptions it makes about your
+  code.** The rename cost three lines in the adapter; the threading model cost a
+  change in a module the adapter merely calls.
+
+### Typed returns are part of an MCP tool's contract
+- In mcp 2.x the output schema is generated from the return annotation. A bare
+  `-> dict` produces **no** schema and the SDK then sends
+  `structured_content=None`; `-> dict[str, object]` produces one and the client
+  gets real data. The annotation is behaviour, not documentation.
+
+---
+
 ## Iteration 2 — 2026-09-03 — consolidating two rival scaffolds onto one
 
 Context: `docs-rag` + `repo-rag` had been built on a branch with their own
@@ -118,7 +167,8 @@ This iteration merged them. Most of the craft below came out of that collision.
   Tests **mock `litellm`** → fast, hermetic, no live model needed (41 tests).
 
 ### MCP
-- `FastMCP` + `@server.tool()`. Keep tool logic in plain `*_impl` functions so it's
+- `FastMCP` + `@server.tool()` (renamed `MCPServer` in SDK 2.x — see Iteration 3).
+  Keep tool logic in plain `*_impl` functions so it's
   testable without a transport; assert registration via `await server.list_tools()`.
 - Connect to Claude Code via a project `.mcp.json` (`command`/`args`); absolute
   `--directory`/`--db` avoid launch-cwd ambiguity.

@@ -8,6 +8,48 @@ we're building or parking, and why. Append a new `## Iteration N` section at the
 
 ---
 
+## Iteration 3 — 2026-09-03
+
+### F7 — Confining an integration bounds its API surface, not its runtime assumptions
+`repo-rag` is now on the MCP SDK 2.x (`mcp>=2.1.1,<3`). The rename that caused
+the original pin (`FastMCP` → `MCPServer`) cost **three lines** in the one
+adapter module — CONVENTIONS r4 working exactly as designed.
+
+The upgrade's real content was elsewhere, and r4 gave no protection from it:
+
+1. **2.x dispatches tool calls on a worker thread.** `CodeStore` opened its
+   SQLite connection on the main thread, and SQLite connections are
+   thread-affine. Every `search_code`/`get_chunk` **over the wire** failed with
+   *"SQLite objects created in a thread can only be used in that same thread"*.
+   The fix — `check_same_thread=False` behind an `RLock` — landed in `store.py`,
+   not the adapter. A dependency's threading model reaches through any
+   confinement you put around its API.
+2. **A bare `-> dict` annotation now yields no structured output.** 2.x builds an
+   output schema from the return type; unparameterised `dict` produces none, and
+   the SDK sends `structured_content=None`. Clients reading structured content
+   got nothing. `dict[str, object]` is load-bearing.
+
+**The verdict that matters:** the whole suite passed on 2.x *before* either
+defect was found, because the tests asserted **tool registration** with a
+**fake store**. Registration proves the decorator ran. It does not prove
+dispatch works, and a fake store cannot exhibit the real store's threading
+constraints. Tests now drive a real `CodeStore` through `call_tool`, and that
+test was verified to fail without the fix.
+
+Generalised: **for an integration, test the seam the way the dependency will
+actually use it** — through its dispatch path, against your real resources.
+Anything less tests your own decorator.
+
+### Note — the pin policy changed
+`mcp` is bounded `>=2.1.1,<3` rather than pinned exactly. The unbounded `>=1.0`
+is what let the break happen; the **major bound** is the part that prevents a
+repeat. Patch and minor releases of a protocol SDK are left to float so security
+fixes are not gated on a manual bump. Where a dependency's *behaviour* (not just
+its API) determines a tool's verdicts — `ingest-ledger`'s `pdfmux==1.8.7` — pin
+exactly instead.
+
+---
+
 ## Iteration 2 — 2026-09-03
 
 ### F4 — The collection now has three tools and one set of conventions
@@ -38,11 +80,7 @@ the `llm` extra. The stronger form is worth the small cost — it makes the rule
 checkable rather than aspirational, and `test_llm.py` now asserts it directly.
 
 ### Owed — upgrade `repo-rag` to the MCP SDK 2.x
-`mcp` is pinned `<2`. Version 2.x renames `FastMCP` to `MCPServer` and changes
-tool registration. The pin is deliberate and CONVENTIONS-sanctioned (r4: pin the
-integration, confine it to one adapter module), and the confinement held — the
-blast radius is exactly `tools/repo-rag/src/repo_rag/mcp_server.py`. But it is a
-deferral, not a resolution. Do it when `repo-rag` is next picked up.
+**Done.** See F7 below for what it turned up.
 
 ### Carried forward, unchanged
 The Iteration 1 verdicts still stand and still direct the work:

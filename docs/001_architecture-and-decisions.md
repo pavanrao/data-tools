@@ -108,10 +108,20 @@ SQLite keeps everything file-based and dependency-light. `sqlite-vec` provides
 vector KNN; FTS5 (built into SQLite) provides keyword search for repo-rag's
 hybrid retrieval. MCP servers use the official `mcp` Python SDK.
 
-**Amendment (2026-09):** `mcp` is pinned `<2`. Version 2.x renames `FastMCP` to
-`MCPServer` and changes tool registration. Per `CONVENTIONS.md` rule 4 the
-integration is pinned and confined to one adapter module (`mcp_server.py`), so
-the upgrade — still owed — costs exactly that file. Recorded in FINDINGS.
+**Amendment (2026-09), resolved:** the SDK was briefly pinned `<2` after 2.x
+renamed `FastMCP` to `MCPServer`. **Now upgraded to `mcp>=2.1.1,<3`.** Rule 4
+held exactly as intended — the rename itself cost three lines in the one adapter
+module. What it did *not* contain was a behavioural change: 2.x dispatches tool
+calls on a **worker thread**, which broke `CodeStore`'s thread-affine SQLite
+connection and made every tool call over the wire fail. That fix landed in
+`store.py`, not the adapter.
+
+**The lesson recorded against rule 4:** confining an integration bounds the
+*API surface* you must edit, not the *runtime assumptions* the dependency makes
+about your code. See F7 in [`FINDINGS.md`](FINDINGS.md). The constraint is now
+bounded below 3.0 rather than pinned exactly, because a major bound is the part
+that prevents this class of break; patch/minor float so security fixes are not
+gated on a manual bump.
 
 ### D4 — Spin-out seam via `[tool.uv.sources]`
 

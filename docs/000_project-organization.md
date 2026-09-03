@@ -247,7 +247,10 @@ The checklist. Build one tool at a time.
    gracefully and *record which path ran* rather than silently substituting.
 6. **Pin third-party integrations** and isolate each behind one adapter module,
    so an upstream break costs one file. (`repo-rag`'s `mcp_server.py` is the
-   worked example — and the `mcp<2` pin is why it stayed one file.)
+   worked example.) Note the limit: confinement bounds the API surface you must
+   edit, not the runtime assumptions a dependency makes about your code — the
+   mcp 2.x upgrade cost three lines in the adapter and a threading fix in the
+   store. Bound the major version; let patch and minor float.
 7. **Register** the console script, the `data_tools.tools` entry point, and a
    `__main__.py`. Add a one-line docstring to `main()` — `dt ls` prints it.
 8. **Write the tests first**, and make every non-obvious status evidence-bearing:

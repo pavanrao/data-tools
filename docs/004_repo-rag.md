@@ -28,7 +28,7 @@ question ─▶ embed ─▶ hybrid search (RRF) ─▶ grounded prompt ─▶ C
   chunk for the MCP tool.
 - **`query.py`** — `answer(...)` runs hybrid search and prompts the model to cite
   `file:line`; returns `Answer(text, citations)`.
-- **`mcp_server.py`** — `FastMCP` server exposing **read-only** `search_code`
+- **`mcp_server.py`** — `MCPServer` exposing **read-only** `search_code`
   (ranked snippets with `chunk_id` + file:line) and `get_chunk` (full text by id).
   Logic is in plain `*_impl` functions so it's tested without a transport. No
   mutation tools — read-only is the safety boundary.
@@ -44,9 +44,17 @@ question ─▶ embed ─▶ hybrid search (RRF) ─▶ grounded prompt ─▶ C
   already covers other files acceptably.
 - All tests are model-free (fake embedder; MCP tool registration checked via
   `list_tools()`).
-- The `mcp` SDK is pinned `<2`: 2.x renames `FastMCP` to `MCPServer` and changes
-  tool registration. The pin is confined to this one adapter module by design
-  (CONVENTIONS r4); the upgrade is still owed. See FINDINGS.
+- On the **MCP SDK 2.x** (`mcp>=2.1.1,<3`). Three things the upgrade settled:
+  - `FastMCP` → `MCPServer` (`mcp.server.mcpserver`); `@server.tool()`,
+    `server.run()` and `await server.list_tools()` are unchanged.
+  - Tool return annotations must be **parameterised**: a bare `-> dict`
+    registers with no output schema and the SDK sends `structured_content=None`.
+    `dict[str, object]` is load-bearing, not cosmetic.
+  - The SDK dispatches tool calls on a **worker thread**, so `CodeStore` opens
+    its connection with `check_same_thread=False` behind an `RLock`. Without
+    that every call over the wire fails.
+  Tests cover dispatch, not just registration, and one drives a real `CodeStore`
+  through the server — the only shape that catches the threading trap.
 
 ## Try it
 
