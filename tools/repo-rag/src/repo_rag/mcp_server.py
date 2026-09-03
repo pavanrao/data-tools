@@ -11,7 +11,7 @@ from collections.abc import Sequence
 from pathlib import Path
 from typing import Protocol
 
-from mcp.server.fastmcp import FastMCP
+from mcp.server.mcpserver import MCPServer
 
 from .store import CodeHit, CodeStore
 
@@ -31,7 +31,7 @@ class _Store(Protocol):
     def get_chunk(self, chunk_id: int) -> CodeHit: ...
 
 
-def _summary(hit: CodeHit) -> dict:
+def _summary(hit: CodeHit) -> dict[str, object]:
     return {
         "chunk_id": hit.chunk_id,
         "path": hit.path,
@@ -43,7 +43,7 @@ def _summary(hit: CodeHit) -> dict:
     }
 
 
-def _full(hit: CodeHit) -> dict:
+def _full(hit: CodeHit) -> dict[str, object]:
     return {
         "chunk_id": hit.chunk_id,
         "path": hit.path,
@@ -55,16 +55,18 @@ def _full(hit: CodeHit) -> dict:
     }
 
 
-def search_code_impl(store: _Store, embedder: _Embedder, query: str, k: int = 5) -> list[dict]:
+def search_code_impl(
+    store: _Store, embedder: _Embedder, query: str, k: int = 5
+) -> list[dict[str, object]]:
     query_embedding = embedder.embed([query])[0]
     return [_summary(h) for h in store.search(query_embedding, query, k=k)]
 
 
-def get_chunk_impl(store: _Store, chunk_id: int) -> dict:
+def get_chunk_impl(store: _Store, chunk_id: int) -> dict[str, object]:
     return _full(store.get_chunk(chunk_id))
 
 
-def create_server(db: str | Path = DEFAULT_DB) -> FastMCP:
+def create_server(db: str | Path = DEFAULT_DB) -> MCPServer:
     """Zero-argument factory for the ``data_tools.mcp`` entry point.
 
     Deferred on purpose: a gateway can discover this tool without a model stack
@@ -75,17 +77,20 @@ def create_server(db: str | Path = DEFAULT_DB) -> FastMCP:
     return build_server(CodeStore(db), get_embedding_provider())
 
 
-def build_server(store: _Store, embedder: _Embedder) -> FastMCP:
-    server = FastMCP("repo-rag")
+def build_server(store: _Store, embedder: _Embedder) -> MCPServer:
+    server = MCPServer("repo-rag")
 
     @server.tool()
-    def search_code(query: str, k: int = 5) -> list[dict]:
+    def search_code(query: str, k: int = 5) -> list[dict[str, object]]:
         """Search the indexed codebase. Returns ranked snippets with file:line and a chunk_id."""
         return search_code_impl(store, embedder, query, k)
 
     @server.tool()
-    def get_chunk(chunk_id: int) -> dict:
+    def get_chunk(chunk_id: int) -> dict[str, object]:
         """Return the full text and metadata for a chunk_id returned by search_code."""
+        # NB: the dict[str, object] return annotations above are load-bearing.
+        # A bare `-> dict` registers with no output schema, and the SDK then
+        # sends structured_content=None -- a client reading it gets nothing.
         return get_chunk_impl(store, chunk_id)
 
     return server
