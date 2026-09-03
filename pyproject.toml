@@ -22,14 +22,17 @@ dev = [
 
 [tool.ruff]
 line-length = 100
-target-version = "py311"
+target-version = "py313"
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "UP", "B", "SIM"]
 
 [tool.pytest.ini_options]
 testpaths = ["tools", "shared"]
-addopts = "-q --strict-markers"
+# importlib mode lets every member keep a conventional tests/ layout without
+# __init__.py files. Three tools now ship a test_cli.py; under the default
+# import mode their equal basenames collide ("import file mismatch").
+addopts = "-q --strict-markers --import-mode=importlib"
 markers = [
     "hostile: asserts a known-bad fixture is detected rather than silently passing",
 ]

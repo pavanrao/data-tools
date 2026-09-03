@@ -2,7 +2,7 @@
 name = "data-tools-ingest-ledger"
 version = "0.1.0"
 description = "Reconcile what a document pipeline was given against what it actually read."
-requires-python = ">=3.11"
+requires-python = ">=3.13"
 dependencies = [
     "data-tools-core",
 ]

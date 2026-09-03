@@ -1,9 +1,14 @@
 [project]
 name = "data-tools-core"
 version = "0.1.0"
-description = "Shared contracts for the data-tools collection: provenance, ledger schema, tool discovery."
-requires-python = ">=3.11"
+description = "Shared contracts for the data-tools collection: provenance, ledger schema, tool discovery, optional model layer."
+requires-python = ">=3.13"
 dependencies = []
+
+[project.optional-dependencies]
+# The model layer is optional on purpose: the deterministic core of every tool
+# must import and be testable with no model stack installed (CONVENTIONS r2/r3).
+llm = ["litellm>=1.0"]
 
 [project.scripts]
 dt = "data_tools_core.registry:main"

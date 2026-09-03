@@ -1,0 +1,36 @@
+[project]
+name = "data-tools-docs-rag"
+version = "0.1.0"
+description = "Q&A over a local folder of documents, with citations to the source file (RAG)."
+requires-python = ">=3.13"
+dependencies = [
+    "data-tools-core",
+    "sqlite-vec>=0.1",
+]
+
+[project.optional-dependencies]
+# PDF loading and the model backend are both optional: ingestion of md/txt and
+# the whole retrieval path stay testable with neither installed.
+pdf = ["pypdf>=4"]
+llm = ["data-tools-core[llm]"]
+all = ["data-tools-docs-rag[pdf,llm]"]
+
+[project.scripts]
+docs-rag = "docs_rag.cli:main"
+
+[project.entry-points."data_tools.tools"]
+docs-rag = "docs_rag.cli:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/docs_rag"]
+
+# Dev-only: resolve the shared library from the workspace. uv strips
+# [tool.uv.sources] from built wheels, so deleting this one block is the entire
+# "decouple from the workspace" step when spinning this tool out into its own
+# repo. See docs/000_project-organization.md (the spin-out seam).
+[tool.uv.sources]
+data-tools-core = { workspace = true }

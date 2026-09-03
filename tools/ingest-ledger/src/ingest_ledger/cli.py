@@ -96,6 +96,7 @@ def _latest_run(conn, table: str) -> str | None:
 
 
 def main(argv: list[str] | None = None) -> int:
+    """Reconcile what a document pipeline was given against what it read."""
     args = build_parser().parse_args(argv)
 
     if args.command == "manifest":

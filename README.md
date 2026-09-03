@@ -29,18 +29,33 @@ Every tool in this repo aims to be:
 
 ## Where to start
 
-**Built so far:** [`ingest-ledger`](./tools/ingest-ledger/) — reconciles what a
-document pipeline was *given* against what it actually *read*, so partial
-extraction stops being silent, and refuses to answer a question whose evidence
-never made it into the index.
+**Built so far:**
+
+- [`ingest-ledger`](./tools/ingest-ledger/) — reconciles what a document
+  pipeline was *given* against what it actually *read*, so partial extraction
+  stops being silent, and refuses to answer a question whose evidence never made
+  it into the index. **Actively developed.**
+- [`docs-rag`](./tools/docs-rag/) (#1) — Q&A over a local folder of documents
+  with citations to the source file. *Parked.*
+- [`repo-rag`](./tools/repo-rag/) (#2) — ask-your-codebase RAG with AST-aware
+  chunking, hybrid retrieval, and a read-only MCP server. *Parked.*
+
+Parked means built and installed, but not under active development;
+[`docs/FINDINGS.md`](./docs/FINDINGS.md) records why.
 
 **New here?** [`tools/ingest-ledger/GETTING-STARTED.md`](./tools/ingest-ledger/GETTING-STARTED.md) is a
 five-minute walkthrough that ends with the tool refusing to answer a question —
 no prior RAG knowledge needed.
 
 See [`IDEAS.md`](./IDEAS.md) for the running backlog of **49** tool ideas. Pick
-one, move it into a `tools/<name>/` directory, and build. [`CONVENTIONS.md`](./CONVENTIONS.md)
-describes the shape every tool follows.
+one, move it into a `tools/<name>/` directory, and build.
+
+**Before adding a tool**, read
+[`docs/000_project-organization.md`](./docs/000_project-organization.md) — how
+the project is shaped, why, and the checklist for adding the next one.
+[`CONVENTIONS.md`](./CONVENTIONS.md) is the short normative version;
+[`docs/`](./docs/) holds the decision log, the design records, and the running
+learnings/findings.
 
 Sections **A–D** are RAG/MCP-focused tools and infrastructure. Section **E**
 (*Pipeline-framework tools*) adds generic data-pipeline plumbing — ingestion,
@@ -58,10 +73,13 @@ data-tools/
 ├── IDEAS.md                  # backlog of tool ideas
 ├── CONVENTIONS.md            # the shape every tool follows
 ├── pyproject.toml            # workspace root; shared lint/test config
+├── docs/                     # decisions, design records, learnings, findings
 ├── shared/
-│   └── data-tools-core/      # provenance, ledger schema, the `dt` meta-CLI
+│   └── data-tools-core/      # provenance, ledger schema, `dt` CLI, optional model layer
 └── tools/
-    └── ingest-ledger/        # one installable distribution per tool
+    ├── ingest-ledger/        # one installable distribution per tool
+    ├── docs-rag/
+    └── repo-rag/
 ```
 
 ## Using the collection — whole or in parts
@@ -73,10 +91,31 @@ them is useful alone and all of them are useful together.
 | --- | --- | --- |
 | **CLI** | `uvx --from "git+https://github.com/pavanrao/data-tools#subdirectory=tools/ingest-ledger" ingest-ledger` | `dt ls` discovers every installed tool via the `data_tools.tools` entry-point group |
 | **Data** | each tool reads and writes plain files | a shared SQLite ledger and JSONL records carrying a common `Provenance` type |
-| **MCP** | a tool may expose `<package>.mcp:server` | `mcp-gateway` (#16) mounts every installed one behind a single endpoint |
+| **MCP** | a tool may expose a server factory, as `repo-rag` does | `mcp-gateway` (#16) mounts every installed one behind a single endpoint via the `data_tools.mcp` entry-point group |
 
 ```bash
 make sync    # dev environment for the whole collection
+make lint    # ruff check + format --check
 make test    # every tool's tests
 make demo    # build the hostile corpus and reconcile it
 ```
+
+### Choosing a model
+
+The model layer is **optional**: every tool's deterministic core runs and is
+tested with no model stack installed. Install one with `uv sync --extra llm`,
+then point the tools at any [LiteLLM](https://docs.litellm.ai/) model string —
+config, not code. Defaults run locally on Ollama:
+
+```bash
+export DATA_TOOLS_CHAT_MODEL=ollama/llama3.1            # or anthropic/…, openai/…
+export DATA_TOOLS_EMBED_MODEL=ollama/nomic-embed-text
+# export DATA_TOOLS_API_BASE / DATA_TOOLS_API_KEY as needed
+```
+
+### Spinning a tool out
+
+Each tool is already a standalone distribution. To move one to its own repo:
+`git subtree split -P tools/<name>` (keeps history) → push → delete that tool's
+one `[tool.uv.sources]` block → depend on the published `data-tools-core`. See
+[`docs/000` §5](./docs/000_project-organization.md#5-the-spin-out-seam).
