@@ -47,7 +47,7 @@ Parked means built and installed, but not under active development;
 five-minute walkthrough that ends with the tool refusing to answer a question —
 no prior RAG knowledge needed.
 
-See [`IDEAS.md`](./IDEAS.md) for the running backlog of **49** tool ideas. Pick
+See [`IDEAS.md`](./IDEAS.md) for the running backlog of **90** tool ideas. Pick
 one, move it into a `tools/<name>/` directory, and build.
 
 **Before adding a tool**, read
@@ -60,7 +60,13 @@ learnings/findings.
 Sections **A–D** are RAG/MCP-focused tools and infrastructure. Section **E**
 (*Pipeline-framework tools*) adds generic data-pipeline plumbing — ingestion,
 lineage, data quality, reference data, and extracts — that any metadata-driven
-platform can reuse.
+platform can reuse. Sections **F–G** (*Concept labs* and *Concept
+notes*) work the other way round: they start from a concept that recurs across
+AI and data engineering and build the smallest thing that exercises it for real,
+ending in a measured number rather than a description.
+[`docs/005_concept-coverage.md`](./docs/005_concept-coverage.md) maps all 98
+concepts to what covers each, and sets out what makes a tool ready to show
+someone.
 
 ## Repo layout
 
