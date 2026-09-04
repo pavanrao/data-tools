@@ -1,70 +1,100 @@
-# 005 — Field-guide coverage: every concept, and what covers it
+# 005 — Concept coverage: what to build to learn the AI/data stack
 
 **Status:** plan · **Date:** 2026-09-04
-**Source:** *Technical Field Guide v2 — STG · Senior Technologist* (interview
-reference, 21 sections + method sections, 104 concept cards).
+
+A working map of the concepts that recur across AI and data engineering — 98 of
+them, in 21 groups — and, for each one, the smallest thing in this collection
+that exercises it for real. It exists so that learning this stack is a build
+queue rather than a reading list.
 
 ## The verdict
 
-Yes — every card in the guide can be covered, and most of them by something that
-runs on a laptop for free. The split is roughly:
+Every concept on the map can be covered, and most of them by something that runs
+on a laptop for free. The split is roughly:
 
-| Track | What it is | Cards |
+| Track | What it is | Concepts |
 | --- | --- | --- |
 | **F · Labs** (#50–#90, 41 new tools) | small tools that produce a measured number | 84 |
-| **G · Notes** (N1–N6, markdown + prompts) | positions and trade-offs where no tool earns its keep | 20 |
+| **G · Notes** (N1–N5, markdown + prompts) | positions and trade-offs where no tool earns its keep | 14 |
 | **Existing backlog** (#1–#49) | ideas already in `IDEAS.md`, some already built | 24 (shared) |
 
-Cards are counted where their *primary* coverage sits; many are touched twice
+Concepts are counted where their *primary* coverage sits; many are touched twice
 (a note states the trade-off, a lab produces the number). Nothing is skipped —
-the matrix below lists all 104.
+the matrix below lists all 98.
 
 ## Why this shape
 
-The guide is not a syllabus, it is a **detector**. Every card names a "tell": a
-detail that people who did the work mention without being asked, and people who
-only read never mention. A rank. A WER before and after. A p95 at a stated
-concurrency. The rejection rate on generated data. `salting`. `q_proj`. The
-alert you deleted.
+Most of these concepts have a detail that only appears once you have run
+something: the rank you had to pick, the WER before and after, the p95 at a
+stated concurrency, the fraction of generated data that failed verification,
+`salting`, `q_proj`, the alert you deleted. Reading produces the vocabulary;
+running produces the detail. So:
 
-That has one consequence for how to learn this, and it drives the whole plan:
-
-> **Reading a card produces the vocabulary. Only running something produces the
-> tell.** So every lab in section F must end by writing down a number that
-> didn't exist before it ran.
+> **Every lab in section F ends by writing down a number that didn't exist
+> before it ran.**
 
 Hence the **evidence card** — a JSONL record under `evidence/`, keyed by the
-guide card, carrying: what was run, the configuration, the number, the baseline
-it improved on, and what surprised you. It reuses the collection's existing data
-seam (`Provenance` in `data-tools-core`), so `viva` (#90) can read the whole set
-back and tell you which of the 104 cards you can still only *describe*.
+concept, carrying: what was run, the configuration, the number, the baseline it
+improved on, and what surprised you. It reuses the collection's existing data
+seam (`Provenance` in `data-tools-core`), so `evidence-index` (#90) can read the
+whole set back, report which concepts still have no measurement behind them, and
+render the ones that do.
 
 The three practical constraints, stated honestly:
 
-1. **GPU-dependent cards** — LoRA (#54), DPO (#56), vLLM (#62), quantization
-   (#63). All are real at 135M–1.1B parameters on CPU, and the *mechanics* you
-   are asked about — rank, alpha, target module names, continuous batching, KV
-   cache arithmetic — are identical at that scale. Budget one or two rented GPU
-   hours (~$3) for the runs where the comparison needs to be honest.
-2. **Infrastructure cards** — Spark (#79–80), Kafka (#81), Kubernetes (#86–87),
-   Terraform (#85). All run locally: PySpark in local mode, single-node
-   Redpanda, `kind`, a local Terraform backend. The failure modes the guide asks
-   about (skew, poison messages, OOMKill, state locking) reproduce faithfully at
-   laptop scale — they are properties of the model, not of the cluster size.
-3. **Cards that are genuinely a claim about experience** — operating a hundred
+1. **GPU-dependent concepts** — LoRA (#54), DPO (#56), vLLM (#62), quantization
+   (#63). All are real at 135M–1.1B parameters on CPU, and the mechanics —
+   rank, alpha, target module names, continuous batching, KV cache arithmetic —
+   are identical at that scale. Budget one or two rented GPU hours (~$3) for the
+   runs where a comparison needs to be honest.
+2. **Infrastructure concepts** — Spark (#79–80), Kafka (#81), Kubernetes
+   (#86–87), Terraform (#85). All run locally: PySpark in local mode, single-node
+   Redpanda, `kind`, a local Terraform backend. The failure modes worth learning
+   (skew, poison messages, OOMKill, state locking) reproduce faithfully at laptop
+   scale — they are properties of the model, not of the cluster size.
+3. **Concepts that are really a claim about scale** — operating a hundred
    clusters, a petabyte migration, real annotator panels. `fleet-conf` (#87) and
    `cutover-kit` (#84) give you the mechanism and the vocabulary; they do not
-   give you the scale, and the guide's own advice is that saying so plainly is
-   a *positive* signal. The notes are written to make that boundary easy to
-   state: "here is what I built, here is where my experience stops."
+   give you the scale. Every evidence card records the scale its number was
+   produced at, so the write-up can be exact about what was demonstrated.
+
+## Showcasing the work
+
+Not every lab deserves an audience. A lab is **showcase-grade** when all five
+hold — and `evidence-index` (#90) checks the first four mechanically:
+
+1. **A number with a baseline.** "38% WER → 21% WER on 4 hours of noisy audio",
+   not "improved transcription quality".
+2. **One command reproduces it.** `make demo` or a single `uv run …`, on a
+   machine with nothing special installed.
+3. **A README that leads with the result** and states the scale it was measured
+   at, then explains the mechanism.
+4. **Tests that run with nothing optional installed** (`CONVENTIONS.md` rule 6).
+5. **A failure it can show you**, not just a success — the skew that stalls, the
+   endpoint that collapses under load, the quantized model that got worse.
+
+Two ways to show it, and they compose:
+
+- **In place.** `evidence-index` renders the showcase page from the evidence
+  cards; the repo README links it. Cheapest, and it stays current because it is
+  generated from the runs rather than written by hand.
+- **Spun out.** Each tool is already a standalone distribution, so
+  `git subtree split -P tools/<name>` (history intact) → push → delete the one
+  `[tool.uv.sources]` block gives a polished single-purpose repo with its own
+  README and CI. See [`000` §5](000_project-organization.md#5-the-spin-out-seam).
+  Good first picks, each self-contained and showing something in under a
+  minute: `retrieval-bench` (#53), `spark-clinic`
+  (#79), `async-trap` (#77), `sql-safeguard` (#74), `drift-sentry` (#76) — plus
+  `ingest-ledger`, which is already built and already ends its demo by refusing
+  to answer.
 
 ## Coverage matrix
 
-`§` numbers are the guide's sections. **CORE** marks the sections the req
-actually requires; **BREADTH** the ones to cover only as far as your résumé
-claims them.
+`§` numbers group the concept map. **Spine** marks the groups almost any tool in
+this collection ends up touching; **Adjacent** marks the domains worth picking up
+when a specific piece of work needs them. Neither is a difficulty rating.
 
-### §1 · LLM foundations — CORE
+### §1 · LLM foundations — Spine
 
 | Card | Covered by |
 | --- | --- |
@@ -75,7 +105,7 @@ claims them.
 | Hallucination | #51 `decode-lab` · #49 `ingest-ledger` (refusal path) · N1 |
 | Structured output / function calling | #52 `schema-guard` · N1 |
 
-### §2 · RAG & grounding — CORE
+### §2 · RAG & grounding — Spine
 
 | Card | Covered by |
 | --- | --- |
@@ -85,7 +115,7 @@ claims them.
 | Re-ranking | #53 `retrieval-bench` (two-stage, cost/benefit measured) |
 | Grounding, citations & the empty case | #49 `ingest-ledger` ✅ (refuses when evidence is absent) · #1 `docs-rag` ✅ |
 
-### §3 · Fine-tuning — CORE
+### §3 · Fine-tuning — Spine
 
 | Card | Covered by |
 | --- | --- |
@@ -95,7 +125,7 @@ claims them.
 | Training data prep & synthetic generation | #55 `synthdata-forge` (rejection rate) |
 | Pre-training vs. fine-tuning vs. inference | #54 `lora-lab` · #64 `trainer-lab` (a small model genuinely trained from scratch) · N2 |
 
-### §4 · RLHF & alignment — CORE
+### §4 · RLHF & alignment — Spine
 
 | Card | Covered by |
 | --- | --- |
@@ -103,7 +133,7 @@ claims them.
 | DPO vs. PPO | #56 `preference-forge` (DPO run; PPO argued) · N4 |
 | Preference data collection | #56 `preference-forge` (agreement measured) · N4 |
 
-### §5 · Evaluation — CORE (highest-signal section)
+### §5 · Evaluation — Spine (measure first)
 
 | Card | Covered by |
 | --- | --- |
@@ -112,7 +142,7 @@ claims them.
 | LLM-as-judge | #57 `judge-lab` (calibrated against human labels) |
 | Task metrics vs. vibes | #57 `judge-lab` · #66 `tabular-lab` (hard metrics where they exist) |
 
-### §6 · Agentic AI — CORE
+### §6 · Agentic AI — Spine
 
 | Card | Covered by |
 | --- | --- |
@@ -123,7 +153,7 @@ claims them.
 | Frameworks: LangChain / LangGraph / crewAI / Pydantic AI | #58 `agent-governor` (chain vs. graph, built both) · N3 |
 | Guardrails & human-in-the-loop | #58 `agent-governor` (read/write split, confirmation gates, audit log) |
 
-### §7 · LLMOps — CORE
+### §7 · LLMOps — Spine
 
 | Card | Covered by |
 | --- | --- |
@@ -133,7 +163,7 @@ claims them.
 | Observability for LLM systems | #61 `llm-trace` (trace a complaint to the call) |
 | Failure handling & degradation | #24 `model-router`, extended: timeouts, backoff, circuit breaking, shedding, degraded-but-useful fallback |
 
-### §8 · LLM serving & inference
+### §8 · LLM serving & inference — Adjacent
 
 | Card | Covered by |
 | --- | --- |
@@ -144,7 +174,7 @@ claims them.
 | Self-host vs. hosted API | #62 `serve-bench` (cost crossover) · N2 |
 | Real-time, batch & streaming inference | #62 `serve-bench` (three modes) · #78 `job-runner` · N2 |
 
-### §9 · ML & deep learning — CORE
+### §9 · ML & deep learning — Spine
 
 | Card | Covered by |
 | --- | --- |
@@ -157,7 +187,7 @@ claims them.
 | PyTorch vs. TensorFlow | #64 `trainer-lab` · N3 (same model in both, preference with a reason) |
 | Rules vs. machine learning | #65 `taxonomy-classifier` (rules baseline) · #35 `dq-rule-suggester` · N2 |
 
-### §10 · Classical & tabular ML
+### §10 · Classical & tabular ML — Spine
 
 | Card | Covered by |
 | --- | --- |
@@ -167,7 +197,7 @@ claims them.
 | Class imbalance | #66 `tabular-lab` (threshold tuning as the lever) |
 | Explainability: SHAP & feature importance | #66 `tabular-lab` (global vs. local) · #89 `fairness-audit` (appeal packet) |
 
-### §11 · Speech & audio — BREADTH
+### §11 · Speech & audio — Adjacent
 
 | Card | Covered by |
 | --- | --- |
@@ -177,7 +207,7 @@ claims them.
 | Speaker identification & enrolment | #68 `diarize-id` (false match vs. false reject curve) |
 | Differential accuracy across speakers | #67 `asr-bench` (WER by group) · #89 `fairness-audit` |
 
-### §12 · Computer vision — BREADTH
+### §12 · Computer vision — Adjacent
 
 | Card | Covered by |
 | --- | --- |
@@ -185,7 +215,7 @@ claims them.
 | CNNs vs. vision transformers | #69 `vision-task-lab` (data-hunger curve) |
 | Multimodal vision-language models | #70 `doc-vlm-verify` (verification step; failure catalogue) |
 
-### §13 · Recommenders & ranking — BREADTH
+### §13 · Recommenders & ranking — Adjacent
 
 | Card | Covered by |
 | --- | --- |
@@ -193,7 +223,7 @@ claims them.
 | Cold start | #71 `recsys-lab` (fallbacks; long-tail coverage) |
 | Attribution — proving it worked | #72 `ab-lift` (holdout design, power, offline↔online gap) |
 
-### §14 · Knowledge graphs & text-to-SQL — BREADTH
+### §14 · Knowledge graphs & text-to-SQL — Adjacent
 
 | Card | Covered by |
 | --- | --- |
@@ -201,7 +231,7 @@ claims them.
 | Stopping hallucinated schema | #74 `sql-safeguard` (catalogue validation, retry with the error, semantic layer) |
 | Execution safety | #74 `sql-safeguard` (read-only first, EXPLAIN gate, limits, tenancy) · #11 `sqlite-mcp` |
 
-### §15 · ML platform & serving
+### §15 · ML platform & serving — Spine
 
 | Card | Covered by |
 | --- | --- |
@@ -211,7 +241,7 @@ claims them.
 | Ground-truth lag | #76 `drift-sentry` (lag registry; proxy monitoring) |
 | Metrics systems can't store distributions | #76 `drift-sentry` (the scalar it emits, and why) |
 
-### §16 · Python service layer
+### §16 · Python service layer — Spine
 
 | Card | Covered by |
 | --- | --- |
@@ -220,7 +250,7 @@ claims them.
 | Validation at the boundary (Pydantic) | #52 `schema-guard` (schema-valid vs. semantically valid) |
 | Long-running work & background jobs | #78 `job-runner` (idempotency; worker killed mid-task) |
 
-### §17 · Spark & Databricks — BREADTH
+### §17 · Spark & Databricks — Spine
 
 | Card | Covered by |
 | --- | --- |
@@ -230,7 +260,7 @@ claims them.
 | Parquet, Delta & maintenance operations | #80 `delta-keeper` (pushdown measured; OPTIMIZE/ZORDER/VACUUM; time-travel drill) |
 | Scala vs. PySpark | #79 `spark-clinic` (UDF serialisation benchmark) |
 
-### §18 · Pipelines & streaming — BREADTH
+### §18 · Pipelines & streaming — Spine
 
 | Card | Covered by |
 | --- | --- |
@@ -240,7 +270,7 @@ claims them.
 | CDC, MERGE & idempotency | #82 `backfill-drill` (atomic marker; re-run proves stable counts) · #39 `cdc-inspector` |
 | Data quality & schema evolution | #19 `data-contract-linter` · #27 `schema-drift-detector` · #35 `dq-rule-suggester` — extended with hard gates that stop the pipeline and a reject table carrying reasons |
 
-### §19 · Cloud & migration — BREADTH
+### §19 · Cloud & migration — Adjacent
 
 | Card | Covered by |
 | --- | --- |
@@ -250,7 +280,7 @@ claims them.
 | Terraform & infrastructure as code | #85 `deploy-kit` (remote state, locking, drift detection) |
 | CI/CD | #85 `deploy-kit` (gates that block a merge) |
 
-### §20 · Kubernetes at scale — BREADTH
+### §20 · Kubernetes at scale — Adjacent
 
 | Card | Covered by |
 | --- | --- |
@@ -258,7 +288,7 @@ claims them.
 | Multi-cluster & fleet management | #87 `fleet-conf` (config drift, central policy, cost per cluster) |
 | Observability & alert discipline | #87 `fleet-conf` (SLO alerts; the one you deleted) · #61 `llm-trace` |
 
-### §21 · AI security & compliance — CORE
+### §21 · AI security & compliance — Spine
 
 | Card | Covered by |
 | --- | --- |
@@ -267,28 +297,15 @@ claims them.
 | Bias, fairness & differential performance | #89 `fairness-audit` (disaggregated metrics) · #67 `asr-bench` |
 | Human-in-the-loop as a control | #89 `fairness-audit` (threshold, review capacity, audit trail) · #58 `agent-governor` |
 
-### Method sections (how the guide is used)
-
-| Card | Covered by |
-| --- | --- |
-| Reading depth / the depth ladder | N6 · #90 `viva` (drills rung 3 and rung 4) |
-| The calibration bar | N6 (the shape of a strong answer, applied to my own) |
-| Reading by role level | N6 (Specialist Programmer vs. Senior Technologist) |
-| Floor questions | N6 (each answered in one line) · #90 `viva` |
-| Universal red flags | N6 (audited against my own résumé bullets) |
-| Writing it up | #90 `viva` (drafts the defensible one-liner per concept) |
-
 ## What this is not
 
-- **Not a shortcut past experience.** Running `lora-lab` at 135M parameters
-  lets you say "rank 16, alpha 32, `q_proj`/`v_proj`, 1,200 examples, and here
-  is what it broke" — truthfully, about your own lab. It does not let you claim
-  production fine-tuning, and the guide is explicit that the claim without the
-  numbers is what destroys credibility. Every evidence card records the scale it
-  was produced at, so the honest sentence is always available.
+- **Not a substitute for scale.** Running `lora-lab` at 135M parameters teaches
+  you rank, alpha, `q_proj`/`v_proj`, and what a narrow fine-tune breaks. It does
+  not teach you what a 70B run costs to schedule, and the evidence card records
+  the scale so nothing has to be implied.
 - **Not sequential.** Sections F and G are independent, like the rest of the
   backlog. The build order in `IDEAS.md` is a suggestion weighted toward the
-  CORE sections.
-- **Not final.** New cards get added to the matrix as the guide is revised;
-  `viva` (#90) fails loudly on any card with no evidence behind it, which is the
-  point.
+  spine.
+- **Not final.** Concepts get added to the matrix as the map grows;
+  `evidence-index` (#90) reports loudly on any concept with no measurement
+  behind it, which is the point.

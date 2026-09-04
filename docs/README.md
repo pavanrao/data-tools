@@ -22,7 +22,7 @@ Four kinds of document, deliberately kept apart. A verdict filed in a design doc
 | [`002`](002_implementation-plan.md) | The original build plan for the RAG tools | Historical |
 | [`003`](003_docs-rag.md) | `docs-rag` (#1) — RAG over a document folder | Parked |
 | [`004`](004_repo-rag.md) | `repo-rag` (#2) — ask-your-codebase + MCP server | Parked |
-| [`005`](005_field-guide-coverage.md) | Field-guide coverage — 104 AI-architect concepts mapped to sections F–G of `IDEAS.md` | Current, plan |
+| [`005`](005_concept-coverage.md) | Concept coverage — 98 AI/data-engineering concepts mapped to sections F–G of `IDEAS.md`, plus the showcase criteria | Current, plan |
 
 The series is **append-only**. A superseded decision is annotated in place with
 a status line and a pointer to what replaced it, never deleted — see D1a and D2a

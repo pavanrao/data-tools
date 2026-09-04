@@ -385,29 +385,32 @@ can ask in plain English: "did the nightly party load finish?", "is feed X late 
   cache status lookups. Off the critical path — read-only, never triggers or mutates DAGs.
 - **Maps to:** AIOps / conversational pipeline ops.
 
-## F. Field-guide labs (evidence for the STG concept map)
+## F. Concept labs — the AI/data stack, one measured lab at a time
 
-Section F exists for one reason: to turn the concepts in the *Technical Field
-Guide* into things you have **actually run**, so that every answer you give
-carries a number you produced yourself — a LoRA rank, a WER delta, a p95 under
-load, a PSI score, a cost per run.
+Sections A–E start from a problem and build a tool. Section F starts from a
+**concept** — the 98 ideas in the concept map (`docs/005_concept-coverage.md`)
+that recur across AI and data engineering — and builds the smallest thing that
+exercises it for real, on a laptop, for roughly nothing.
 
 Three rules hold across the whole section:
 
-1. **Every lab emits an evidence card.** A JSONL record under `evidence/`
-   keyed by the guide card it covers: what you ran, the number you got, the
-   baseline, and what surprised you. `viva` (#90) reads them back.
+1. **Every lab emits an evidence card.** A JSONL record under `evidence/` keyed
+   by the concept it covers: what was run, the configuration, the number, the
+   baseline it improved on, and what surprised you. That record is what makes a
+   lab reproducible later, and it is what a showcase README quotes instead of
+   adjectives. `evidence-index` (#90) reads them all back.
 2. **Small models, small data, real mechanics.** A 135M-parameter model on CPU
    exercises exactly the same LoRA config, the same KV-cache arithmetic and the
    same catastrophic-forgetting check as a 70B one. Rent a GPU hour only where
    the mechanism genuinely needs it.
 3. **The failure is the deliverable.** Each lab has a *break it on purpose*
    step — the skew that sticks at 99%, the async endpoint that collapses under
-   load, the quantized model that got quietly worse. Those are the stories the
-   guide says cannot be fabricated.
+   load, the quantized model that got quietly worse. Understanding a system
+   means having watched it fail in a way you can now explain.
 
-**Legend addition:** 🎓 marks a lab whose primary output is an evidence card
-rather than a reusable tool.
+**Legend addition:** 🎓 marks a lab whose primary output is a measurement rather
+than a reusable tool. Those are the cheapest to build and the fastest to learn
+from; the unmarked ones are tools you will actually reuse.
 
 ### 50. `token-ledger` — what a request costs and what got dropped ⭐⭐ 💻 💸
 Count tokens per request across prompt / retrieved context / history / output,
@@ -436,8 +439,9 @@ A validation layer for model output: JSON-schema/Pydantic enforcement, a
 retry-with-the-error loop, fallback defaults — and then a **second, semantic**
 gate of business rules, because schema-valid is not correct. Reports the two
 failure classes separately: *didn't parse* vs. *parsed and was wrong*.
-- **Learn:** the difference the guide calls the tell — schema compliance ≠
-  semantic correctness; the same guard in front of tool-call arguments.
+- **Learn:** schema compliance ≠ semantic correctness — the distinction that
+  bites everyone who parses model output; the same guard in front of tool-call
+  arguments.
 - **Cost note:** validation is local; only the retry path calls a model.
 - **Covers:** §1 Structured output / function calling · §16 Validation at the
   boundary · §6 Tool-argument validation.
@@ -457,9 +461,9 @@ it actually changed.
   §5 Retrieval metrics (retrieval half).
 
 ### 54. `lora-lab` — a fine-tune you can quote the configuration of ⭐⭐⭐ 💻 🎓
-QLoRA a small instruct model on a narrow task, recording every number the guide
-says practitioners produce instantly: **rank, alpha, target modules by parameter
-name** (`q_proj`, `v_proj`, …), dataset size, epochs, VRAM, wall time. Then the
+QLoRA a small instruct model on a narrow task, recording every number you have
+to choose anyway: **rank, alpha, target modules by parameter name**
+(`q_proj`, `v_proj`, …), dataset size, epochs, VRAM, wall time. Then the
 part most people skip — evaluate on a held-out **general** benchmark alongside
 the task metric, to see whether it got worse at everything else.
 - **Learn:** what each LoRA knob does; why frozen base weights reduce
@@ -497,15 +501,15 @@ Grade a sample of outputs by hand, then have judge models grade the same sample,
 and report the agreement. Probes the known pathologies directly: verbosity bias
 (same answer, padded), position bias, and drift when the judge model version
 changes. Outputs a sampling plan for ongoing human spot-checks.
-- **Learn:** using a judge for scale while keeping it calibrated — and knowing
-  the caveats before someone asks for them.
+- **Learn:** using a judge for scale while keeping it calibrated, and knowing
+  which of its scores you are allowed to trust.
 - **Cost note:** judge with a local model for CI, an API model weekly. Cents.
 - **Covers:** §5 LLM-as-judge · §5 Task metrics vs. vibes (measuring the parts
   that resist hard metrics).
 
 ### 58. `agent-governor` — the scar tissue around a ReAct loop ⭐⭐⭐ 🔌 💻
-A ReAct runner built entirely out of the controls the guide treats as evidence of
-production experience: a hard iteration ceiling, a per-session spend cap, a
+A ReAct runner built entirely out of the controls that separate a demo loop from
+one you would leave running: a hard iteration ceiling, a per-session spend cap, a
 timeout and a defined failure state, repeated-action detection (same tool, same
 arguments, three times), a tool registry with schemas and argument validation
 *before* execution, a read/write action split with confirmation gates on the
@@ -546,15 +550,16 @@ out **by stage** (retrieve / rerank / generate / validate), fallback rate and
 confidence distribution — plus redaction on the logging path, because the
 observability layer is where PII quietly accumulates. Ships a `trace complaint`
 command that goes from a user's report to the exact call.
-- **Learn:** the tension the guide flags — you cannot debug what you didn't log,
-  and you cannot log everything if it contains personal data.
+- **Learn:** the tension at the centre of LLM observability — you cannot debug
+  what you didn't log, and you cannot log everything if it contains personal
+  data.
 - **Cost note:** local collector; sampling policy for high-volume stages.
 - **Covers:** §7 Observability for LLM systems · §21 PII in traces and logs.
 
 ### 62. `serve-bench` — throughput, latency, and the KV cache ⭐⭐⭐ 💻 🎓
 Serve one open model two ways — naive `transformers` and a real engine (vLLM, or
-llama.cpp where GPU access is scarce) — and measure the things the guide says
-practitioners quote: **p50 and p95 at stated concurrency**, time-to-first-token
+llama.cpp where GPU access is scarce) — and measure the numbers that actually
+describe a serving setup: **p50 and p95 at stated concurrency**, time-to-first-token
 separately, tokens/sec throughput, and the concurrency ceiling. Includes a KV
 cache calculator (layers × heads × dim × sequence × batch × precision) showing
 why the cache, not the weights, caps concurrent users, and a hosted-vs-self-host
@@ -604,7 +609,7 @@ everything under a confidence threshold to human review.
 - **Covers:** §9 Large label spaces & hierarchical classification · §9 Rules vs.
   machine learning · §9 Precision, recall & why accuracy lies (applied).
 
-### 66. `tabular-lab` — the ML that is actually on most résumés ⭐⭐ 💻 🎓
+### 66. `tabular-lab` — the ML most business data actually runs on ⭐⭐ 💻 🎓
 Gradient boosting done properly on a public tabular dataset: early stopping on a
 validation set, `max_depth` and `learning_rate` as the knobs that matter, native
 missing-value handling, class imbalance addressed by **threshold tuning** rather
@@ -812,8 +817,8 @@ CDC events applied with `MERGE`, made **idempotent** on purpose: deterministic
 keys, upsert rather than append, partition overwrite, and a processed-batch
 marker written in the *same transaction* as the data — then re-run the whole load
 twice to prove the row counts don't move. Handles deletes and late-arriving
-records, and ships the runbook for the interview question: discovering three
-months of bad data and backfilling it without double-counting.
+records, and ships the runbook for the worst case: discovering three months of
+bad data and backfilling it without double-counting.
 - **Learn:** the distinction between deduplicating afterwards and being safe to
   re-run — the thing that separates operating a pipeline from writing one.
 - **Cost note:** DuckDB or local Delta. $0. *(Extends `cdc-inspector` #39.)*
@@ -844,8 +849,8 @@ rollback plan that gets tested rather than written.
 - **Covers:** §19 Large migrations & cutover.
 
 ### 85. `deploy-kit` — infrastructure and a pipeline that blocks ⭐⭐ 💻 🔌
-Terraform for one of this collection's tools, done the way the guide's tell
-demands: **remote state with locking**, modules, environment promotion, a
+Terraform for one of this collection's tools, done the way it has to be done to
+survive a second engineer: **remote state with locking**, modules, environment promotion, a
 reviewed `plan` before `apply`, and scheduled drift detection that reports
 manual changes. Alongside it, CI that actually **stops** things — failing tests,
 a coverage floor, a security scan, secrets sourced outside the repo — plus an
@@ -857,8 +862,8 @@ environment promotion path and a rollback command.
 - **Covers:** §19 Terraform & infrastructure as code · §19 CI/CD.
 
 ### 86. `k8s-lab` — operating, not just deploying ⭐⭐⭐ 💻
-A `kind` cluster running one of these tools, then every failure the guide expects
-scar tissue from, provoked deliberately: an OOMKill from a memory limit set too
+A `kind` cluster running one of these tools, then every failure that teaches you
+something, provoked deliberately: an OOMKill from a memory limit set too
 low, a crash loop, a readiness probe that never passes (and the traffic
 consequences of confusing it with liveness), a rollout that fails and is rolled
 back, and a node pool exhausted by missing resource requests.
@@ -907,28 +912,32 @@ produced by `tabular-lab` (#66).
 - **Covers:** §21 Bias, fairness & differential performance · §21 Human-in-the-loop
   as a control. *(PII redaction lives in `pii-scanner` #20 and `llm-trace` #61.)*
 
-### 90. `viva` — answer with your own numbers ⭐⭐ 💻 🔌
-The capstone, and the reason every other lab writes an evidence card. `viva`
-reads `evidence/*.jsonl` across the collection and drills you on the field
-guide's own follow-up questions, but grades against **what you actually
-measured**: it will not accept "we tuned it" where the card holds a rank, a WER,
-a p95, or a rejection rate. Reports coverage across all 104 concept cards, flags
-every concept where you hold no evidence, and drafts the one-line, defensible
-phrasing the guide's "writing it up" section describes.
-- **Learn:** the method half of the guide — the depth ladder, the tells, the
-  floor questions, the red flags — from the answering side.
-- **Cost note:** local; questions are static, grading is a local model. $0.
-- **Covers:** Method: reading depth · The calibration bar · Reading by role level ·
-  Floor questions · Universal red flags · Writing it up.
+### 90. `evidence-index` — what has been measured, and what hasn't ⭐⭐ 💻 🔌
+The capstone, and the reason every other lab writes an evidence card.
+`evidence-index` reads `evidence/*.jsonl` across the whole collection and answers
+three questions: which of the 98 concepts have a measured result behind them,
+which have only a note, and which have nothing at all. It validates each card
+(does the number have a baseline? a stated scale? a reproduction command?),
+refuses cards whose claim is an adjective rather than a measurement, and renders
+the whole set as a **showcase page** — one line per lab, the number it produced,
+and the command that reproduces it — suitable for the repo README or a
+spun-out portfolio repo.
+- **Learn:** treating your own results the way you would treat a model's — as
+  claims that need provenance, a baseline, and a way to re-run them.
+- **Cost note:** local; pure aggregation over JSONL. $0.
+- **Covers:** the coverage map itself — and the showcase seam described in
+  [`docs/005`](docs/005_concept-coverage.md#showcasing-the-work).
 
 ---
 
 ## G. Concept notes (markdown, not code)
 
-Cards where the honest deliverable is a written position plus a prompt you can
-run to demonstrate it — no tool earns its keep. Each note follows the same
+Concepts where the honest deliverable is a written position plus a prompt you
+can run to demonstrate it — no tool earns its keep. Each note follows the same
 shape: **the mechanism**, **the trade-off**, **a prompt or experiment that shows
-it**, and **the number from my own lab** (linked to the evidence card).
+it**, and **the number from my own lab** (linked to the evidence card). Written
+to be readable on their own, so they double as the explanatory half of anything
+spun out for showcase.
 
 - **N1 · `notes/llm-foundations.md`** — token, context window, embedding,
   temperature, hallucination, structured output. Prompt experiments: two
@@ -957,12 +966,6 @@ it**, and **the number from my own lab** (linked to the evidence card).
   failures, thresholds derived from an observed distribution rather than picked.
   *Covers §5 Golden set · §5 Retrieval vs. generation metrics — the reasoning
   half; `eval-harness` (#9) runs them.*
-- **N6 · `notes/interview-method.md`** — the guide read from the candidate's
-  side: the depth ladder, why failure stories are the fairest question, the
-  calibration bar, what relaxes at Specialist Programmer versus Senior
-  Technologist, the floor questions answered in one line each, and the red flags
-  audited against my own résumé bullets.
-  *Covers the method sections; `viva` (#90) drills them.*
 
 ---
 
@@ -975,10 +978,10 @@ it**, and **the number from my own lab** (linked to the evidence card).
 5. **#9 `eval-harness`** — so every later tweak is measurable.
 6. Anything from C — combined pipelines, now that the pieces exist.
 
-### Field-guide track (sections F–G)
+### Concept-lab track (sections F–G)
 
-Ordered so that the **CORE** sections of the guide — the ones the req actually
-requires — are covered first, and each lab feeds the next.
+Ordered so the **spine** — the concepts nearly every AI/data tool touches — comes
+first, and each lab feeds the next.
 
 1. **N1 + #50 `token-ledger` + #51 `decode-lab` + #52 `schema-guard`** — the
    foundations, with numbers. One weekend.
@@ -986,20 +989,23 @@ requires — are covered first, and each lab feeds the next.
    else, so every later change is provable.
 3. **#53 `retrieval-bench`** on the corpus `docs-rag` (#1) and `ingest-ledger`
    (#49) already index — RAG depth without a new corpus.
-4. **#54 `lora-lab` + #55 `synthdata-forge`** — the strongest single probe in
-   the guide; do not skip the general-benchmark check.
-5. **#58 `agent-governor`** + N2/N3 — agentic AI and the framework opinions.
-6. **#59 `promptops` + #60 `model-pin` + #61 `llm-trace`** — LLMOps, the section
-   where an operator profile is built.
-7. **#56 `preference-forge` + N4** — alignment, the rarest CORE claim.
+4. **#54 `lora-lab` + #55 `synthdata-forge`** — fine-tuning, done with the
+   general-benchmark check that most write-ups skip.
+5. **#58 `agent-governor`** + N2/N3 — agentic control flow and the framework
+   trade-offs.
+6. **#59 `promptops` + #60 `model-pin` + #61 `llm-trace`** — LLMOps: the layer
+   that decides whether any of the above survives contact with a second month.
+7. **#56 `preference-forge` + N4** — alignment, the least commonly built of the
+   spine concepts and the most interesting to read about afterwards.
 8. **#88 `jailbreak-range` + #89 `fairness-audit`** + `pii-scanner` (#20) —
-   the responsible-AI requirement, answered as fairness rather than as security.
-9. **#62 `serve-bench` + #63 `quant-check`** — serving, the best differentiator
-   available if you have any GPU access at all.
+   responsible AI, treated as fairness and not only as security.
+9. **#62 `serve-bench` + #63 `quant-check`** — serving, worth doing as soon as
+   you have any GPU access at all.
 10. **#66 `tabular-lab` + #64 `trainer-lab` + #65 `taxonomy-classifier`** —
-    classical and deep ML, the JD's model-development half.
-11. **BREADTH, by résumé relevance** — data/platform first (#79, #80, #81, #82,
-    #75, #76, #77, #78), then cloud and Kubernetes (#83–#87), then the adjacent
-    domains you may never be asked about (#67–#74).
-12. **#90 `viva`** — run it continuously from step 2 onward; it tells you which
-    cards still have no evidence behind them.
+    classical and deep ML, the model-development half.
+11. **Adjacent domains, by what you actually work on** — data and platform first
+    (#79, #80, #81, #82, #75, #76, #77, #78), then cloud and Kubernetes
+    (#83–#87), then speech, vision, recommenders and graphs (#67–#74).
+12. **#90 `evidence-index`** — run it continuously from step 2 onward; it tells
+    you which concepts still have no measurement behind them, and renders what
+    does.

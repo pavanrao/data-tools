@@ -60,11 +60,13 @@ learnings/findings.
 Sections **A–D** are RAG/MCP-focused tools and infrastructure. Section **E**
 (*Pipeline-framework tools*) adds generic data-pipeline plumbing — ingestion,
 lineage, data quality, reference data, and extracts — that any metadata-driven
-platform can reuse. Sections **F–G** (*Field-guide labs* and *Concept notes*)
-work the other way round: they start from the concepts an AI architect is
-expected to have hands on, and build the smallest tool that produces real
-evidence for each. [`docs/005_field-guide-coverage.md`](./docs/005_field-guide-coverage.md)
-maps every one of those concepts to the thing that covers it.
+platform can reuse. Sections **F–G** (*Concept labs* and *Concept
+notes*) work the other way round: they start from a concept that recurs across
+AI and data engineering and build the smallest thing that exercises it for real,
+ending in a measured number rather than a description.
+[`docs/005_concept-coverage.md`](./docs/005_concept-coverage.md) maps all 98
+concepts to what covers each, and sets out what makes a tool ready to show
+someone.
 
 ## Repo layout
 
