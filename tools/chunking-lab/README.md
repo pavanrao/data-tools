@@ -74,6 +74,12 @@ gaps in the design.
 | 3 | `https://arxiv.org/abs/2410.13070` — *Is Semantic Chunking Worth the Computational Cost?* (NAACL 2025 Findings) | The experimental setup and where semantic chunking *did* win | Only the abstract's conclusion was available. This paper is the main argument for keeping semantic chunking in Tier 1 rather than the default. |
 | 4 | `https://arxiv.org/abs/2504.19754` — *Reconstructing Context: Evaluating Advanced Chunking Strategies for RAG* | How it evaluates late chunking and contextual retrieval | Only the title was available. Directly relevant to Tier 2. |
 
+**Also required, added after the handoff:**
+`https://arxiv.org/abs/2410.20878` (**AutoRAG**) and `https://arxiv.org/abs/2605.02967`
+(AutoRAGTuner). These are the closest prior art to the recommender in §9 and
+were missed in the original research. Read them before writing `suggest`, and
+before making any novelty claim.
+
 Secondary, lower priority: `https://docs.ragas.io/en/stable/concepts/metrics/available_metrics/`
 (confirm §6), `https://arxiv.org/abs/2409.04701` (late chunking),
 `https://aclanthology.org/2025.coling-main.384/` (Mix-of-Granularity, §9 prior art).
@@ -402,12 +408,61 @@ on the scale.
 
 ### Prior art — position, do not reinvent
 
-**Mix-of-Granularity** (COLING 2025) trains a router to select chunk granularity
-*per query at runtime*. Different problem: a trained component inside the
-pipeline. This is an **offline, design-time advisor** that runs before the
-pipeline exists and emits a configuration a human accepts or rejects. No tool
-was found doing that, which is mild evidence it is worth building. See also
-`FreeChunker` (arXiv 2510.20356) and query-adaptive semantic chunking.
+**Automated RAG configuration search is established work. The recommender as
+described is not novel; read this section before claiming otherwise.**
+
+- **AutoRAG** (arXiv 2410.20878) automatically identifies suitable RAG modules
+  for a given dataset by enumerating configurations, running each, and selecting
+  the best. **Chunking strategy, chunk size and overlap ratio are explicitly
+  among the hyperparameters it optimizes.** This substantially covers stages 3–5
+  of section 9.
+- **AutoRAGTuner** (arXiv 2605.02967) is a declarative, configuration-driven
+  version of the same life-cycle: construct, execute, evaluate, optimize.
+- **Mix-of-Granularity** (COLING 2025) trains a router to select chunk
+  granularity *per query at runtime* — a trained component inside the pipeline,
+  so a genuinely different problem from a design-time advisor. See also
+  `FreeChunker` (arXiv 2510.20356) and query-adaptive semantic chunking.
+
+An earlier draft of this document claimed no tool did design-time chunker
+recommendation. **That was wrong**, and it was based on a few targeted searches
+rather than a literature review. Corrected here so the claim is not inherited.
+
+### What is actually unclaimed
+
+AutoRAG and everything like it recommends by **running the pipeline and
+measuring**. The proposal in section 7 — that a set of **query-free intrinsic
+metrics can eliminate configurations before any retrieval, embedding or model
+call happens** — is a different mechanism, and no prior work was found applying
+it to chunking. The orphaned-reference rate in particular has no located
+antecedent.
+
+Treat "possibly unclaimed" as exactly that: no systematic literature review has
+been done, and mechanisms this simple are often buried inside a paper about
+something else. **Do a proper related-work search before making any novelty
+claim in public.** Start with the venues in §14 plus SIGIR/ECIR/CIKM proceedings
+on chunking and passage segmentation.
+
+### The research question this tool exists to answer
+
+The tool is the instrument, not the contribution. The contribution is one
+experiment it makes cheap:
+
+> **Do query-free intrinsic metrics predict query-dependent retrieval ranking?**
+
+Method: take N chunker configurations across M corpora. Rank them by intrinsic
+metrics alone (§7, no questions). Rank them by Precision Ω / IoU against gold
+spans (§4). Report the rank correlation.
+
+- **Correlates** — chunking configurations can be screened at a small fraction
+  of the cost of a full evaluation, with no evaluation set at all.
+- **Does not correlate** — a plausible-sounding shortcut is dead, which is worth
+  knowing and worth writing down.
+- **Correlates for some metrics and not others** — the most likely outcome, and
+  the most informative: it identifies *which* query-free signals carry
+  information about retrieval quality.
+
+Design the result schema (§8.6) so this experiment is a query over accumulated
+runs rather than a separate script.
 
 ## 10. Model strategy: API now, local later
 
@@ -508,6 +563,7 @@ the truth is "model Y wrote easier questions."
 | C13 | **`suggest` reports question-type distribution** | The recommendation is only as good as the questions; hiding that bias would make the tool dishonest | Firm |
 | C14 | **Semantic chunking is Tier 1, not default** | The NAACL 2025 finding that it may not justify its compute; making it default would assert the opposite of the evidence | Firm, pending source 3 |
 | C15 | Report relative comparisons, never absolute precision | Token precision is single-digit by construction at k>1; absolute numbers look broken | Firm |
+| C16 | **The tool is the instrument; the correlation experiment in §9 is the contribution** | Automated RAG configuration search (AutoRAG) already covers recommend-by-measuring, so the tool alone is engineering, not a result. Whether query-free metrics predict query-dependent ranking is an open empirical question the design makes cheap to answer | Firm |
 
 ## 12. Open questions
 
@@ -521,6 +577,10 @@ the handoff. Decide them first.
    CI-safe), or also ingest a real document folder from day one?
 3. **`suggest` timing.** In the first cut, or land `score` first and build the
    advisor once the metrics are proven? (Recommended: `score` first.)
+4. **Is the correlation experiment (§9) a goal?** If yes, it constrains the
+   design: intrinsic and extrinsic metrics must be computed over the *same* runs
+   and stored together, and the corpus set has to be large enough for a rank
+   correlation to mean anything. Cheap to honour up front, expensive to retrofit.
 
 ## 13. Implementation checklist
 
@@ -560,6 +620,8 @@ Verified reachable and used:
 - [Is Semantic Chunking Worth the Computational Cost? (NAACL 2025 Findings)](https://aclanthology.org/2025.findings-naacl.114/) — *abstract only*
 - [Anthropic — Contextual Retrieval in AI Systems](https://www.anthropic.com/engineering/contextual-retrieval) — *figures corroborated across several sources*
 - [Jina — Late Chunking in Long-Context Embedding Models](https://jina.ai/news/late-chunking-in-long-context-embedding-models/)
+- [AutoRAG: Automated Framework for optimization of RAG Pipeline (arXiv 2410.20878)](https://arxiv.org/abs/2410.20878) — *summary only; READ THIS FIRST, it is the closest prior art*
+- [AutoRAGTuner: A Declarative Framework for Automatic Optimization of RAG Pipelines (arXiv 2605.02967)](https://arxiv.org/abs/2605.02967) — *summary only*
 - [Mix-of-Granularity (COLING 2025)](https://aclanthology.org/2025.coling-main.384/) — *abstract/summary only*
 - [Ragas — available metrics](https://docs.ragas.io/en/stable/concepts/metrics/available_metrics/) — *blocked; used via search summaries*
 - [Ragas — testset generation for RAG](https://docs.ragas.io/en/stable/concepts/test_data_generation/rag/) — *blocked; used via search summaries*
