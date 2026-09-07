@@ -169,7 +169,8 @@ def api_reference() -> Corpus:
         d.answer(
             _row([path, method, limit, param], w),
             question=f"What is the rate limit for {method} {path}?",
-            about="answer is a table row; useless once separated from the header",
+            kind="table-row",
+            about="useless once separated from the header",
         ).add("\n")
     d.add("\nExceeding a limit returns 429 with a Retry-After header.\n\n")
 
@@ -178,7 +179,8 @@ def api_reference() -> Corpus:
         d.add(f"### {method} {path}\n\n").answer(
             description,
             question=f"What does {method} {path} do?",
-            about="prose answer under a heading",
+            kind="prose",
+            about="answer sits under a heading",
         ).add("\n\n")
 
     d.add("## Authenticating\n\nEvery request carries a bearer token.\n\n")
@@ -194,7 +196,8 @@ def api_reference() -> Corpus:
         "    response.raise_for_status()\n"
         "    return response.json()\n```",
         question="How do you authenticate a search request?",
-        about="answer is a fenced code block containing blank lines",
+        kind="code-block",
+        about="fenced block containing blank lines",
     )
     d.add("\n\nThe token is sent on every request; there is no session.\n")
     return d.build()
@@ -211,7 +214,8 @@ def runbook() -> Corpus:
         d.answer(
             _row([signal, warn, crit, action], w),
             question=f"What is the critical threshold for {signal}?",
-            about="answer is a table row",
+            kind="table-row",
+            about="a row of an alert table",
         ).add("\n")
     d.add("\nThresholds are reviewed quarterly.\n\n")
 
@@ -220,6 +224,7 @@ def runbook() -> Corpus:
         d.add(f"### {signal}\n\n").answer(
             meaning,
             question=f"What does the {signal} alert indicate?",
+            kind="prose",
             about="prose under a heading",
         ).add("\n\n")
 
@@ -229,6 +234,7 @@ def runbook() -> Corpus:
         "kubectl drain $NODE --ignore-daemonsets --delete-emptydir-data\n\n"
         "kubectl wait --for=delete pod -l app=indexer --timeout=300s\n```",
         question="How do you drain a node before restarting it?",
+        kind="code-block",
         about="fenced block with blank lines inside",
     )
     d.add("\n\nUncordon once the node reports ready.\n\n")
@@ -236,7 +242,8 @@ def runbook() -> Corpus:
     d.answer(
         "```bash\nhelm rollback indexer --wait --timeout 5m\n```",
         question="What command rolls back a release?",
-        about="short fenced block",
+        kind="code-block",
+        about="a one-line fenced block",
     )
     d.add("\n\nThe rollback is complete when the deployment reports ready.\n")
     return d.build()
@@ -252,7 +259,8 @@ def changelog() -> Corpus:
         d.answer(
             _row([version, date, change], w),
             question=f"What changed in version {version}?",
-            about="answer is one row of a dense table",
+            kind="table-row",
+            about="one row of a dense table",
         ).add("\n")
     d.add("\n## Breaking changes\n\nOnly two releases required action.\n\n")
     for version, _, _, breaking in RELEASES:
@@ -260,7 +268,8 @@ def changelog() -> Corpus:
             d.add(f"### {version}\n\n").answer(
                 f"Version {version} is a breaking release and requires a migration step.",
                 question=f"Is version {version} a breaking release?",
-                about="prose answer, short",
+                kind="prose",
+                about="a short prose answer",
             ).add("\n\n")
     d.add("Everything else upgrades in place.\n")
     return d.build()
@@ -367,15 +376,19 @@ def tutorial() -> Corpus:
         d.answer(
             prose,
             question=f"Step {i}: {title.lower()} — what should you know?",
-            about="prose answer between headings",
+            kind="prose",
+            about="prose between headings",
         ).add("\n\n")
-        d.answer(code, question=question, about="long fenced block with blank lines").add("\n\n")
+        d.answer(code, question=question, kind="code-block", about="a long fenced block").add(
+            "\n\n"
+        )
 
     d.add("## Troubleshooting\n\nMost failures are credential problems.\n\n")
     d.answer(
         "If the client reports 401, the workspace and the key belong to different accounts.",
         question="What does a 401 from the client usually mean?",
-        about="prose answer at the end of the document",
+        kind="prose",
+        about="the last sentence of the document",
     )
     d.add("\n")
     return d.build()
@@ -408,7 +421,8 @@ def spec() -> Corpus:
         d.answer(
             _row([name, kind, meaning], w1),
             question=f"What does the {name} field contain?",
-            about="table row in the first of two adjacent tables",
+            kind="table-row",
+            about="first of two adjacent tables",
         ).add("\n")
 
     d.add("\n### Constraints\n\nA record that breaks any of these is rejected.\n\n")
@@ -429,7 +443,8 @@ def spec() -> Corpus:
         d.answer(
             _row([name, rule], w2),
             question=f"What is the {name} constraint on a chunk record?",
-            about="table row in the second adjacent table",
+            kind="table-row",
+            about="second of two adjacent tables",
         ).add("\n")
 
     d.add("\n## Example\n\nA single record, as emitted.\n\n")
@@ -440,7 +455,8 @@ def spec() -> Corpus:
         '  "return_text": "Escalation is approved by the duty director.",\n'
         '  "sha256": "3f786850e387550fdab836ed7e6dc881de23001b"\n}\n```',
         question="What does a chunk record look like on the wire?",
-        about="fenced JSON block",
+        kind="code-block",
+        about="a fenced JSON block",
     )
     d.add("\n\nUnknown fields are ignored by readers.\n")
     return d.build()

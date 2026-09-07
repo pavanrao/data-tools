@@ -8,6 +8,7 @@ import pytest
 from chunking_lab import from_spec
 from chunking_lab.benchmark import Corpus, Question
 from chunking_lab.retrieve import STOPWORDS, BM25Retriever
+from chunking_lab.score import breakdown as score_breakdown
 from chunking_lab.score import run, summarise, write_jsonl
 
 DOC = (
@@ -89,6 +90,7 @@ def test_a_result_row_carries_intrinsic_and_extrinsic_together(corpus):
         "strategy",
         "corpus",
         "question_id",
+        "question_kind",
         "code_path",
         "retriever",
         "source_sha256",
@@ -107,6 +109,69 @@ def test_a_row_is_interpretable_without_the_run_that_produced_it(corpus):
     assert row["code_path"] == "tier-0/model-free"
     assert row["source_sha256"] == corpus.provenance.sha256
     assert row["extrinsic"]["k"] >= 1
+
+
+def test_the_question_kind_travels_onto_every_row(corpus):
+    """C13: a ranking that hides its question mix has a thumb on the scale.
+
+    The kind has to be on the row, not just in the corpus, or the breakdown would
+    need the corpus back to interpret results months later.
+    """
+    rows = list(run(from_spec("sentence:2"), corpus))
+    assert {r.question_kind for r in rows} == {"unlabelled"}
+    assert all(r.as_row()["question_kind"] for r in rows)
+
+
+def test_a_breakdown_ranks_each_kind_of_question_separately(provenance):
+    """The demonstration that there is no single best chunking.
+
+    Same document, same cuts: a strategy's rank depends on what is being asked.
+    """
+    from chunking_lab.benchmark import Corpus, Question
+
+    text = (
+        "| region | limit |\n|--------|-------|\n| north  | 12/s  |\n"
+        "The northern region is limited because its upstream is shared.\n"
+    )
+    row_start = text.index("| north")
+    prose_start = text.index("The northern")
+    labelled = Corpus(
+        name="rates.md",
+        text=text,
+        provenance=provenance,
+        questions=(
+            Question(
+                "q0",
+                "what is the limit for north?",
+                "rates.md",
+                ((row_start, row_start + 21),),
+                kind="table-row",
+            ),
+            Question(
+                "q1",
+                "why is north limited?",
+                "rates.md",
+                ((prose_start, len(text) - 1),),
+                kind="prose",
+            ),
+        ),
+    )
+
+    results = []
+    for spec in ("sentence:1", "fixed:400"):
+        results.extend(run(from_spec(spec), labelled))
+
+    rows = score_breakdown(results)
+    assert {r.kind for r in rows} == {"table-row", "prose"}
+    # Every strategy is ranked within every kind, so a swing is computable.
+    for kind in ("table-row", "prose"):
+        assert sorted(r.rank for r in rows if r.kind == kind) == [1, 2]
+
+
+def test_an_unlabelled_corpus_breaks_down_into_one_bucket(corpus):
+    """Chroma's questions carry no kind, and that must not be a crash."""
+    rows = score_breakdown(list(run(from_spec("sentence:2"), corpus)))
+    assert {r.kind for r in rows} == {"unlabelled"}
 
 
 def test_an_explicit_k_reaches_every_row(corpus):

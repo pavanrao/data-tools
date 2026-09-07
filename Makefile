@@ -89,6 +89,7 @@ chunking-correlate-structured:
 	uv run python tools/chunking-lab/corpus/generate_docs.py $(STRUCTURED_DIR)
 	rm -f $(STRUCTURED_RESULTS)
 	uv run chunking-lab score --corpus-dir $(STRUCTURED_DIR) --out $(STRUCTURED_RESULTS) \
+	    --by-question-type \
 	    --strategy fixed:800/400 --strategy fixed:800 --strategy fixed:400/200 \
 	    --strategy fixed:400 --strategy fixed:200 \
 	    --strategy recursive:800/400 --strategy recursive:400/200 \

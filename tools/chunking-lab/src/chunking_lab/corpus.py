@@ -33,8 +33,13 @@ class Question:
     text: str
     corpus: str
     gold: tuple[Range, ...]
+    #: Short category for the *shape* of the answer -- "table-row", "code-block",
+    #: "prose". Deliberately separate from ``about``: this one is grouped on, so it
+    #: has to be a small closed set, and the first version of this conflated the
+    #: two and produced fifteen categories with sentence-long names.
+    kind: str = ""
     #: Free-form note on what this question is testing, carried through to the
-    #: gold file so a corpus explains itself.
+    #: gold file so a corpus explains itself. Never grouped on.
     about: str = ""
 
 
@@ -78,7 +83,9 @@ class DocumentBuilder:
         self._parts.append(text)
         return self
 
-    def answer(self, text: str, *, question: str, about: str = "") -> DocumentBuilder:
+    def answer(
+        self, text: str, *, question: str, kind: str = "", about: str = ""
+    ) -> DocumentBuilder:
         """Append ``text`` and record a question whose gold span is exactly it."""
         start = len(self.text)
         self._parts.append(text)
@@ -88,6 +95,7 @@ class DocumentBuilder:
                 text=question,
                 corpus=self.name,
                 gold=((start, start + len(text)),),
+                kind=kind,
                 about=about,
             )
         )
@@ -118,6 +126,7 @@ def write_dir(corpora: list[Corpus], destination: Path) -> Path:
                             "question": question.text,
                             "corpus": question.corpus,
                             "gold": [list(span) for span in question.gold],
+                            "kind": question.kind,
                             "about": question.about,
                         }
                     )
@@ -154,6 +163,7 @@ def load_dir(path: Path) -> list[Corpus]:
                     text=row["question"],
                     corpus=row["corpus"],
                     gold=tuple((int(a), int(b)) for a, b in row["gold"]),
+                    kind=row.get("kind", ""),
                     about=row.get("about", ""),
                 )
             )
