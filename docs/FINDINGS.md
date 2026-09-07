@@ -23,6 +23,23 @@ embeddings, or an LLM — and this one does not. Tier 0 runs with nothing instal
 offline, deterministically. **No novelty claim goes in the shipped docs.** The tool
 is worth building as an instrument; it is not a result.
 
+### F5a — the reproduction worked, and the misreading is measured
+
+F5 proposed checking Precision Ω against Chroma's published column instead of
+against our own understanding. Done, and it reproduces **all four values exactly**
+— 6.7 / 13.9 / 17.7 / 29.9 — over 472 questions, offline, with no retriever and no
+model, because Precision Ω involves no retrieval.
+
+The counterfactual is the part worth keeping. Implemented from the design record's
+original reading, the same code scores **8.6 / 16.8 / 17.8 / 30.7**: nearly right
+with no overlap, ~28% high wherever chunks overlap. It would have passed every
+unit test written against it, looked entirely plausible, and **quietly recommended
+overlap** — on the exact axis the tool exists to compare. Both readings are kept
+implemented so the gap stays under test.
+
+Cost: about an hour of re-fetching sources plus a 1.6MB download. Do this whenever
+a tool's headline number has a published counterpart.
+
 ### F5 — a published table is a better correctness test than a unit test
 Precision Omega touches no retrieval, and Chroma's five corpora with 472 gold-span
 questions are MIT-licensed. So "is our headline metric implemented correctly?" can

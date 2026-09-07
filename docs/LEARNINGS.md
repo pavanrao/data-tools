@@ -53,6 +53,32 @@ The enforceable version is "**no non-whitespace character is in zero spans**",
 with coverage reported as a number alongside. Same bug caught, no false positives,
 and the softer signal stays visible instead of being asserted away.
 
+### A metric that needs no retrieval is a metric you can reproduce
+Precision Ω is computed over every chunk in the corpus with no retriever
+involved. That one property is what made an external correctness proof possible:
+no embedding model, no vector store, no API key, no network. The other columns in
+the same published table (recall, precision, IoU) all depend on a retriever, and
+reproducing them would have meant reproducing someone else's embedding model too.
+**When picking a headline metric, retriever-independence is worth real weight** —
+not for purity, but because it is the difference between a number you can check
+and a number you can only assert.
+
+### Fetch-and-verify beats commit, when the fixture is big and public
+The benchmark is 1.6MB and the repo's whole history is 260KB. Committing it would
+have roughly tripled the pack for one test. A pinned upstream commit plus a
+per-file SHA-256 gives the same reproducibility at ~90 lines: a changed byte
+upstream is a failed check, not a silently different number. The trade is one
+network round trip, once.
+
+### Reuse the learnings log, or stop keeping one
+The FTS5 stopword gotcha was logged as *open* against `repo-rag` and was reused
+here before it could be rediscovered. It also mattered more in the new context: in
+`repo-rag` it degraded result quality, but in a chunker comparison a polluted
+query returns near-random chunks for **every** strategy alike, which makes them
+all look equally mediocre and erases the differences being measured. A logged
+gotcha is worth re-reading in each new setting, because its severity is not a
+property of the gotcha.
+
 ### Prior art for a simple mechanism is usually there; you have to look properly
 An earlier draft claimed no prior work screened chunking configurations without
 running retrieval. A one-hour sweep across SIGIR, ECIR and the ACL Anthology found
