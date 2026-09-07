@@ -789,9 +789,16 @@ Follows `docs/000_project-organization.md` §10.
 - [x] Append to `docs/LEARNINGS.md` (craft) and `docs/FINDINGS.md` (verdicts)
 - [x] Mark #25 as built in `IDEAS.md`; note the #53 boundary in both entries
 - [x] `make lint && make test` — green: 251 passed, 1 skipped
-- [ ] **`correlate`** — the §9 experiment the result schema was built for (open
-      question 4). Everything it needs already exists: intrinsic and extrinsic
-      metrics land on the same rows, so it is a group-by, not a new pipeline
+- [x] **`correlate`** — the §9 experiment, built *and run*. 14 strategies × 5
+      corpora × 472 questions, no model, ~100s. The answer is a caution: chunk size
+      predicts Precision Ω at −0.95, which is close to a tautology since Ω divides
+      by the chunks holding the answer. What survives controlling for size is
+      `duplication` (−0.64) and, surprisingly, `boundary_fidelity`, which *doubles*
+      from ~+0.15 raw to +0.44. `mid_table_rate` and `split_fence_rate` are
+      constant on this benchmark — untested, not disproven. `make chunking-correlate`,
+      full result in `docs/FINDINGS.md` F8
+- [ ] Re-run `correlate` on a corpus **with structure** — tables and code fences —
+      so the two signals aimed at structural failures are actually tested
 
 ## 14. Sources
 

@@ -9,6 +9,39 @@ sprint; keep entries concrete.
 
 ---
 
+## Iteration 6 — 2026-09-07 — reporting a correlation honestly
+
+### A strong correlation with a mechanical explanation is not a finding
+`median_length` predicts Precision Ω at −0.95 across every corpus, and it means
+almost nothing: Ω divides by the chunks holding the answer, so smaller chunks
+raise it by construction. The number is real, reproducible, and evidence of
+nothing. **Before reporting a correlation, ask whether the metric's own definition
+already implies it** — and if it does, report the partial correlation instead.
+
+### Controlling for the confound can make a signal look *better*
+The expectation was that partialling out size would shrink everything. It shrank
+most things and **doubled** `boundary_fidelity`, from ~+0.15 raw to +0.44
+controlled. Size was masking it, because strategies that cut cleanly also cut
+larger. A raw correlation near zero is not evidence of no relationship; it can be
+two relationships cancelling.
+
+### "0.00" and "no variance" must not print the same way
+`mid_table_rate` was 0.00 on all five corpora — not because it fails to predict
+anything, but because those corpora contain no tables, so the signal never varies
+and there is nothing to correlate. Printed as `+0.00` next to genuine
+correlations, it reads as "tested, found useless". It is untested. The fix is one
+`len(set(xs)) <= 1` check and a different label, and it is the difference between a
+table you can trust and one that quietly launders an absence of data into a
+result.
+
+### Design the schema for the query, and the experiment is an afternoon
+The result rows were shaped months of work earlier so intrinsic and extrinsic
+metrics land together, keyed by strategy and corpus. That decision cost a
+conversation at design time. Collecting on it was a `GROUP BY`, two statistics
+functions, and a CLI command — no re-running, no re-deriving, no separate harness.
+**When a future analysis is foreseeable, the cheap moment to enable it is when the
+schema is being written.**
+
 ## Iteration 5 — 2026-09-07 — a broken cap, found by a neighbouring tool's suite
 
 ### A test that fails on one machine is a claim about that machine
