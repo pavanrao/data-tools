@@ -711,9 +711,11 @@ Follows `docs/000_project-organization.md` §10.
       (`fixed`, `recursive`), the recursive one verified **differentially** against
       the reference over 28 cases — which immediately caught a separator-placement
       defect the invariant could not see
-- [ ] The remaining Tier 0 chunkers: sentence, structural/Markdown-header,
-      sentence-window and parent-document (the last two are family 6, and are what
-      prove `retrieval_text` / `return_text` earns its place)
+- [x] The remaining Tier 0 chunkers: sentence, structural/Markdown-header,
+      sentence-window and parent-document. The last two are family 6, and they do
+      prove `retrieval_text` / `return_text` earns its place — sentence-window
+      indexes one sentence and returns three, so a scorer that reads the wrong
+      field credits it for context the model never saw
 - [ ] Implement the intrinsic metrics (§7) — these need no ground truth, so they
       are the fastest path to something useful
 - [ ] Build the hostile corpus generator; mark its tests `hostile`

@@ -8,7 +8,18 @@ from chunking_lab.chunkers import FixedChunker, RecursiveChunker
 
 
 def test_a_spec_round_trips_to_its_own_name():
-    for spec in ["fixed:512", "fixed:512/64", "recursive:400", "recursive:400/200"]:
+    for spec in [
+        "fixed:512",
+        "fixed:512/64",
+        "recursive:400",
+        "recursive:400/200",
+        "sentence:3",
+        "sentence:3/1",
+        "structural",
+        "structural:2000",
+        "sentence-window:2",
+        "parent-document:200/1000",
+    ]:
         assert from_spec(spec).name == spec
 
 
@@ -18,7 +29,7 @@ def test_a_zero_overlap_is_left_out_of_the_name():
 
 
 def test_an_unknown_strategy_names_the_ones_that_exist():
-    with pytest.raises(ValueError, match="known: fixed, recursive"):
+    with pytest.raises(ValueError, match="known: .*recursive.*structural"):
         from_spec("magic:512")
 
 
@@ -78,3 +89,66 @@ def test_a_document_with_no_separators_still_gets_split(provenance):
     chunking = RecursiveChunker(size=100).chunk(text, provenance)
     assert len(chunking) > 1
     assert all(span.length <= 100 for span in chunking.spans)
+
+
+def test_structural_does_not_mistake_a_comment_in_a_code_fence_for_a_heading(provenance):
+    """Getting this wrong shreds every code example in a document."""
+    text = (
+        "# Real Heading\n\nSome prose.\n\n"
+        "```python\n# this is a comment, not a heading\nx = 1\n```\n\n"
+        "More prose in the same section.\n"
+    )
+    chunking = from_spec("structural").chunk(text, provenance)
+    assert len(chunking) == 1, "the fence was treated as a section boundary"
+    assert "x = 1" in chunking.spans[0].retrieval_text
+
+
+def test_structural_splits_at_real_headings(provenance):
+    text = "# One\n\nalpha\n\n## Two\n\nbeta\n\n### Three\n\ngamma\n"
+    chunking = from_spec("structural").chunk(text, provenance)
+    assert [s.retrieval_text.splitlines()[0] for s in chunking.spans] == [
+        "# One",
+        "## Two",
+        "### Three",
+    ]
+
+
+def test_sentence_window_indexes_narrowly_and_returns_widely(provenance):
+    """The family-6 property that Span exists for."""
+    text = "First one. Second one. Third one. Fourth one."
+    chunking = from_spec("sentence-window:1").chunk(text, provenance)
+    assert chunking.augmented
+
+    second = chunking.spans[1]
+    assert second.retrieval_text == "Second one."
+    assert second.return_text == "First one. Second one. Third one."
+    # The span still addresses only what was indexed -- that is what gets scored.
+    assert text[second.start : second.end] == "Second one."
+
+
+def test_a_zero_window_returns_exactly_what_it_indexed(provenance):
+    text = "First one. Second one. Third one."
+    chunking = from_spec("sentence-window:0").chunk(text, provenance)
+    assert all(s.retrieval_text == s.return_text for s in chunking.spans)
+
+
+def test_parent_document_returns_more_than_it_indexes(provenance):
+    text = "".join(f"sentence number {i}. " for i in range(40))
+    chunking = from_spec("parent-document:60/240").chunk(text, provenance)
+    assert chunking.augmented
+    assert all(len(s.return_text) >= len(s.retrieval_text) for s in chunking.spans)
+    assert any(len(s.return_text) > len(s.retrieval_text) for s in chunking.spans)
+
+
+def test_parent_must_not_be_smaller_than_child():
+    with pytest.raises(ValueError, match="smaller than child size"):
+        from_spec("parent-document:1000/200")
+
+
+def test_sentence_packing_puts_several_sentences_in_one_chunk(provenance):
+    text = "One. Two. Three. Four. Five. Six."
+    single = from_spec("sentence:1").chunk(text, provenance)
+    packed = from_spec("sentence:3").chunk(text, provenance)
+    assert len(single) == 6
+    assert len(packed) == 2
+    assert packed.spans[0].retrieval_text == "One. Two. Three."

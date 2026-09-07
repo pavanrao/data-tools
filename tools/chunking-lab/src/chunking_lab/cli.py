@@ -9,15 +9,19 @@ from pathlib import Path
 
 from data_tools_core.provenance import Provenance, UnitKind
 
-from chunking_lab.chunkers import SIZED, from_spec
+from chunking_lab.chunkers import STRATEGIES, from_spec
 from chunking_lab.invariant import check, coverage
 
 #: Which strategies are implemented, and what each needs installed. Printed by
 #: `chunkers` so the gap between what is designed and what is built is visible
 #: from the command line rather than only in the README.
 TIERS = {
-    "fixed": ("0", "none", "cut every N characters, optionally overlapping"),
-    "recursive": ("0", "none", "split on the highest-priority separator that appears"),
+    "fixed": ("0", "SIZE[/OVERLAP]", "cut every N characters, optionally overlapping"),
+    "recursive": ("0", "SIZE[/OVERLAP]", "split on the best separator present, then merge"),
+    "sentence": ("0", "N[/OVERLAP]", "pack N sentences per chunk"),
+    "structural": ("0", "[:MAXSIZE]", "split at Markdown headings, respecting code fences"),
+    "sentence-window": ("0", "WINDOW", "index one sentence, return it with its neighbours"),
+    "parent-document": ("0", "CHILD/PARENT", "index small children, return the parent block"),
 }
 
 
@@ -43,12 +47,13 @@ def build_parser() -> argparse.ArgumentParser:
 
 def run_chunkers(args: argparse.Namespace) -> int:
     """List every implemented strategy with its tier and what it needs."""
-    print(f"{'strategy':<12} {'tier':<5} {'needs':<12} spec")
-    for name in sorted(SIZED):
-        tier, needs, summary = TIERS[name]
-        print(f"{name:<12} {tier:<5} {needs:<12} {name}:SIZE[/OVERLAP]  -- {summary}")
-    print("\nTiers 1 (semantic) and 2 (LLM, contextual) are designed but not built;")
-    print("see this tool's README section 8.2.")
+    print(f"{'tier':<5} {'spec':<32} what it does")
+    for name in sorted(STRATEGIES):
+        tier, params, summary = TIERS[name]
+        spec = f"{name}{params}" if params.startswith("[") else f"{name}:{params}"
+        print(f"{tier:<5} {spec:<32} {summary}")
+    print("\nTier 0 needs nothing installed. Tier 2 (LLM boundaries, contextual")
+    print("augmentation) is designed but not built; see README section 8.2.")
     return 0
 
 

@@ -10,8 +10,9 @@ This document is the design record: what is built, how each part works, and why
 it is shaped that way. Per `docs/000` §9 the numbered doc holds the design; the
 README holds the usage.
 
-**Status.** Tier 0 chunkers and the invariant that governs them. The metrics, the
-hostile corpus, and `score` are not built yet — see the checklist in README §13.
+**Status.** All six Tier 0 chunkers and the invariant that governs them. The
+metrics, the hostile corpus, and `score` are not built yet — see the checklist in
+README §13.
 
 ## Pipeline
 
@@ -42,8 +43,19 @@ document ─▶ chunker ─▶ Chunking(spans, provenance, strategy)
 - **`chunkers/recursive.py`** — `RecursiveChunker`: split on the highest-priority
   separator present, recurse into anything still too big, then merge back up to
   the size budget. A port of the reference `RecursiveTokenChunker`.
+- **`chunkers/structural.py`** — `SentenceChunker` packs N sentences per chunk;
+  `MarkdownHeaderChunker` splits at ATX headings **while respecting fenced code
+  blocks**, so a `#` comment inside a fence is not mistaken for a section break.
+  Getting that wrong shreds every code example in a document and never shows up
+  in an average chunk size.
+- **`chunkers/context.py`** — family 6. `SentenceWindowChunker` indexes one
+  sentence and returns it with its neighbours; `ParentDocumentChunker` indexes a
+  small child and returns the enclosing block. Both set `augmented=True`, and both
+  are Tier 0 — needing no model is what makes them a good early test of the
+  `Span` design rather than a special case bolted on later.
 - **`chunkers/__init__.py`** — `from_spec` parses the strategy specs
-  (`recursive:400/200`) that name a run on the command line and in every result row.
+  (`recursive:400/200`, `parent-document:200/1000`) that name a run on the command
+  line and in every result row.
 - **`cli.py`** — `chunking-lab chunkers` lists what is implemented;
   `chunking-lab split` shows where the cuts landed. Also `python -m chunking_lab`.
 
@@ -82,6 +94,14 @@ document ─▶ chunker ─▶ Chunking(spans, provenance, strategy)
   are lossless, so the invariant passed; several sizes agreed by coincidence.
   Only the differential showed it. The lesson generalises — an invariant proves a
   chunker is *well formed*, never that it is the *same* chunker.
+
+- **Family 6 is Tier 0, and that is deliberate.** Sentence-window and
+  parent-document need no model at all, so the `retrieval_text` / `return_text`
+  split is exercised by the default test suite from the first commit rather than
+  waiting for the embeddings extra. A scorer that reads the wrong field credits
+  sentence-window for context the model never saw, or penalises it for padding
+  that was never indexed. Building the family early is what makes that a test
+  failure instead of a footnote.
 
 - **A spec string is the identity of a run.** `recursive:400/200` names the
   strategy and every parameter that changes its output, and `fixed:512/0`

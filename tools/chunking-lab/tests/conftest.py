@@ -54,4 +54,12 @@ def specs() -> list[str]:
         "recursive:120/30",
         "recursive:40",
         "recursive:10000",
+        "sentence:1",
+        "sentence:3",
+        "sentence:3/1",
+        "structural",
+        "structural:200",
+        "sentence-window:0",
+        "sentence-window:2",
+        "parent-document:60/240",
     ]
