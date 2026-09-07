@@ -295,6 +295,18 @@ export DATA_TOOLS_API_KEY=...
 uv run chunking-lab split README.md --strategy semantic:95 --embedder provider
 ```
 
+## The explainer
+
+[`docs/where-the-cut-falls.html`](where-the-cut-falls.html) is the piece written for
+someone who has never heard of chunking — what a chunk is, why the cut matters,
+what Precision Ω measures, and the misreading. It carries a live figure: a
+chunk-size and overlap slider over a real paragraph with a marked answer,
+recomputing Precision Ω as the boundaries move. Its arithmetic was checked against
+`chunking_lab.extrinsic.precision_omega` rather than written twice by eye.
+
+Published as an artifact:
+<https://claude.ai/code/artifact/079203e3-348b-4231-8437-e80827eaf5ff>
+
 ## Next
 
 README §13 is the checklist. In order: the intrinsic metrics (§7, no ground truth

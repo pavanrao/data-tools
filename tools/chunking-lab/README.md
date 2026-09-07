@@ -741,7 +741,11 @@ Follows `docs/000_project-organization.md` §10.
 - [ ] `report`, then `explain` — `explain` is the intuition-builder and is still
       missing; a score column cannot show you the answer sentence cut in half
 - [ ] `annotate` (quote-then-locate, behind the `llm` extra) and `suggest`
-- [ ] Write the evidence card; wire `make demo`
+- [x] Write the evidence card (`evidence/chunking-lab.jsonl`); wire `make demo-chunking`
+      and `make chunking-benchmark`
+- [x] Write the explainer: [`docs/where-the-cut-falls.html`](../../docs/where-the-cut-falls.html),
+      for a reader who has never heard of chunking. Published as an artifact at
+      <https://claude.ai/code/artifact/079203e3-348b-4231-8437-e80827eaf5ff>
 - [ ] Add `docs/006_chunking-lab.md` as the design record (this README is the
       user-facing reference; per `docs/000` §9 the numbered doc holds the design
       and decisions — §11 above is its seed)
