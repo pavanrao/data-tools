@@ -115,6 +115,13 @@ def build_parser() -> argparse.ArgumentParser:
         "of gold-bearing chunks (the reference's retrieve=-1)",
     )
     scoring.add_argument("--limit", type=int, default=0, help="cap questions per corpus")
+    scoring.add_argument(
+        "--by-question-type",
+        action="store_true",
+        help="also rank the strategies separately for each kind of question. A single "
+        "ranking is always a ranking against some question mix; this shows how much "
+        "that mix decides the answer",
+    )
     scoring.add_argument("--out", type=Path, default=None, help="append JSONL result rows here")
     scoring.set_defaults(run=run_score)
 
@@ -281,6 +288,37 @@ def run_score(args: argparse.Namespace) -> int:
             f"{row.strategy:<26}{row.precision_omega * 100:>9.2f}{row.iou * 100:>8.2f}"
             f"{row.recall * 100:>8.2f}{row.precision * 100:>8.2f}{row.mean_k:>6.1f}"
         )
+
+    if args.by_question_type:
+        rows = score.breakdown(results, target="iou")
+        kinds = sorted({r.kind for r in rows})
+        if kinds == ["unlabelled"]:
+            print(
+                "\n(this corpus does not label its question types, so there is "
+                "nothing to break down)"
+            )
+        else:
+            print(
+                "\nrank out of "
+                f"{max(r.rank for r in rows)}, by what the question asks for (by IoU):\n"
+            )
+            width = max(len(k) for k in kinds) + 2
+            print(f"{'strategy':<24}" + "".join(f"{k[: width - 2]:>{width}}" for k in kinds))
+            order = {r.strategy: r.rank for r in rows if r.kind == kinds[0]}
+            for strategy in sorted(order, key=lambda s: order[s]):
+                line = f"{strategy:<24}"
+                ranks = []
+                for kind in kinds:
+                    rank = next(r.rank for r in rows if r.kind == kind and r.strategy == strategy)
+                    ranks.append(rank)
+                    line += f"{rank:>{width}}"
+                swing = max(ranks) - min(ranks)
+                line += f"   swing {swing}" + ("  <--" if swing >= len(order) // 2 else "")
+                print(line)
+            print(
+                "\nA strategy that swings is one whose value depends on what people ask.\n"
+                "There is no single best chunking; there is a best one for a question mix."
+            )
 
     if args.out:
         written = score.write_jsonl(results, args.out)

@@ -360,6 +360,21 @@ document ─▶ chunker ─▶ Chunking(spans, provenance, strategy)
   decide whether shredding them hurts — that is measured, and it came back
   negative (`FINDINGS.md` F9). The limitation is external validity, not rigging.
 
+- **`--by-question-type` is C13, and it is the tool's most load-bearing honesty
+  check.** A single ranking is always a ranking *against some distribution of
+  questions*; printing one without saying which is not a simpler answer, it is the
+  same answer with the assumption hidden. The effect is not small — on the
+  generated corpus, `sentence-window:1` is **1st** for prose and table-row
+  questions and **11th of 14** for code examples, on the same documents and the
+  same cuts.
+
+  Two details that took a second pass. The category has to be a **short closed
+  set** (`Question.kind`), kept separate from the free-form `about`: the first
+  version grouped on `about` and produced fifteen categories with sentence-long
+  column headers. And the kind travels **on the result row**, not just in the
+  corpus, so a JSONL file stays interpretable months later without the corpus that
+  produced it.
+
 - **A spec string is the identity of a run.** `recursive:400/200` names the
   strategy and every parameter that changes its output, and `fixed:512/0`
   normalises to `fixed:512` so one configuration cannot appear as two rows.

@@ -36,6 +36,11 @@ class Result:
     strategy: str
     corpus: str
     question_id: str
+    #: The shape of the answer this question wants -- "table-row", "code-block",
+    #: "prose". C13: the recommendation is only as good as the questions, and a
+    #: ranking that hides which kind of question it was computed over has a thumb
+    #: on the scale.
+    question_kind: str
     code_path: str
     retriever: str
     source_sha256: str
@@ -49,6 +54,7 @@ class Result:
             "strategy": self.strategy,
             "corpus": self.corpus,
             "question_id": self.question_id,
+            "question_kind": self.question_kind,
             "code_path": self.code_path,
             "retriever": self.retriever,
             "source_sha256": self.source_sha256,
@@ -94,6 +100,7 @@ def run(
                 strategy=chunking.strategy,
                 corpus=corpus.name,
                 question_id=question.question_id,
+                question_kind=question.kind or "unlabelled",
                 code_path=chunking.code_path,
                 retriever=retriever.name,
                 source_sha256=corpus.provenance.sha256,
@@ -143,6 +150,47 @@ def summarise(results: list[Result]) -> list[Summary]:
         for strategy, rows in grouped.items()
     ]
     return sorted(summaries, key=lambda s: s.precision_omega, reverse=True)
+
+
+@dataclass(frozen=True, slots=True)
+class Breakdown:
+    """One strategy's rank within one kind of question."""
+
+    kind: str
+    strategy: str
+    questions: int
+    score: float
+    rank: int
+
+
+def breakdown(results: list[Result], target: str = "iou") -> list[Breakdown]:
+    """Rank the strategies separately for each kind of question.
+
+    This is decision C13, and it is the most load-bearing honesty check the tool
+    has. A single ranking is always a ranking *against some distribution of
+    questions*; printing one without saying which distribution is not a simpler
+    answer, it is the same answer with the assumption hidden.
+
+    It is also not a small effect. On the generated documentation corpus,
+    `structural` is the best strategy in the set for questions whose answer is a
+    code example and third from worst for questions whose answer is a table row --
+    same documents, same cuts, same fourteen strategies.
+    """
+    grouped: dict[tuple[str, str], list[Result]] = {}
+    for result in results:
+        kind = result.question_kind or "unlabelled"
+        grouped.setdefault((kind, result.strategy), []).append(result)
+
+    scored: dict[str, list[tuple[float, str, int]]] = {}
+    for (kind, strategy), rows in grouped.items():
+        mean = statistics.mean(getattr(row.extrinsic, target) for row in rows)
+        scored.setdefault(kind, []).append((mean, strategy, len(rows)))
+
+    out = []
+    for kind, entries in sorted(scored.items()):
+        for rank, (mean, strategy, n) in enumerate(sorted(entries, reverse=True), start=1):
+            out.append(Breakdown(kind, strategy, n, mean, rank))
+    return out
 
 
 def write_jsonl(results: Iterable[Result], path: Path) -> int:

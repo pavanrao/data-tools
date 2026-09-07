@@ -873,6 +873,149 @@
       </div>
     </section>
 
+
+    <!-- 7d : what do you do on day one? ---------------------------------- -->
+    <section>
+      <div class="col">
+        <h2>But you don’t have the questions yet</h2>
+        <p>Everything above ranks chunking strategies against questions with marked
+          answers. Which raises the obvious objection: on the day you start, there
+          is no search engine and nobody has asked anything. So what are you
+          supposed to do?</p>
+        <p>The objection is sharper than it looks, because the ranking really does
+          depend on the questions. Here is the same set of documents, the same
+          fourteen strategies, the same cuts — sorted three times, by what the
+          question happened to be asking for.</p>
+      </div>
+
+      <div class="col">
+        <div class="scroll">
+          <table>
+            <caption>Rank out of 14 · generated documentation corpus · 180 questions with marked answers</caption>
+            <thead>
+              <tr><th>strategy</th><th>looking up a table row</th><th>finding a code example</th><th>a sentence of prose</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>sentence-window:1</td><td class="hit">1st</td><td class="miss">11th</td><td class="hit">1st</td></tr>
+              <tr><td>structural</td><td class="miss">12th</td><td class="hit">2nd</td><td>3rd</td></tr>
+              <tr><td>recursive:200</td><td class="miss">14th</td><td>4th</td><td>6th</td></tr>
+              <tr><td>fixed:200</td><td>9th</td><td>6th</td><td>5th</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p><code>sentence-window:1</code> is <em>first</em> for prose and for table
+          lookups, and <em>eleventh of fourteen</em> for code examples.
+          <code>structural</code> is near the top for code and near the bottom for
+          table rows. <code>recursive:200</code> comes dead last for table lookups
+          while sitting mid-table for everything else. Nothing about the documents
+          changed and nothing about the cuts changed. Only the question did.</p>
+        <p style="font-size:var(--s-1);color:var(--ink-muted)">Reproduce with
+          <code>chunking-lab score --corpus-dir … --by-question-type</code>. The
+          tool will not print a ranking by question type unless the corpus says
+          what kind each question is — a ranking that hides its question mix is the
+          thing this whole section is warning about.</p>
+      </div>
+
+      <div class="col">
+        <h3>Why the question decides</h3>
+        <p>A chunk’s job is to be <b>the smallest self-contained thing that answers
+          the question</b>. Every word of that is load-bearing, and
+          “self-contained” is the one that moves.</p>
+      </div>
+
+      <div class="col">
+        <figure class="fig">
+          <svg class="dia" viewBox="0 0 760 260" role="img"
+               aria-label="One document containing a rate-limit table followed by another section. Three different questions want three different amounts of it: a single row, the whole table, or two whole sections. No single set of cuts is ideal for all three.">
+            <rect class="strip" x="260" y="36" width="480" height="36" rx="2"/>
+            <line class="ln-soft" x1="320" y1="36" x2="320" y2="72"/>
+            <line class="ln-soft" x1="360" y1="42" x2="360" y2="66"/>
+            <line class="ln-soft" x1="440" y1="42" x2="440" y2="66"/>
+            <line class="ln-soft" x1="480" y1="42" x2="480" y2="66"/>
+            <line class="ln-soft" x1="520" y1="42" x2="520" y2="66"/>
+            <line class="ln-soft" x1="560" y1="36" x2="560" y2="72"/>
+            <line class="ln-soft" x1="610" y1="36" x2="610" y2="72"/>
+            <rect class="goldbar" x="400" y="42" width="40" height="24" rx="2"/>
+
+            <text class="lbl" x="440" y="92" text-anchor="middle">the rate-limit table</text>
+            <text class="lbl" x="675" y="92" text-anchor="middle">the next section</text>
+
+            <text class="mono" x="8" y="122">“What is the limit for /v1/documents?”</text>
+            <text class="cap" x="8" y="138">wants one row</text>
+            <path class="ln-cut" d="M400,116 L400,124 L440,124 L440,116"/>
+
+            <text class="mono" x="8" y="176">“Which endpoints are under 60/min?”</text>
+            <text class="cap" x="8" y="192">wants the whole table</text>
+            <path class="ln-cut" d="M320,170 L320,178 L560,178 L560,170"/>
+
+            <text class="mono" x="8" y="230">“How do limits relate to quotas?”</text>
+            <text class="cap" x="8" y="246">wants two whole sections</text>
+            <path class="ln-cut" d="M320,224 L320,232 L740,232 L740,224"/>
+          </svg>
+          <figcaption><b>One document, three right answers.</b> Cuts tight enough to
+            isolate a single row will sever the table for anyone asking about the
+            table as a whole. Cuts loose enough to keep two sections together bury
+            every single-row answer in padding. There is no set of boundaries that
+            is ideal for all three — so “good chunking” cannot be settled without
+            knowing which questions matter.</figcaption>
+        </figure>
+      </div>
+
+      <div class="col">
+        <h3>The objection is actually two objections</h3>
+        <p>They have different answers, and separating them is most of the way to
+          knowing what to do.</p>
+
+        <h3>“There is no search engine yet”</h3>
+        <p>This one turns out not to be a problem, and it is the reason Precision Ω
+          is the number this whole piece is built around. It is computed from the
+          cuts and the marked answers alone — <b>no retriever is involved at any
+          point</b>. You can compute it the moment you can chunk a document. The
+          same goes for every cheap check: none of them has ever needed a search
+          engine.</p>
+
+        <h3>“Nobody has asked anything yet”</h3>
+        <p>This one is real. Three things help, and they compound.</p>
+
+        <p><b>Some faults are faults for every question.</b> Text that landed in no
+          chunk at all is lost whatever anyone asks. A chunk too large for the
+          embedding model is silently truncated for everybody. A code example cut in
+          half is broken universally. You can rule those out on day one, for free,
+          and it is worth doing before anything else — most first attempts have at
+          least one.</p>
+
+        <p><b>You know more about the questions than you think.</b> You know whether
+          you are building a support bot that answers narrow factual lookups, or a
+          research assistant that has to pull threads across sections. Look at the
+          table above: that single piece of knowledge moves a strategy between first
+          and thirteenth. It is worth more than any amount of parameter tuning, and
+          it is available before you write a line.</p>
+
+        <p><b>You can manufacture questions, at increasing fidelity.</b> Write a few
+          documents where you plant the answers yourself, so their positions are
+          known exactly — free and immediate. Then have a model read your real
+          documents and produce questions with verbatim quotes, locating each quote
+          in the source and discarding the ones it cannot find — one bill, once,
+          after which the question set is a file you keep forever. Then, once you
+          have traffic, use what people actually asked. Each step is closer to the
+          truth and none of them blocks shipping.</p>
+
+        <div class="note"><b>So the honest answer is that you don’t choose once.</b>
+          Rule out the broken configurations for free. Take a sane default —
+          recursive splitting at around 200 tokens is never the winner and never an
+          embarrassment. Ship. Then re-rank against real queries when you have them,
+          which is the only ranking that was ever going to be authoritative. The
+          point of measuring is to make that last step cost an afternoon rather than
+          a project.</div>
+
+        <p>And it is worth saying what the dishonest version of this looks like,
+          because it is common: a tool that prints a single “chunk quality score”.
+          That number is always a ranking against some distribution of questions.
+          If it does not tell you which, it is not a simpler answer — it is the same
+          answer with the assumption hidden.</p>
+      </div>
+    </section>
+
     <!-- 7b : glossary ---------------------------------------------------- -->
     <section>
       <div class="col">
@@ -966,6 +1109,12 @@
               same order?” Order rather than value, because the question is whether
               screening would have picked the same winner — not whether it predicts
               the exact score.</dd></div>
+
+          <div class="term"><dt>question mix</dt>
+            <dd>The distribution of things people actually ask — narrow lookups,
+              comparisons across a document, open synthesis. It is an input to
+              choosing a chunker, not a detail: it moves a strategy between first
+              and thirteenth place on the same documents.</dd></div>
 
           <div class="term"><dt>controlling for something</dt>
             <dd>Asking what is left of a relationship once a known cause is
