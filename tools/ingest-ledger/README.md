@@ -20,7 +20,11 @@ Two counts, from **independent code paths**:
    content: PDF pages, XLSX sheets, DOCX body blocks *including footnotes and
    headers*, XML top-level nodes, CSV rows, recursive zip members.
 2. **Extract** — run each file in a subprocess under a memory cap and timeout,
-   so an OOM kill becomes an exit code instead of a shrug.
+   so an OOM kill becomes an exit code instead of a shrug. The cap is
+   **best-effort**: `RLIMIT_AS` is not settable on every platform (macOS rejects
+   any finite value), so each row records whether it was actually applied —
+   `memory_cap: rlimit_as`, or `memory_cap: unenforced: …`. The timeout always
+   applies.
 3. **Reconcile** — join the two, assign `complete` / `partial` / `failed` /
    `unsupported` / `empty` with a coverage percentage, and quarantine anything
    below threshold rather than folding it silently into the index.
