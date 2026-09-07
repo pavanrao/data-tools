@@ -1,9 +1,29 @@
 # chunking-lab — compare chunking strategies, and recommend one
 
-**Status: research settled; Tier 0 and Tier 1 chunkers built, metrics next.** This document is the design record.
-It began as a handoff from the web session that designed it; the sources that
-session could not reach have since been fetched and read, and §§4, 5, 9 and 11
-are corrected against them. Everything needed to start building is here.
+> **Its Precision Ω reproduces Chroma's published column exactly — 6.7 / 13.9 /
+> 17.7 / 29.9 over 472 gold-span questions — offline, with no retriever, no
+> embedding model and no API key.** `make chunking-benchmark`
+>
+> The reading this document originally assumed would have scored 8.6 / 16.8 /
+> 17.8 / 30.7: nearly right without overlap, ~28% high with it, and it would have
+> passed every test written against it. That is what §2 is about.
+
+**Status: Tier 0 and Tier 1 chunkers, both metric families, `score` and `explain`
+built and green.** `report`, `annotate` and `suggest` are specified below and not
+built — see the checklist in §13.
+
+This document is the design record. It began as a handoff from the web session
+that designed it; the sources that session could not reach have since been
+fetched and read, and §§4, 5, 9 and 11 are corrected against them.
+
+```bash
+uv run chunking-lab chunkers   # what is implemented, and what each strategy needs
+make demo-chunking             # screen strategies: no model, no questions, no corpus
+make chunking-benchmark        # reproduce the published column
+```
+
+New to chunking? Start with the explainer,
+[`docs/where-the-cut-falls.html`](../../docs/where-the-cut-falls.html).
 
 `chunking-lab` is idea **#25** in [`IDEAS.md`](../../IDEAS.md). It takes one
 corpus, runs it through many chunking strategies, and produces a score per
