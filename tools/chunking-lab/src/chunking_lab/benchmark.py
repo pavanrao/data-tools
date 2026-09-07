@@ -15,14 +15,12 @@ that runs offline against somebody else's numbers.
 from __future__ import annotations
 
 import csv
-import hashlib
 import json
-from dataclasses import dataclass
 from pathlib import Path
 
-from data_tools_core.provenance import Provenance, UnitKind
+from chunking_lab.corpus import Corpus, Question, provenance_for
 
-from chunking_lab.ranges import Range
+__all__ = ["PUBLISHED_PRECISION_OMEGA", "Corpus", "Question", "available", "load", "token_counter"]
 
 #: src/chunking_lab/benchmark.py -> chunking_lab -> src -> tools/chunking-lab
 DEFAULT_ROOT = Path(__file__).resolve().parents[2] / "benchmarks" / "chroma"
@@ -39,26 +37,6 @@ PUBLISHED_PRECISION_OMEGA = {
     (400, 0): 17.7,
     (200, 0): 29.9,
 }
-
-
-@dataclass(frozen=True, slots=True)
-class Question:
-    """One question and the character ranges that answer it."""
-
-    question_id: str
-    text: str
-    corpus: str
-    gold: tuple[Range, ...]
-
-
-@dataclass(frozen=True, slots=True)
-class Corpus:
-    """One document plus every question annotated against it."""
-
-    name: str
-    text: str
-    provenance: Provenance
-    questions: tuple[Question, ...]
 
 
 def available(root: Path | None = None) -> bool:
@@ -101,11 +79,7 @@ def load(root: Path | None = None) -> list[Corpus]:
             Corpus(
                 name=name,
                 text=body,
-                provenance=Provenance(
-                    source=Path(name),
-                    sha256=hashlib.sha256(body.encode()).hexdigest(),
-                    unit_kind=UnitKind.DOCUMENT,
-                ),
+                provenance=provenance_for(name, body),
                 questions=tuple(questions),
             )
         )

@@ -98,6 +98,10 @@ document ─▶ chunker ─▶ Chunking(spans, provenance, strategy)
 - **`locate.py`** — quote-then-locate (C9): exact match, then whitespace-tolerant,
   then a sentence-level fuzzy match that must score at least 98. `locate_all`
   returns what it found *and* what it could not, which is the yield.
+- **`corpus.py`** — `Corpus` and `Question`, the `DocumentBuilder` that makes a
+  generated gold span exact by construction, and `load_dir` / `write_dir`, which
+  are also the bring-your-own-corpus path: any directory of documents plus a
+  `gold.jsonl` can be scored.
 - **`correlate.py`** — the §9 experiment as a query over accumulated `score --out`
   rows: tie-corrected Spearman, a partial correlation to remove the chunk-size
   confound, and a constant-signal check so "never varied" cannot be printed as
@@ -339,6 +343,23 @@ document ─▶ chunker ─▶ Chunking(spans, provenance, strategy)
      different label is the difference between a table you can trust and one that
      launders missing data into a result.
 
+- **The second corpus exists because a signal cannot be tested where it never
+  varies.** All five Chroma corpora contain zero Markdown tables and zero code
+  fences — even `finance.md`, whose ConvFinQA source tables were flattened into
+  prose — so `mid_table_rate` and `split_fence_rate` were *constant*, and F8 had to
+  report them as untested. `corpus/generate_docs.py` produces documentation-shaped
+  text with both, and gold spans known by construction.
+
+  Downloading a document would not have worked, and the reason is worth keeping:
+  the detectors match **Markdown syntax**, so extracted PDF text trips neither, and
+  more fundamentally no downloaded document carries **character-level gold spans**.
+  This repo's own docs have 346 table rows sitting unusable for exactly that
+  reason. Annotation, not format, is the binding constraint.
+
+  The generator decides where the tables and the answers are. It does **not**
+  decide whether shredding them hurts — that is measured, and it came back
+  negative (`FINDINGS.md` F9). The limitation is external validity, not rigging.
+
 - **A spec string is the identity of a run.** `recursive:400/200` names the
   strategy and every parameter that changes its output, and `fixed:512/0`
   normalises to `fixed:512` so one configuration cannot appear as two rows.
@@ -358,6 +379,12 @@ make chunking-benchmark
 
 # the section 9 experiment: do query-free signals predict the ranking? (~100s)
 make chunking-correlate
+
+# the same, on documentation with tables and code fences (~10s)
+make chunking-correlate-structured
+
+# score your own corpus: a directory of documents plus a gold.jsonl
+uv run chunking-lab score --corpus-dir ./my-corpus --strategy recursive:400
 
 uv run chunking-lab chunkers
 

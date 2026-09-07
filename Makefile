@@ -1,5 +1,6 @@
 .PHONY: help sync lint test demo demo-reconcile demo-compare demo-ask \
-        demo-chunking chunking-benchmark chunking-correlate clean
+        demo-chunking chunking-benchmark chunking-correlate \
+        chunking-correlate-structured clean
 
 help:
 	@echo "sync   install the whole collection in a dev venv"
@@ -9,6 +10,7 @@ help:
 	@echo "demo-chunking       screen chunking strategies with no model and no questions"
 	@echo "chunking-benchmark  reproduce Chroma's published Precision Omega column"
 	@echo "chunking-correlate  do query-free signals predict the measured ranking?"
+	@echo "chunking-correlate-structured  the same, on documents with tables and code"
 
 sync:
 	uv sync --all-extras
@@ -77,7 +79,29 @@ chunking-correlate:
 	@echo
 	uv run chunking-lab correlate $(CHUNKING_RESULTS) --against iou
 
+# The same experiment on documentation-shaped text. The Chroma corpora contain no
+# Markdown tables and no code fences, so mid_table_rate and split_fence_rate are
+# constant there -- untested rather than uninformative. This corpus has both, with
+# gold spans known by construction, so those two signals finally get measured.
+STRUCTURED_DIR ?= tools/chunking-lab/corpus/structured
+STRUCTURED_RESULTS ?= chunking-structured-results.jsonl
+chunking-correlate-structured:
+	uv run python tools/chunking-lab/corpus/generate_docs.py $(STRUCTURED_DIR)
+	rm -f $(STRUCTURED_RESULTS)
+	uv run chunking-lab score --corpus-dir $(STRUCTURED_DIR) --out $(STRUCTURED_RESULTS) \
+	    --strategy fixed:800/400 --strategy fixed:800 --strategy fixed:400/200 \
+	    --strategy fixed:400 --strategy fixed:200 \
+	    --strategy recursive:800/400 --strategy recursive:400/200 \
+	    --strategy recursive:400 --strategy recursive:200 \
+	    --strategy sentence:2 --strategy sentence:4 \
+	    --strategy structural --strategy structural:1200 --strategy sentence-window:1
+	@echo
+	uv run chunking-lab correlate $(STRUCTURED_RESULTS)
+	@echo
+	uv run chunking-lab correlate $(STRUCTURED_RESULTS) --against iou
+
 clean:
 	rm -rf tools/ingest-ledger/corpus/hostile tools/ingest-ledger/corpus/rfp \
-	       tools/chunking-lab/corpus/hostile chunking-results.jsonl \
+	       tools/chunking-lab/corpus/hostile tools/chunking-lab/corpus/structured \
+	       chunking-results.jsonl chunking-structured-results.jsonl \
 	       *.ledger.db .pytest_cache .ruff_cache

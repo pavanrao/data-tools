@@ -9,6 +9,41 @@ sprint; keep entries concrete.
 
 ---
 
+## Iteration 7 — 2026-09-07 — closing a gap in a measurement
+
+### Ask what the metric can physically see before blaming the signal
+`mid_table_rate` does not predict Precision Ω, and the first instinct is that the
+signal is useless. The mechanism says otherwise: cutting through a table row makes
+the chunks holding the answer *smaller*, which **raises** the ceiling. Ω cannot see
+table damage even in principle — the damage is to whether a retrieved chunk is
+*usable*, and a ceiling on precision measures nothing of the kind. **A null result
+is about a (signal, metric) pair, never about the signal alone.**
+
+### The fix for "the corpus lacks X" is rarely "download a document with X"
+The obvious move was to fetch a PDF with tables in it. Two things stopped it, and
+only the second is obvious in hindsight. The detectors match *Markdown syntax*, so
+extracted PDF text trips neither — closing that would mean a PDF→Markdown converter
+and a measurement that depends on the converter's table detection instead of on
+chunking. And the experiment needs **character-level gold spans**, which no
+downloaded document carries, whatever its format. This repo's own docs have 346
+table rows sitting unusable for exactly that reason. **Annotation, not format, is
+almost always the binding constraint on an evaluation corpus.**
+
+### Generated corpora are honest when the generator controls the setup and not the outcome
+Planting the structure *and* the answers sounds like rigging the experiment. It is
+not, provided you name the line: the generator decides where tables and answers
+are; it does not decide whether a chunker that shreds tables scores worse. That
+relationship is measured, and it came back negative. State the limitation as
+external validity — how these documents behave, not how common they are — and the
+result stands.
+
+### Replication across an unrelated corpus is what turns a number into a finding
+`boundary_fidelity` at partial +0.44 on Chroma prose was interesting and could
+easily have been an artefact of five documents. At +0.34 on synthetic
+documentation, with three of five corpora significant, it is a finding. The second
+corpus cost an afternoon and did more for confidence than any amount of re-reading
+the first result.
+
 ## Iteration 6 — 2026-09-07 — reporting a correlation honestly
 
 ### A strong correlation with a mechanical explanation is not a finding
