@@ -725,7 +725,10 @@ Follows `docs/000_project-organization.md` §10.
       already separates a fixed-size splitter (boundary fidelity 0.06, cuts 7% of
       code fences) from a structural one (0.83) on any document you have lying
       around, with no model and no questions
-- [ ] Build the hostile corpus generator; mark its tests `hostile`
+- [x] Build the hostile corpus generator; mark its tests `hostile`. Building it
+      split §8.4's one idea into two: **severing** (the answer cut across chunks)
+      and **orphaning** (the chunk intact, and useless without the heading, header
+      row or antecedent that sits elsewhere). Only the first is a boundary problem
 - [x] Implement the extrinsic metrics (§4) — character ranges, and the union/sum
       asymmetry between Precision Ω and precision preserved as the reference has it
 - [x] Fetch Chroma's five corpora + questions (pinned commit, sha256-verified) and

@@ -14,7 +14,8 @@ README holds the usage.
 that governs them, the query-free intrinsic metrics, and the extrinsic metrics —
 **whose Precision Ω reproduces Chroma's published column exactly** (6.7 / 13.9 /
 17.7 / 29.9), and `chunking-lab score`, which ranks strategies against gold spans
-over a fixed BM25 retriever. The hostile corpus and `suggest` are not built yet.
+over a fixed BM25 retriever, and the hostile corpus. `suggest` and `explain` are
+not built yet.
 
 ## Pipeline
 
@@ -86,6 +87,9 @@ document ─▶ chunker ─▶ Chunking(spans, provenance, strategy)
 - **`score.py`** — `run` produces one `Result` per (strategy, corpus, question)
   carrying **intrinsic and extrinsic metrics on the same row**; `summarise` means
   them per strategy; `write_jsonl` appends so results accumulate.
+- **`corpus/generate.py`** — the hostile corpus: five documents built so specific
+  strategies provably fail, with gold spans known by construction because the
+  generator wrote the answer text. Generated, not committed.
 - **`chunkers/__init__.py`** — `from_spec` parses the strategy specs
   (`recursive:400/200`, `parent-document:200/1000`) that name a run on the command
   line and in every result row.
@@ -251,6 +255,36 @@ document ─▶ chunker ─▶ Chunking(spans, provenance, strategy)
   the answer every single time and is useless. No chunk-level metric can express
   that — it would score a perfect hit — and it is the clearest one-line argument
   for measuring inside the chunk.
+
+- **The hostile corpus found two failure modes where the design had one.** README
+  §8.4 lists five documents as one idea. Building them separated it:
+
+  - **Severing** — the answer is cut across chunks, so no single chunk holds it.
+    `straddle.md` puts the answer across a paragraph break, which is the *first*
+    place a recursive splitter cuts; `code_fence.md` puts blank lines inside a
+    code fence.
+  - **Orphaning** — the chunk holding the answer is perfectly intact and still
+    unusable, because what makes it meaningful is in a different chunk.
+    `heading_subject.md` puts the region name only in the heading;
+    `rate_table.md` separates a row from its header; `back_reference.md` opens
+    with "as described above".
+
+  The second is the interesting one, because **no boundary placement fixes it** —
+  the boundary is already correct. That is the argument for the context-augmenting
+  strategies stated as a test rather than a paragraph, and it produced the
+  sharpest demonstration in the suite: on `heading_subject.md`, sentence-window
+  still *indexes* a chunk with no "Northeast" in it, so retrieval is no easier,
+  but what it *returns* does contain it. Score the wrong field and the strategy
+  looks either better or worse than it is.
+
+- **A test helper broke rule 1 before any dependency could.** The first version of
+  `test_hostile.py` did `sys.path.insert(...)` then `import generate` — and
+  `ingest-ledger` ships a `corpus/generate.py` too, so 29 of its tests started
+  failing on an attribute that had never existed. Tools not importing each other
+  is a rule about *test* code as much as source, and the fix is to load the module
+  by explicit path under a unique name. (Registering it in `sys.modules` before
+  `exec_module` is required: `@dataclass` resolves its own module while the class
+  body is processed.)
 
 - **A spec string is the identity of a run.** `recursive:400/200` names the
   strategy and every parameter that changes its output, and `fixed:512/0`

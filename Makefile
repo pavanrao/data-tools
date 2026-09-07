@@ -42,6 +42,8 @@ demo-ask:
 
 # Query-free screening: no questions, no ground truth, no model. Runs anywhere.
 demo-chunking:
+	uv run python tools/chunking-lab/corpus/generate.py tools/chunking-lab/corpus/hostile
+	@echo
 	uv run chunking-lab metrics tools/chunking-lab/README.md \
 	    --strategy fixed:800/400 --strategy fixed:400 \
 	    --strategy recursive:400/200 --strategy recursive:200 \
@@ -57,4 +59,5 @@ chunking-benchmark:
 
 clean:
 	rm -rf tools/ingest-ledger/corpus/hostile tools/ingest-ledger/corpus/rfp \
+	       tools/chunking-lab/corpus/hostile \
 	       *.ledger.db .pytest_cache .ruff_cache
