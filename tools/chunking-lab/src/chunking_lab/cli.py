@@ -9,6 +9,7 @@ from pathlib import Path
 
 from data_tools_core.provenance import Provenance, UnitKind
 
+from chunking_lab import benchmark, score
 from chunking_lab.chunkers import STRATEGIES, from_spec
 from chunking_lab.embeddings import resolve
 from chunking_lab.intrinsic import measure
@@ -76,6 +77,34 @@ def build_parser() -> argparse.ArgumentParser:
         help="add cohesion/separation, the only two signals here that cost anything",
     )
     metrics.set_defaults(run=run_metrics)
+
+    scoring = sub.add_parser(
+        "score",
+        help="rank strategies against gold spans on the Chroma benchmark",
+        description=(
+            "Absolute values are very low by construction -- k chunks are retrieved "
+            "to answer a one-sentence question. These are RELATIVE comparisons only."
+        ),
+    )
+    scoring.add_argument(
+        "--strategy", action="append", required=True, dest="strategies", help="repeatable"
+    )
+    scoring.add_argument(
+        "--corpus",
+        action="append",
+        dest="corpora",
+        help="benchmark corpus name, e.g. state_of_the_union.md (default: all five)",
+    )
+    scoring.add_argument(
+        "--k",
+        type=int,
+        default=None,
+        help="retrieval depth; default is per-question, at that question's number "
+        "of gold-bearing chunks (the reference's retrieve=-1)",
+    )
+    scoring.add_argument("--limit", type=int, default=0, help="cap questions per corpus")
+    scoring.add_argument("--out", type=Path, default=None, help="append JSONL result rows here")
+    scoring.set_defaults(run=run_score)
 
     return parser
 
@@ -169,6 +198,50 @@ def run_metrics(args: argparse.Namespace) -> int:
     print(
         "\nIntrinsic metrics screen; they do not rank. Ranking the eligible ones\n"
         "needs questions with gold spans -- see this tool's README section 7."
+    )
+    return 0
+
+
+def run_score(args: argparse.Namespace) -> int:
+    """Rank strategies against gold spans, and say what the ranking rests on."""
+    corpora = benchmark.load()
+    if args.corpora:
+        wanted = set(args.corpora)
+        corpora = [c for c in corpora if c.name in wanted]
+        if not corpora:
+            raise ValueError(f"no benchmark corpus matched {sorted(wanted)}")
+
+    results = []
+    for spec in args.strategies:
+        chunker = from_spec(spec)
+        for corpus in corpora:
+            questions = corpus.questions[: args.limit] if args.limit else None
+            results.extend(score.run(chunker, corpus, k=args.k, questions=questions))
+
+    summaries = score.summarise(results)
+    total_questions = sum(
+        len(c.questions[: args.limit] if args.limit else c.questions) for c in corpora
+    )
+    print(
+        f"{len(corpora)} corpora, {total_questions} questions, retriever bm25/fts5, "
+        f"k={'per-question' if args.k is None else args.k}\n"
+    )
+    print(f"{'strategy':<26}{'P-omega':>9}{'IoU':>8}{'recall':>8}{'prec':>8}{'k':>6}")
+    for row in summaries:
+        print(
+            f"{row.strategy:<26}{row.precision_omega * 100:>9.2f}{row.iou * 100:>8.2f}"
+            f"{row.recall * 100:>8.2f}{row.precision * 100:>8.2f}{row.mean_k:>6.1f}"
+        )
+
+    if args.out:
+        written = score.write_jsonl(results, args.out)
+        print(f"\n{written} rows appended to {args.out}")
+
+    print(
+        "\nRelative comparisons only. Token-level precision is single-digit by\n"
+        "construction at k>1 -- see this tool's README section 4. Precision Omega\n"
+        "is the column to read: it is the ceiling the cuts impose, independent of\n"
+        "the retriever."
     )
     return 0
 

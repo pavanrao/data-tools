@@ -13,7 +13,8 @@ README holds the usage.
 **Status.** All six Tier 0 chunkers, both Tier 1 semantic chunkers, the invariant
 that governs them, the query-free intrinsic metrics, and the extrinsic metrics —
 **whose Precision Ω reproduces Chroma's published column exactly** (6.7 / 13.9 /
-17.7 / 29.9). The hostile corpus and the `score` command are not built yet.
+17.7 / 29.9), and `chunking-lab score`, which ranks strategies against gold spans
+over a fixed BM25 retriever. The hostile corpus and `suggest` are not built yet.
 
 ## Pipeline
 
@@ -79,6 +80,12 @@ document ─▶ chunker ─▶ Chunking(spans, provenance, strategy)
   omits.
 - **`benchmark.py`** — loads the five Chroma corpora and their 472 gold-span
   questions, and holds `PUBLISHED_PRECISION_OMEGA`, the numbers we check against.
+- **`retrieve.py`** — `BM25Retriever`, held fixed by design (C5), over an
+  in-memory SQLite FTS5 index. Indexes `retrieval_text`, which for family 6 is
+  deliberately not what gets returned. Drops stopwords from the query.
+- **`score.py`** — `run` produces one `Result` per (strategy, corpus, question)
+  carrying **intrinsic and extrinsic metrics on the same row**; `summarise` means
+  them per strategy; `write_jsonl` appends so results accumulate.
 - **`chunkers/__init__.py`** — `from_spec` parses the strategy specs
   (`recursive:400/200`, `parent-document:200/1000`) that name a run on the command
   line and in every result row.
@@ -221,6 +228,30 @@ document ─▶ chunker ─▶ Chunking(spans, provenance, strategy)
   result row records the value used, because two runs at different k are not
   comparable and nothing about the numbers makes that obvious.
 
+- **The retriever is fixed, and the stopword fix was not optional.**
+  `docs/LEARNINGS.md` logged an open gotcha against `repo-rag`: building the FTS5
+  query as an OR of every token lets stopwords dominate BM25. That is a quality
+  problem there and a *correctness* problem here — a polluted retriever returns
+  near-random chunks for every strategy alike, which makes them all look equally
+  mediocre and hides precisely the differences this tool exists to show. Dropping
+  stopwords is reusing a recorded learning rather than rediscovering it.
+
+- **One row per question, carrying both metric families.** Open question 4 asked
+  whether the correlation experiment is a design goal. It is, so the schema is
+  built for it: intrinsic and extrinsic scores are computed over the *same* run
+  and stored together, keyed by strategy, corpus and question, which makes "do
+  query-free signals predict retrieval ranking?" a `GROUP BY` over accumulated
+  JSONL rather than a separate script. The chunking-level intrinsic values repeat
+  on every row of that chunking — deliberate redundancy, so a row is interpretable
+  on its own months later without the run that produced it.
+
+- **`structural` scoring 100% recall and 0.39 Precision Ω is the tool working.**
+  On the State of the Union transcript there are no Markdown headings, so the
+  structural splitter emits one chunk containing the whole document. It retrieves
+  the answer every single time and is useless. No chunk-level metric can express
+  that — it would score a perfect hit — and it is the clearest one-line argument
+  for measuring inside the chunk.
+
 - **A spec string is the identity of a run.** `recursive:400/200` names the
   strategy and every parameter that changes its output, and `fixed:512/0`
   normalises to `fixed:512` so one configuration cannot appear as two rows.
@@ -248,6 +279,10 @@ uv run chunking-lab split README.md --strategy sentence-window:1
 # Tier 1 -- offline by default, and the output says so
 uv run chunking-lab split README.md --strategy semantic:95
 uv run chunking-lab split README.md --strategy cluster-semantic:400
+
+# rank strategies against gold spans (needs the benchmark fetched)
+uv run chunking-lab score --corpus state_of_the_union.md \
+    --strategy recursive:200 --strategy fixed:800/400 --strategy structural
 
 # screen several strategies with no questions and no model
 uv run chunking-lab metrics README.md \

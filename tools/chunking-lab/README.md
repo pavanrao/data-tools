@@ -733,9 +733,13 @@ Follows `docs/000_project-organization.md` §10.
       6.7 / 13.9 / 17.7 / 29.9. The original misreading would have scored
       8.6 / 16.8 / 17.8 / 30.7 — plausible in isolation, ~28% high wherever chunks
       overlap. `make chunking-benchmark`
-- [ ] Wire the retriever (BM25 over FTS5) so recall/precision/IoU can be scored on
-      a real corpus, not just hand-built spans
-- [ ] `score`, then `report`, then `explain`
+- [x] Wire the retriever (BM25 over FTS5, stopwords dropped per `docs/LEARNINGS.md`)
+      so recall/precision/IoU can be scored on a real corpus
+- [x] `score` — one JSONL row per (strategy, corpus, question) carrying intrinsic
+      and extrinsic metrics **together**, so the §9 correlation experiment is a
+      group-by over accumulated rows rather than a separate script (open question 4)
+- [ ] `report`, then `explain` — `explain` is the intuition-builder and is still
+      missing; a score column cannot show you the answer sentence cut in half
 - [ ] `annotate` (quote-then-locate, behind the `llm` extra) and `suggest`
 - [ ] Write the evidence card; wire `make demo`
 - [ ] Add `docs/006_chunking-lab.md` as the design record (this README is the
