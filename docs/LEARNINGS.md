@@ -9,6 +9,45 @@ sprint; keep entries concrete.
 
 ---
 
+## Iteration 5 — 2026-09-07 — a broken cap, found by a neighbouring tool's suite
+
+### A test that fails on one machine is a claim about that machine
+Two `ingest-ledger` tests failed locally while everything else passed, which is
+the shape that invites "environment thing, ignore it". It was not. `setrlimit`
+worked fine — lowering `RLIMIT_NOFILE` succeeded — but `RLIMIT_AS`, `RLIMIT_DATA`
+and even *re-setting `RLIMIT_STACK` to the values it already held* all returned
+EINVAL. That last one is the tell: nothing about the requested size was wrong, the
+resource simply is not settable on Darwin, which aliases `RLIMIT_AS` to
+`RLIMIT_RSS`.
+
+The consequence was not two flaky tests. The worker called `setrlimit`
+unconditionally, so it died before opening the file and **every subprocess
+extraction on macOS returned `exit 1`** — the tool's entire default mode, broken,
+with the in-process path masking it in every other test.
+
+**The discriminating experiment is worth stealing:** before concluding "platform
+limitation", find something in the same API that *does* work. "setrlimit is
+blocked here" and "this particular resource is not settable here" call for
+completely different fixes.
+
+### Degrading silently is worse than failing, and both are worse than saying so
+There were two obvious fixes and both were wrong. Let it raise, and the tool stays
+broken. Swallow the error, and the ledger records `memory_cap_mb: 512` for a run
+that had no cap at all — a status the probe never earned, which is the exact
+failure `ingest-ledger` exists to catch, committed by `ingest-ledger` about
+itself.
+
+The fix is the third option, and it is what CONVENTIONS rules 2 and 5 already
+said: apply the cap best-effort and **record the outcome**, so a row says
+`rlimit_as` or `unenforced: …` and no reader can mistake one for the other.
+
+### Gate a skip on the observed capability, never on `sys.platform`
+The OOM test cannot pass where no cap can be applied — there is no OOM. It now
+skips on what the run *reported* (`memory_cap != "rlimit_as"`) rather than on a
+platform string. That stays correct if an OS gains or loses the capability, works
+under a sandbox that changes it, and the skip reason names the actual cause
+instead of "macOS".
+
 ## Iteration 4 — 2026-09-07 — chunking-lab: verifying a design record
 
 ### Verification tags are worth what they cost

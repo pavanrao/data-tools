@@ -8,6 +8,27 @@ we're building or parking, and why. Append a new `## Iteration N` section at the
 
 ---
 
+## Iteration 5 — 2026-09-07 — ingest-ledger
+
+### F7 — `ingest-ledger`'s memory cap never worked on macOS, and the ledger said it did
+The subprocess memory cap is one of the tool's two headline safety mechanisms.
+`RLIMIT_AS` is not settable on Darwin, the worker called `setrlimit`
+unconditionally, and so every file extracted through the default (subprocess) path
+came back `FAILED — exit 1: ValueError`. On the hostile corpus: 0 of 9 files read
+before the fix, 6 of 9 after.
+
+Two lessons, and the second is the one to carry.
+
+**Cross-tool test suites earn their keep.** This was found by running `make test`
+while working on an unrelated tool. Nobody was looking at `ingest-ledger`.
+
+**The tool committed its own cardinal sin.** Its thesis is "never report a status
+the probe did not earn", and its evidence recorded `memory_cap_mb: 512` for runs
+with no cap. Fixed by making the cap best-effort and recording whether it applied.
+Worth a periodic audit of every other capability this collection *claims* in an
+evidence dict without checking: a claim in a record is a claim, and unverified
+claims are what these tools exist to find.
+
 ## Iteration 4 — 2026-09-07 — chunking-lab
 
 ### F4 — chunking-lab's contribution is reproducibility, not novelty

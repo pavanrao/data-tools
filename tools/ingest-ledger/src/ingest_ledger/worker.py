@@ -15,20 +15,43 @@ import sys
 from pathlib import Path
 
 
-def _apply_limits(memory_mb: int) -> None:
+def apply_limits(memory_mb: int) -> str:
+    """Cap the address space, best-effort, and report what actually happened.
+
+    Not every platform can do this. macOS aliases ``RLIMIT_AS`` to ``RLIMIT_RSS``
+    and rejects any finite value with EINVAL -- ``setrlimit`` there raises
+    ``ValueError: current limit exceeds maximum limit`` even when the current hard
+    limit is infinite, and even when re-setting a limit to the value it already
+    has. Nothing about the requested size is wrong; the resource is simply not
+    capable.
+
+    This used to raise, which killed the worker before it opened the file and
+    made *every* subprocess extraction fail on those platforms. Swallowing it
+    silently would be worse: the ledger would record ``memory_cap_mb: 512`` for a
+    run that had no cap at all, which is precisely the unearned status this tool
+    exists to catch. So the cap is best-effort and the outcome is returned, to be
+    recorded alongside the extraction (CONVENTIONS rules 2 and 5).
+
+    Returns ``"rlimit_as"`` when the cap is in force, or ``"unenforced: <why>"``
+    when the platform refused it.
+    """
     limit = memory_mb * 1024 * 1024
-    resource.setrlimit(resource.RLIMIT_AS, (limit, limit))
+    try:
+        resource.setrlimit(resource.RLIMIT_AS, (limit, limit))
+    except (ValueError, OSError) as exc:
+        return f"unenforced: {type(exc).__name__}: {exc}"
+    return "rlimit_as"
 
 
 def main(argv: list[str]) -> int:
     path = Path(argv[0])
-    _apply_limits(int(argv[1]))
+    memory_cap = apply_limits(int(argv[1]))
 
     from ingest_ledger.probes import for_path
 
     probe = for_path(path)
     if probe is None:
-        json.dump({"error": "no probe"}, sys.stdout)
+        json.dump({"error": "no probe", "memory_cap": memory_cap}, sys.stdout)
         return 3
 
     result = probe.extract(path)
@@ -37,7 +60,7 @@ def main(argv: list[str]) -> int:
             "units": result.units,
             "text": result.text,
             "missing": list(result.missing),
-            "evidence": result.evidence,
+            "evidence": {**result.evidence, "memory_cap": memory_cap},
             "error": result.error,
         },
         sys.stdout,
