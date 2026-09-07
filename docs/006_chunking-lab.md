@@ -444,6 +444,14 @@ The concepts are defined in prose, at length, in
 [`007_chunking-concepts.md`](007_chunking-concepts.md); the page is the version
 with pictures.
 
+It also carries the correlation findings (F8, F9) in the same register: chunk size
+"predicting" the score and meaning nothing, the check that looked useless turning
+out to be the sturdiest, and a fifth diagram for the counterintuitive one — cutting
+a table row destroys it *and raises Precision Ω*, because shrinking the text around
+an answer is exactly what lifts a precision ceiling. That figure's arithmetic (15%
+whole, 31% severed) was checked against `extrinsic.precision_omega` rather than
+worked out by hand.
+
 Published as an artifact:
 <https://claude.ai/code/artifact/079203e3-348b-4231-8437-e80827eaf5ff>
 
