@@ -1,7 +1,9 @@
 # chunking-lab — compare chunking strategies, and recommend one
 
-**Status: design only. No code yet.** This document is the complete handoff from
-the web session that designed it. Everything needed to start building is here.
+**Status: research settled, no code yet.** This document is the design record.
+It began as a handoff from the web session that designed it; the sources that
+session could not reach have since been fetched and read, and §§4, 5, 9 and 11
+are corrected against them. Everything needed to start building is here.
 
 `chunking-lab` is idea **#25** in [`IDEAS.md`](../../IDEAS.md). It takes one
 corpus, runs it through many chunking strategies, and produces a score per
@@ -13,7 +15,7 @@ before you build a RAG pipeline at all.
 ## Table of contents
 
 1. [Why this file exists](#1-why-this-file-exists)
-2. [Read this first if you are continuing in the CLI](#2-read-this-first-if-you-are-continuing-in-the-cli)
+2. [The sources that were blocked — now fetched](#2-the-sources-that-were-blocked--now-fetched)
 3. [Research — the chunking taxonomy](#3-research--the-chunking-taxonomy)
 4. [Research — how chunking is evaluated](#4-research--how-chunking-is-evaluated)
 5. [Research — what the evidence says](#5-research--what-the-evidence-says)
@@ -23,7 +25,7 @@ before you build a RAG pipeline at all.
 9. [The recommender](#9-the-recommender)
 10. [Model strategy: API now, local later](#10-model-strategy-api-now-local-later)
 11. [Decisions and their reasoning](#11-decisions-and-their-reasoning)
-12. [Open questions](#12-open-questions)
+12. [Open questions — answered](#12-open-questions--answered)
 13. [Implementation checklist](#13-implementation-checklist)
 14. [Sources](#14-sources)
 
@@ -48,8 +50,14 @@ and `github.com` *were* reachable, and web **search** worked throughout (it runs
 server-side), so the research below is real — but parts of it rest on search
 summaries and source code rather than the primary prose.
 
-**Every claim below is tagged with how it was verified.** Section 2 lists
-exactly what to re-fetch first in the CLI, where there is no such restriction.
+**Every claim below is tagged with how it was verified**, and the tags are kept
+honest as sources are read. Section 2 lists what was re-fetched in the CLI, where
+there is no such restriction, and what each source changed.
+
+**It was worth doing.** The headline metric had been reconstructed wrong, and the
+one prior-art claim the earlier draft was most confident about was false. Both
+are corrected below. This is the argument for the verification tags: they made
+the gap findable instead of inherited.
 
 > Note: the same restriction would *not* apply to the local CLI by default. The
 > local CLI uses your own network. Its Bash sandbox (`/sandbox`) can restrict
@@ -57,32 +65,31 @@ exactly what to re-fetch first in the CLI, where there is no such restriction.
 > `WebFetch`. Beware that `claude --cloud` from your terminal creates a *cloud*
 > session and would hit the same policy.
 
-## 2. Read this first if you are continuing in the CLI
+## 2. The sources that were blocked — now fetched
 
-```bash
-git fetch origin claude/rag-chunking-evaluation-uy5f9p
-git checkout claude/rag-chunking-evaluation-uy5f9p
-```
+**Status: done.** Every source below was fetched and read in a local CLI session
+on 2026-09-07, and checked against what §§4, 5 and 9 recorded. Three corrections
+were material. Those sections are corrected in place below and their
+verification tags updated; this table is the index of what each source settled.
 
-**The unfinished research.** Fetch these four, in this order. They are the only
-gaps in the design.
+| # | Source | What it settled |
+|---|---|---|
+| 1 | [Chroma — Evaluating Chunking Strategies](https://research.trychroma.com/evaluating-chunking) | **Precision Ω was reconstructed wrong**, in a way that would have flattered overlap — §4. Also the corpus build and the per-corpus filter thresholds (§5's were wrong), and the full results table (§5's reported numbers check out) |
+| 2 | [`brandonstarxel/chunking_evaluation`](https://github.com/brandonstarxel/chunking_evaluation) | The metric implementation is **character-based**, treats overlap asymmetrically between two of its own metrics, and defaults to a per-question adaptive *k*. Its generator retries rather than reporting a yield — §4, §10 |
+| 3 | [AutoRAG (arXiv 2410.20878)](https://arxiv.org/abs/2410.20878) | **The paper does not optimize chunking.** It fixes the corpus at 512/50 and names chunking as future work. §9's claim was false of the paper, and understated what the *framework* later added — §9 |
+| 4 | [AutoRAGTuner (arXiv 2605.02967)](https://arxiv.org/abs/2605.02967) | Adaptive Bayesian optimization over a declarative config; chunking is not identifiable in its search space from the abstract — §9 |
+| 5 | [Is Semantic Chunking Worth the Computational Cost? (arXiv 2410.13070)](https://arxiv.org/abs/2410.13070) | It measures **no cost or latency at all**, and semantic chunking *wins decisively* on topically heterogeneous documents. C14's verdict survives; its stated reasoning did not — §5, §11 |
+| 6 | [Reconstructing Context (arXiv 2504.19754)](https://arxiv.org/abs/2504.19754) | Late chunking and contextual retrieval separated by near-noise margins — an independent evaluation that does not reproduce Anthropic's headline figures — §5 |
 
-| # | URL | What to extract | Why it matters |
-|---|---|---|---|
-| 1 | `https://research.trychroma.com/evaluating-chunking` | Exact definition of **Precision Ω**; how the 5 corpora and their gold excerpts were built; the full results table | §4's formulas are reconstructed from source code, not the report. Precision Ω is the headline metric of this tool — confirm the definition before implementing it. |
-| 2 | `https://github.com/brandonstarxel/chunking_evaluation` (clone it) | `chunking_evaluation/evaluation_framework/` — the real metric implementation; `SyntheticEvaluation` — the question/excerpt generation and its filter thresholds (0.36 similarity for poor excerpts, 0.6 for duplicates) | This is the reference implementation of both the metric and the ground-truth generator. Read it before writing either. |
-| 3 | `https://arxiv.org/abs/2410.13070` — *Is Semantic Chunking Worth the Computational Cost?* (NAACL 2025 Findings) | The experimental setup and where semantic chunking *did* win | Only the abstract's conclusion was available. This paper is the main argument for keeping semantic chunking in Tier 1 rather than the default. |
-| 4 | `https://arxiv.org/abs/2504.19754` — *Reconstructing Context: Evaluating Advanced Chunking Strategies for RAG* | How it evaluates late chunking and contextual retrieval | Only the title was available. Directly relevant to Tier 2. |
+A prior-art sweep across SIGIR, ECIR, ACL Anthology and arXiv was also run, as §9
+requires before any novelty claim is made. It found work close enough to falsify
+what §9 called "possibly unclaimed". See §9.
 
-**Also required, added after the handoff:**
-`https://arxiv.org/abs/2410.20878` (**AutoRAG**) and `https://arxiv.org/abs/2605.02967`
-(AutoRAGTuner). These are the closest prior art to the recommender in §9 and
-were missed in the original research. Read them before writing `suggest`, and
-before making any novelty claim.
-
-Secondary, lower priority: `https://docs.ragas.io/en/stable/concepts/metrics/available_metrics/`
-(confirm §6), `https://arxiv.org/abs/2409.04701` (late chunking),
-`https://aclanthology.org/2025.coling-main.384/` (Mix-of-Granularity, §9 prior art).
+**The finding that shaped the build.** Precision Ω is computed over *every* chunk
+in the corpus and involves **no retrieval step at all**, and Chroma's five corpora
+with their 472 gold-span questions are MIT-licensed. So the headline metric can be
+checked against a published table — offline, model-free and deterministically.
+That check is the first test to write, and it is this tool's `make demo`.
 
 **Then** work through the checklist in §13.
 
@@ -126,27 +133,58 @@ The naive approach — run the whole pipeline, have an LLM judge the answers —
 the wrong instrument. It is expensive, non-deterministic, and confounds three
 variables (chunker, retriever, generator) when only one is being moved.
 
-The method that works, from Chroma's technical report: **evaluate at the token
-level against highlighted ground-truth spans, with no generation step at all.**
+The method that works, from Chroma's technical report: **evaluate at the span
+level against highlighted ground-truth excerpts, with no generation step at
+all.** The report says "tokens" throughout; its implementation measures
+**characters**, and so do we — see the table below.
 
 You need a corpus plus questions, where each question is annotated with the
 exact character spans that answer it. Then, for a given chunker + retriever + k:
 
 ```
-numerator   = |retrieved_spans ∩ relevant_spans|          # measured in tokens
-recall      = numerator / |relevant_spans|
-precision   = numerator / |retrieved_spans|
-IoU         = numerator / |retrieved_spans ∪ relevant_spans|
-precision Ω = the precision ceiling implied by the chunk boundaries
+gold      = the union of this question's gold spans
+retrieved = the top-k retrieved chunks, in rank order
+touching  = every chunk in the corpus overlapping gold, retrieval ignored
+
+numerator   = |gold ∩ retrieved|      # union'd: a token counts once
+recall      = numerator / |gold|
+precision   = numerator / Σ|c| for c in retrieved
+IoU         = numerator / (Σ|c| for c in retrieved  +  |gold missed|)
+Precision Ω = |gold ∩ touching| / |union(touching) ∪ gold-in-no-chunk|
 ```
 
-*Verification: `recall`, `precision` and `IoU` were read from the reference
-implementation's source (`base_evaluation.py`) — reliable. **`precision Ω` was
-not.** The code extract available was ambiguous between Precision Ω and IoU. The
-report describes it as "maximum achievable precision under perfect recall". The
-reading assumed here is: take the minimal set of chunks that fully covers the
-gold spans, and compute that set's token precision. **Confirm against source 1
-in §2 before implementing.***
+*Verification: all four are now **verified against both the report and
+`base_evaluation.py`**, read in full. The earlier reconstruction of Precision Ω
+was wrong — see immediately below. Everything in this section is `code`-verified.*
+
+### The Precision Ω correction
+
+The report defines it in one sentence:
+
+> We report precision for the case that all chunks containing excerpt tokens are
+> successfully retrieved as Precision_Ω. This gives an upper bound on token
+> efficiency given perfect recall.
+
+The earlier draft of this document guessed *"the **minimal** set of chunks that
+fully covers the gold spans."* Those two readings coincide **only for a
+non-overlapping partition**. Where chunks overlap, every chunk that so much as
+touches a gold token enters the denominator, and the non-overlapping tails of
+all of them inflate it; a minimal cover would have picked fewer.
+
+The report's own table is the proof: Recursive at 400 with **200 overlap** scores
+Precision Ω 13.9, against 17.7 for the same chunker at 400 with **no overlap**.
+The old reading would have understated what overlap costs. Overlap is a
+first-class knob of this tool, so implementing on the guess would have shipped a
+quietly wrong headline number.
+
+### Four more things the source says and the prose does not
+
+| Finding | Consequence for this tool |
+|---|---|
+| Offsets are **characters**, not tokens, everywhere in the implementation (`sum_of_ranges` is `end - start` over `str` indices), despite the report's prose saying tokens | Our metrics are character-based. No tokenizer, therefore no model and no network — the headline metric is deterministic by construction |
+| The retrieval `precision` denominator is a plain **sum** over retrieved chunks, so overlap double-counts; the Precision Ω denominator is a **union**, so it does not | Two different treatments of overlap inside one metric set. Reproduce both as they are, and say so — do not quietly "fix" one to match the other |
+| The default `retrieve=-1` sets **k per question** to that question's own number of gold-bearing chunks, rather than a fixed k | k is adaptive unless you pass one. `--k` must be explicit, and every result row must record it, or two runs are not comparable |
+| Locating a quoted excerpt is a three-stage cascade: exact match → whitespace-normalised regex → sentence-level fuzzy match at `token_sort_ratio >= 98` | This is the concrete spec for C9's quote-then-locate. Adopt the cascade as-is |
 
 Range intersection, verbatim from the reference implementation:
 
@@ -185,22 +223,46 @@ This section shaped the design more than any other, because the literature does
 **not** say "fancier chunking is better."
 
 - **Recursive character splitting at ~200 tokens, no overlap, is a strong
-  baseline.** Chroma found it never won outright but was consistently high
-  across every metric. *(search summary of the report; unverified against primary)*
-- **Semantic chunking may not earn its cost.** "Is Semantic Chunking Worth the
-  Computational Cost?" (NAACL 2025 Findings) tested document retrieval, evidence
-  retrieval and answer generation, and concluded gains over plain fixed-size
-  splitting are inconsistent and do not justify the compute. *(abstract only)*
-- **Context augmentation has the strongest reported numbers.** Anthropic's
-  contextual retrieval reports failed retrievals down 35% with contextual
-  embeddings, 49% adding contextual BM25, 67% adding a reranker — at roughly one
-  LLM call per chunk at index time. *(figures corroborated across several
-  independent sources; high confidence)*
+  baseline.** Verbatim from the report: *"We find that the heuristic
+  `RecursiveCharacterTextSplitter` with chunk size 200 and no overlap performs
+  well. While it does not achieve the best result, it is consistently high
+  performing across all evaluation metrics."* Its own default — 800 with 400
+  overlap — is near the bottom. *(verified against the report)*
+- **Semantic chunking's gains are inconsistent — but they are not absent, and the
+  cost was never measured.** "Is Semantic Chunking Worth the Computational Cost?"
+  (Qu, Tu & Bao) tested document retrieval, evidence retrieval and answer
+  generation, and found no consistent gain. Two things the abstract does not say,
+  and C14 originally leaned on the abstract:
+  - **It reports no latency or cost figures at all** — the authors list this as a
+    limitation. So the honest reading is "no consistent gain", not "measured and
+    not worth it".
+  - **Semantic chunking wins decisively on topically heterogeneous documents.**
+    On stitched corpora it took F1@5 81.89 vs 69.45 on Miracl and 63.93 vs 43.79
+    on NQ. It lost on natural documents (HotpotQA 84.79 vs 90.59; fixed-size best
+    on 4 of 5 evidence-retrieval sets). The authors attribute the difference to
+    evidence sentences clustering by *position* in real documents, and to
+    embedding quality mattering more than the strategy.
+
+  **This is a design input, not just a caveat: topic heterogeneity is a concrete
+  corpus-profiling signal for `suggest` stage 1, backed by a measurement.**
+  *(verified against the full paper)*
+- **Context augmentation has the strongest *vendor-reported* numbers, and they do
+  not independently replicate.** Anthropic reports failed retrievals down 35% with
+  contextual embeddings, 49% adding contextual BM25 and 67% adding a reranker, at
+  roughly one LLM call per chunk at index time. But *Reconstructing Context*
+  (Merola & Singh, ECIR 2025 workshop) evaluated the same family independently on
+  NFCorpus and MSMarco and found **near-noise margins**: NDCG@5 0.317 contextual
+  vs 0.312 baseline, and 0.445 late vs 0.443 early. Its conclusion is a trade-off,
+  not a win — contextual retrieval preserves coherence at higher cost, late
+  chunking is cheaper but sacrifices relevance. Report both figures whenever this
+  is cited. *(vendor figures corroborated across sources; independent replication
+  verified against the paper)*
 - **Chunk size interacts with everything** and is frequently a bigger lever than
   the strategy choice itself.
-- Reported Chroma bests: `ClusterSemanticChunker` at 400 tokens had near-top
-  recall (~91.3%); at 200 tokens it led precision (~8.0%), Precision Ω (~34.0%)
-  and IoU (~8.0%). *(search summary; treat as indicative, re-verify)*
+- Chroma bests, from the report's table: `ClusterSemanticChunker` at 400 took
+  recall 91.3; at 200 it led precision (8.0), Precision Ω (34.0) and IoU (8.0).
+  Top recall overall went to the **LLM chunker at 91.9**. *(verified — these are
+  the exact published figures)*
 
 **The honest summary — and the tool's reason to exist:** the ranking is
 corpus-dependent, the expensive strategies frequently lose, and the only way to
@@ -411,43 +473,64 @@ on the scale.
 **Automated RAG configuration search is established work. The recommender as
 described is not novel; read this section before claiming otherwise.**
 
-- **AutoRAG** (arXiv 2410.20878) automatically identifies suitable RAG modules
-  for a given dataset by enumerating configurations, running each, and selecting
-  the best. **Chunking strategy, chunk size and overlap ratio are explicitly
-  among the hyperparameters it optimizes.** This substantially covers stages 3–5
-  of section 9.
-- **AutoRAGTuner** (arXiv 2605.02967) is a declarative, configuration-driven
-  version of the same life-cycle: construct, execute, evaluate, optimize.
+- **AutoRAG** (arXiv 2410.20878) selects RAG modules per dataset with a greedy
+  node-wise search — evaluating a hard-to-score node against the node after it,
+  so m+n trials replace m×n — scored with RAGAS Context Precision over 107
+  human-reviewed QA pairs. **Distinguish the paper from the framework:**
+  - **The paper does not optimize chunking.** §3.2.1 fixes the corpus at "a chunk
+    size of 512 tokens and an overlap of 50 tokens", and Future Work names
+    "appropriate chunking strategies" as work not yet done. An earlier draft of
+    this section said chunk size and overlap were "explicitly among the
+    hyperparameters it optimizes". **That is false of the paper.**
+  - **The framework did later add it**, but outside the node search: parse →
+    chunk → one corpus per configuration, each needing its QA `retrieval_gt`
+    remapped, then end-to-end RAG performance on the already-chosen pipeline. Its
+    ground truth is **chunk-level** — the same atom-level granularity §6
+    criticises in RAGAS, and the reason it cannot see padding or a severed answer.
+- **AutoRAGTuner** (arXiv 2605.02967) wraps the same life-cycle in a declarative
+  config with a Domain-Element Model and adaptive Bayesian optimization. Whether
+  chunking is in its search space is **not determinable from the abstract**; do
+  not assert either way without reading the paper.
 - **Mix-of-Granularity** (COLING 2025) trains a router to select chunk
   granularity *per query at runtime* — a trained component inside the pipeline,
   so a genuinely different problem from a design-time advisor. See also
-  `FreeChunker` (arXiv 2510.20356) and query-adaptive semantic chunking.
+  `FreeChunker` (ACL 2026 Findings) and query-adaptive semantic chunking.
 
 An earlier draft of this document claimed no tool did design-time chunker
 recommendation. **That was wrong**, and it was based on a few targeted searches
 rather than a literature review. Corrected here so the claim is not inherited.
 
-### What is actually unclaimed
+### What is claimed already — the sweep §9 asked for
 
-AutoRAG and everything like it recommends by **running the pipeline and
-measuring**. The proposal in section 7 — that a set of **query-free intrinsic
-metrics can eliminate configurations before any retrieval, embedding or model
-call happens** — is a different mechanism, and no prior work was found applying
-it to chunking. The orphaned-reference rate in particular has no located
-antecedent.
+That review has now been done, across SIGIR, ECIR, ACL Anthology and arXiv. **It
+falsifies the "possibly unclaimed" framing.** The mechanism proposed in §7 — that
+query-free intrinsic metrics can eliminate chunking configurations before any
+retrieval happens — is published work, and so is the correlation experiment.
 
-Treat "possibly unclaimed" as exactly that: no systematic literature review has
-been done, and mechanisms this simple are often buried inside a paper about
-something else. **Do a proper related-work search before making any novelty
-claim in public.** Start with the venues in §14 plus SIGIR/ECIR/CIKM proceedings
-on chunking and passage segmentation.
+| Work | What it already does |
+|---|---|
+| **Adaptive Chunking** (arXiv 2603.25333, LREC 2026) | Selects a chunking method **per document from five intrinsic metrics** — References Completeness, Intrachunk Cohesion, Document Contextual Coherence, Block Integrity, Size Compliance — **with no retrieval or QA run**. This is §9's mechanism. "References Completeness" is the orphaned-reference rate this document called an idea with "no located antecedent" |
+| **MoC** (ACL 2025 Long) | Boundary Clarity, `BC(q,d) = ppl(q\|d) / ppl(q)`, and Chunk Stickiness, a structural entropy over a perplexity-weighted chunk graph. Explicitly query-free and downstream-task-free, and shown to trend with RAG performance. Also reports the useful negative: **semantic-dissimilarity metrics do not** |
+| **ChunkScore** (in QChunker, arXiv 2603.11650) | A downstream-task-free chunk-quality metric, validated by **correlation with QA performance at r > 0.85**. That is the §9 correlation experiment, already run |
+| **Beyond Chunk-Then-Embed** (SIGIR '26) | A taxonomy splitting segmentation method from embedding–chunking ordering, over 36 methods. §3 calls family 6's framing "this design's own"; it is now published elsewhere too |
+| **HiChunk / HiCBench** (ACL 2026 Long) | Manually annotated multi-level chunking points with evidence-dense QA — an existing annotated benchmark, and an alternative to §8.4's hostile corpus |
 
-### The research question this tool exists to answer
+**What actually survives.** Every one of those intrinsic metric sets needs a
+model: perplexity, embeddings, or an LLM. The set in §7 is **deterministic and
+model-free** — it runs with nothing installed, on a laptop, offline. That is a
+narrower and much less exciting distinction than "unclaimed", and it is the only
+one this document should make.
 
-The tool is the instrument, not the contribution. The contribution is one
-experiment it makes cheap:
+**No novelty claim belongs anywhere in the shipped docs.**
 
-> **Do query-free intrinsic metrics predict query-dependent retrieval ranking?**
+### The question this tool makes cheap to re-ask
+
+The tool is the instrument. The experiment below is a **replication**, not a
+contribution — MoC, ChunkScore and Adaptive Chunking have each run a version of
+it. What is left unanswered is one notch narrower, because all three used a
+model to compute their intrinsic signals:
+
+> **Do *model-free* intrinsic metrics predict query-dependent retrieval ranking?**
 
 Method: take N chunker configurations across M corpora. Rank them by intrinsic
 metrics alone (§7, no questions). Rank them by Precision Ω / IoU against gold
@@ -520,8 +603,20 @@ located.**
 This inverts the failure mode. A weaker model does not produce *wrong* ground
 truth; it produces *less* of it. You get 40 usable questions instead of 90. The
 tool reports the **yield**, so model quality shows up as a number instead of
-silently corrupting results. (Chroma's pipeline filters similarly — reported
-thresholds 0.36 for poor excerpts, 0.6 for duplicates; verify in source 2.)
+silently corrupting results.
+
+The reference implementation confirms the locate cascade (exact →
+whitespace-normalised regex → sentence-level fuzzy at `token_sort_ratio >= 98`)
+but **not** the yield reporting: on a failed locate it discards the question and
+*retries the model until it has enough*, so a weak model shows up as a longer
+run and a larger bill, not as a number. **Reporting the yield instead is ours,
+and it is the point of C9.**
+
+Its two similarity filters are real, but the numbers earlier recorded here were
+the *code defaults*, not what the paper used. The paper tunes both **per corpus**
+by binary search — poor-excerpt threshold 0.40–0.43, duplicate threshold
+0.67–0.73 — while the code defaults to 0.36 and 0.78. Neither "0.36 / 0.6" pair
+was right. If we adopt these filters, tune per corpus and record the value used.
 
 Practical consequence: local models are worth trying *today* — run it and read
 the yield.
@@ -549,7 +644,7 @@ the truth is "model Y wrote easier questions."
 | # | Decision | Reasoning | Status |
 |---|---|---|---|
 | C1 | **Chunkers return spans, not strings** | Token-level IoU is uncomputable without offsets back into the source; also makes family 6 expressible and enables the coverage invariant | Firm |
-| C2 | **Precision Ω is the headline metric** | It is the only metric that isolates the chunker from the retriever — the best any retriever could do given these cuts | Firm; **formula needs verifying** (§2 source 1) |
+| C2 | **Precision Ω is the headline metric** | It is the only metric that isolates the chunker from the retriever — the best any retriever could do given these cuts. It touches no retrieval at all, which is what makes it reproducible against a published table | Firm; **formula corrected** — the original reconstruction flattered overlap, see §4 |
 | C3 | **Token-level metrics, not chunk-level** | Chunk-level (RAGAS-style) treats a chunk as an atom and cannot see padding or severed answers — the actual chunking failures | Firm |
 | C4 | **No generation step in the evaluation** | Avoids confounding chunker/retriever/generator, and removes the LLM judge's cost and nondeterminism | Firm |
 | C5 | **Retriever held fixed** | Keeps #25 disjoint from #53 `retrieval-bench`, which varies the retriever with chunking fixed | Firm |
@@ -561,33 +656,46 @@ the truth is "model Y wrote easier questions."
 | C11 | **Hostile corpus as the default ground truth** | Spans known by construction, no annotation, no model; matches `ingest-ledger`'s precedent and the `hostile` marker convention | Firm |
 | C12 | **`score` and `suggest` share one measurement engine** | `suggest` is `score` plus a decision rule; no duplicated logic | Firm |
 | C13 | **`suggest` reports question-type distribution** | The recommendation is only as good as the questions; hiding that bias would make the tool dishonest | Firm |
-| C14 | **Semantic chunking is Tier 1, not default** | The NAACL 2025 finding that it may not justify its compute; making it default would assert the opposite of the evidence | Firm, pending source 3 |
+| C14 | **Semantic chunking is Tier 1, not default** | Verdict unchanged, **reasoning replaced**. The paper measures no cost or latency at all, so it shows "no consistent gain", not "measured and not worth it". And semantic chunking *wins decisively* on topically heterogeneous corpora (§5). Tier 1 is right because the win is corpus-dependent — which is this tool's whole thesis — not because the method is bad | Firm; reasoning corrected against the full paper |
 | C15 | Report relative comparisons, never absolute precision | Token precision is single-digit by construction at k>1; absolute numbers look broken | Firm |
-| C16 | **The tool is the instrument; the correlation experiment in §9 is the contribution** | Automated RAG configuration search (AutoRAG) already covers recommend-by-measuring, so the tool alone is engineering, not a result. Whether query-free metrics predict query-dependent ranking is an open empirical question the design makes cheap to answer | Firm |
+| C16 | **The tool is a reproducible model-free instrument. Nothing here is claimed as novel** | **Rewritten.** The prior-art sweep (§9) found the mechanism already published: Adaptive Chunking screens configurations from intrinsic metrics with no retrieval, and MoC and ChunkScore have both run the correlation experiment. What survives is that all of them need a model and this one does not, plus a headline metric checkable against a published table. That is engineering worth doing and a claim worth making — but it is not a research contribution | Firm; replaces the earlier novelty framing |
+| C17 | **Precision Ω is validated against Chroma's published column, not just unit-tested** | The metric was reconstructed wrong once already. Since it needs no retrieval and the benchmark is MIT-licensed, "our implementation is correct" can be a falsifiable offline test rather than an assurance | Firm; new, from the §2 re-fetch |
 
-## 12. Open questions
+## 12. Open questions — answered
 
-These were put to the user in the web session and were **not answered** before
-the handoff. Decide them first.
+Put to the user and decided on 2026-09-07, after the §2 research was settled.
 
-1. **Scope of the first cut.** Ship Tier 0 + hostile corpus + metrics + report,
-   leaving Tiers 1–2 declared but unimplemented? (Recommended: yes — gets a real
-   measured number fast and keeps it model-free.) Or go straight to all tiers?
-2. **Corpus.** Synthetic hostile corpus only (reproducible, zero-dependency,
-   CI-safe), or also ingest a real document folder from day one?
-3. **`suggest` timing.** In the first cut, or land `score` first and build the
-   advisor once the metrics are proven? (Recommended: `score` first.)
-4. **Is the correlation experiment (§9) a goal?** If yes, it constrains the
-   design: intrinsic and extrinsic metrics must be computed over the *same* runs
-   and stored together, and the corpus set has to be large enough for a rank
-   correlation to mean anything. Cheap to honour up front, expensive to retrofit.
+1. **Scope of the first cut.** Tier 0 + the hostile corpus + intrinsic and
+   extrinsic metrics + report, **plus reproducing Chroma's Precision Ω column**.
+   Tiers 1–2 stay declared and unimplemented. The reproduction was not in the
+   original three options; it became possible once §4 established that Precision Ω
+   needs no retrieval and no tokenizer.
+2. **Corpus.** The hostile corpus is the default and is what CI runs. Chroma's
+   five corpora ride along as a **validation fixture only** — the thing that
+   proves the Precision Ω implementation is right. Not a second evaluation target.
+3. **`suggest` timing.** `score` first. `suggest` stays declared and unbuilt until
+   the metrics are proven, per C12 — it is `score` plus a decision rule.
+4. **The correlation experiment.** Kept, and it does constrain §8.6 — but
+   **reframed as a replication** (§9), with the narrower model-free question.
+   Intrinsic and extrinsic metrics are computed over the *same* runs and stored on
+   the same row, so the rank correlation is a `GROUP BY` over accumulated results
+   rather than a separate script.
+
+Two further requirements were added at the same time:
+
+- **Documentation is written as the work proceeds**, not retrofitted: the design,
+  the decisions, how each part works, and usage all land in the same commit as the
+  code they describe.
+- **One HTML blog post**, written for a reader who knows nothing about chunking —
+  following the precedent of `docs/double-entry-for-documents.html`.
 
 ## 13. Implementation checklist
 
 Follows `docs/000_project-organization.md` §10.
 
-- [ ] Re-fetch the four blocked sources in §2; correct §4 and §5 where they differ
-- [ ] Answer the three open questions in §12
+- [x] Re-fetch the blocked sources in §2; correct §4, §5 and §9 where they differ
+- [x] Run the related-work sweep §9 requires before any novelty claim
+- [x] Answer the four open questions in §12
 - [ ] Scaffold `tools/chunking-lab/` — `pyproject.toml` (dist `data-tools-chunking-lab`),
       `src/chunking_lab/`, `tests/`; copy the packaging table in `docs/000` §4 exactly
 - [ ] Declare the spin-out seam (`[tool.uv.sources] data-tools-core = { workspace = true }`) **on day one**
@@ -600,7 +708,11 @@ Follows `docs/000_project-organization.md` §10.
 - [ ] Implement the intrinsic metrics (§7) — these need no ground truth, so they
       are the fastest path to something useful
 - [ ] Build the hostile corpus generator; mark its tests `hostile`
-- [ ] Implement the extrinsic metrics (§4) over BM25/FTS5
+- [ ] Implement the extrinsic metrics (§4) over BM25/FTS5 — character ranges, and
+      preserve the union/sum asymmetry between Precision Ω and precision
+- [ ] Vendor Chroma's five corpora + questions and **assert Precision Ω reproduces
+      the published column** (C17). This is the correctness proof for the headline
+      metric; it needs no model and no network
 - [ ] `score`, then `report`, then `explain`
 - [ ] `annotate` (quote-then-locate, behind the `llm` extra) and `suggest`
 - [ ] Write the evidence card; wire `make demo`
@@ -613,20 +725,31 @@ Follows `docs/000_project-organization.md` §10.
 
 ## 14. Sources
 
-Verified reachable and used:
+Read in full, and the sections above rest on them:
 
-- [Chroma — Evaluating Chunking Strategies for Retrieval](https://www.trychroma.com/research/evaluating-chunking) — *report blocked; used via search summaries*
-- [brandonstarxel/chunking_evaluation](https://github.com/brandonstarxel/chunking_evaluation) — *reference implementation; metric code read via raw.githubusercontent.com*
-- [Is Semantic Chunking Worth the Computational Cost? (NAACL 2025 Findings)](https://aclanthology.org/2025.findings-naacl.114/) — *abstract only*
-- [Anthropic — Contextual Retrieval in AI Systems](https://www.anthropic.com/engineering/contextual-retrieval) — *figures corroborated across several sources*
+- [Chroma — Evaluating Chunking Strategies for Retrieval](https://www.trychroma.com/research/evaluating-chunking) — *report read; metric definitions, corpus construction, per-corpus thresholds and the full results table all verified*
+- [brandonstarxel/chunking_evaluation](https://github.com/brandonstarxel/chunking_evaluation) — *reference implementation, cloned and read: `evaluation_framework/base_evaluation.py`, `synthetic_evaluation.py`, `utils.py`. MIT (Brandon Smith, 2024) — its five corpora and 472 questions are the C17 validation fixture*
+- [AutoRAG (arXiv 2410.20878)](https://arxiv.org/abs/2410.20878) — *full paper read. Does **not** optimize chunking; see §9*
+- [Is Semantic Chunking Worth the Computational Cost? (NAACL 2025 Findings)](https://aclanthology.org/2025.findings-naacl.114/) — *full paper read; C14's reasoning corrected against it*
+- [Reconstructing Context (arXiv 2504.19754)](https://arxiv.org/abs/2504.19754) — *full paper read; ECIR 2025 workshop, Merola & Singh*
+
+Read as abstract or summary only — tagged so, and not load-bearing:
+
+- [AutoRAGTuner (arXiv 2605.02967)](https://arxiv.org/abs/2605.02967) — *abstract only; chunking not determinable from it*
+- [Anthropic — Contextual Retrieval in AI Systems](https://www.anthropic.com/engineering/contextual-retrieval) — *vendor figures, corroborated across sources but not independently replicated — see §5*
 - [Jina — Late Chunking in Long-Context Embedding Models](https://jina.ai/news/late-chunking-in-long-context-embedding-models/)
-- [AutoRAG: Automated Framework for optimization of RAG Pipeline (arXiv 2410.20878)](https://arxiv.org/abs/2410.20878) — *summary only; READ THIS FIRST, it is the closest prior art*
-- [AutoRAGTuner: A Declarative Framework for Automatic Optimization of RAG Pipelines (arXiv 2605.02967)](https://arxiv.org/abs/2605.02967) — *summary only*
-- [Mix-of-Granularity (COLING 2025)](https://aclanthology.org/2025.coling-main.384/) — *abstract/summary only*
-- [Ragas — available metrics](https://docs.ragas.io/en/stable/concepts/metrics/available_metrics/) — *blocked; used via search summaries*
-- [Ragas — testset generation for RAG](https://docs.ragas.io/en/stable/concepts/test_data_generation/rag/) — *blocked; used via search summaries*
-- [Reconstructing Context: Evaluating Advanced Chunking Strategies for RAG (arXiv 2504.19754)](https://arxiv.org/abs/2504.19754) — *blocked; title only*
+- [Ragas — available metrics](https://docs.ragas.io/en/stable/concepts/metrics/available_metrics/) and [testset generation](https://docs.ragas.io/en/stable/concepts/test_data_generation/rag/) — *still search summaries only; §6 remains unverified against primary*
 - [Late Chunking (arXiv 2409.04701)](https://arxiv.org/abs/2409.04701) — *not read*
+
+Prior art found by the §9 sweep — read before writing `suggest`, or any claim:
+
+- [Adaptive Chunking: Optimizing Chunking-Method Selection for RAG (arXiv 2603.25333)](https://arxiv.org/abs/2603.25333) — LREC 2026. *The closest prior art to §7 and §9*
+- [MoC: Mixtures of Text Chunking Learners (ACL 2025 Long)](https://aclanthology.org/2025.acl-long.258/) — *Boundary Clarity and Chunk Stickiness*
+- [QChunker / ChunkScore (arXiv 2603.11650)](https://arxiv.org/abs/2603.11650) — *the correlation experiment, already run*
+- [Beyond Chunk-Then-Embed (SIGIR '26)](https://doi.org/10.1145/3805712.3808575) — *taxonomy over 36 segmentation methods*
+- [HiChunk / HiCBench (ACL 2026 Long)](https://aclanthology.org/2026.acl-long.1372/) — *annotated multi-level chunking points*
+- [Mix-of-Granularity (COLING 2025)](https://aclanthology.org/2025.coling-main.384/) — *per-query routing; a different problem*
+- [FreeChunker (ACL 2026 Findings)](https://aclanthology.org/2026.findings-acl.730/)
 
 In-repo references: [`IDEAS.md`](../../IDEAS.md) #25, #53, #24, #23, #50, #90 ·
 [`CONVENTIONS.md`](../../CONVENTIONS.md) rules 1–6 ·
