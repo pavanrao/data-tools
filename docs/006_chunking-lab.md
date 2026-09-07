@@ -361,11 +361,29 @@ uv run chunking-lab split README.md --strategy semantic:95 --embedder provider
 ## The explainer
 
 [`docs/where-the-cut-falls.html`](where-the-cut-falls.html) is the piece written for
-someone who has never heard of chunking — what a chunk is, why the cut matters,
-what Precision Ω measures, and the misreading. It carries a live figure: a
-chunk-size and overlap slider over a real paragraph with a marked answer,
-recomputing Precision Ω as the boundaries move. Its arithmetic was checked against
-`chunking_lab.extrinsic.precision_omega` rather than written twice by eye.
+someone who has never heard of chunking. It carries four hand-drawn SVG diagrams,
+a live figure and a glossary:
+
+- **the pipeline** — where chunking sits, and why judging the final answer cannot
+  tell you which of three stages to blame;
+- **the six families** — and, as a comparison rather than a list, the one thing
+  family 6 does differently: identical cuts, different unit;
+- **the metric anatomy** — the same document twice, showing that recall, precision
+  and IoU divide by what the *retriever* picked while Precision Ω divides by what
+  the *cuts* produced. This is the diagram that makes "no retriever is involved"
+  something you can see rather than something you are told;
+- **severing vs orphaning** — the two failure modes side by side, with the second
+  annotated to show that its boundary is already correct.
+
+Plus the live figure: a chunk-size and overlap slider over a real paragraph with a
+marked answer, recomputing Precision Ω as the boundaries move. Its arithmetic was
+checked against `chunking_lab.extrinsic.precision_omega` rather than written twice
+by eye, and the diagram geometry is validated programmatically — every shape
+inside its viewBox, no colliding labels.
+
+The concepts are defined in prose, at length, in
+[`007_chunking-concepts.md`](007_chunking-concepts.md); the page is the version
+with pictures.
 
 Published as an artifact:
 <https://claude.ai/code/artifact/079203e3-348b-4231-8437-e80827eaf5ff>

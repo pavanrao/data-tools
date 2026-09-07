@@ -201,6 +201,34 @@
   .pull cite { display: block; font-family: var(--body); font-size: var(--s-1);
                font-style: normal; color: var(--ink-muted); margin-top: .7rem; }
 
+  /* ---------- diagrams ---------- */
+  figure.fig { margin: 0; display: flex; flex-direction: column; gap: .8rem; }
+  .dia { max-width: 100%; height: auto; color: var(--ink); display: block; }
+  .dia text { font-family: var(--body); font-size: 12px; fill: currentColor; }
+  .dia .mono { font-family: var(--mono); font-size: 11px; }
+  .dia .lbl { font-size: 11px; fill: var(--ink-muted); }
+  .dia .cap { font-size: 11px; fill: var(--cut); }
+  .dia .box { fill: var(--surface); stroke: currentColor; stroke-width: 1.2; }
+  .dia .box-hi { fill: var(--cut-wash); stroke: var(--cut); stroke-width: 2; }
+  .dia .strip { fill: var(--sunken); stroke: var(--rule-firm); stroke-width: 1; }
+  .dia .picked { fill: var(--sunken); stroke: currentColor; stroke-width: 2; }
+  .dia .holds { fill: var(--cut-wash); stroke: var(--cut); stroke-width: 2; }
+  .dia .goldbar { fill: var(--mark); stroke: var(--mark-ink); stroke-width: .75; }
+  .dia .ln { stroke: currentColor; stroke-width: 1.2; fill: none; }
+  .dia .ln-cut { stroke: var(--cut); stroke-width: 2; fill: none; }
+  .dia .ln-soft { stroke: var(--rule-firm); stroke-width: 1; fill: none; }
+  .dia .dash { stroke: var(--cut); stroke-width: 1.4; fill: none; stroke-dasharray: 5 4; }
+  figcaption { font-size: var(--s-1); color: var(--ink-muted); }
+  figcaption b { color: var(--ink); }
+
+  /* ---------- glossary ---------- */
+  .glossary { display: flex; flex-direction: column; gap: 0; }
+  .term { display: grid; grid-template-columns: minmax(9rem, 13rem) 1fr; gap: .4rem 1.6rem;
+          padding: .95rem 0; border-bottom: 1px solid var(--rule); align-items: start; }
+  .term dt { font-family: var(--mono); font-size: .82rem; font-weight: 500; padding-top: .14rem; }
+  .term dd { margin: 0; }
+  @media (max-width: 34rem) { .term { grid-template-columns: 1fr; } }
+
   .note {
     background: var(--sunken); border: 1px solid var(--rule); border-radius: 3px;
     padding: 1rem 1.15rem; font-size: var(--s-1); color: var(--ink-muted);
@@ -267,6 +295,73 @@
       </div>
     </section>
 
+
+    <!-- 1b : how retrieval works ---------------------------------------- -->
+    <section>
+      <div class="col">
+        <h2>How a search system actually finds things</h2>
+        <p>Four stages, and it is worth seeing them separately, because the whole
+          argument of this piece is about isolating one of them.</p>
+      </div>
+
+      <div class="col">
+        <figure class="fig">
+          <svg class="dia" viewBox="0 0 860 180" role="img"
+               aria-label="Documents are cut into chunks by the chunker, the chunks are stored in an index, a retriever ranks them against a question, and the top few go to the model, which writes the answer. The chunker is the only stage this tool varies.">
+            <defs>
+              <marker id="a1" viewBox="0 0 10 10" refX="9" refY="5"
+                      markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+                <path d="M0,0 L10,5 L0,10 z" fill="currentColor"/>
+              </marker>
+            </defs>
+
+            <rect class="box" x="8"   y="30" width="120" height="56" rx="3"/>
+            <rect class="box-hi" x="188" y="30" width="120" height="56" rx="3"/>
+            <rect class="box" x="368" y="30" width="120" height="56" rx="3"/>
+            <rect class="box" x="548" y="30" width="120" height="56" rx="3"/>
+            <rect class="box" x="728" y="30" width="120" height="56" rx="3"/>
+
+            <text x="68"  y="56" text-anchor="middle">Documents</text>
+            <text x="248" y="56" text-anchor="middle">Chunker</text>
+            <text x="428" y="56" text-anchor="middle">Index</text>
+            <text x="608" y="56" text-anchor="middle">Retriever</text>
+            <text x="788" y="56" text-anchor="middle">Model</text>
+
+            <text class="lbl" x="68"  y="74" text-anchor="middle">your corpus</text>
+            <text class="lbl" x="248" y="74" text-anchor="middle">picks the cuts</text>
+            <text class="lbl" x="428" y="74" text-anchor="middle">stores chunks</text>
+            <text class="lbl" x="608" y="74" text-anchor="middle">ranks them</text>
+            <text class="lbl" x="788" y="74" text-anchor="middle">writes the answer</text>
+
+            <line class="ln" x1="128" y1="58" x2="184" y2="58" marker-end="url(#a1)"/>
+            <line class="ln" x1="308" y1="58" x2="364" y2="58" marker-end="url(#a1)"/>
+            <line class="ln" x1="488" y1="58" x2="544" y2="58" marker-end="url(#a1)"/>
+            <line class="ln" x1="668" y1="58" x2="724" y2="58" marker-end="url(#a1)"/>
+
+            <text class="lbl" x="156" y="50" text-anchor="middle">text</text>
+            <text class="lbl" x="336" y="50" text-anchor="middle">chunks</text>
+            <text class="lbl" x="516" y="50" text-anchor="middle">reads</text>
+            <text class="lbl" x="696" y="50" text-anchor="middle">top k</text>
+
+            <rect class="box" x="548" y="128" width="120" height="34" rx="3"/>
+            <text x="608" y="150" text-anchor="middle">Question</text>
+            <line class="ln" x1="608" y1="126" x2="608" y2="90" marker-end="url(#a1)"/>
+
+            <line class="ln" x1="788" y1="88" x2="788" y2="124" marker-end="url(#a1)"/>
+            <text x="788" y="150" text-anchor="middle">Answer</text>
+
+            <text class="cap" x="248" y="106" text-anchor="middle">the only stage this tool moves</text>
+          </svg>
+          <figcaption><b>Chunking happens once, before anyone asks anything.</b> By
+            the time a question arrives the boundaries are already fixed, and no
+            amount of cleverness in the retriever or the model can put back what a
+            bad cut took apart. That is also why judging the final answer is a poor
+            way to test a chunker: three stages contributed, and you cannot tell
+            which one to blame.</figcaption>
+        </figure>
+      </div>
+    </section>
+
     <!-- 2 ------------------------------------------------------------- -->
     <section>
       <div class="col">
@@ -279,6 +374,85 @@
         <p>So it is a trade, and the trade moves depending on your documents and on
           the questions people ask. Which means it is something to <b>measure</b>, not
           something to have an opinion about.</p>
+      </div>
+    </section>
+
+
+    <!-- 2b : the families ------------------------------------------------ -->
+    <section>
+      <div class="col">
+        <h2>Six ways to decide where to cut</h2>
+        <p>Every chunking strategy is answering one question — <em>what tells me
+          where a boundary goes?</em> — and the answers get progressively more
+          expensive. Counting characters is free. Asking a language model to read
+          the document and decide is not.</p>
+      </div>
+
+      <div class="col">
+        <div class="scroll">
+          <table>
+            <caption>The six families, ordered by what supplies the boundary signal — which is also the cost ordering</caption>
+            <thead><tr><th>family</th><th>what decides a boundary</th><th>cost</th></tr></thead>
+            <tbody>
+              <tr><td>fixed-size</td><td>a character counter</td><td>free</td></tr>
+              <tr><td>recursive</td><td>a priority list of separators: paragraph, then line, then sentence</td><td>free</td></tr>
+              <tr><td>structural</td><td>the document's own markup — headings, tables, code fences</td><td>free</td></tr>
+              <tr><td>semantic</td><td>where the meaning of consecutive sentences changes</td><td>one embedding pass</td></tr>
+              <tr><td>LLM</td><td>a model reads the text and picks</td><td>one call per window</td></tr>
+              <tr><td>context-augmenting</td><td><b>nothing — it does not move the boundaries at all</b></td><td>varies</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>That last row is the one most write-ups get wrong, by listing it
+          alongside the others as though it were another way to cut. It is not.
+          It leaves the cuts exactly where they were and changes something else:
+          <b>what gets stored for searching</b> need not be <b>what gets handed to
+          the model</b>.</p>
+      </div>
+
+      <div class="col">
+        <figure class="fig">
+          <svg class="dia" viewBox="0 0 760 285" role="img"
+               aria-label="Families one to five move the chunk boundaries: two strips of the same document show cuts in different places. Family six leaves the boundaries identical and instead indexes one small piece while returning a wider one.">
+            <text class="mono" x="8" y="16">FAMILIES 1–5 — the boundaries move</text>
+
+            <rect class="strip" x="8" y="30" width="640" height="26" rx="2"/>
+            <line class="ln-cut" x1="168" y1="26" x2="168" y2="60"/>
+            <line class="ln-cut" x1="328" y1="26" x2="328" y2="60"/>
+            <line class="ln-cut" x1="488" y1="26" x2="488" y2="60"/>
+            <text class="lbl" x="660" y="48">every 400 chars</text>
+
+            <rect class="strip" x="8" y="76" width="640" height="26" rx="2"/>
+            <line class="ln-cut" x1="96"  y1="72" x2="96"  y2="106"/>
+            <line class="ln-cut" x1="286" y1="72" x2="286" y2="106"/>
+            <line class="ln-cut" x1="410" y1="72" x2="410" y2="106"/>
+            <line class="ln-cut" x1="556" y1="72" x2="556" y2="106"/>
+            <text class="lbl" x="660" y="94">at each heading</text>
+
+            <line class="ln-soft" x1="8" y1="128" x2="752" y2="128"/>
+
+            <text class="mono" x="8" y="158">FAMILY 6 — the boundaries stay; the unit changes</text>
+
+            <rect class="strip" x="8" y="172" width="640" height="26" rx="2"/>
+            <line class="ln-cut" x1="168" y1="168" x2="168" y2="202"/>
+            <line class="ln-cut" x1="328" y1="168" x2="328" y2="202"/>
+            <line class="ln-cut" x1="488" y1="168" x2="488" y2="202"/>
+            <text class="lbl" x="660" y="190">identical cuts</text>
+
+            <rect class="holds" x="168" y="172" width="160" height="26" rx="2"/>
+
+            <path class="ln-cut" d="M168,206 L168,214 L328,214 L328,206"/>
+            <text class="cap" x="248" y="230" text-anchor="middle">stored for searching</text>
+
+            <path class="dash" d="M8,240 L8,248 L488,248 L488,240"/>
+            <text class="lbl" x="248" y="264" text-anchor="middle">handed to the model</text>
+          </svg>
+          <figcaption><b>Only the bottom row separates the two units.</b> It indexes
+            one sentence — sharp, easy to match against a question — and returns that
+            sentence with its surroundings, so the model gets enough to understand it.
+            Which means any honest score has to say <em>which of the two it
+            measured</em>.</figcaption>
+        </figure>
       </div>
     </section>
 
@@ -298,6 +472,65 @@
           of them perfectly, and ask what fraction of the text you'd be holding is
           actually the answer. It is a <em>ceiling</em>. No retriever, however good, can
           beat it, because the boundaries were fixed before it ever ran.</p>
+      </div>
+
+      <div class="col">
+        <figure class="fig">
+          <svg class="dia" viewBox="0 0 760 300" role="img"
+               aria-label="Recall, precision and IoU are all divided by the chunks the retriever happened to pick, so they change when the retriever changes. Precision Omega is divided by every chunk containing part of the answer, which is decided by the boundaries alone, with no retriever involved.">
+            <defs>
+              <marker id="a3" viewBox="0 0 10 10" refX="9" refY="5"
+                      markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+                <path d="M0,0 L10,5 L0,10 z" fill="currentColor"/>
+              </marker>
+            </defs>
+
+            <text class="mono" x="8" y="18">RECALL · PRECISION · IoU</text>
+            <text class="lbl" x="8" y="36">divided by whatever the retriever picked</text>
+
+            <rect class="strip" x="8" y="52" width="680" height="34" rx="2"/>
+            <rect class="picked" x="144" y="52" width="136" height="34"/>
+            <rect class="picked" x="280" y="52" width="136" height="34"/>
+            <line class="ln-soft" x1="144" y1="52" x2="144" y2="86"/>
+            <line class="ln-soft" x1="280" y1="52" x2="280" y2="86"/>
+            <line class="ln-soft" x1="416" y1="52" x2="416" y2="86"/>
+            <line class="ln-soft" x1="552" y1="52" x2="552" y2="86"/>
+            <rect class="goldbar" x="330" y="58" width="70" height="22" rx="2"/>
+
+            <text class="lbl" x="76"  y="104" text-anchor="middle">chunk 1</text>
+            <text class="lbl" x="212" y="104" text-anchor="middle">chunk 2</text>
+            <text class="lbl" x="348" y="104" text-anchor="middle">chunk 3</text>
+            <text class="lbl" x="484" y="104" text-anchor="middle">chunk 4</text>
+            <text class="lbl" x="620" y="104" text-anchor="middle">chunk 5</text>
+
+            <line class="ln" x1="212" y1="128" x2="212" y2="94" marker-end="url(#a3)"/>
+            <line class="ln" x1="348" y1="128" x2="348" y2="94" marker-end="url(#a3)"/>
+            <text x="280" y="144" text-anchor="middle">the two the retriever chose</text>
+            <text class="lbl" x="700" y="74">the answer</text>
+
+            <line class="ln-soft" x1="8" y1="168" x2="752" y2="168"/>
+
+            <text class="mono" x="8" y="196">PRECISION Ω</text>
+            <text class="lbl" x="8" y="214">divided by every chunk that holds part of the answer</text>
+
+            <rect class="strip" x="8" y="230" width="680" height="34" rx="2"/>
+            <rect class="holds" x="280" y="230" width="136" height="34"/>
+            <line class="ln-soft" x1="144" y1="230" x2="144" y2="264"/>
+            <line class="ln-soft" x1="280" y1="230" x2="280" y2="264"/>
+            <line class="ln-soft" x1="416" y1="230" x2="416" y2="264"/>
+            <line class="ln-soft" x1="552" y1="230" x2="552" y2="264"/>
+            <rect class="goldbar" x="330" y="236" width="70" height="22" rx="2"/>
+
+            <text class="cap" x="348" y="286" text-anchor="middle">chosen by the cuts, not by the retriever</text>
+            <text class="lbl" x="700" y="252">the answer</text>
+          </svg>
+          <figcaption><b>Same document, same answer, different denominator.</b> The
+            top three change if you swap the retriever, tune the query, or ask for
+            more chunks — so they measure the whole system. Precision Ω asks only
+            what fraction of the chunks holding the answer <em>is</em> the answer,
+            which nothing downstream can influence. That is what makes it a
+            statement about the cuts.</figcaption>
+        </figure>
       </div>
 
       <div class="col">
@@ -374,6 +607,68 @@
           file?” it hands over the entire speech. A metric that treats a chunk as a
           single yes-or-no unit scores that a flawless hit. You have to measure
           <em>inside</em> the chunk to see the problem at all.</p>
+      </div>
+    </section>
+
+
+    <!-- 4b : the two failure modes --------------------------------------- -->
+    <section>
+      <div class="col">
+        <h2>Two ways a chunk goes wrong</h2>
+        <p>We built a set of documents designed to break specific strategies, to
+          check the measurements caught what they were supposed to. Doing that
+          turned up something we had been treating as one problem and which is
+          really two — and only one of them is about where the boundary went.</p>
+      </div>
+
+      <div class="col">
+        <figure class="fig">
+          <svg class="dia" viewBox="0 0 760 300" role="img"
+               aria-label="Severing: a boundary falls inside the answer, so neither chunk holds all of it. Orphaning: the answer sits intact inside one chunk, but the heading naming its subject is in the chunk before, so the chunk is correct and still unusable.">
+            <defs>
+              <marker id="a4" viewBox="0 0 10 10" refX="9" refY="5"
+                      markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+                <path d="M0,0 L10,5 L0,10 z" fill="var(--cut)"/>
+              </marker>
+            </defs>
+
+            <text class="mono" x="8" y="18">SEVERING — the answer is cut in two</text>
+
+            <rect class="strip" x="8" y="34" width="680" height="34" rx="2"/>
+            <line class="ln-soft" x1="188" y1="34" x2="188" y2="68"/>
+            <line class="ln-soft" x1="528" y1="34" x2="528" y2="68"/>
+            <rect class="goldbar" x="268" y="40" width="180" height="22" rx="2"/>
+            <line class="ln-cut" x1="358" y1="26" x2="358" y2="76"/>
+            <text class="cap" x="358" y="92" text-anchor="middle">the boundary lands inside the answer</text>
+
+            <text class="lbl" x="8" y="118">Fix: put the boundary somewhere else — bigger chunks, better separators, overlap.</text>
+
+            <line class="ln-soft" x1="8" y1="140" x2="752" y2="140"/>
+
+            <text class="mono" x="8" y="170">ORPHANING — the answer is whole, and still useless</text>
+
+            <rect class="strip" x="8" y="186" width="680" height="34" rx="2"/>
+            <line class="ln-soft" x1="248" y1="186" x2="248" y2="220"/>
+            <line class="ln-soft" x1="588" y1="186" x2="588" y2="220"/>
+            <rect class="holds" x="60" y="192" width="150" height="22" rx="2"/>
+            <text class="mono" x="135" y="207" text-anchor="middle">## Northeast</text>
+            <rect class="goldbar" x="330" y="192" width="200" height="22" rx="2"/>
+            <text class="lbl" x="430" y="207" text-anchor="middle">files on 31 March</text>
+
+            <path class="dash" d="M330,232 C300,258 180,254 140,224" marker-end="url(#a4)"/>
+            <text class="cap" x="248" y="274" text-anchor="middle">the subject it depends on is in the chunk before</text>
+
+            <text class="lbl" x="8" y="296">Fix: none at the boundary. The boundary is already right.</text>
+          </svg>
+          <figcaption><b>The second one is why the context-augmenting family
+            exists.</b> No cut placement rescues a chunk that reads "files on 31
+            March" — the region name was never in it. The only way out is to widen
+            what the model receives, or to write the missing context into the chunk
+            before storing it.</figcaption>
+        </figure>
+        <p>Our test suite keeps five of these documents and marks them
+          <code>hostile</code>: if a strategy ever <em>stops</em> failing one, that
+          is treated as the fixture having drifted, not as an improvement.</p>
       </div>
     </section>
 
@@ -474,6 +769,97 @@
           configurations is better — “good chunking” is only defined relative to the
           questions people actually ask. Anything claiming a universal chunk-quality
           score without queries is overselling.</div>
+      </div>
+    </section>
+
+
+    <!-- 7b : glossary ---------------------------------------------------- -->
+    <section>
+      <div class="col">
+        <h2>The words, in plain language</h2>
+        <p>Everything above, defined once. If you only read one entry, read the
+          last one.</p>
+
+        <dl class="glossary">
+          <div class="term"><dt>chunk</dt>
+            <dd>A piece of a document, stored and fetched as a unit. Cutting the
+              documents into them is <b>chunking</b>.</dd></div>
+
+          <div class="term"><dt>boundary / cut</dt>
+            <dd>Where one chunk ends and the next begins. Every chunking strategy is
+              just a rule for placing these.</dd></div>
+
+          <div class="term"><dt>span</dt>
+            <dd>A chunk described by <em>where it is</em> — character 4,120 to 4,533
+              — rather than by its text. Storing positions instead of strings is what
+              makes it possible to ask "how much of this chunk is actually the
+              answer?"</dd></div>
+
+          <div class="term"><dt>retriever</dt>
+            <dd>The component that picks which chunks to fetch for a question. Ours
+              is deliberately simple and never changes, so any difference we measure
+              comes from the chunking.</dd></div>
+
+          <div class="term"><dt>k</dt>
+            <dd>How many chunks get fetched per question. Raising it almost always
+              raises recall and always lowers precision, so <b>a score quoted
+              without its k means nothing</b>.</dd></div>
+
+          <div class="term"><dt>embedding</dt>
+            <dd>A list of numbers representing a passage's meaning, so that passages
+              about similar things end up near each other. It is how a system
+              matches "retries" to text that says "backoff".</dd></div>
+
+          <div class="term"><dt>token</dt>
+            <dd>The unit a model actually reads — roughly a short word or a fragment
+              of one. Chunk sizes are usually quoted in tokens; we measure in plain
+              characters, which needs no model and cannot drift.</dd></div>
+
+          <div class="term"><dt>overlap</dt>
+            <dd>Repeating the end of each chunk at the start of the next, so an
+              answer sitting on a boundary appears whole somewhere. It works, and it
+              inflates your storage and lowers the precision ceiling.</dd></div>
+
+          <div class="term"><dt>gold span</dt>
+            <dd>The exact characters that answer a question, marked in advance. Not
+              "which document" and not "which chunk" — which characters. Everything
+              here is scored against these.</dd></div>
+
+          <div class="term"><dt>recall</dt>
+            <dd>Of the answer, how much came back. Easy to get to 100% by returning
+              everything, which is why it is never quoted alone.</dd></div>
+
+          <div class="term"><dt>precision</dt>
+            <dd>Of what came back, how much was the answer. The rest is padding the
+              model has to read past.</dd></div>
+
+          <div class="term"><dt>IoU</dt>
+            <dd>"Intersection over union" — one number balancing the two above, by
+              dividing what you got right by everything involved either way.</dd></div>
+
+          <div class="term"><dt>Precision Ω</dt>
+            <dd>The <b>ceiling</b>. Given where the boundaries fell, the best any
+              retriever could possibly do. It involves no retriever at all, which is
+              what makes it a statement about the chunking rather than about the
+              system around it.</dd></div>
+
+          <div class="term"><dt>severing</dt>
+            <dd>A boundary lands inside the answer, so no single chunk holds all of
+              it. A boundary problem, and fixable by moving the boundary.</dd></div>
+
+          <div class="term"><dt>orphaning</dt>
+            <dd>The chunk holding the answer is intact, and useless anyway, because
+              the heading, table header or noun it depends on is in a different
+              chunk. <b>Not</b> a boundary problem — the boundary is already
+              right.</dd></div>
+
+          <div class="term"><dt>intrinsic / extrinsic</dt>
+            <dd>Intrinsic checks need only the document and the proposed cuts.
+              Extrinsic checks need questions with marked answers. Intrinsic checks
+              <b>screen</b> — they can tell you a configuration is broken. Only
+              extrinsic checks can <b>rank</b> two reasonable ones, because good
+              chunking is only defined relative to the questions people ask.</dd></div>
+        </dl>
       </div>
     </section>
 
