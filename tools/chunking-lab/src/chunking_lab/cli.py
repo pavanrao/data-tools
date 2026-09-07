@@ -11,7 +11,8 @@ from data_tools_core.provenance import Provenance, UnitKind
 
 from chunking_lab.chunkers import STRATEGIES, from_spec
 from chunking_lab.embeddings import resolve
-from chunking_lab.invariant import check, coverage
+from chunking_lab.intrinsic import measure
+from chunking_lab.invariant import check
 
 #: Which strategies are implemented, and what each needs installed. Printed by
 #: `chunkers` so the gap between what is designed and what is built is visible
@@ -52,7 +53,39 @@ def build_parser() -> argparse.ArgumentParser:
     split.add_argument("--limit", type=int, default=10, help="spans to show (0 for all)")
     split.set_defaults(run=run_split)
 
+    metrics = sub.add_parser(
+        "metrics",
+        help="score one document against several strategies, query-free",
+        description=(
+            "Intrinsic metrics screen; they do not rank. A strategy with no "
+            "disqualifications is eligible for a real evaluation, not good."
+        ),
+    )
+    metrics.add_argument("path", type=Path, help="the document to measure")
+    metrics.add_argument(
+        "--strategy",
+        action="append",
+        required=True,
+        dest="strategies",
+        help="repeatable, e.g. --strategy recursive:400 --strategy structural",
+    )
+    metrics.add_argument(
+        "--embedder",
+        default=None,
+        choices=["hashing", "provider"],
+        help="add cohesion/separation, the only two signals here that cost anything",
+    )
+    metrics.set_defaults(run=run_metrics)
+
     return parser
+
+
+def _load(path: Path) -> tuple[str, Provenance]:
+    return path.read_text(), Provenance(
+        source=path,
+        sha256=hashlib.sha256(path.read_bytes()).hexdigest(),
+        unit_kind=UnitKind.DOCUMENT,
+    )
 
 
 def run_chunkers(args: argparse.Namespace) -> int:
@@ -73,12 +106,7 @@ def run_chunkers(args: argparse.Namespace) -> int:
 
 def run_split(args: argparse.Namespace) -> int:
     """Chunk one document and print the spans, so the cuts can be eyeballed."""
-    text = args.path.read_text()
-    provenance = Provenance(
-        source=args.path,
-        sha256=hashlib.sha256(args.path.read_bytes()).hexdigest(),
-        unit_kind=UnitKind.DOCUMENT,
-    )
+    text, provenance = _load(args.path)
     chunker = from_spec(args.strategy)
     if getattr(args, "embedder", "hashing") != "hashing" and hasattr(chunker, "embedder"):
         chunker.embedder = resolve(args.embedder)
@@ -86,7 +114,7 @@ def run_split(args: argparse.Namespace) -> int:
     check(chunking, text)
 
     print(f"{chunking.strategy} on {provenance.locator}")
-    print(f"{len(chunking)} spans, coverage {coverage(chunking, text):.3f}")
+    print(f"{len(chunking)} spans, coverage {measure(chunking, text).coverage:.3f}")
     print(f"path: {chunking.code_path}")
     for note in chunking.notes:
         print(f"note: {note}")
@@ -97,6 +125,51 @@ def run_split(args: argparse.Namespace) -> int:
         print(f"  [{i:>3}] {span.start:>6}..{span.end:<6} {span.length:>5}c  {body[:72]}")
     if len(shown) < len(chunking):
         print(f"  ... {len(chunking) - len(shown)} more (--limit 0 for all)")
+    return 0
+
+
+def run_metrics(args: argparse.Namespace) -> int:
+    """Measure several strategies on one document, with no questions involved."""
+    text, provenance = _load(args.path)
+    embedder = resolve(args.embedder) if args.embedder else None
+
+    rows = []
+    for spec in args.strategies:
+        chunker = from_spec(spec)
+        if args.embedder and hasattr(chunker, "embedder"):
+            chunker.embedder = resolve(args.embedder)
+        chunking = chunker.chunk(text, provenance)
+        check(chunking, text)
+        rows.append(measure(chunking, text, embedder=embedder))
+
+    header = f"{'strategy':<26}{'chunks':>7}{'dup':>6}{'ret':>6}{'p95':>7}{'bfid':>6}{'orph':>6}"
+    if embedder is not None:
+        header += f"{'cohes':>7}{'separ':>7}"
+    print(f"{provenance.locator}  ({len(text)} characters)\n")
+    print(header)
+    for row in rows:
+        line = (
+            f"{row.strategy:<26}{row.chunks:>7}{row.duplication:>6.2f}"
+            f"{row.return_amplification:>6.2f}{row.p95_length:>7}"
+            f"{row.boundary_fidelity:>6.2f}{row.orphan_rate:>6.2f}"
+        )
+        if row.cohesion is not None:
+            line += f"{row.cohesion:>7.2f}{row.separation or 0.0:>7.2f}"
+        print(line)
+
+    print("\nscreening:")
+    for row in rows:
+        reasons = row.disqualifications()
+        if reasons:
+            print(f"  {row.strategy}: DISQUALIFIED")
+            for reason in reasons:
+                print(f"      - {reason}")
+        else:
+            print(f"  {row.strategy}: eligible")
+    print(
+        "\nIntrinsic metrics screen; they do not rank. Ranking the eligible ones\n"
+        "needs questions with gold spans -- see this tool's README section 7."
+    )
     return 0
 
 

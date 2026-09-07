@@ -7,14 +7,18 @@ choice, the decisions taken, and what is not yet built.
 """
 
 from chunking_lab.chunkers import from_spec
-from chunking_lab.invariant import InvariantViolation, check, coverage
+from chunking_lab.intrinsic import Intrinsic, measure
+from chunking_lab.invariant import InvariantViolation, check, content_coverage, coverage
 from chunking_lab.spans import Chunking, Span
 
 __all__ = [
     "Chunking",
+    "Intrinsic",
     "InvariantViolation",
     "Span",
     "check",
+    "content_coverage",
     "coverage",
     "from_spec",
+    "measure",
 ]

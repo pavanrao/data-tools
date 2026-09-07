@@ -52,3 +52,59 @@ def test_main_has_a_one_line_docstring_for_dt_ls():
     """`dt ls` prints the first line of main.__doc__ as the tool's summary."""
     summary = (main.__doc__ or "").strip().splitlines()
     assert summary and len(summary[0]) < 80
+
+
+def test_metrics_compares_several_strategies_on_one_document(tmp_path, prose, capsys):
+    document = tmp_path / "notes.md"
+    document.write_text(prose)
+
+    exit_code = main(
+        [
+            "metrics",
+            str(document),
+            "--strategy",
+            "fixed:100",
+            "--strategy",
+            "sentence:2",
+        ]
+    )
+    assert exit_code == 0
+    out = capsys.readouterr().out
+    assert "fixed:100" in out and "sentence:2" in out
+    # The line the tool must never stop printing.
+    assert "screen; they do not rank" in out
+
+
+def test_metrics_reports_the_screening_verdict_for_each_strategy(tmp_path, capsys):
+    document = tmp_path / "wide.md"
+    document.write_text("word " * 2000)
+
+    assert main(["metrics", str(document), "--strategy", "fixed:5000"]) == 0
+    out = capsys.readouterr().out
+    assert "DISQUALIFIED" in out
+    assert "silent truncation" in out
+
+
+def test_metrics_adds_cohesion_only_when_an_embedder_is_asked_for(tmp_path, prose, capsys):
+    document = tmp_path / "notes.md"
+    document.write_text(prose)
+
+    assert main(["metrics", str(document), "--strategy", "sentence:2"]) == 0
+    assert "cohes" not in capsys.readouterr().out
+
+    assert (
+        main(["metrics", str(document), "--strategy", "sentence:2", "--embedder", "hashing"]) == 0
+    )
+    assert "cohes" in capsys.readouterr().out
+
+
+def test_split_reports_the_path_that_ran(tmp_path, prose, capsys):
+    """Rule 2, visible at the command line rather than only in a result file."""
+    document = tmp_path / "notes.md"
+    document.write_text(prose)
+
+    assert main(["split", str(document), "--strategy", "semantic:95"]) == 0
+    assert "tier-1/embeddings:hashing-bow-v1" in capsys.readouterr().out
+
+    assert main(["split", str(document), "--strategy", "recursive:200"]) == 0
+    assert "tier-0/model-free" in capsys.readouterr().out

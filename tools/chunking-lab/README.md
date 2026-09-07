@@ -720,8 +720,11 @@ Follows `docs/000_project-organization.md` §10.
       an offline hashing embedder so they are testable and demonstrable with
       nothing installed — and `code_path` on every result so a run against that
       fallback can never be ranked against one using a real encoder
-- [ ] Implement the intrinsic metrics (§7) — these need no ground truth, so they
-      are the fastest path to something useful
+- [x] Implement the intrinsic metrics (§7) — these need no ground truth, so they
+      were indeed the fastest path to something useful: `chunking-lab metrics`
+      already separates a fixed-size splitter (boundary fidelity 0.06, cuts 7% of
+      code fences) from a structural one (0.83) on any document you have lying
+      around, with no model and no questions
 - [ ] Build the hostile corpus generator; mark its tests `hostile`
 - [ ] Implement the extrinsic metrics (§4) over BM25/FTS5 — character ranges, and
       preserve the union/sum asymmetry between Precision Ω and precision

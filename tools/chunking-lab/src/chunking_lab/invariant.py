@@ -74,6 +74,23 @@ def check(chunking: Chunking, text: str) -> None:
                 )
 
 
+def content_coverage(chunking: Chunking, text: str) -> float:
+    """Fraction of the document's **non-whitespace** characters present in a span.
+
+    This is the one that means something. Plain :func:`coverage` drops below 1.0
+    whenever a strategy trims its boundaries, which is normal and harmless;
+    content coverage below 1.0 is data loss, full stop, and is the condition
+    :func:`check` refuses outright.
+    """
+    content = [i for i, character in enumerate(text) if not character.isspace()]
+    if not content:
+        return 1.0
+    covered = bytearray(len(text))
+    for span in chunking.spans:
+        covered[span.start : span.end] = b"\x01" * span.length
+    return sum(1 for i in content if covered[i]) / len(content)
+
+
 def coverage(chunking: Chunking, text: str) -> float:
     """Fraction of the document's characters present in at least one span.
 

@@ -10,9 +10,9 @@ This document is the design record: what is built, how each part works, and why
 it is shaped that way. Per `docs/000` §9 the numbered doc holds the design; the
 README holds the usage.
 
-**Status.** All six Tier 0 chunkers, both Tier 1 semantic chunkers, and the
-invariant that governs them. The metrics, the hostile corpus, and `score` are not
-built yet — see the checklist in README §13.
+**Status.** All six Tier 0 chunkers, both Tier 1 semantic chunkers, the invariant
+that governs them, and the query-free intrinsic metrics. The hostile corpus and
+the extrinsic metrics (`score`) are not built yet — see README §13.
 
 ## Pipeline
 
@@ -20,7 +20,7 @@ built yet — see the checklist in README §13.
 document ─▶ chunker ─▶ Chunking(spans, provenance, strategy)
                            │
                            ├─▶ invariant.check   (always; a violation is a chunker bug)
-                           ├─▶ intrinsic metrics (query-free)          [not built]
+                           ├─▶ intrinsic metrics (query-free)  ─▶ screening verdict
                            └─▶ retrieve ─▶ extrinsic metrics vs gold   [not built]
                                              precision_omega, iou, precision, recall
 ```
@@ -63,6 +63,11 @@ document ─▶ chunker ─▶ Chunking(spans, provenance, strategy)
   document's *own* distances; `ClusterSemanticChunker` solves for the partition
   maximising total within-chunk similarity by dynamic programming, subject to a
   size cap.
+- **`intrinsic.py`** — the query-free metrics: coverage and **content coverage**,
+  duplication and return amplification, size distribution, boundary fidelity,
+  mid-table and split-fence rates, orphaned-reference rate, and — only with an
+  embedder — cohesion and separation. `Intrinsic.disqualifications()` is the
+  screening verdict.
 - **`chunkers/__init__.py`** — `from_spec` parses the strategy specs
   (`recursive:400/200`, `parent-document:200/1000`) that name a run on the command
   line and in every result row.
@@ -143,6 +148,35 @@ document ─▶ chunker ─▶ Chunking(spans, provenance, strategy)
   are more of them — which is precisely why the size cap is mandatory rather than
   optional: it is what makes the objective well posed.
 
+- **Screening says "eligible", never "best".** `disqualifications()` returns
+  *faults* — content lost, chunks past the embedding window, a code fence cut in
+  half — and nothing else. It deliberately has no scoring function and no ordering,
+  because intrinsic metrics cannot rank two reasonable configurations: chunk
+  quality is only defined relative to the questions asked (README §7). The CLI
+  prints "intrinsic metrics screen; they do not rank" on every run, and a test
+  asserts that line is still there, so making them rank means deleting an
+  assertion that says not to.
+
+- **Content coverage exists because plain coverage was useless for screening.**
+  The first version disqualified a configuration whenever coverage dipped below
+  1.0 — which fires on every trimming strategy, for whitespace. `content_coverage`
+  counts only non-whitespace characters, matching what the invariant enforces.
+  Plain coverage is still reported: it is informative, just not a fault.
+
+- **Every intrinsic signal names its prior art in its own docstring.** Boundary
+  fidelity is Adaptive Chunking's Block Integrity, the oversize rate is its Size
+  Compliance, the orphaned-reference rate is its References Completeness. Putting
+  those attributions at the point of definition rather than only in a README §9
+  table is what stops the claim drifting back to "possibly unclaimed" the next
+  time someone summarises the tool. The genuine difference — no model needed — is
+  stated in the same place, once.
+
+- **Cohesion and separation are included with a warning attached.** They are the
+  only intrinsic signals that cost anything, and MoC reports that plain semantic
+  dissimilarity metrics of exactly this shape did *not* track RAG performance
+  while their perplexity-based ones did. They are here because the correlation
+  experiment (README §9) needs them measured, not because they are known to work.
+
 - **A spec string is the identity of a run.** `recursive:400/200` names the
   strategy and every parameter that changes its output, and `fixed:512/0`
   normalises to `fixed:512` so one configuration cannot appear as two rows.
@@ -167,6 +201,11 @@ uv run chunking-lab split README.md --strategy sentence-window:1
 # Tier 1 -- offline by default, and the output says so
 uv run chunking-lab split README.md --strategy semantic:95
 uv run chunking-lab split README.md --strategy cluster-semantic:400
+
+# screen several strategies with no questions and no model
+uv run chunking-lab metrics README.md \
+    --strategy fixed:800/400 --strategy recursive:200 \
+    --strategy structural --strategy sentence:4
 
 # Tier 1 against a real encoder (needs the `embeddings` extra)
 export DATA_TOOLS_EMBED_MODEL=openai/text-embedding-3-small
