@@ -797,8 +797,17 @@ Follows `docs/000_project-organization.md` §10.
       from ~+0.15 raw to +0.44. `mid_table_rate` and `split_fence_rate` are
       constant on this benchmark — untested, not disproven. `make chunking-correlate`,
       full result in `docs/FINDINGS.md` F8
-- [ ] Re-run `correlate` on a corpus **with structure** — tables and code fences —
-      so the two signals aimed at structural failures are actually tested
+- [x] Re-run `correlate` on a corpus **with structure** — tables and code fences.
+      `corpus/generate_docs.py` generates one (5 documents, 180 questions, gold
+      spans by construction) because no downloaded document carries gold spans and
+      the detectors match Markdown syntax rather than layout. Result:
+      `mid_table_rate` predicts **nothing** on any target — cutting a table row
+      makes the chunks holding the answer smaller, which *raises* Precision Ω, so a
+      ceiling metric cannot see table damage even in principle. `split_fence_rate`
+      is directionally right only where code is dense. `duplication` and
+      `boundary_fidelity` **replicate** across both corpora. `FINDINGS.md` F9
+- [x] Bring-your-own-corpus: `score --corpus-dir` reads any directory of documents
+      plus a `gold.jsonl`, validating every span against its document on load
 
 ## 14. Sources
 

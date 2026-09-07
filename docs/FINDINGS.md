@@ -8,6 +8,52 @@ we're building or parking, and why. Append a new `## Iteration N` section at the
 
 ---
 
+## Iteration 7 — 2026-09-07 — the structural signals, finally tested
+
+### F9 — `mid_table_rate` does not predict retrieval quality. `split_fence_rate` barely does.
+F8 left these two **untested**: the Chroma corpora contain no Markdown tables and
+no code fences, so both signals were constant and there was nothing to correlate.
+A generated documentation corpus — 5 documents, 180 questions, tables and fences
+throughout, gold spans known by construction — closes that gap. The answer is a
+clean negative, which is worth more than the guess it replaces.
+
+| signal | vs Ω, per corpus | vs IoU, per corpus | partial (size removed) |
+|---|---|---|---|
+| `mid_table_rate` | −0.47, +0.34, −0.40, +0.18, *const* | −0.50, +0.24, −0.05, +0.07, *const* | +0.20 / +0.15 |
+| `split_fence_rate` | **−0.63\***, *const*, +0.07, +0.29, −0.47 | **−0.82\***, *const*, −0.00, −0.38, **−0.69\*** | +0.04 / −0.29 |
+
+**`mid_table_rate` fails outright.** Not significant on any corpus against any
+target, and the sign flips between corpora. And there is a mechanism, which is the
+useful part: cutting through a table row makes the chunks holding the answer
+*smaller*, which **raises** the precision ceiling. Precision Ω is structurally the
+wrong target for a "did you damage the content" signal — the damage is to whether
+a retrieved chunk is *usable*, which no ceiling metric measures.
+
+**`split_fence_rate` is directionally right where code is dense.** Significant and
+negative on `api_reference` (−0.82 vs IoU) and `tutorial` (−0.69), the two corpora
+with the most fenced code; nothing on the others. Real but weak, and it collapses
+to −0.29 once size is controlled.
+
+**Two findings from F8 replicate on an independent corpus**, which is the stronger
+result here:
+
+- `duplication`: partial −0.64 on Chroma, **−0.62** here. Overlap costs beyond size.
+- `boundary_fidelity`: partial +0.44 on Chroma, **+0.34** here, and significant on
+  3 of 5 corpora against IoU. The signal that looks worthless raw is the one that
+  holds up across two unrelated corpora.
+
+**Verdict, and it vindicates §7's original framing.** These structural signals are
+**disqualification** signals, not **ranking** signals. "This configuration shreds
+40% of your tables" is a reason to reject it; it is not a prediction of where it
+will place. The correlation experiment now says so with evidence rather than
+assertion, and `disqualifications()` — which returns faults and has deliberately
+never had a scoring function — was the right shape all along.
+
+**Stated limitation.** The corpus is synthetic. The generator decides where the
+tables are and where the answers are; it does **not** decide whether shredding
+them hurts, which is measured. So this says how the signals behave on documentation
+*shaped* like this, not how often such documents occur. `make chunking-correlate-structured`.
+
 ## Iteration 6 — 2026-09-07 — the chunking correlation experiment
 
 ### F8 — model-free intrinsic signals do predict the ranking, and mostly by proxying chunk size

@@ -10,6 +10,7 @@ from pathlib import Path
 from data_tools_core.provenance import Provenance, UnitKind
 
 from chunking_lab import benchmark, score
+from chunking_lab import corpus as corpus_mod
 from chunking_lab import correlate as correlate_mod
 from chunking_lab.chunkers import STRATEGIES, from_spec
 from chunking_lab.correlate import TARGETS
@@ -97,7 +98,14 @@ def build_parser() -> argparse.ArgumentParser:
         "--corpus",
         action="append",
         dest="corpora",
-        help="benchmark corpus name, e.g. state_of_the_union.md (default: all five)",
+        help="corpus name to keep, e.g. state_of_the_union.md (default: all of them)",
+    )
+    scoring.add_argument(
+        "--corpus-dir",
+        type=Path,
+        default=None,
+        help="score a directory of documents plus a gold.jsonl instead of the Chroma "
+        "benchmark -- generated fixtures, or your own annotated corpus",
     )
     scoring.add_argument(
         "--k",
@@ -245,7 +253,7 @@ def run_metrics(args: argparse.Namespace) -> int:
 
 def run_score(args: argparse.Namespace) -> int:
     """Rank strategies against gold spans, and say what the ranking rests on."""
-    corpora = benchmark.load()
+    corpora = corpus_mod.load_dir(args.corpus_dir) if args.corpus_dir else benchmark.load()
     if args.corpora:
         wanted = set(args.corpora)
         corpora = [c for c in corpora if c.name in wanted]
