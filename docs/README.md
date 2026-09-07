@@ -23,6 +23,8 @@ Four kinds of document, deliberately kept apart. A verdict filed in a design doc
 | [`003`](003_docs-rag.md) | `docs-rag` (#1) — RAG over a document folder | Parked |
 | [`004`](004_repo-rag.md) | `repo-rag` (#2) — ask-your-codebase + MCP server | Parked |
 | [`005`](005_concept-coverage.md) | Concept coverage — 98 AI/data-engineering concepts mapped to sections F–G of `IDEAS.md`, plus the showcase criteria | Current, plan |
+| [`006`](006_chunking-lab.md) | `chunking-lab` (#25) — compare chunking strategies, scored at the character level | Current |
+| [`007`](007_chunking-concepts.md) | Chunking concepts — the reference: every concept `chunking-lab` is built from, with its trade-off and where it lives | Current |
 
 The series is **append-only**. A superseded decision is annotated in place with
 a status line and a pointer to what replaced it, never deleted — see D1a and D2a
@@ -36,6 +38,7 @@ reason the log exists.
 | `ingest-ledger` | [README](../tools/ingest-ledger/README.md), [GETTING-STARTED](../tools/ingest-ledger/GETTING-STARTED.md) | those, plus [`double-entry-for-documents.html`](double-entry-for-documents.html) |
 | `docs-rag` | [README](../tools/docs-rag/README.md) | [`003`](003_docs-rag.md) |
 | `repo-rag` | [README](../tools/repo-rag/README.md) | [`004`](004_repo-rag.md) |
+| `chunking-lab` | [README](../tools/chunking-lab/README.md), [`where-the-cut-falls.html`](where-the-cut-falls.html) | [`006`](006_chunking-lab.md), concepts in [`007`](007_chunking-concepts.md) |
 
 New tools take the next number in the series.
 

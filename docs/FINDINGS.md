@@ -8,6 +8,59 @@ we're building or parking, and why. Append a new `## Iteration N` section at the
 
 ---
 
+## Iteration 4 — 2026-09-07 — chunking-lab
+
+### F4 — chunking-lab's contribution is reproducibility, not novelty
+The design record proposed that query-free intrinsic metrics screening chunking
+configurations was an unclaimed mechanism, and that measuring whether they predict
+retrieval ranking was the contribution. A proper related-work sweep says otherwise:
+**Adaptive Chunking** (LREC 2026) selects a chunking method per document from five
+intrinsic metrics with no retrieval run; **MoC** (ACL 2025) and **ChunkScore**
+(QChunker) have both already correlated query-free metrics against downstream QA.
+
+What survives is narrow and real: every one of those needs a model — perplexity,
+embeddings, or an LLM — and this one does not. Tier 0 runs with nothing installed,
+offline, deterministically. **No novelty claim goes in the shipped docs.** The tool
+is worth building as an instrument; it is not a result.
+
+### F5a — the reproduction worked, and the misreading is measured
+
+F5 proposed checking Precision Ω against Chroma's published column instead of
+against our own understanding. Done, and it reproduces **all four values exactly**
+— 6.7 / 13.9 / 17.7 / 29.9 — over 472 questions, offline, with no retriever and no
+model, because Precision Ω involves no retrieval.
+
+The counterfactual is the part worth keeping. Implemented from the design record's
+original reading, the same code scores **8.6 / 16.8 / 17.8 / 30.7**: nearly right
+with no overlap, ~28% high wherever chunks overlap. It would have passed every
+unit test written against it, looked entirely plausible, and **quietly recommended
+overlap** — on the exact axis the tool exists to compare. Both readings are kept
+implemented so the gap stays under test.
+
+Cost: about an hour of re-fetching sources plus a 1.6MB download. Do this whenever
+a tool's headline number has a published counterpart.
+
+### F5 — a published table is a better correctness test than a unit test
+Precision Omega touches no retrieval, and Chroma's five corpora with 472 gold-span
+questions are MIT-licensed. So "is our headline metric implemented correctly?" can
+be a **falsifiable offline check against someone else's published numbers**, not an
+assurance. Given the metric had already been reconstructed wrong once, that is the
+difference between a tool and a tool you would quote.
+
+Generalises: before writing a metric, check whether a public benchmark plus a
+published results table exists. Reproducing three numbers is worth more than thirty
+tests you wrote against your own understanding.
+
+### F6 — the semantic-chunking verdict is corpus-dependent, which is the thesis
+"Is Semantic Chunking Worth the Computational Cost?" is read as "no". The full
+paper is more useful than its title: it **measures no cost or latency at all** (a
+stated limitation), and semantic chunking *wins decisively* on topically
+heterogeneous documents — F1@5 81.89 vs 69.45 on Miracl — while losing on natural
+ones. So the honest summary is "no consistent gain", and **topic heterogeneity
+becomes a corpus-profiling signal** for the recommender rather than a caveat in a
+footnote. This is the strongest single piece of evidence for the tool's premise:
+the ranking depends on your documents, so measure on your documents.
+
 ## Iteration 3 — 2026-09-03
 
 ### F7 — Confining an integration bounds its API surface, not its runtime assumptions

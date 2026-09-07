@@ -1,0 +1,48 @@
+[project]
+name = "data-tools-chunking-lab"
+version = "0.1.0"
+description = "Compare chunking strategies on one corpus and recommend one, scored at the token level."
+requires-python = ">=3.13"
+# The deterministic core is model-free by construction (CONVENTIONS r3): Tier 0
+# chunkers, the intrinsic metrics, and BM25/FTS5 retrieval need nothing beyond
+# the standard library and the shared provenance types.
+dependencies = [
+    "data-tools-core",
+]
+
+[project.optional-dependencies]
+# Tier 1 (semantic chunking) needs an encoder; Tier 2 (LLM boundaries,
+# contextual augmentation) needs a chat model. Both reach the model layer through
+# data_tools_core.llm, but they are separate extras because they are separate
+# claims: a Tier 1 result produced with the offline hashing fallback is not
+# evidence about semantic chunking, and folding the two together would hide that.
+# See README section 8.2.
+embeddings = ["data-tools-core[llm]"]
+llm = ["data-tools-core[llm]"]
+
+# Reproducing Chroma's published Precision Omega column (README C17) needs a
+# tokenizer, because the sizes in that table are expressed in tokens. Nothing the
+# tool measures for itself does -- the metrics are character-based, so the whole
+# Tier 0 lane stays deterministic and offline. Kept a separate extra rather than
+# folded into `llm` precisely so that difference stays visible.
+benchmark = ["tiktoken>=0.7"]
+
+[project.scripts]
+chunking-lab = "chunking_lab.cli:main"
+
+[project.entry-points."data_tools.tools"]
+chunking-lab = "chunking_lab.cli:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/chunking_lab"]
+
+# Dev-only: resolve the shared library from the workspace. uv strips
+# [tool.uv.sources] from built wheels, so deleting this one block is the entire
+# "decouple from the workspace" step when spinning this tool out into its own
+# repo. See docs/000_project-organization.md (the spin-out seam).
+[tool.uv.sources]
+data-tools-core = { workspace = true }
