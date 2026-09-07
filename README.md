@@ -29,13 +29,17 @@ Every tool in this repo aims to be:
 
 ## Where to start
 
-See [`IDEAS.md`](./IDEAS.md) for the running backlog of **48** tool ideas. Pick one,
+See [`IDEAS.md`](./IDEAS.md) for the running backlog of **123** tool ideas. Pick one,
 move it into a `tools/<name>/` directory, and build.
 
 Sections **A–D** are RAG/MCP-focused tools and infrastructure. Section **E**
 (*Pipeline-framework tools*) adds generic data-pipeline plumbing — ingestion,
 lineage, data quality, reference data, and extracts — that any metadata-driven
-platform can reuse.
+platform can reuse. Sections **F–H** target enterprise data-engineering and
+data-architecture problems where AI is essential, in three tiers: **F** small,
+sharp AI tools (days to build), **G** ambitious bounded agents (one
+enterprise-grade job, multi-step agency), and **H** full systems — multi-component
+platforms where the "small tool" rule is intentionally waived.
 
 ## Repo layout (planned)
 
