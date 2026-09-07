@@ -11,8 +11,9 @@ it is shaped that way. Per `docs/000` §9 the numbered doc holds the design; the
 README holds the usage.
 
 **Status.** All six Tier 0 chunkers, both Tier 1 semantic chunkers, the invariant
-that governs them, and the query-free intrinsic metrics. The hostile corpus and
-the extrinsic metrics (`score`) are not built yet — see README §13.
+that governs them, the query-free intrinsic metrics, and the extrinsic metrics —
+**whose Precision Ω reproduces Chroma's published column exactly** (6.7 / 13.9 /
+17.7 / 29.9). The hostile corpus and the `score` command are not built yet.
 
 ## Pipeline
 
@@ -21,8 +22,9 @@ document ─▶ chunker ─▶ Chunking(spans, provenance, strategy)
                            │
                            ├─▶ invariant.check   (always; a violation is a chunker bug)
                            ├─▶ intrinsic metrics (query-free)  ─▶ screening verdict
-                           └─▶ retrieve ─▶ extrinsic metrics vs gold   [not built]
-                                             precision_omega, iou, precision, recall
+                           └─▶ extrinsic metrics vs gold spans
+                                 precision_omega   (no retrieval at all)
+                                 recall / precision / iou   (top-k retrieved)
 ```
 
 ## Modules (`tools/chunking-lab/src/chunking_lab/`)
@@ -68,6 +70,15 @@ document ─▶ chunker ─▶ Chunking(spans, provenance, strategy)
   mid-table and split-fence rates, orphaned-reference rate, and — only with an
   embedder — cohesion and separation. `Intrinsic.disqualifications()` is the
   screening verdict.
+- **`ranges.py`** — half-open character-range arithmetic: `total`, `union`,
+  `intersect`, `difference`. Every metric is built from these four, kept separate
+  so that when a score looks wrong this is the layer you can rule out first.
+- **`extrinsic.py`** — `precision_omega` (no retrieval involved) and `score`
+  (recall, precision, IoU at k). Implemented to the definitions verified against
+  the report *and* the reference implementation, including the parts the prose
+  omits.
+- **`benchmark.py`** — loads the five Chroma corpora and their 472 gold-span
+  questions, and holds `PUBLISHED_PRECISION_OMEGA`, the numbers we check against.
 - **`chunkers/__init__.py`** — `from_spec` parses the strategy specs
   (`recursive:400/200`, `parent-document:200/1000`) that name a run on the command
   line and in every result row.
@@ -177,6 +188,39 @@ document ─▶ chunker ─▶ Chunking(spans, provenance, strategy)
   while their perplexity-based ones did. They are here because the correlation
   experiment (README §9) needs them measured, not because they are known to work.
 
+- **Precision Ω is validated against a published table, not against our own
+  understanding** (C17). This is the design note that matters most here. The
+  metric had already been implemented once from a misreading of the report, and
+  every unit test written against that misreading passed. Because Precision Ω
+  involves **no retrieval**, and the benchmark is MIT-licensed and public, the
+  claim "our implementation is correct" can be a falsifiable offline test instead
+  of an assurance. It reproduces all four published values exactly:
+
+  | recursive | published | ours | the original misreading |
+  |---|---|---|---|
+  | 800 / 400 | 6.7 | **6.7** | 8.6 |
+  | 400 / 200 | 13.9 | **13.9** | 16.8 |
+  | 400 / 0 | 17.7 | **17.7** | 17.8 |
+  | 200 / 0 | 29.9 | **29.9** | 30.7 |
+
+  The fourth column is the payoff. The misreading is ~28% high on the overlapping
+  configurations and nearly right without overlap — so it would have looked
+  perfectly plausible in isolation, and it would have quietly recommended overlap.
+  `test_the_original_misreading_would_not_have_reproduced_the_table` keeps that
+  gap under test, and fails if the two readings ever stop diverging.
+
+- **The overlap asymmetry is reproduced, not repaired.** `precision` divides by
+  the *sum* of the retrieved chunks' widths, charging an overlapping chunker twice
+  for the same characters; `precision_omega` divides by their *union*, which does
+  not. That looks like an inconsistency and arguably is one, but the published
+  numbers come from code that does exactly this. A faithful port is what makes the
+  reproduction meaningful; "improving" either one silently forks the metric.
+
+- **k is adaptive by default.** With no `--k`, each question is scored at its own
+  number of gold-bearing chunks, matching the reference's `retrieve=-1`. Every
+  result row records the value used, because two runs at different k are not
+  comparable and nothing about the numbers makes that obvious.
+
 - **A spec string is the identity of a run.** `recursive:400/200` names the
   strategy and every parameter that changes its output, and `fixed:512/0`
   normalises to `fixed:512` so one configuration cannot appear as two rows.
@@ -191,6 +235,9 @@ document ─▶ chunker ─▶ Chunking(spans, provenance, strategy)
 ## Try it
 
 ```bash
+# the correctness proof: reproduce a published column, offline, no model
+make chunking-benchmark
+
 uv run chunking-lab chunkers
 
 # Tier 0 -- nothing installed, fully deterministic

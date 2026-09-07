@@ -726,11 +726,15 @@ Follows `docs/000_project-organization.md` §10.
       code fences) from a structural one (0.83) on any document you have lying
       around, with no model and no questions
 - [ ] Build the hostile corpus generator; mark its tests `hostile`
-- [ ] Implement the extrinsic metrics (§4) over BM25/FTS5 — character ranges, and
-      preserve the union/sum asymmetry between Precision Ω and precision
-- [ ] Vendor Chroma's five corpora + questions and **assert Precision Ω reproduces
-      the published column** (C17). This is the correctness proof for the headline
-      metric; it needs no model and no network
+- [x] Implement the extrinsic metrics (§4) — character ranges, and the union/sum
+      asymmetry between Precision Ω and precision preserved as the reference has it
+- [x] Fetch Chroma's five corpora + questions (pinned commit, sha256-verified) and
+      **assert Precision Ω reproduces the published column** (C17). It does, exactly:
+      6.7 / 13.9 / 17.7 / 29.9. The original misreading would have scored
+      8.6 / 16.8 / 17.8 / 30.7 — plausible in isolation, ~28% high wherever chunks
+      overlap. `make chunking-benchmark`
+- [ ] Wire the retriever (BM25 over FTS5) so recall/precision/IoU can be scored on
+      a real corpus, not just hand-built spans
 - [ ] `score`, then `report`, then `explain`
 - [ ] `annotate` (quote-then-locate, behind the `llm` extra) and `suggest`
 - [ ] Write the evidence card; wire `make demo`
