@@ -12,8 +12,10 @@ from data_tools_core.provenance import Provenance, UnitKind
 from chunking_lab import benchmark, score
 from chunking_lab.chunkers import STRATEGIES, from_spec
 from chunking_lab.embeddings import resolve
+from chunking_lab.extrinsic import precision_omega
 from chunking_lab.intrinsic import measure
 from chunking_lab.invariant import check
+from chunking_lab.locate import locate
 
 #: Which strategies are implemented, and what each needs installed. Printed by
 #: `chunkers` so the gap between what is designed and what is built is visible
@@ -105,6 +107,24 @@ def build_parser() -> argparse.ArgumentParser:
     scoring.add_argument("--limit", type=int, default=0, help="cap questions per corpus")
     scoring.add_argument("--out", type=Path, default=None, help="append JSONL result rows here")
     scoring.set_defaults(run=run_score)
+
+    explain = sub.add_parser(
+        "explain",
+        help="show one answer against the chunks it actually landed in",
+        description=(
+            "The intuition-builder. A score column cannot show you the answer "
+            "sentence cut in half; this can."
+        ),
+    )
+    explain.add_argument("path", type=Path, help="the document")
+    explain.add_argument("--strategy", required=True, help="strategy spec")
+    explain.add_argument(
+        "--answer",
+        required=True,
+        help="the answer, quoted verbatim from the document. Offsets are found "
+        "deterministically -- exact, then whitespace-tolerant, then fuzzy",
+    )
+    explain.set_defaults(run=run_explain)
 
     return parser
 
@@ -243,6 +263,61 @@ def run_score(args: argparse.Namespace) -> int:
         "is the column to read: it is the ceiling the cuts impose, independent of\n"
         "the retriever."
     )
+    return 0
+
+
+def run_explain(args: argparse.Namespace) -> int:
+    """Render one answer against the chunks it landed in."""
+    text, provenance = _load(args.path)
+    found = locate(text, args.answer)
+    if found is None:
+        print(
+            f"could not find that answer in {args.path}.\n"
+            "Quote it verbatim from the document -- exact match is tried first, then a "
+            "whitespace-tolerant match, then a fuzzy one that must score at least 98.",
+            file=sys.stderr,
+        )
+        return 1
+
+    chunker = from_spec(args.strategy)
+    chunking = chunker.chunk(text, provenance)
+    check(chunking, text)
+
+    gold = [found.span]
+    holders = [s for s in chunking.spans if s.start < found.span[1] and s.end > found.span[0]]
+    omega = precision_omega(chunking, gold)
+
+    print(f"{chunking.strategy} on {provenance.locator}")
+    print(
+        f"answer located by {found.how} match at {found.span[0]}..{found.span[1]} "
+        f"({found.span[1] - found.span[0]} characters)"
+    )
+    print(
+        f"Precision Omega {omega * 100:.1f}%  --  the answer is in {len(holders)} chunk"
+        f"{'s' if len(holders) != 1 else ''} of {len(chunking)}"
+    )
+    if len(holders) > 1:
+        print("\nSEVERED: no single chunk holds the whole answer.")
+    print()
+
+    for i, span in enumerate(holders):
+        head = f"  chunk holding the answer [{i + 1}/{len(holders)}]  {span.start}..{span.end}"
+        print(head)
+        print("  " + "-" * (len(head) - 2))
+        body = span.retrieval_text
+        # Mark the part of the answer this chunk actually holds.
+        lo = max(found.span[0], span.start) - span.start
+        hi = min(found.span[1], span.end) - span.start
+        marked = body[:lo] + "[" + body[lo:hi] + "]" + body[hi:]
+        for line in marked.splitlines() or [""]:
+            print(f"    {line}")
+        if span.return_text != span.retrieval_text:
+            extra = len(span.return_text) - len(span.retrieval_text)
+            print(f"    ... and {extra} more characters are RETURNED but not indexed")
+        print()
+
+    print("[ ] marks the answer. Everything outside it in these chunks is padding a")
+    print("retriever has to carry to deliver the answer at all.")
     return 0
 
 

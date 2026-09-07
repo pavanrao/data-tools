@@ -108,3 +108,59 @@ def test_split_reports_the_path_that_ran(tmp_path, prose, capsys):
 
     assert main(["split", str(document), "--strategy", "recursive:200"]) == 0
     assert "tier-0/model-free" in capsys.readouterr().out
+
+
+def test_explain_shows_a_severed_answer(tmp_path, capsys):
+    """The intuition-builder: a score column cannot show you this."""
+    document = tmp_path / "policy.md"
+    document.write_text(
+        "# Escalation\n\nIncidents are triaged within fifteen minutes.\n\n"
+        "An incident is escalated when it has been open for four hours.\n\n"
+        "Escalation is approved by the duty director.\n"
+    )
+
+    exit_code = main(
+        [
+            "explain",
+            str(document),
+            "--strategy",
+            "fixed:40",
+            "--answer",
+            "An incident is escalated when it has been open for four hours",
+        ]
+    )
+    assert exit_code == 0
+    out = capsys.readouterr().out
+    assert "SEVERED" in out
+    assert "located by exact match" in out
+    assert "[" in out and "]" in out
+
+
+def test_explain_refuses_an_answer_it_cannot_find(tmp_path, capsys):
+    document = tmp_path / "policy.md"
+    document.write_text("Incidents are triaged within fifteen minutes.\n")
+
+    assert main(["explain", str(document), "--strategy", "fixed:40", "--answer", "nope"]) == 1
+    assert "could not find that answer" in capsys.readouterr().err
+
+
+def test_explain_names_the_text_returned_but_not_indexed(tmp_path, capsys):
+    """Family 6 again: the padding a score column hides."""
+    document = tmp_path / "notes.md"
+    document.write_text(
+        "First sentence here. The answer is seven years. Third sentence here. Fourth one.\n"
+    )
+    assert (
+        main(
+            [
+                "explain",
+                str(document),
+                "--strategy",
+                "sentence-window:1",
+                "--answer",
+                "The answer is seven years",
+            ]
+        )
+        == 0
+    )
+    assert "RETURNED but not indexed" in capsys.readouterr().out

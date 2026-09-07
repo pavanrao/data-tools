@@ -200,11 +200,23 @@ ones to an API, based on a configurable policy + token budget.
 - **Learn:** the local-vs-hosted tradeoff made concrete and measurable.
 - **Cost note:** the framework that keeps every other tool economical.
 
-### 25. `chunking-lab` — compare chunking strategies side by side ⭐⭐ 🧠 💻
+### 25. `chunking-lab` — compare chunking strategies side by side ✅ ⭐⭐ 🧠 💻
 Feed one document; see how fixed-size, recursive, semantic, and structural
-chunking affect retrieval quality (paired with #9's metrics).
+chunking affect retrieval quality. Scores at the **character level against gold
+spans**, so it can see the failures a chunk-level metric cannot: an answer padded
+out with 1,800 irrelevant characters, or severed across two chunks so neither is
+usable alone.
 - **Learn:** why chunking is *the* RAG decision; build intuition fast.
-- **Cost note:** local embeddings; pure experimentation, no API needed.
+- **Cost note:** the whole default path is model-free, offline and deterministic —
+  no key, no GPU, no network. Semantic chunking (Tier 1) needs an encoder.
+- **Boundary with #53:** **#25 varies the chunker with the retriever fixed; #53
+  varies the retriever with chunking fixed.** Neither subsumes the other.
+- **Built:** [`tools/chunking-lab/`](./tools/chunking-lab/) · design record in
+  [`docs/006_chunking-lab.md`](./docs/006_chunking-lab.md) · explainer
+  [`docs/where-the-cut-falls.html`](./docs/where-the-cut-falls.html)
+- **Result:** its Precision Ω reproduces Chroma's published column exactly
+  (6.7 / 13.9 / 17.7 / 29.9 over 472 gold-span questions), offline and model-free.
+  `make chunking-benchmark`
 
 ---
 
@@ -455,6 +467,9 @@ cross-encoder second stage (retrieve 50 cheap, keep 5 expensive) and reports wha
 it actually changed.
 - **Learn:** why hybrid exists, what fusion weighting does, and what a reranker
   buys — measured, not asserted.
+- **Boundary with #25:** **#53 varies the retriever with chunking fixed; #25
+  `chunking-lab` varies the chunker with the retriever fixed.** Neither subsumes
+  the other, and a benchmark that moves both at once measures neither.
 - **Cost note:** local embeddings + a small CPU cross-encoder; reuses
   `embeddings-cache` (#23). $0.
 - **Covers:** §2 The RAG pipeline · §2 Hybrid search · §2 Re-ranking ·

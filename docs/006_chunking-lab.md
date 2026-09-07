@@ -14,8 +14,8 @@ README holds the usage.
 that governs them, the query-free intrinsic metrics, and the extrinsic metrics —
 **whose Precision Ω reproduces Chroma's published column exactly** (6.7 / 13.9 /
 17.7 / 29.9), and `chunking-lab score`, which ranks strategies against gold spans
-over a fixed BM25 retriever, and the hostile corpus. `suggest` and `explain` are
-not built yet.
+over a fixed BM25 retriever, the hostile corpus, and `explain`. `report`,
+`annotate` and `suggest` are not built yet.
 
 ## Pipeline
 
@@ -90,6 +90,9 @@ document ─▶ chunker ─▶ Chunking(spans, provenance, strategy)
 - **`corpus/generate.py`** — the hostile corpus: five documents built so specific
   strategies provably fail, with gold spans known by construction because the
   generator wrote the answer text. Generated, not committed.
+- **`locate.py`** — quote-then-locate (C9): exact match, then whitespace-tolerant,
+  then a sentence-level fuzzy match that must score at least 98. `locate_all`
+  returns what it found *and* what it could not, which is the yield.
 - **`chunkers/__init__.py`** — `from_spec` parses the strategy specs
   (`recursive:400/200`, `parent-document:200/1000`) that name a run on the command
   line and in every result row.
@@ -286,6 +289,23 @@ document ─▶ chunker ─▶ Chunking(spans, provenance, strategy)
   `exec_module` is required: `@dataclass` resolves its own module while the class
   body is processed.)
 
+- **`explain` exists because Precision Ω can be high and the chunking still
+  broken.** This was the sharpest thing `explain` taught, and it was not
+  anticipated. On `straddle.md` at `recursive:120` the answer is severed — the word
+  "accounts" sits alone in its own chunk — and Precision Ω reads **98.4%**. Both
+  are correct: Ω is the *ceiling* the cuts impose on precision, and two tight
+  chunks that between them contain almost nothing but the answer impose a high
+  one. It says nothing about whether any single chunk is usable. A score column
+  cannot show you a stranded word; a rendered chunk can, and that is the argument
+  for the command.
+
+- **The fuzzy floor is deliberately severe.** A near-miss quote produces a *wrong*
+  gold span, which then scores every strategy against the wrong answer — strictly
+  worse than having no gold span at all. So the cascade rejects anything under 98
+  and the question is discarded. That is C9's inversion: a weak model produces
+  *less* ground truth, never wrong ground truth, and the loss is a number you can
+  read.
+
 - **A spec string is the identity of a run.** `recursive:400/200` names the
   strategy and every parameter that changes its output, and `fixed:512/0`
   normalises to `fixed:512` so one configuration cannot appear as two rows.
@@ -313,6 +333,11 @@ uv run chunking-lab split README.md --strategy sentence-window:1
 # Tier 1 -- offline by default, and the output says so
 uv run chunking-lab split README.md --strategy semantic:95
 uv run chunking-lab split README.md --strategy cluster-semantic:400
+
+# see one answer against the chunks it actually landed in
+uv run python tools/chunking-lab/corpus/generate.py corpus/hostile
+uv run chunking-lab explain corpus/hostile/straddle.md --strategy recursive:120 \
+    --answer "An incident is escalated when it has been open for four hours"
 
 # rank strategies against gold spans (needs the benchmark fetched)
 uv run chunking-lab score --corpus state_of_the_union.md \

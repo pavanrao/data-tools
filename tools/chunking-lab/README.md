@@ -741,9 +741,19 @@ Follows `docs/000_project-organization.md` §10.
 - [x] `score` — one JSONL row per (strategy, corpus, question) carrying intrinsic
       and extrinsic metrics **together**, so the §9 correlation experiment is a
       group-by over accumulated rows rather than a separate script (open question 4)
-- [ ] `report`, then `explain` — `explain` is the intuition-builder and is still
-      missing; a score column cannot show you the answer sentence cut in half
-- [ ] `annotate` (quote-then-locate, behind the `llm` extra) and `suggest`
+- [x] `explain` — the intuition-builder, and it earns its place immediately: on
+      `straddle.md` at `recursive:120` it shows the word "accounts" stranded alone
+      in its own chunk while **Precision Ω reads a comfortable 98.4%**. The ceiling
+      is high and the chunking is still broken, which is exactly what a score
+      column cannot tell you
+- [x] Quote-then-locate (C9's cascade: exact → whitespace-tolerant → fuzzy at ≥98),
+      which `explain` uses to turn a quoted answer into offsets
+- [ ] `report` (a rendered comparison), `annotate` and `suggest` — deferred by
+      open question 3 until the metrics were proven. They are now
+- [ ] `annotate` — the model half of quote-then-locate, behind the `llm` extra.
+      The deterministic half (`chunking_lab.locate`) is built and tested; what is
+      missing is only the prompt that asks for verbatim quotes, plus reporting the
+      **yield** so a weak model shows up as a number rather than as bad ground truth
 - [x] Write the evidence card (`evidence/chunking-lab.jsonl`); wire `make demo-chunking`
       and `make chunking-benchmark`
 - [x] Write the explainer: [`docs/where-the-cut-falls.html`](../../docs/where-the-cut-falls.html),
@@ -753,7 +763,7 @@ Follows `docs/000_project-organization.md` §10.
       user-facing reference; per `docs/000` §9 the numbered doc holds the design
       and decisions — §11 above is its seed)
 - [ ] Append to `docs/LEARNINGS.md` (craft) and `docs/FINDINGS.md` (verdicts)
-- [ ] Mark #25 as built in `IDEAS.md`; note the #53 boundary in both READMEs
+- [x] Mark #25 as built in `IDEAS.md`; note the #53 boundary in both entries
 - [ ] `make lint && make test`
 
 ## 14. Sources
