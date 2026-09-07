@@ -70,6 +70,11 @@ class Chunking:
     #: True where ``return_text`` is deliberately not ``text[start:end]``
     #: (family 6). Checked by the invariant so the divergence must be declared.
     augmented: bool = False
+    #: Which lane actually ran -- CONVENTIONS rule 2. Tier 0 is model-free, so its
+    #: value is constant; Tier 1 records the embedder, because a semantic run
+    #: against a hosted encoder and one against the offline hashing fallback are
+    #: not comparable and must never be silently ranked against each other.
+    code_path: str = "tier-0/model-free"
     notes: tuple[str, ...] = field(default_factory=tuple)
 
     def __len__(self) -> int:

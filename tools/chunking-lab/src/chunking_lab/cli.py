@@ -10,6 +10,7 @@ from pathlib import Path
 from data_tools_core.provenance import Provenance, UnitKind
 
 from chunking_lab.chunkers import STRATEGIES, from_spec
+from chunking_lab.embeddings import resolve
 from chunking_lab.invariant import check, coverage
 
 #: Which strategies are implemented, and what each needs installed. Printed by
@@ -22,6 +23,8 @@ TIERS = {
     "structural": ("0", "[:MAXSIZE]", "split at Markdown headings, respecting code fences"),
     "sentence-window": ("0", "WINDOW", "index one sentence, return it with its neighbours"),
     "parent-document": ("0", "CHILD/PARENT", "index small children, return the parent block"),
+    "semantic": ("1", "PCTL[/MAXSIZE]", "cut where adjacent sentences are least alike"),
+    "cluster-semantic": ("1", "MAXSIZE[/PIECE]", "globally maximise within-chunk similarity"),
 }
 
 
@@ -39,6 +42,13 @@ def build_parser() -> argparse.ArgumentParser:
         required=True,
         help="strategy spec, e.g. recursive:400/200 (see `chunking-lab chunkers`)",
     )
+    split.add_argument(
+        "--embedder",
+        default="hashing",
+        choices=["hashing", "provider"],
+        help="Tier 1 only: `hashing` is offline and weak; `provider` uses "
+        "DATA_TOOLS_EMBED_MODEL and needs the `embeddings` extra",
+    )
     split.add_argument("--limit", type=int, default=10, help="spans to show (0 for all)")
     split.set_defaults(run=run_split)
 
@@ -48,12 +58,16 @@ def build_parser() -> argparse.ArgumentParser:
 def run_chunkers(args: argparse.Namespace) -> int:
     """List every implemented strategy with its tier and what it needs."""
     print(f"{'tier':<5} {'spec':<32} what it does")
-    for name in sorted(STRATEGIES):
+    for name in sorted(STRATEGIES, key=lambda n: (TIERS[n][0], n)):
         tier, params, summary = TIERS[name]
         spec = f"{name}{params}" if params.startswith("[") else f"{name}:{params}"
         print(f"{tier:<5} {spec:<32} {summary}")
-    print("\nTier 0 needs nothing installed. Tier 2 (LLM boundaries, contextual")
-    print("augmentation) is designed but not built; see README section 8.2.")
+    print("\nTier 0 needs nothing installed. Tier 1 embeds, and defaults to an")
+    print("offline hashing embedder -- deterministic but weak, so a Tier 1 result")
+    print("is only evidence about semantic chunking with --embedder provider")
+    print("(needs the `embeddings` extra). Every result records which ran.")
+    print("Tier 2 (LLM boundaries, contextual augmentation) is not built;")
+    print("see this tool's README section 8.2.")
     return 0
 
 
@@ -65,11 +79,18 @@ def run_split(args: argparse.Namespace) -> int:
         sha256=hashlib.sha256(args.path.read_bytes()).hexdigest(),
         unit_kind=UnitKind.DOCUMENT,
     )
-    chunking = from_spec(args.strategy).chunk(text, provenance)
+    chunker = from_spec(args.strategy)
+    if getattr(args, "embedder", "hashing") != "hashing" and hasattr(chunker, "embedder"):
+        chunker.embedder = resolve(args.embedder)
+    chunking = chunker.chunk(text, provenance)
     check(chunking, text)
 
     print(f"{chunking.strategy} on {provenance.locator}")
-    print(f"{len(chunking)} spans, coverage {coverage(chunking, text):.3f}\n")
+    print(f"{len(chunking)} spans, coverage {coverage(chunking, text):.3f}")
+    print(f"path: {chunking.code_path}")
+    for note in chunking.notes:
+        print(f"note: {note}")
+    print()
     shown = chunking.spans if args.limit == 0 else chunking.spans[: args.limit]
     for i, span in enumerate(shown):
         body = span.retrieval_text.replace("\n", "\\n")

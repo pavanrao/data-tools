@@ -1,6 +1,6 @@
 # chunking-lab — compare chunking strategies, and recommend one
 
-**Status: research settled; Tier 0 chunkers built, metrics next.** This document is the design record.
+**Status: research settled; Tier 0 and Tier 1 chunkers built, metrics next.** This document is the design record.
 It began as a handoff from the web session that designed it; the sources that
 session could not reach have since been fetched and read, and §§4, 5, 9 and 11
 are corrected against them. Everything needed to start building is here.
@@ -716,6 +716,10 @@ Follows `docs/000_project-organization.md` §10.
       prove `retrieval_text` / `return_text` earns its place — sentence-window
       indexes one sentence and returns three, so a scorer that reads the wrong
       field credits it for context the model never saw
+- [x] Tier 1 (`semantic`, `cluster-semantic`) behind the `embeddings` extra, with
+      an offline hashing embedder so they are testable and demonstrable with
+      nothing installed — and `code_path` on every result so a run against that
+      fallback can never be ranked against one using a real encoder
 - [ ] Implement the intrinsic metrics (§7) — these need no ground truth, so they
       are the fastest path to something useful
 - [ ] Build the hostile corpus generator; mark its tests `hostile`

@@ -10,9 +10,9 @@ This document is the design record: what is built, how each part works, and why
 it is shaped that way. Per `docs/000` §9 the numbered doc holds the design; the
 README holds the usage.
 
-**Status.** All six Tier 0 chunkers and the invariant that governs them. The
-metrics, the hostile corpus, and `score` are not built yet — see the checklist in
-README §13.
+**Status.** All six Tier 0 chunkers, both Tier 1 semantic chunkers, and the
+invariant that governs them. The metrics, the hostile corpus, and `score` are not
+built yet — see the checklist in README §13.
 
 ## Pipeline
 
@@ -53,6 +53,16 @@ document ─▶ chunker ─▶ Chunking(spans, provenance, strategy)
   small child and returns the enclosing block. Both set `augmented=True`, and both
   are Tier 0 — needing no model is what makes them a good early test of the
   `Span` design rather than a special case bolted on later.
+- **`embeddings.py`** — the Tier 1 seam. An `Embedder` protocol (batched, because
+  Tier 1 embeds every sentence in the corpus), a `HashingEmbedder` that is
+  deterministic, offline and deliberately weak, and a `ProviderEmbedder` that
+  resolves `data_tools_core.llm` **lazily** so constructing a chunker never needs
+  the extra. Every embedder reports an `id`.
+- **`chunkers/semantic.py`** — Tier 1. `PercentileSemanticChunker` cuts where the
+  distance between adjacent sentences exceeds the Nth percentile of the
+  document's *own* distances; `ClusterSemanticChunker` solves for the partition
+  maximising total within-chunk similarity by dynamic programming, subject to a
+  size cap.
 - **`chunkers/__init__.py`** — `from_spec` parses the strategy specs
   (`recursive:400/200`, `parent-document:200/1000`) that name a run on the command
   line and in every result row.
@@ -103,6 +113,36 @@ document ─▶ chunker ─▶ Chunking(spans, provenance, strategy)
   that was never indexed. Building the family early is what makes that a test
   failure instead of a footnote.
 
+- **A Tier 1 result records its embedder, and that is not bookkeeping.** A
+  semantic run against a hosted encoder and one against the offline hashing
+  fallback are not comparable — the hashing embedder is a bag of words and would
+  make semantic chunking look worthless. So `Chunking.code_path` carries the
+  embedder id, and the CLI prints it. CONVENTIONS rule 2 says degrade gracefully
+  and *record which path ran* rather than silently substituting; this is the first
+  place in the tool where there is a path to get wrong.
+
+  Shipping the weak embedder at all is the deliberate part. It makes Tier 1
+  runnable, testable and demonstrable with nothing installed, which is what lets
+  the semantic chunkers be covered by the default suite (rule 6). The cost is that
+  someone could quote a meaningless number, and the mitigation is that the number
+  arrives with `tier-1/embeddings:hashing-bow-v1` attached to it.
+
+- **The percentile threshold is strictly exceeded, not met.** Found by a test, and
+  worth recording because it is not obvious: in a *uniform* passage every adjacent
+  distance is equal, so the percentile equals every distance, and `>=` cuts between
+  every pair of sentences in the most coherent document it could be handed. The
+  inverse case — every sentence unrelated, so the distribution is flat and high —
+  yields a single chunk, and that is inherent to a relative threshold rather than a
+  bug. `max_size` is the safety valve for it.
+
+- **The cluster chunker is a dynamic program, not another threshold.** The
+  percentile rule is greedy and local: it judges one gap at a time and cannot see
+  that four sentences ahead form a run. `ClusterSemanticChunker` takes, of every
+  partition into chunks under `max_size`, the one with the highest total
+  within-chunk pairwise similarity. Summing *pairs* rewards larger chunks — there
+  are more of them — which is precisely why the size cap is mandatory rather than
+  optional: it is what makes the objective well posed.
+
 - **A spec string is the identity of a run.** `recursive:400/200` names the
   strategy and every parameter that changes its output, and `fixed:512/0`
   normalises to `fixed:512` so one configuration cannot appear as two rows.
@@ -118,8 +158,20 @@ document ─▶ chunker ─▶ Chunking(spans, provenance, strategy)
 
 ```bash
 uv run chunking-lab chunkers
+
+# Tier 0 -- nothing installed, fully deterministic
 uv run chunking-lab split README.md --strategy recursive:400/200
-uv run chunking-lab split README.md --strategy fixed:400 --limit 0
+uv run chunking-lab split README.md --strategy structural
+uv run chunking-lab split README.md --strategy sentence-window:1
+
+# Tier 1 -- offline by default, and the output says so
+uv run chunking-lab split README.md --strategy semantic:95
+uv run chunking-lab split README.md --strategy cluster-semantic:400
+
+# Tier 1 against a real encoder (needs the `embeddings` extra)
+export DATA_TOOLS_EMBED_MODEL=openai/text-embedding-3-small
+export DATA_TOOLS_API_KEY=...
+uv run chunking-lab split README.md --strategy semantic:95 --embedder provider
 ```
 
 ## Next

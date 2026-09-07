@@ -16,16 +16,19 @@ from chunking_lab.chunkers.base import Chunker, LengthFn, char_length, trim
 from chunking_lab.chunkers.context import ParentDocumentChunker, SentenceWindowChunker
 from chunking_lab.chunkers.fixed import FixedChunker
 from chunking_lab.chunkers.recursive import DEFAULT_SEPARATORS, RecursiveChunker
+from chunking_lab.chunkers.semantic import ClusterSemanticChunker, PercentileSemanticChunker
 from chunking_lab.chunkers.structural import MarkdownHeaderChunker, SentenceChunker
 
 __all__ = [
     "DEFAULT_SEPARATORS",
     "STRATEGIES",
     "Chunker",
+    "ClusterSemanticChunker",
     "FixedChunker",
     "LengthFn",
     "MarkdownHeaderChunker",
     "ParentDocumentChunker",
+    "PercentileSemanticChunker",
     "RecursiveChunker",
     "SentenceChunker",
     "SentenceWindowChunker",
@@ -69,6 +72,28 @@ def _parent_document(name: str, params: str) -> Chunker:
     return ParentDocumentChunker(child=child, parent=parent)
 
 
+def _semantic(name: str, params: str) -> Chunker:
+    """Builder for ``semantic:PERCENTILE[/MAXSIZE]``."""
+    if not params:
+        raise ValueError(f"strategy {name!r} needs a percentile, as in {name}:95")
+    head, _, tail = params.partition("/")
+    try:
+        percentile = float(head)
+    except ValueError as exc:
+        raise ValueError(f"could not read a percentile from {name}:{params!r}") from exc
+    return PercentileSemanticChunker(
+        percentile=percentile, max_size=_one_number(name, tail) if tail else None
+    )
+
+
+def _cluster_semantic(name: str, params: str) -> Chunker:
+    """Builder for ``cluster-semantic:MAXSIZE[/PIECE]``."""
+    if not params:
+        raise ValueError(f"strategy {name!r} needs a max size, as in {name}:400")
+    max_size, piece = _two_numbers(name, params, default=200)
+    return ClusterSemanticChunker(max_size=max_size, piece=piece)
+
+
 #: Strategy name -> the builder that reads its parameters. Tier 1 and Tier 2
 #: strategies register here too; nothing about the spec syntax knows which tier a
 #: strategy is in, only whether it is installed.
@@ -79,6 +104,11 @@ STRATEGIES: dict[str, Callable[[str, str], Chunker]] = {
     "structural": _structural,
     "sentence-window": _sentence_window,
     "parent-document": _parent_document,
+    # Tier 1. Constructing one needs nothing installed -- the default embedder is
+    # the offline hashing fallback -- so `from_spec` stays total and the failure,
+    # if any, comes from the provider at embed time and names the extra.
+    "semantic": _semantic,
+    "cluster-semantic": _cluster_semantic,
 }
 
 

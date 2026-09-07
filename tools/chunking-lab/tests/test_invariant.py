@@ -12,7 +12,7 @@ from chunking_lab import Chunking, InvariantViolation, Span, check, coverage, fr
 from data_tools_core.provenance import Provenance, UnitKind
 
 
-def test_every_tier_0_strategy_satisfies_the_invariant(prose, provenance, specs):
+def test_every_strategy_satisfies_the_invariant(prose, provenance, specs):
     for spec in specs:
         chunking = from_spec(spec).chunk(prose, provenance)
         check(chunking, prose)  # raises on violation

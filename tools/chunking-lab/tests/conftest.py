@@ -45,7 +45,7 @@ def provenance() -> Provenance:
 
 @pytest.fixture
 def specs() -> list[str]:
-    """Every Tier 0 spec the invariant is enforced against."""
+    """Every spec the invariant is enforced against, across both built tiers."""
     return [
         "fixed:120",
         "fixed:120/30",
@@ -62,4 +62,10 @@ def specs() -> list[str]:
         "sentence-window:0",
         "sentence-window:2",
         "parent-document:60/240",
+        # Tier 1. These construct with the offline hashing embedder, so the
+        # invariant is enforced on them with nothing optional installed.
+        "semantic:90",
+        "semantic:50/200",
+        "cluster-semantic:200",
+        "cluster-semantic:200/60",
     ]

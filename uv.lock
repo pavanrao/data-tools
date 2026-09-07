@@ -552,6 +552,9 @@ dependencies = [
 benchmark = [
     { name = "tiktoken" },
 ]
+embeddings = [
+    { name = "data-tools-core", extra = ["llm"] },
+]
 llm = [
     { name = "data-tools-core", extra = ["llm"] },
 ]
@@ -559,6 +562,7 @@ llm = [
 [package.metadata]
 requires-dist = [
     { name = "data-tools-core", editable = "shared/data-tools-core" },
+    { name = "data-tools-core", extras = ["llm"], marker = "extra == 'embeddings'", editable = "shared/data-tools-core" },
     { name = "data-tools-core", extras = ["llm"], marker = "extra == 'llm'", editable = "shared/data-tools-core" },
     { name = "tiktoken", marker = "extra == 'benchmark'", specifier = ">=0.7" },
 ]
