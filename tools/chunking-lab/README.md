@@ -784,12 +784,14 @@ Follows `docs/000_project-organization.md` §10.
 - [x] Write the explainer: [`docs/where-the-cut-falls.html`](../../docs/where-the-cut-falls.html),
       for a reader who has never heard of chunking. Published as an artifact at
       <https://claude.ai/code/artifact/079203e3-348b-4231-8437-e80827eaf5ff>
-- [ ] Add `docs/006_chunking-lab.md` as the design record (this README is the
-      user-facing reference; per `docs/000` §9 the numbered doc holds the design
-      and decisions — §11 above is its seed)
-- [ ] Append to `docs/LEARNINGS.md` (craft) and `docs/FINDINGS.md` (verdicts)
+- [x] Add `docs/006_chunking-lab.md` as the design record, and
+      `docs/007_chunking-concepts.md` as the concept reference
+- [x] Append to `docs/LEARNINGS.md` (craft) and `docs/FINDINGS.md` (verdicts)
 - [x] Mark #25 as built in `IDEAS.md`; note the #53 boundary in both entries
-- [ ] `make lint && make test`
+- [x] `make lint && make test` — green: 251 passed, 1 skipped
+- [ ] **`correlate`** — the §9 experiment the result schema was built for (open
+      question 4). Everything it needs already exists: intrinsic and extrinsic
+      metrics land on the same rows, so it is a group-by, not a new pipeline
 
 ## 14. Sources
 
