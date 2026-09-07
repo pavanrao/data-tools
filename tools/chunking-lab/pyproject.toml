@@ -1,0 +1,35 @@
+[project]
+name = "data-tools-chunking-lab"
+version = "0.1.0"
+description = "Compare chunking strategies on one corpus and recommend one, scored at the token level."
+requires-python = ">=3.13"
+# The deterministic core is model-free by construction (CONVENTIONS r3): Tier 0
+# chunkers, the intrinsic metrics, and BM25/FTS5 retrieval need nothing beyond
+# the standard library and the shared provenance types.
+dependencies = [
+    "data-tools-core",
+]
+
+[project.optional-dependencies]
+# Tier 1 (semantic chunking) and Tier 2 (LLM boundaries, contextual
+# augmentation) both reach the model layer through data_tools_core.llm, so they
+# share one extra. See README section 8.2.
+llm = ["data-tools-core[llm]"]
+
+# No [project.scripts] or entry points yet: `dt ls` imports what it discovers,
+# and advertising chunking_lab.cli:main before it exists would break discovery
+# for every other tool. Register them with the CLI, per README section 13.
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/chunking_lab"]
+
+# Dev-only: resolve the shared library from the workspace. uv strips
+# [tool.uv.sources] from built wheels, so deleting this one block is the entire
+# "decouple from the workspace" step when spinning this tool out into its own
+# repo. See docs/000_project-organization.md (the spin-out seam).
+[tool.uv.sources]
+data-tools-core = { workspace = true }

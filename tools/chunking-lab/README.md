@@ -277,10 +277,10 @@ queries is overselling.
 ```python
 @dataclass(frozen=True, slots=True)
 class Span:
-    start: int           # char offset into the normalized document
+    start: int  # char offset into the normalized document
     end: int
     retrieval_text: str  # what gets indexed   (may be augmented — family 6)
-    return_text: str     # what reaches the model (may be a wider window — family 6)
+    return_text: str  # what reaches the model (may be a wider window — family 6)
 ```
 
 Everything follows from this:
