@@ -10,7 +10,9 @@ from pathlib import Path
 from data_tools_core.provenance import Provenance, UnitKind
 
 from chunking_lab import benchmark, score
+from chunking_lab import correlate as correlate_mod
 from chunking_lab.chunkers import STRATEGIES, from_spec
+from chunking_lab.correlate import TARGETS
 from chunking_lab.embeddings import resolve
 from chunking_lab.extrinsic import precision_omega
 from chunking_lab.intrinsic import measure
@@ -125,6 +127,25 @@ def build_parser() -> argparse.ArgumentParser:
         "deterministically -- exact, then whitespace-tolerant, then fuzzy",
     )
     explain.set_defaults(run=run_explain)
+
+    corr = sub.add_parser(
+        "correlate",
+        help="do the query-free signals predict the query-dependent ranking?",
+        description=(
+            "A query over accumulated `score --out` rows, not a new pipeline. "
+            "Precision Omega is mechanically tied to chunk size, so --control "
+            "reports the partial correlation with size removed; a signal that "
+            "survives that is telling you something size does not."
+        ),
+    )
+    corr.add_argument("results", type=Path, help="JSONL written by `score --out`")
+    corr.add_argument("--against", default="precision_omega", choices=list(TARGETS), dest="target")
+    corr.add_argument(
+        "--control",
+        default="median_length",
+        help="signal to partial out, or `none` (default: median_length)",
+    )
+    corr.set_defaults(run=run_correlate)
 
     return parser
 
@@ -318,6 +339,69 @@ def run_explain(args: argparse.Namespace) -> int:
 
     print("[ ] marks the answer. Everything outside it in these chunks is padding a")
     print("retriever has to carry to deliver the answer at all.")
+    return 0
+
+
+def run_correlate(args: argparse.Namespace) -> int:
+    """Report whether the model-free signals track the measured ranking."""
+    points = correlate_mod.load(args.results)
+    if not points:
+        raise ValueError(f"no result rows in {args.results}")
+    control = None if args.control == "none" else args.control
+    results = correlate_mod.correlate(points, target=args.target, control=control)
+    if not results:
+        raise ValueError("not enough strategies per corpus to correlate (need at least 3)")
+
+    corpora = sorted({r.corpus for r in results})
+    n = max(r.n for r in results)
+    print(
+        f"{len(points)} (corpus, strategy) points across {len(corpora)} corpora, vs {args.target}"
+    )
+    threshold = correlate_mod.critical_rho(n)
+    if threshold is not None:
+        print(f"* marks |rho| >= {threshold:.2f}, significant at p<0.05 for n={n}")
+    if control:
+        print(f"partial column removes the effect of {control}")
+    print()
+
+    header = f"{'signal':<20}" + "".join(f"{c.replace('.md', '')[:11]:>13}" for c in corpora)
+    if control:
+        header += f"{'partial(mean)':>15}"
+    print(header)
+
+    summary = correlate_mod.summarise(results)
+    by_key = {(r.corpus, r.signal): r for r in results}
+    for signal in sorted(summary, key=lambda s: -abs(summary[s]["mean_rho"])):
+        line = f"{signal:<20}"
+        for corpus in corpora:
+            r = by_key.get((corpus, signal))
+            if r is None:
+                cell = "—"
+            elif r.constant:
+                cell = "const"
+            else:
+                cell = f"{r.rho:+.2f}{'*' if r.significant else ' '}"
+            line += f"{cell:>13}"
+        if control:
+            if signal == control:
+                line += f"{'(control)':>15}"
+            elif summary[signal]["constant_everywhere"]:
+                line += f"{'—':>15}"
+            else:
+                line += f"{summary[signal]['mean_partial']:>+15.2f}"
+        print(line)
+
+    constant = [s for s in summary if summary[s]["constant_everywhere"]]
+    if constant:
+        print(
+            f"\n`const` = the signal never varies on that corpus, so there is nothing\n"
+            f"to correlate. {', '.join(constant)} are UNTESTED here, not shown to be\n"
+            f"uninformative -- these corpora contain no Markdown tables or code fences."
+        )
+    print(
+        "\nRead the per-corpus columns, not the average: a signal that changes sign\n"
+        "between corpora is telling you something an average would hide."
+    )
     return 0
 
 

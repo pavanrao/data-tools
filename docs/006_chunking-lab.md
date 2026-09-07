@@ -18,8 +18,9 @@ README holds the usage.
 that governs them, the query-free intrinsic metrics, and the extrinsic metrics —
 **whose Precision Ω reproduces Chroma's published column exactly** (6.7 / 13.9 /
 17.7 / 29.9), and `chunking-lab score`, which ranks strategies against gold spans
-over a fixed BM25 retriever, the hostile corpus, and `explain`. `report`,
-`annotate` and `suggest` are not built yet.
+over a fixed BM25 retriever, the hostile corpus, `explain`, and `correlate` —
+which has now **run** the §9 experiment. `report`, `annotate` and `suggest` are
+not built yet.
 
 ## Pipeline
 
@@ -97,6 +98,10 @@ document ─▶ chunker ─▶ Chunking(spans, provenance, strategy)
 - **`locate.py`** — quote-then-locate (C9): exact match, then whitespace-tolerant,
   then a sentence-level fuzzy match that must score at least 98. `locate_all`
   returns what it found *and* what it could not, which is the yield.
+- **`correlate.py`** — the §9 experiment as a query over accumulated `score --out`
+  rows: tie-corrected Spearman, a partial correlation to remove the chunk-size
+  confound, and a constant-signal check so "never varied" cannot be printed as
+  "no relationship".
 - **`chunkers/__init__.py`** — `from_spec` parses the strategy specs
   (`recursive:400/200`, `parent-document:200/1000`) that name a run on the command
   line and in every result row.
@@ -310,6 +315,30 @@ document ─▶ chunker ─▶ Chunking(spans, provenance, strategy)
   *less* ground truth, never wrong ground truth, and the loss is a number you can
   read.
 
+- **The experiment was an afternoon because the schema was designed for it.**
+  Open question 4 was answered "yes" before any result row was written, so
+  intrinsic and extrinsic metrics land together keyed by strategy and corpus.
+  Collecting on that was a `GROUP BY`, two statistics functions and a CLI command
+  — no re-running and no separate harness. See `FINDINGS.md` F8 for the result.
+
+- **Reporting the correlation honestly took more care than computing it.** Three
+  things had to be right or the table would mislead:
+
+  1. **The mechanical confound.** `median_length` predicts Precision Ω at −0.95 on
+     every corpus, and Ω divides by the chunks holding the answer — so smaller
+     chunks raise it by construction. Real, reproducible, evidence of nothing.
+     Hence `--control`, which reports the partial correlation.
+  2. **Controlling can make a signal look *better*.** `boundary_fidelity` is ~+0.15
+     raw and looks useless; controlled for size it is **+0.44**. Size was masking
+     it, because strategies that cut cleanly also cut larger. A raw correlation
+     near zero can be two relationships cancelling.
+  3. **`0.00` and "no variance" must not print the same way.** `mid_table_rate` is
+     constant on all five Chroma corpora — they contain no tables — so there is
+     nothing to correlate. Printed as `+0.00` beside real numbers it reads as
+     "tested, found useless". It is *untested*. One `len(set(xs)) <= 1` check and a
+     different label is the difference between a table you can trust and one that
+     launders missing data into a result.
+
 - **A spec string is the identity of a run.** `recursive:400/200` names the
   strategy and every parameter that changes its output, and `fixed:512/0`
   normalises to `fixed:512` so one configuration cannot appear as two rows.
@@ -326,6 +355,9 @@ document ─▶ chunker ─▶ Chunking(spans, provenance, strategy)
 ```bash
 # the correctness proof: reproduce a published column, offline, no model
 make chunking-benchmark
+
+# the section 9 experiment: do query-free signals predict the ranking? (~100s)
+make chunking-correlate
 
 uv run chunking-lab chunkers
 

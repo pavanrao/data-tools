@@ -8,6 +8,54 @@ we're building or parking, and why. Append a new `## Iteration N` section at the
 
 ---
 
+## Iteration 6 — 2026-09-07 — the chunking correlation experiment
+
+### F8 — model-free intrinsic signals do predict the ranking, and mostly by proxying chunk size
+The §9 experiment, run: 14 strategies × 5 corpora × 472 questions, 70 points, no
+model. Spearman rank correlation of each query-free signal against Precision Ω,
+per corpus, with the partial correlation controlling for median chunk length.
+
+| signal | ρ vs Ω (range over 5 corpora) | partial, size removed |
+|---|---|---|
+| `median_length` | −0.94 … −0.97 | *(control)* |
+| `p95_length` | −0.78 … −0.96 | +0.26 |
+| `chunks` | +0.75 … +0.88 | −0.63 |
+| `duplication` | −0.69 … −0.78 | **−0.64** |
+| `runt_rate` | +0.71 … +0.79 | +0.35 |
+| `orphan_rate` | +0.41 … +0.66 | +0.50 |
+| `oversize_rate` | −0.23 … −0.45 | +0.09 |
+| `boundary_fidelity` | +0.04 … +0.24 | **+0.44** |
+| `mid_table_rate`, `split_fence_rate` | *constant — untested* | — |
+
+**The headline is a caution, not a win.** Chunk size correlates at −0.95 and that
+is very close to a tautology: Precision Ω is `|gold| / |the chunks holding gold|`,
+so smaller chunks shrink the denominator by construction. Anyone reporting that
+number as evidence that intrinsic screening works would be reporting arithmetic.
+
+Three things survive that caveat:
+
+- **`duplication` carries real information** (partial −0.64 against Ω, −0.50
+  against IoU). Overlap costs you *beyond* what its effect on size explains. This
+  is the one signal that is both cheap and independently predictive.
+- **`boundary_fidelity` is the opposite of what the raw number says.** Raw ρ is
+  ~+0.15 and looks useless; controlling for size it rises to **+0.44**. Size was
+  masking it — strategies that cut cleanly also cut larger. The signal that looked
+  worthless is the one most improved by asking the question properly.
+- **`orphan_rate` and `runt_rate` are positive**, which does *not* mean orphans
+  help. Both rise as chunks shrink, and shrinking chunks raises Ω. They are size
+  proxies that partialling only partly removes. Do not screen on them.
+
+**And the honest gap:** `mid_table_rate` and `split_fence_rate` are *constant* on
+all five corpora, because the benchmark contains no Markdown tables and no code
+fences. They are **untested here, not disproven** — which matters, because they are
+the two signals aimed at the structural failures the hostile corpus is built
+around. Testing them needs a corpus with structure. That is the next measurement,
+not a conclusion.
+
+**Verdict.** Query-free screening is worth doing for *disqualification* (§7's
+original claim) and `duplication` is worth trusting as a ranking hint. Screening
+on the rest is screening on chunk size wearing a hat. `make chunking-correlate`.
+
 ## Iteration 5 — 2026-09-07 — ingest-ledger
 
 ### F7 — `ingest-ledger`'s memory cap never worked on macOS, and the ledger said it did

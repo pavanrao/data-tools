@@ -1,5 +1,5 @@
 .PHONY: help sync lint test demo demo-reconcile demo-compare demo-ask \
-        demo-chunking chunking-benchmark clean
+        demo-chunking chunking-benchmark chunking-correlate clean
 
 help:
 	@echo "sync   install the whole collection in a dev venv"
@@ -8,6 +8,7 @@ help:
 	@echo "demo   reconcile the hostile corpus, compare to a naive extractor, then ask"
 	@echo "demo-chunking       screen chunking strategies with no model and no questions"
 	@echo "chunking-benchmark  reproduce Chroma's published Precision Omega column"
+	@echo "chunking-correlate  do query-free signals predict the measured ranking?"
 
 sync:
 	uv sync --all-extras
@@ -57,7 +58,26 @@ chunking-benchmark:
 	uv run python tools/chunking-lab/benchmarks/fetch.py
 	uv run pytest tools/chunking-lab/tests/test_reproduction.py -v
 
+# The section 9 experiment: score a grid over all five corpora, then ask whether
+# the model-free intrinsic signals would have ranked them the same way. ~100s,
+# no model, no key, no network beyond the one-time benchmark fetch.
+CHUNKING_RESULTS ?= chunking-results.jsonl
+chunking-correlate:
+	uv run python tools/chunking-lab/benchmarks/fetch.py
+	rm -f $(CHUNKING_RESULTS)
+	uv run chunking-lab score --out $(CHUNKING_RESULTS) \
+	    --strategy fixed:800/400 --strategy fixed:800 --strategy fixed:400/200 \
+	    --strategy fixed:400 --strategy fixed:200 \
+	    --strategy recursive:800/400 --strategy recursive:400/200 \
+	    --strategy recursive:400 --strategy recursive:200 \
+	    --strategy sentence:2 --strategy sentence:4 \
+	    --strategy structural --strategy structural:1200 --strategy sentence-window:1
+	@echo
+	uv run chunking-lab correlate $(CHUNKING_RESULTS)
+	@echo
+	uv run chunking-lab correlate $(CHUNKING_RESULTS) --against iou
+
 clean:
 	rm -rf tools/ingest-ledger/corpus/hostile tools/ingest-ledger/corpus/rfp \
-	       tools/chunking-lab/corpus/hostile \
+	       tools/chunking-lab/corpus/hostile chunking-results.jsonl \
 	       *.ledger.db .pytest_cache .ruff_cache
