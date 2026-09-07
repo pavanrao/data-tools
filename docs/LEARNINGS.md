@@ -9,6 +9,59 @@ sprint; keep entries concrete.
 
 ---
 
+## Iteration 4 — 2026-09-07 — chunking-lab: verifying a design record
+
+### Verification tags are worth what they cost
+The chunking-lab design record was written in a session whose egress policy
+blocked several primary sources, so every claim carried a tag saying **how** it
+was verified — "read from source", "search summary", "abstract only". Re-fetching
+the six blocked sources found that two of the load-bearing claims were wrong.
+Both were tagged as unverified. The tags did not prevent the errors; they made
+them **findable instead of inherited**, and they told you exactly which paragraphs
+to re-read. Do this on any research handoff.
+
+### Reconstructing a formula from prose is not verification
+Precision Omega had been reconstructed from an ambiguous code extract as "the
+minimal set of chunks covering the gold spans". The real definition is "**every**
+chunk containing an excerpt token". Those coincide for a non-overlapping
+partition and diverge as soon as chunks overlap — so the reconstruction was
+plausible, tested fine against any example you would think to try by hand, and
+wrong in exactly the case the tool exists to measure. If a number is the headline
+of a tool, read the implementation, not the paper.
+
+### Prose and implementation disagree, and the implementation is what ran
+The same source's report says "tokens" throughout; its code measures **characters**.
+It describes one denominator; the code uses a *sum* for one metric and a *union*
+for another, so overlap is penalised twice in one and once in the other. Published
+numbers come from the code. Reproduce the code.
+- Useful side effect: following the implementation removed the tokenizer, and with
+  it the only model dependency in the whole measurement path.
+
+### An invariant proves well-formedness, never sameness
+The recursive splitter is a port. It satisfied every invariant — in bounds,
+ordered, no content dropped — and matched the reference on four of five sizes by
+coincidence. It was still wrong: the reference keeps a separator as the **prefix
+of the following piece** and the port had it as a suffix. Only a **differential
+test against golden output captured from the original** caught it. When porting
+something whose numbers you intend to reproduce, capture its output first and
+diff against it; the invariant is a different question.
+
+### Write the invariant you can actually enforce
+The design specified "coverage == 1.0 modulo declared overlap". That is wrong for
+any chunker that trims whitespace at its boundaries — which the reference does.
+The enforceable version is "**no non-whitespace character is in zero spans**",
+with coverage reported as a number alongside. Same bug caught, no false positives,
+and the softer signal stays visible instead of being asserted away.
+
+### Prior art for a simple mechanism is usually there; you have to look properly
+An earlier draft claimed no prior work screened chunking configurations without
+running retrieval. A one-hour sweep across SIGIR, ECIR and the ACL Anthology found
+a LREC 2026 paper doing exactly that from five intrinsic metrics — including the
+one the draft singled out as having "no located antecedent" — plus two papers that
+had already run the correlation experiment being proposed as the contribution.
+**A few targeted searches is not a literature review**, and the gap between them is
+where novelty claims go to die.
+
 ## Iteration 3 — 2026-09-03 — MCP SDK 1.x -> 2.x
 
 ### Migrating an SDK major
