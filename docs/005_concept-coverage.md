@@ -98,9 +98,9 @@ when a specific piece of work needs them. Neither is a difficulty rating.
 
 | Card | Covered by |
 | --- | --- |
-| Token | #50 `token-ledger` · N1 |
+| Token | #50 `token-ledger` · N1 · #25 `chunking-lab` ✅ (token vs character, and why its metrics count characters) |
 | Context window | #50 `token-ledger` (drop policies) · N1 |
-| Embedding | #53 `retrieval-bench` · #23 `embeddings-cache` · N1 |
+| Embedding | #53 `retrieval-bench` · #23 `embeddings-cache` · N1 · #25 `chunking-lab` ✅ (semantic chunking; embeddings placing boundaries rather than retrieving) |
 | Temperature & sampling | #51 `decode-lab` · N1 |
 | Hallucination | #51 `decode-lab` · #49 `ingest-ledger` (refusal path) · N1 |
 | Structured output / function calling | #52 `schema-guard` · N1 |
@@ -110,7 +110,7 @@ when a specific piece of work needs them. Neither is a difficulty rating.
 | Card | Covered by |
 | --- | --- |
 | The RAG pipeline | #1 `docs-rag` ✅ · #2 `repo-rag` ✅ · #53 `retrieval-bench` |
-| Chunking | #25 `chunking-lab` · #2 `repo-rag` (AST-aware) ✅ |
+| Chunking | #25 `chunking-lab` ✅ (six families, character-level scoring, Precision Ω reproduced against a published table) · #2 `repo-rag` (AST-aware) ✅ |
 | Hybrid search | #53 `retrieval-bench` (exact-code query set) · #2 `repo-rag` ✅ |
 | Re-ranking | #53 `retrieval-bench` (two-stage, cost/benefit measured) |
 | Grounding, citations & the empty case | #49 `ingest-ledger` ✅ (refuses when evidence is absent) · #1 `docs-rag` ✅ |
@@ -137,8 +137,8 @@ when a specific piece of work needs them. Neither is a difficulty rating.
 
 | Card | Covered by |
 | --- | --- |
-| Golden set / eval set | #9 `eval-harness` · N5 |
-| Retrieval metrics vs. generation metrics | #9 `eval-harness` (faithfulness vs. context precision) · #53 `retrieval-bench` · N5 |
+| Golden set / eval set | #9 `eval-harness` · N5 · #25 `chunking-lab` ✅ (gold *spans*; quote-then-locate, and yield as the honest failure mode) |
+| Retrieval metrics vs. generation metrics | #9 `eval-harness` (faithfulness vs. context precision) · #53 `retrieval-bench` · N5 · #25 `chunking-lab` ✅ (chunk-level vs character-level; why recall alone scores a useless chunker 100%) |
 | LLM-as-judge | #57 `judge-lab` (calibrated against human labels) |
 | Task metrics vs. vibes | #57 `judge-lab` · #66 `tabular-lab` (hard metrics where they exist) |
 

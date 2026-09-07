@@ -6,6 +6,10 @@ where the cuts landed, not how good the retriever or the model happened to be.
 
 The user-facing reference, the research behind every choice, and the sixteen
 decisions live in [`tools/chunking-lab/README.md`](../tools/chunking-lab/README.md).
+The concepts themselves — what a span is, what Precision Ω measures, why intrinsic
+metrics screen but cannot rank — are defined in
+[`007_chunking-concepts.md`](007_chunking-concepts.md).
+
 This document is the design record: what is built, how each part works, and why
 it is shaped that way. Per `docs/000` §9 the numbered doc holds the design; the
 README holds the usage.

@@ -22,8 +22,13 @@ make demo-chunking             # screen strategies: no model, no questions, no c
 make chunking-benchmark        # reproduce the published column
 ```
 
-New to chunking? Start with the explainer,
-[`docs/where-the-cut-falls.html`](../../docs/where-the-cut-falls.html).
+**New to chunking?** Start with the explainer,
+[`docs/where-the-cut-falls.html`](../../docs/where-the-cut-falls.html) — written
+for someone who has never heard of it, with diagrams.
+**Want the concepts defined properly?**
+[`docs/007_chunking-concepts.md`](../../docs/007_chunking-concepts.md) covers every
+one this tool is built from, with the trade-off each forces and where it lives in
+the code.
 
 `chunking-lab` is idea **#25** in [`IDEAS.md`](../../IDEAS.md). It takes one
 corpus, runs it through many chunking strategies, and produces a score per
