@@ -1,6 +1,6 @@
 # chunking-lab — compare chunking strategies, and recommend one
 
-**Status: research settled, no code yet.** This document is the design record.
+**Status: research settled; Tier 0 chunkers built, metrics next.** This document is the design record.
 It began as a handoff from the web session that designed it; the sources that
 session could not reach have since been fetched and read, and §§4, 5, 9 and 11
 are corrected against them. Everything needed to start building is here.
@@ -696,15 +696,24 @@ Follows `docs/000_project-organization.md` §10.
 - [x] Re-fetch the blocked sources in §2; correct §4, §5 and §9 where they differ
 - [x] Run the related-work sweep §9 requires before any novelty claim
 - [x] Answer the four open questions in §12
-- [ ] Scaffold `tools/chunking-lab/` — `pyproject.toml` (dist `data-tools-chunking-lab`),
+- [x] Scaffold `tools/chunking-lab/` — `pyproject.toml` (dist `data-tools-chunking-lab`),
       `src/chunking_lab/`, `tests/`; copy the packaging table in `docs/000` §4 exactly
-- [ ] Declare the spin-out seam (`[tool.uv.sources] data-tools-core = { workspace = true }`) **on day one**
-- [ ] Register the console script, the `data_tools.tools` entry point, a `__main__.py`,
+- [x] Declare the spin-out seam (`[tool.uv.sources] data-tools-core = { workspace = true }`) **on day one**
+- [x] Register the console script, the `data_tools.tools` entry point, a `__main__.py`,
       and a one-line `main()` docstring for `dt ls`
-- [ ] Declare `embeddings` and `llm` as extras, never base dependencies
-- [ ] **Write the tests first** — start with the chunker invariant (spans in bounds,
-      ordered, coverage == 1.0 modulo declared overlap)
-- [ ] Implement `Span`, the chunker protocol, Tier 0 chunkers
+- [x] Declare `llm` as an extra, never a base dependency; plus `benchmark` for the
+      tokenizer the C17 reproduction needs and nothing else does
+- [x] **Write the tests first** — the chunker invariant, which turned out to be "no
+      non-whitespace character is dropped" rather than "coverage == 1.0": the
+      reference implementation trims its boundaries, so the stricter rule is wrong.
+      Coverage is reported as a number instead
+- [x] Implement `Span`, the chunker protocol, and the first Tier 0 chunkers
+      (`fixed`, `recursive`), the recursive one verified **differentially** against
+      the reference over 28 cases — which immediately caught a separator-placement
+      defect the invariant could not see
+- [ ] The remaining Tier 0 chunkers: sentence, structural/Markdown-header,
+      sentence-window and parent-document (the last two are family 6, and are what
+      prove `retrieval_text` / `return_text` earns its place)
 - [ ] Implement the intrinsic metrics (§7) — these need no ground truth, so they
       are the fastest path to something useful
 - [ ] Build the hostile corpus generator; mark its tests `hostile`

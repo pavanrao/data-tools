@@ -1,0 +1,201 @@
+{
+ "documents": {
+  "prose": "# Quarterly Notes\n\nThe pipeline read every file it was given. That is not the same as reading every\nbyte of every file, and the difference is where the interesting failures live.\n\nA short line.\n\nReconciliation compares what a pipeline was handed against what it actually\nextracted, unit by unit, so that a silent drop becomes a number rather than a\nsurprise six weeks later when somebody asks why the report is wrong and nobody\ncan say which stage lost the rows.\n",
+  "table": "## Rates\n\n| Region | Q1 | Q2 |\n|--------|----|----|\n| North  | 12 | 19 |\n| South  |  7 |  4 |\n\nTotals exclude the Northeast, which is reported separately. Why? Because the\nNortheast filing deadline differs! It always has.\n",
+  "code": "Install it, then run:\n\n```python\ndef split(text: str, size: int) -> list[str]:\n    return [text[i : i + size] for i in range(0, len(text), size)]\n```\n\nThat is the whole of fixed-size chunking. Everything else is an attempt to put\nthe boundaries somewhere less arbitrary.\n",
+  "runon": "no separators at all just one very long unbroken run of characters no separators at all just one very long unbroken run of characters no separators at all just one very long unbroken run of characters no separators at all just one very long unbroken run of characters "
+ },
+ "chunks": {
+  "prose|120|0": [
+   "# Quarterly Notes",
+   "The pipeline read every file it was given. That is not the same as reading every",
+   "byte of every file, and the difference is where the interesting failures live.",
+   "A short line.",
+   "Reconciliation compares what a pipeline was handed against what it actually",
+   "extracted, unit by unit, so that a silent drop becomes a number rather than a",
+   "surprise six weeks later when somebody asks why the report is wrong and nobody\ncan say which stage lost the rows."
+  ],
+  "prose|120|30": [
+   "# Quarterly Notes",
+   "The pipeline read every file it was given. That is not the same as reading every",
+   "byte of every file, and the difference is where the interesting failures live.",
+   "A short line.",
+   "Reconciliation compares what a pipeline was handed against what it actually",
+   "extracted, unit by unit, so that a silent drop becomes a number rather than a",
+   "surprise six weeks later when somebody asks why the report is wrong and nobody\ncan say which stage lost the rows."
+  ],
+  "prose|40|0": [
+   "# Quarterly Notes",
+   "The pipeline read every file it was",
+   "given",
+   ". That is not the same as reading every",
+   "byte of every file, and the difference",
+   "is where the interesting failures live",
+   ".",
+   "A short line.",
+   "Reconciliation compares what a pipeline",
+   "was handed against what it actually",
+   "extracted, unit by unit, so that a",
+   "silent drop becomes a number rather",
+   "than a",
+   "surprise six weeks later when somebody",
+   "asks why the report is wrong and nobody",
+   "can say which stage lost the rows."
+  ],
+  "prose|200|50": [
+   "# Quarterly Notes\n\nThe pipeline read every file it was given. That is not the same as reading every\nbyte of every file, and the difference is where the interesting failures live.\n\nA short line.",
+   "Reconciliation compares what a pipeline was handed against what it actually\nextracted, unit by unit, so that a silent drop becomes a number rather than a",
+   "surprise six weeks later when somebody asks why the report is wrong and nobody\ncan say which stage lost the rows."
+  ],
+  "prose|60|15": [
+   "# Quarterly Notes",
+   "The pipeline read every file it was given",
+   ". That is not the same as reading every",
+   "byte of every file, and the difference is where the",
+   "is where the interesting failures live",
+   ".",
+   "A short line.",
+   "Reconciliation compares what a pipeline was handed against",
+   "handed against what it actually",
+   "extracted, unit by unit, so that a silent drop becomes a",
+   "drop becomes a number rather than a",
+   "surprise six weeks later when somebody asks why the report",
+   "why the report is wrong and nobody",
+   "can say which stage lost the rows."
+  ],
+  "prose|400|200": [
+   "# Quarterly Notes\n\nThe pipeline read every file it was given. That is not the same as reading every\nbyte of every file, and the difference is where the interesting failures live.\n\nA short line.",
+   "A short line.\n\nReconciliation compares what a pipeline was handed against what it actually\nextracted, unit by unit, so that a silent drop becomes a number rather than a\nsurprise six weeks later when somebody asks why the report is wrong and nobody\ncan say which stage lost the rows."
+  ],
+  "prose|10000|0": [
+   "# Quarterly Notes\n\nThe pipeline read every file it was given. That is not the same as reading every\nbyte of every file, and the difference is where the interesting failures live.\n\nA short line.\n\nReconciliation compares what a pipeline was handed against what it actually\nextracted, unit by unit, so that a silent drop becomes a number rather than a\nsurprise six weeks later when somebody asks why the report is wrong and nobody\ncan say which stage lost the rows."
+  ],
+  "table|120|0": [
+   "## Rates\n\n| Region | Q1 | Q2 |\n|--------|----|----|\n| North  | 12 | 19 |\n| South  |  7 |  4 |",
+   "Totals exclude the Northeast, which is reported separately. Why? Because the",
+   "Northeast filing deadline differs! It always has."
+  ],
+  "table|120|30": [
+   "## Rates\n\n| Region | Q1 | Q2 |\n|--------|----|----|\n| North  | 12 | 19 |\n| South  |  7 |  4 |",
+   "Totals exclude the Northeast, which is reported separately. Why? Because the",
+   "Northeast filing deadline differs! It always has."
+  ],
+  "table|40|0": [
+   "## Rates",
+   "| Region | Q1 | Q2 |",
+   "|--------|----|----|",
+   "| North  | 12 | 19 |",
+   "| South  |  7 |  4 |",
+   "Totals exclude the Northeast, which is",
+   "reported separately",
+   ". Why? Because the",
+   "Northeast filing deadline differs",
+   "! It always has",
+   "."
+  ],
+  "table|200|50": [
+   "## Rates\n\n| Region | Q1 | Q2 |\n|--------|----|----|\n| North  | 12 | 19 |\n| South  |  7 |  4 |",
+   "Totals exclude the Northeast, which is reported separately. Why? Because the\nNortheast filing deadline differs! It always has."
+  ],
+  "table|60|15": [
+   "## Rates",
+   "| Region | Q1 | Q2 |\n|--------|----|----|",
+   "| North  | 12 | 19 |\n| South  |  7 |  4 |",
+   "Totals exclude the Northeast, which is reported separately",
+   ". Why? Because the",
+   "Northeast filing deadline differs! It always has."
+  ],
+  "table|400|200": [
+   "## Rates\n\n| Region | Q1 | Q2 |\n|--------|----|----|\n| North  | 12 | 19 |\n| South  |  7 |  4 |\n\nTotals exclude the Northeast, which is reported separately. Why? Because the\nNortheast filing deadline differs! It always has."
+  ],
+  "table|10000|0": [
+   "## Rates\n\n| Region | Q1 | Q2 |\n|--------|----|----|\n| North  | 12 | 19 |\n| South  |  7 |  4 |\n\nTotals exclude the Northeast, which is reported separately. Why? Because the\nNortheast filing deadline differs! It always has."
+  ],
+  "code|120|0": [
+   "Install it, then run:",
+   "```python\ndef split(text: str, size: int) -> list[str]:",
+   "return [text[i : i + size] for i in range(0, len(text), size)]\n```",
+   "That is the whole of fixed-size chunking. Everything else is an attempt to put",
+   "the boundaries somewhere less arbitrary."
+  ],
+  "code|120|30": [
+   "Install it, then run:",
+   "```python\ndef split(text: str, size: int) -> list[str]:",
+   "return [text[i : i + size] for i in range(0, len(text), size)]\n```",
+   "That is the whole of fixed-size chunking. Everything else is an attempt to put",
+   "the boundaries somewhere less arbitrary."
+  ],
+  "code|40|0": [
+   "Install it, then run:",
+   "```python",
+   "def split(text: str, size: int) ->",
+   "list[str]:",
+   "return [text[i : i + size] for i in",
+   "range(0, len(text), size)]",
+   "```",
+   "That is the whole of fixed-size",
+   "chunking",
+   ". Everything else is an attempt to put",
+   "the boundaries somewhere less arbitrary",
+   "."
+  ],
+  "code|200|50": [
+   "Install it, then run:\n\n```python\ndef split(text: str, size: int) -> list[str]:\n    return [text[i : i + size] for i in range(0, len(text), size)]\n```",
+   "That is the whole of fixed-size chunking. Everything else is an attempt to put\nthe boundaries somewhere less arbitrary."
+  ],
+  "code|60|15": [
+   "Install it, then run:",
+   "```python\ndef split(text: str, size: int) -> list[str]:",
+   "return [text[i : i + size] for i in range(0, len(text),",
+   "len(text), size)]",
+   "```",
+   "That is the whole of fixed-size chunking",
+   ". Everything else is an attempt to put",
+   "the boundaries somewhere less arbitrary."
+  ],
+  "code|400|200": [
+   "Install it, then run:\n\n```python\ndef split(text: str, size: int) -> list[str]:\n    return [text[i : i + size] for i in range(0, len(text), size)]\n```\n\nThat is the whole of fixed-size chunking. Everything else is an attempt to put\nthe boundaries somewhere less arbitrary."
+  ],
+  "code|10000|0": [
+   "Install it, then run:\n\n```python\ndef split(text: str, size: int) -> list[str]:\n    return [text[i : i + size] for i in range(0, len(text), size)]\n```\n\nThat is the whole of fixed-size chunking. Everything else is an attempt to put\nthe boundaries somewhere less arbitrary."
+  ],
+  "runon|120|0": [
+   "no separators at all just one very long unbroken run of characters no separators at all just one very long unbroken run",
+   "of characters no separators at all just one very long unbroken run of characters no separators at all just one very",
+   "long unbroken run of characters"
+  ],
+  "runon|120|30": [
+   "no separators at all just one very long unbroken run of characters no separators at all just one very long unbroken run",
+   "one very long unbroken run of characters no separators at all just one very long unbroken run of characters no",
+   "unbroken run of characters no separators at all just one very long unbroken run of characters"
+  ],
+  "runon|40|0": [
+   "no separators at all just one very long",
+   "unbroken run of characters no",
+   "separators at all just one very long",
+   "unbroken run of characters no",
+   "separators at all just one very long",
+   "unbroken run of characters no",
+   "separators at all just one very long",
+   "unbroken run of characters"
+  ],
+  "runon|200|50": [
+   "no separators at all just one very long unbroken run of characters no separators at all just one very long unbroken run of characters no separators at all just one very long unbroken run of characters",
+   "all just one very long unbroken run of characters no separators at all just one very long unbroken run of characters"
+  ],
+  "runon|60|15": [
+   "no separators at all just one very long unbroken run of",
+   "run of characters no separators at all just one very long",
+   "one very long unbroken run of characters no separators at",
+   "separators at all just one very long unbroken run of",
+   "run of characters no separators at all just one very long",
+   "one very long unbroken run of characters"
+  ],
+  "runon|400|200": [
+   "no separators at all just one very long unbroken run of characters no separators at all just one very long unbroken run of characters no separators at all just one very long unbroken run of characters no separators at all just one very long unbroken run of characters"
+  ],
+  "runon|10000|0": [
+   "no separators at all just one very long unbroken run of characters no separators at all just one very long unbroken run of characters no separators at all just one very long unbroken run of characters no separators at all just one very long unbroken run of characters"
+  ]
+ }
+}

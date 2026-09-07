@@ -16,9 +16,18 @@ dependencies = [
 # share one extra. See README section 8.2.
 llm = ["data-tools-core[llm]"]
 
-# No [project.scripts] or entry points yet: `dt ls` imports what it discovers,
-# and advertising chunking_lab.cli:main before it exists would break discovery
-# for every other tool. Register them with the CLI, per README section 13.
+# Reproducing Chroma's published Precision Omega column (README C17) needs a
+# tokenizer, because the sizes in that table are expressed in tokens. Nothing the
+# tool measures for itself does -- the metrics are character-based, so the whole
+# Tier 0 lane stays deterministic and offline. Kept a separate extra rather than
+# folded into `llm` precisely so that difference stays visible.
+benchmark = ["tiktoken>=0.7"]
+
+[project.scripts]
+chunking-lab = "chunking_lab.cli:main"
+
+[project.entry-points."data_tools.tools"]
+chunking-lab = "chunking_lab.cli:main"
 
 [build-system]
 requires = ["hatchling"]
