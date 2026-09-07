@@ -768,10 +768,110 @@
           configuration is broken. They cannot tell you which of two reasonable
           configurations is better — “good chunking” is only defined relative to the
           questions people actually ask. Anything claiming a universal chunk-quality
-          score without queries is overselling.</div>
+          score without queries is overselling.
+          <br><br>That was our claim before we tested it. Then we tested it, and it
+          survived — but not for the reason we expected. Next section.</div>
       </div>
     </section>
 
+
+
+    <!-- 7c : do the cheap checks work? ----------------------------------- -->
+    <section>
+      <div class="col">
+        <h2>Do the cheap checks actually work?</h2>
+        <p>It is an obvious question and a surprisingly rare one to ask. If the
+          free checks are any good, they should put configurations in roughly the
+          same order the expensive measurement does. So we checked: fourteen
+          strategies, two unrelated sets of documents, 652 questions with marked
+          answers, and a rank correlation between each cheap signal and the real
+          score.</p>
+        <p>Three of the four answers were not what we expected.</p>
+
+        <h3>Chunk size “predicts” the score, and it means nothing</h3>
+        <p>Median chunk length correlates with Precision Ω at −0.95 on every single
+          corpus — a nearly perfect relationship. It is also almost circular.
+          Precision Ω divides the answer by the chunks holding it, so smaller
+          chunks make the number go up <em>by definition</em>. Reporting that as
+          evidence that cheap screening works would be reporting arithmetic.</p>
+        <p>Which meant every other signal had to be re-checked with size held
+          constant, to ask a sharper question: <em>once you already know how big the
+          chunks are, does this signal tell you anything more?</em></p>
+
+        <h3>The check that looked useless was the one that held up</h3>
+        <p>“Do cuts land inside sentences?” correlated at about +0.15 — close
+          enough to nothing that we nearly wrote it off. With size held constant it
+          rises to <b>+0.44</b>, and it held up on both sets of documents. Size had
+          been masking it: strategies that cut cleanly also tend to cut larger, and
+          the two effects were cancelling out. A correlation near zero is not
+          evidence of no relationship — it can be two relationships in opposite
+          directions.</p>
+
+        <h3>The table check does not work at all — and the reason is the good part</h3>
+        <p>“Are tables being cut in half?” predicts <em>nothing</em>. Not on any set
+          of documents, not against any score, and the sign flips depending on which
+          documents you use.</p>
+        <p>That looked like a broken signal until we drew it.</p>
+      </div>
+
+      <div class="col">
+        <figure class="fig">
+          <svg class="dia" viewBox="0 0 760 300" role="img"
+               aria-label="A table kept whole sits in one large chunk, so the answer is a small fraction of it and Precision Omega is low. Cutting the table into smaller chunks damages the row but shrinks the text around the answer, so Precision Omega goes up. The ceiling metric rewards the damage.">
+            <text class="mono" x="8" y="18">TABLE KEPT WHOLE — one chunk</text>
+
+            <rect class="picked" x="8" y="34" width="520" height="38" rx="2"/>
+            <rect class="goldbar" x="230" y="42" width="80" height="22" rx="2"/>
+            <text class="lbl" x="119" y="60" text-anchor="middle">header + rows</text>
+            <text class="lbl" x="419" y="60" text-anchor="middle">more rows</text>
+            <text class="cap" x="270" y="90" text-anchor="middle">the answer row</text>
+
+            <text x="560" y="50">chunk 520 chars</text>
+            <text x="560" y="68">answer 80 chars</text>
+            <text class="mono" x="560" y="90">Precision Ω = 15%</text>
+
+            <line class="ln-soft" x1="8" y1="120" x2="752" y2="120"/>
+
+            <text class="mono" x="8" y="150">CUT EVERY 130 CHARACTERS — the row is severed</text>
+
+            <rect class="strip" x="8" y="166" width="130" height="38" rx="2"/>
+            <rect class="holds" x="138" y="166" width="130" height="38" rx="2"/>
+            <rect class="holds" x="268" y="166" width="130" height="38" rx="2"/>
+            <rect class="strip" x="398" y="166" width="130" height="38" rx="2"/>
+            <rect class="goldbar" x="230" y="174" width="80" height="22" rx="2"/>
+            <line class="ln-cut" x1="268" y1="158" x2="268" y2="212"/>
+            <text class="cap" x="268" y="228" text-anchor="middle">the cut lands inside the row</text>
+
+            <text x="560" y="182">2 chunks = 260 chars</text>
+            <text x="560" y="200">answer 80 chars</text>
+            <text class="mono" x="560" y="222">Precision Ω = 31%</text>
+
+            <text class="cap" x="380" y="264" text-anchor="middle">The row is now unusable — and the score went UP.</text>
+            <text class="lbl" x="380" y="284" text-anchor="middle">A ceiling on precision cannot see damage that makes the text around the answer smaller.</text>
+          </svg>
+          <figcaption><b>The signal is fine. The score was the wrong thing to
+            check it against.</b> Cutting through a table row destroys it — the
+            numbers lose their column headings — but it also shrinks the text
+            surrounding the answer, and shrinking that is exactly what raises a
+            precision ceiling. The damage is to whether a retrieved chunk is
+            <em>usable</em>, which is not something Precision Ω measures.</figcaption>
+        </figure>
+      </div>
+
+      <div class="col">
+        <p>Which is worth stating carefully, because it is easy to draw the wrong
+          lesson: <b>a result like this is about a pairing, never about the signal
+          on its own.</b> “Tables are being shredded” is still a perfectly good
+          reason to reject a configuration. It is just not a prediction of where
+          that configuration will place, and we would have gone on assuming it was.</p>
+        <div class="note"><b>So the honest summary is narrower than we started
+          with.</b> The cheap checks are worth running to <em>disqualify</em> — text
+          that vanished, chunks too big for the model, a code example cut in half.
+          Two of them, duplication from overlap and whether cuts land cleanly, carry
+          real information about quality as well. The rest are best read as faults
+          to fix, not as a ranking.</div>
+      </div>
+    </section>
 
     <!-- 7b : glossary ---------------------------------------------------- -->
     <section>
@@ -858,7 +958,21 @@
               Extrinsic checks need questions with marked answers. Intrinsic checks
               <b>screen</b> — they can tell you a configuration is broken. Only
               extrinsic checks can <b>rank</b> two reasonable ones, because good
-              chunking is only defined relative to the questions people ask.</dd></div>
+              chunking is only defined relative to the questions people ask. This
+              started as an argument and is now a measurement.</dd></div>
+
+          <div class="term"><dt>rank correlation</dt>
+            <dd>One number, −1 to +1, for “do these two things put the list in the
+              same order?” Order rather than value, because the question is whether
+              screening would have picked the same winner — not whether it predicts
+              the exact score.</dd></div>
+
+          <div class="term"><dt>controlling for something</dt>
+            <dd>Asking what is left of a relationship once a known cause is
+              removed. Here: chunk size affects almost everything, so the useful
+              question is what a signal tells you <em>after</em> you already know
+              how big the chunks are. It is what turned one signal from apparently
+              useless into the most reliable one we have.</dd></div>
         </dl>
       </div>
     </section>
@@ -885,6 +999,11 @@ make chunking-benchmark</code></pre>
           retrieval quality. What this one does differently is need no model to do it,
           and reproduce someone else's published numbers exactly, so you can tell
           whether to believe it.</p>
+        <p>The measurements above are the whole point. Every one of them changed
+          what we thought: the metric we had implemented from a description turned
+          out to be wrong, the check that looked most principled turned out to carry
+          nothing, and the one that looked useless turned out to be the sturdiest.
+          None of that was available by reasoning about it.</p>
       </div>
     </section>
 
