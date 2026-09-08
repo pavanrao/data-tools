@@ -112,7 +112,7 @@ when a specific piece of work needs them. Neither is a difficulty rating.
 | The RAG pipeline | #1 `docs-rag` ✅ · #2 `repo-rag` ✅ · #53 `retrieval-bench` |
 | Chunking | #25 `chunking-lab` ✅ (six families, character-level scoring, Precision Ω reproduced against a published table) · #2 `repo-rag` (AST-aware) ✅ |
 | Hybrid search | #53 `retrieval-bench` (exact-code query set) · #2 `repo-rag` ✅ · #25 `chunking-lab` ✅ (BM25 vs vector vs RRF hybrid, and *how much* the retriever axis moves things against the chunker axis) |
-| Re-ranking | #53 `retrieval-bench` (two-stage, cost/benefit measured) |
+| Re-ranking | #53 `retrieval-bench` (two-stage, cost/benefit measured) · #91 `context-aug-lab` (contextual retrieval vs late chunking, where the vendor and independent numbers disagree) |
 | Grounding, citations & the empty case | #49 `ingest-ledger` ✅ (refuses when evidence is absent) · #1 `docs-rag` ✅ |
 
 ### §3 · Fine-tuning — Spine

@@ -4,6 +4,14 @@
 each one *at the character level against gold spans* — so the number reflects
 where the cuts landed, not how good the retriever or the model happened to be.
 
+**Closed.** The tool measures; it does not recommend. Its original one-line
+description promised a recommender it never had, and rather than build one for
+completeness the two open threads became separate topics: **#91 `context-aug-lab`**
+for Tier 2 (late chunking, contextual retrieval — a different cost model, and it
+would forfeit this tool's model-free default), and **#92 `adaptive-chunk`** for
+reproducing the published per-document recommender and testing whether it beats a
+fixed strategy.
+
 The user-facing reference, the research behind every choice, and the sixteen
 decisions live in [`tools/chunking-lab/README.md`](../tools/chunking-lab/README.md).
 The concepts themselves — what a span is, what Precision Ω measures, why intrinsic
