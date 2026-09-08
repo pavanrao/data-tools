@@ -19,7 +19,7 @@ that governs them, the query-free intrinsic metrics, and the extrinsic metrics �
 **whose Precision Ω reproduces Chroma's published column exactly** (6.7 / 13.9 /
 17.7 / 29.9), and `chunking-lab score`, which ranks strategies against gold spans
 over three retrievers (BM25, vector, hybrid-RRF), the hostile corpus, `explain`,
-`axes`, and `correlate` —
+`axes`, `annotate`, and `correlate` —
 which has now **run** the §9 experiment. `report`, `annotate` and `suggest` are
 not built yet.
 
@@ -96,6 +96,10 @@ document ─▶ chunker ─▶ Chunking(spans, provenance, strategy)
 - **`corpus/generate.py`** — the hostile corpus: five documents built so specific
   strategies provably fail, with gold spans known by construction because the
   generator wrote the answer text. Generated, not committed.
+- **`annotate.py`** — the model half of C9: prompt for a question plus verbatim
+  excerpts, locate every quote in the **whole** document, discard the question if
+  any quote cannot be found, and report the `Yield` — how many survived, why the
+  rest did not, and which stage of the cascade found each excerpt.
 - **`locate.py`** — quote-then-locate (C9): exact match, then whitespace-tolerant,
   then a sentence-level fuzzy match that must score at least 98. `locate_all`
   returns what it found *and* what it could not, which is the yield.
@@ -417,6 +421,22 @@ document ─▶ chunker ─▶ Chunking(spans, provenance, strategy)
   and the over-2× count, and tells the reader to prefer the per-row table. The
   outliers were only noticed because that table is printed above the summary.
 
+- **`annotate` locates against the whole document, not the sampled window.** The
+  model sees 4000 characters, but the offsets have to address the text that will
+  actually be chunked. Locating within the window and adding its start looks
+  equivalent and is not: the model often quotes text that appears elsewhere too,
+  and the window is an artefact of sampling rather than a real boundary.
+
+- **One bad excerpt discards the whole question.** Partial ground truth is still
+  wrong ground truth — a question scored against two spans where one is misplaced
+  is worse than a question that does not exist.
+
+- **The yield counters are named for what actually happened**, which took a second
+  pass. The first version had `unparseable` counting *provider exceptions* while
+  bad JSON landed in `malformed`, so the report could say "unreadable JSON: 0" for
+  a run where every reply was unreadable. Now `call_failed` and `malformed`. A
+  report that miscounts its own failure modes is worse than one that says less.
+
 - **A spec string is the identity of a run.** `recursive:400/200` names the
   strategy and every parameter that changes its output, and `fixed:512/0`
   normalises to `fixed:512` so one configuration cannot appear as two rows.
@@ -433,6 +453,10 @@ document ─▶ chunker ─▶ Chunking(spans, provenance, strategy)
 ```bash
 # the correctness proof: reproduce a published column, offline, no model
 make chunking-benchmark
+
+# make gold spans for your own documents (local model by default)
+uv run chunking-lab annotate ./my-docs --out ./my-corpus --model ollama/llama3.1
+uv run chunking-lab score --corpus-dir ./my-corpus --strategy recursive:200
 
 # which knob matters more: the chunker or the retriever?
 make chunking-axes                                          # local Ollama

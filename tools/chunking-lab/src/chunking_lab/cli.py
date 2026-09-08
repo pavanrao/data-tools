@@ -9,6 +9,7 @@ from pathlib import Path
 
 from data_tools_core.provenance import Provenance, UnitKind
 
+from chunking_lab import annotate as annotate_mod
 from chunking_lab import benchmark, score
 from chunking_lab import corpus as corpus_mod
 from chunking_lab import correlate as correlate_mod
@@ -195,6 +196,31 @@ def build_parser() -> argparse.ArgumentParser:
         "so the retriever axis would always show no spread",
     )
     axes.set_defaults(run=run_axes)
+
+    ann = sub.add_parser(
+        "annotate",
+        help="generate gold spans for your own documents, and report the yield",
+        description=(
+            "Never asks the model for character offsets -- it asks for the answer "
+            "quoted verbatim, locates the quote deterministically, and DISCARDS "
+            "anything it cannot find. A weaker model produces less ground truth, "
+            "never wrong ground truth, and the shortfall is reported as a yield."
+        ),
+    )
+    ann.add_argument("path", type=Path, help="a document, or a directory of them")
+    ann.add_argument("--out", type=Path, required=True, help="directory to write the corpus into")
+    ann.add_argument(
+        "--per-document", type=int, default=5, help="questions to attempt per document"
+    )
+    ann.add_argument(
+        "--model",
+        default=None,
+        help="LiteLLM chat model string. Defaults to DATA_TOOLS_CHAT_MODEL, which "
+        "defaults to ollama/llama3.1 -- so local is the ordinary path",
+    )
+    ann.add_argument("--seed", type=int, default=0, help="window sampling seed")
+    ann.add_argument("--glob", default="*.md", help="which files to read when path is a directory")
+    ann.set_defaults(run=run_annotate)
 
     return parser
 
@@ -594,6 +620,74 @@ def run_axes(args: argparse.Namespace) -> int:
             "is a bag of words. It understates the retriever axis badly. Re-run with a\n"
             "real encoder before quoting this."
         )
+    return 0
+
+
+def _chat_provider(model: str | None):
+    """Resolve a chat model lazily, so `--help` never needs the extra installed."""
+    from dataclasses import replace
+
+    from data_tools_core.config import get_settings
+    from data_tools_core.llm import get_chat_provider
+
+    settings = get_settings()
+    if model:
+        settings = replace(settings, chat_model=model)
+    return get_chat_provider(settings), settings.chat_model
+
+
+def run_annotate(args: argparse.Namespace) -> int:
+    """Manufacture gold spans, keeping only the ones that could be verified."""
+    documents = sorted(args.path.glob(args.glob)) if args.path.is_dir() else [args.path]
+    if not documents:
+        raise ValueError(f"no files matching {args.glob!r} in {args.path}")
+
+    provider, model = _chat_provider(args.model)
+    print(f"annotating {len(documents)} document(s) with {model}\n")
+
+    corpora, totals = [], annotate_mod.Yield()
+    for document in documents:
+        corpus, produced = annotate_mod.annotate(
+            document.name,
+            document.read_text(encoding="utf-8"),
+            provider,
+            count=args.per_document,
+            seed=args.seed,
+        )
+        corpora.append(corpus)
+        stages = dict(totals.by_stage)
+        for key, value in produced.by_stage.items():
+            stages[key] = stages.get(key, 0) + value
+        totals = annotate_mod.Yield(
+            asked=totals.asked + produced.asked,
+            kept=totals.kept + produced.kept,
+            call_failed=totals.call_failed + produced.call_failed,
+            malformed=totals.malformed + produced.malformed,
+            unlocatable=totals.unlocatable + produced.unlocatable,
+            by_stage=stages,
+        )
+        print(f"  {document.name:<30} {produced.kept}/{produced.asked} usable")
+
+    kept = [c for c in corpora if c.questions]
+    if not kept:
+        print(
+            "\nNo question survived verification, so no corpus was written.\n"
+            f"{totals.report()}\n"
+            "Every discarded question is one whose quoted answer could not be found "
+            "in the document. That is the check working, not a bug -- but a run that "
+            "keeps nothing usually means the model is too weak for this task.",
+            file=sys.stderr,
+        )
+        return 1
+
+    gold = corpus_mod.write_dir(kept, args.out)
+    print(f"\n{totals.report()}")
+    print(f"\nwrote {sum(len(c.questions) for c in kept)} questions to {gold}")
+    print(
+        "This is now a committed artifact: every comparison from here is "
+        "deterministic, offline and free.\n"
+        f"  uv run chunking-lab score --corpus-dir {args.out} --strategy recursive:200"
+    )
     return 0
 
 

@@ -8,6 +8,44 @@ we're building or parking, and why. Append a new `## Iteration N` section at the
 
 ---
 
+## Iteration 8 — 2026-09-07 — annotate, and what a weak model costs
+
+### F11 — quote-then-locate works, and a local 8B model yields 25%
+`annotate` closes the gap that made this tool a lab instrument: it manufactures
+gold spans from *your* documents, so `score --corpus-dir` works on something other
+than the two corpora that already had them.
+
+Run against `ollama/llama3.1` over two real documents from this repo, 8 attempts:
+
+```
+yield: 2/8 questions usable (25%)
+  discarded, reply was not usable JSON: 1
+  discarded, quote not found in the document: 5
+  excerpts located by: exact 3, whitespace 1
+```
+
+**Five of eight failed because the model paraphrased instead of copying.** Asked
+for text quoted verbatim, an 8B model rewrites it — and that is precisely the
+failure C9 was designed around. Because the quote is located rather than trusted,
+the six bad questions were *discarded*, not written into the corpus with plausible
+wrong offsets. The two survivors were verified verbatim against the source.
+
+**This is the number C9 predicted would exist and nobody had.** "A weaker model
+produces less ground truth, not wrong ground truth" was an argument; 25% is what it
+costs in practice on a small local model. It also gives a concrete threshold for
+"is my model good enough for this": if the yield is this low, use a stronger model
+for the annotation pass — which is cheap, because it runs **once per corpus** and
+the result is a committed artifact.
+
+The `by_stage` breakdown matters too. Three of four surviving excerpts matched
+*exactly* and one needed whitespace tolerance; none needed the fuzzy fallback. A
+corpus built mostly from fuzzy matches would be visibly less trustworthy, and this
+is where that shows.
+
+**Verdict.** The design holds under a real weak model. Keep the strong-model advice
+from README §10 — annotate with the best model you have, once, then never pay
+again.
+
 ## Iteration 7b — 2026-09-07 — which knob matters more
 
 ### F10 — the chunker always matters; the retriever usually doesn't, and occasionally matters just as much
