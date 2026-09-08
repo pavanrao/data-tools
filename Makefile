@@ -1,6 +1,6 @@
 .PHONY: help sync lint test demo demo-reconcile demo-compare demo-ask \
         demo-chunking chunking-benchmark chunking-correlate \
-        chunking-correlate-structured chunking-axes clean
+        chunking-correlate-structured chunking-axes chunking-models clean
 
 help:
 	@echo "sync   install the whole collection in a dev venv"
@@ -12,6 +12,7 @@ help:
 	@echo "chunking-correlate  do query-free signals predict the measured ranking?"
 	@echo "chunking-correlate-structured  the same, on documents with tables and code"
 	@echo "chunking-axes       is the chunker the big knob, or the retriever?"
+	@echo "chunking-models     which local model annotates best? (needs ollama)"
 
 sync:
 	uv sync --all-extras
@@ -130,9 +131,26 @@ chunking-axes:
 	@echo
 	uv run chunking-lab axes $(AXES_RESULTS)
 
+# Which model should you annotate with? Every model sees the SAME windows -- same
+# documents, same seed -- so a yield difference is the model and not luck. Writes
+# nothing: it answers "which model", after which you run the real pass with the
+# winner. Override MODELS with whatever you have pulled.
+#
+#   make chunking-models
+#   make chunking-models MODELS="--model ollama/qwen2.5:14b --model ollama/phi4"
+MODEL_DOCS ?= CONVENTIONS.md docs/000_project-organization.md \
+              docs/007_chunking-concepts.md tools/chunking-lab/README.md
+MODELS ?= --model ollama/llama3.1 --model ollama/qwen2.5:7b --model ollama/qwen2.5:14b
+chunking-models:
+	@rm -rf .model-compare && mkdir -p .model-compare/docs
+	@cp $(MODEL_DOCS) .model-compare/docs/
+	uv run chunking-lab annotate .model-compare/docs --out .model-compare/unused \
+	    --per-document 5 --seed 42 $(MODELS)
+	@rm -rf .model-compare
+
 clean:
 	rm -rf tools/ingest-ledger/corpus/hostile tools/ingest-ledger/corpus/rfp \
 	       tools/chunking-lab/corpus/hostile tools/chunking-lab/corpus/structured \
 	       chunking-results.jsonl chunking-structured-results.jsonl \
-	       chunking-axes-results.jsonl \
+	       chunking-axes-results.jsonl .model-compare \
 	       *.ledger.db .pytest_cache .ruff_cache
