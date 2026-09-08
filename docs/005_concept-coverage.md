@@ -88,6 +88,19 @@ Two ways to show it, and they compose:
   `ingest-ledger`, which is already built and already ends its demo by refusing
   to answer.
 
+## The other axis
+
+This map answers *which AI concepts do I have a measured tool for*. Sections **H–J**
+of `IDEAS.md` are written along a second axis — *which enterprise data-engineering
+problems do I have a tool for* — and are mapped in
+[`008_data-engineering-coverage.md`](008_data-engineering-coverage.md).
+
+Ideas from H–J appear in **both**, against different cards: `#93 vendor-spec-reader`
+is *§2 The RAG pipeline* here and *§A Source onboarding* there. Each H–J entry
+carries a `Learn:` line (the AI concept, mapped here) and a `Maps to:` line (the
+data problem, mapped there). In sections A–G the two collapse into one, which is
+why this map alone was enough until those sections arrived.
+
 ## Coverage matrix
 
 `§` numbers group the concept map. **Spine** marks the groups almost any tool in
@@ -103,7 +116,8 @@ when a specific piece of work needs them. Neither is a difficulty rating.
 | Embedding | #53 `retrieval-bench` · #23 `embeddings-cache` · N1 · #25 `chunking-lab` ✅ (semantic chunking; embeddings placing boundaries rather than retrieving) |
 | Temperature & sampling | #51 `decode-lab` · N1 |
 | Hallucination | #51 `decode-lab` · #49 `ingest-ledger` (refusal path) · N1 |
-| Structured output / function calling | #52 `schema-guard` · N1 |
+| Structured output / function calling | #52 `schema-guard` · N1 · #93 `vendor-spec-reader`, #106 `contract-from-docs` (schema-constrained JSON as the *deliverable*, not a convenience) |
+| **Deterministic core, optional model** | #49 `ingest-ledger` ✅ · #25 `chunking-lab` ✅ (Tier 0 runs with nothing installed) · #94 `copybook-decoder`, #96 `fixed-width-inferrer` (deterministic parse, LLM only for the semantics it cannot reach) — *where the model is **not** the answer, and what you gain by keeping it optional* |
 
 ### §2 · RAG & grounding — Spine
 
@@ -114,11 +128,11 @@ published per-document recommender, then check it beats a fixed strategy).*
 
 | Card | Covered by |
 | --- | --- |
-| The RAG pipeline | #1 `docs-rag` ✅ · #2 `repo-rag` ✅ · #53 `retrieval-bench` · #91 `context-aug-lab` (the augmentation half — what changes when the cuts stay put and the *unit* changes) |
+| The RAG pipeline | #1 `docs-rag` ✅ · #2 `repo-rag` ✅ · #53 `retrieval-bench` · #91 `context-aug-lab` (the augmentation half — what changes when the cuts stay put and the *unit* changes) · #93 `vendor-spec-reader` (RAG over a 200-page spec, answers traced to the page they came from) |
 | Chunking | #25 `chunking-lab` ✅ (six families, character-level scoring, Precision Ω reproduced against a published table) · #2 `repo-rag` (AST-aware) ✅ · #92 `adaptive-chunk` (per-document strategy selection, reproduced from LREC 2026 and tested against a fixed baseline) · #91 `context-aug-lab` (family 6, which moves no boundaries at all) |
 | Hybrid search | #53 `retrieval-bench` (exact-code query set) · #2 `repo-rag` ✅ · #25 `chunking-lab` ✅ (BM25 vs vector vs RRF hybrid, and *how much* the retriever axis moves things against the chunker axis) |
 | Re-ranking | #53 `retrieval-bench` (two-stage, cost/benefit measured) · #91 `context-aug-lab` (contextual retrieval vs late chunking, where the vendor and independent numbers disagree) |
-| Grounding, citations & the empty case | #49 `ingest-ledger` ✅ (refuses when evidence is absent) · #1 `docs-rag` ✅ |
+| Grounding, citations & the empty case | #49 `ingest-ledger` ✅ (refuses when evidence is absent) · #1 `docs-rag` ✅ · #126 `rca-investigator`, #142 `lineage-narrator` (an evidence chain is the product, not a footnote) |
 
 ### §3 · Fine-tuning — Spine
 
@@ -146,17 +160,18 @@ published per-document recommender, then check it beats a fixed strategy).*
 | Retrieval metrics vs. generation metrics | #9 `eval-harness` (faithfulness vs. context precision) · #53 `retrieval-bench` · N5 · #25 `chunking-lab` ✅ (chunk-level vs character-level; why recall alone scores a useless chunker 100%) · #91 `context-aug-lab` · #92 `adaptive-chunk` (both reuse #25's corpora, gold spans and metrics rather than inventing their own) |
 | LLM-as-judge | #57 `judge-lab` (calibrated against human labels) |
 | Task metrics vs. vibes | #57 `judge-lab` · #66 `tabular-lab` (hard metrics where they exist) |
+| **Calibrated confidence & honest uncertainty** | #95 `column-semantics-tagger`, #97 `null-semantics-detective`, #118 `db-archaeologist` (confidence-ranked output routed to human review) · #25 `chunking-lab` ✅ (the *yield* a weak model produces, reported rather than hidden) — *saying how sure you are, in a way a reader can act on* |
 
 ### §6 · Agentic AI — Spine
 
 | Card | Covered by |
 | --- | --- |
 | Agent vs. pipeline | #58 `agent-governor` (same task three ways) · N2 |
-| The ReAct loop | #58 `agent-governor` (iteration ceiling, spend cap, cost per run) |
-| Tool calling & MCP | #58 `agent-governor` (arg validation) · #16 `mcp-gateway` · #2 `repo-rag` ✅ · N3 (MCP as standardisation) |
+| The ReAct loop | #58 `agent-governor` (iteration ceiling, spend cap, cost per run) · #118 `db-archaeologist` (hypothesis → test → revise, over a database nobody understands) |
+| Tool calling & MCP | #58 `agent-governor` (arg validation) · #16 `mcp-gateway` · #2 `repo-rag` ✅ · N3 (MCP as standardisation) · #148 `estate-knowledge-graph` (the substrate every other agent queries) |
 | Memory & context management | #58 `agent-governor` (overflow + staleness) · #50 `token-ledger` |
 | Frameworks: LangChain / LangGraph / crewAI / Pydantic AI | #58 `agent-governor` (chain vs. graph, built both) · N3 |
-| Guardrails & human-in-the-loop | #58 `agent-governor` (read/write split, confirmation gates, audit log) |
+| Guardrails & human-in-the-loop | #58 `agent-governor` (read/write split, confirmation gates, audit log) · #123 `match-merge-adjudicator`, #130 `quarantine-adjudicator`, #163 `steward-command-center` (the gray zone routed to a human, with the evidence attached) |
 
 ### §7 · LLMOps — Spine
 
@@ -297,10 +312,10 @@ published per-document recommender, then check it beats a fixed strategy).*
 
 | Card | Covered by |
 | --- | --- |
-| PII detection & redaction | #20 `pii-scanner` — extended to redact **before the model call and before logging** · #61 `llm-trace` |
+| PII detection & redaction | #20 `pii-scanner` — extended to redact **before the model call and before logging** · #61 `llm-trace` · #117 `sample-redactor`, #139 `reident-tester` (attack your own masking), #166 `synthetic-environment-fabricator` |
 | Guardrails & jailbreak resistance | #88 `jailbreak-range` (bypass rate *and* false-positive rate) |
 | Bias, fairness & differential performance | #89 `fairness-audit` (disaggregated metrics) · #67 `asr-bench` |
-| Human-in-the-loop as a control | #89 `fairness-audit` (threshold, review capacity, audit trail) · #58 `agent-governor` |
+| Human-in-the-loop as a control | #89 `fairness-audit` (threshold, review capacity, audit trail) · #58 `agent-governor` · #140 `pia-drafter`, #141 `audit-evidence-compiler` (evidence assembled for a human to sign) |
 
 ## What this is not
 
