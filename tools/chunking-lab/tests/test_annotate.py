@@ -208,3 +208,90 @@ def test_quotes_are_located_against_the_whole_document_not_the_window():
 
 def test_the_prompt_names_the_excerpt_cap_it_enforces():
     assert f"1 and {MAX_EXCERPTS}" in PROMPT.format(window="x", max_excerpts=MAX_EXCERPTS)
+
+
+# ------------------------------------------------------- comparing models
+
+
+def test_comparing_models_asks_every_model_the_same_questions(monkeypatch, tmp_path, capsys):
+    """The comparison only means something if the windows are identical.
+
+    Same seed, same documents, so the only thing varying is the model. If each
+    model were asked about different passages, a yield difference could just be
+    one model getting easier text.
+    """
+    from chunking_lab import cli
+
+    document = tmp_path / "policy.md"
+    document.write_text(DOC * 60)  # long enough that windows are sampled, not whole
+
+    seen: dict[str, list[str]] = {}
+
+    def fake_provider(model):
+        provider = Scripted(_reply("q", "open for four hours"))
+        seen[model] = provider.prompts
+        return provider, model
+
+    monkeypatch.setattr(cli, "_chat_provider", fake_provider)
+    exit_code = cli.main(
+        [
+            "annotate",
+            str(tmp_path),
+            "--out",
+            str(tmp_path / "out"),
+            "--per-document",
+            "3",
+            "--seed",
+            "11",
+            "--model",
+            "ollama/a",
+            "--model",
+            "ollama/b",
+        ]
+    )
+    assert exit_code == 0
+    assert seen["ollama/a"] == seen["ollama/b"], "models were asked about different windows"
+
+    out = capsys.readouterr().out
+    assert "ollama/a" in out and "ollama/b" in out
+    assert "paraphrased" in out, "the dominant failure mode must be broken out"
+
+
+def test_comparing_models_writes_nothing(monkeypatch, tmp_path):
+    """It answers 'which model should I annotate with', not 'here is a corpus'."""
+    from chunking_lab import cli
+
+    (tmp_path / "policy.md").write_text(DOC)
+    out_dir = tmp_path / "out"
+
+    monkeypatch.setattr(
+        cli, "_chat_provider", lambda m: (Scripted(_reply("q", "open for four hours")), m)
+    )
+    cli.main(
+        [
+            "annotate",
+            str(tmp_path),
+            "--out",
+            str(out_dir),
+            "--per-document",
+            "1",
+            "--model",
+            "ollama/a",
+            "--model",
+            "ollama/b",
+        ]
+    )
+    assert not out_dir.exists()
+
+
+def test_a_single_model_still_writes_a_corpus(monkeypatch, tmp_path):
+    from chunking_lab import cli
+
+    (tmp_path / "policy.md").write_text(DOC)
+    out_dir = tmp_path / "out"
+
+    monkeypatch.setattr(
+        cli, "_chat_provider", lambda m: (Scripted(_reply("q", "open for four hours")), m)
+    )
+    assert cli.main(["annotate", str(tmp_path), "--out", str(out_dir), "--per-document", "1"]) == 0
+    assert (out_dir / "gold.jsonl").exists()
