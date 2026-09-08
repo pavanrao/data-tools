@@ -2142,3 +2142,263 @@ repositories rather than guessing from the catalogue.
 - **Learn:** compatibility classes; shifting a break left of the merge.
 - **Cost note:** local; multi-repository. $0.
 - **Maps to:** §G in `docs/008`. Contracts, change management.
+
+---
+
+## L. Agents that must see the data (#184–197) 🤖
+
+Section K deliberately gave up data access. This section takes it back, and pays
+for it with a stricter bar: **the loop is the solution.** Every entry here needs
+hypothesis → query → revise, where what to look at next is not knowable until you
+have looked. A single prompt, however good, does not do these; nor does a script,
+however clever.
+
+That bar excludes most of what AI is usually pointed at. Classification,
+summarisation, extraction and translation are all one-shot — useful, and not this.
+So each entry carries **Why nothing simpler works**, naming the deterministic or
+single-prompt approach and saying exactly where it fails. If that line is weak, the
+idea does not belong here.
+
+**On data access.** These read real values, so they run where the data already is —
+an on-prem or private-cloud model, which is now ordinary. The trade is deliberate:
+section K buys deployability by staying in the metadata plane; section L buys
+answers that are only visible in the data, and accepts the deployment cost.
+
+**The three gaps `docs/008` named after section K are the first three entries.**
+
+### 184. `boundary-prober` — the window where two systems are never consistent ⭐⭐⭐ 🤖 🧠 ☁️
+Two systems are supposed to agree. They do, except in a window nobody has ever
+characterised. This probes both empirically — samples the same logical entity on
+both sides across the day, finds the disagreements, forms a hypothesis about the
+cause (a settlement cut-off, a late-arriving correction, a filter one side applies
+and the other does not, a different business definition of "active"), tests it with
+targeted queries, and returns the *envelope*: between these hours, for this class
+of record, expect divergence of this shape.
+- **Why nothing simpler works:** a reconciliation job needs you to already know the
+  key, the rule and the expected window. This produces those. `#125
+  recon-investigator` chases a mismatch you have already noticed; this finds the
+  ones you have normalised as "just how it is".
+- **Agentic core:** each probe result changes which entity class is worth sampling
+  next. The search space is every combination of time, entity type and status, and
+  pruning it is judgement.
+- **Learn:** designing an empirical probe; distinguishing a timing artefact from a
+  logic difference; writing an envelope a downstream team can code against.
+- **Cost note:** local model, targeted queries, no full scans. Cheap.
+- **Maps to:** §I in `docs/008` — the bare row. Cross-system consistency.
+
+### 185. `sla-portfolio-auditor` — what you are owed versus what you are getting ⭐⭐⭐ 🤖 🧠 ☁️
+Reads vendor contracts, extracts each delivery obligation in prose, then goes and
+*finds the evidence* — which requires discovering, per vendor, where "delivered"
+is even recorded, because the contract says "by 06:00 business days" and the
+platform records an arrival timestamp on a landing table with a different name in
+every feed. Measures compliance, quantifies the shortfall, and assembles the
+credit or escalation position with citations to both the clause and the data.
+- **Why nothing simpler works:** the contract→evidence mapping is different for
+  every vendor and exists nowhere. Extraction alone gives you obligations you
+  cannot measure; a dashboard alone gives you numbers with no entitlement attached.
+- **Agentic core:** for each clause, decide what would constitute evidence, go
+  looking, discover the evidence is not where you expected, and adapt.
+- **Learn:** obligation → measurement mapping; building a commercial argument from
+  operational data; citing both sides.
+- **Cost note:** contracts parsed once; measurement is cheap and recurring.
+- **Maps to:** §G in `docs/008` — the bare row. Vendor management, service credits.
+
+### 186. `version-coexistence-manager` — run two schema versions until the last consumer moves ⭐⭐⭐ 🤖 🔌 ☁️
+`#183` catches a breaking change in CI. This operates the weeks that follow:
+maintains both shapes, **proves equivalence on live data** rather than asserting it,
+watches query logs to see who is still on the old version, nudges the stragglers
+with the specific line they need to change, and closes the window only when the
+evidence says nobody is left.
+- **Why nothing simpler works:** expand-migrate-contract is a *campaign*, not a
+  deployment. The contract step is the one everyone skips, because knowing it is
+  safe means knowing who is still reading — which changes daily.
+- **Agentic core:** a long-running stateful process with a per-consumer decision at
+  each step, and a stopping condition that is itself a judgement.
+- **Learn:** online schema evolution as an operated process; equivalence testing on
+  production data; when to stop waiting.
+- **Cost note:** ongoing but light; log summaries and periodic comparison queries.
+- **Maps to:** §H in `docs/008` — the bare row. Change management.
+
+### 187. `grain-detective` — one row per *what*, actually? ⭐⭐⭐ 🤖 🧠 💻
+The documentation says one row per policy. Is it? This probes candidate keys, finds
+where uniqueness breaks, and then does the part that matters: investigates whether
+the duplicates are genuine data errors, a versioning dimension nobody documented, a
+join fan-out introduced upstream, or evidence that the grain is actually *policy ×
+coverage* and every downstream count has been wrong for years.
+- **Why nothing simpler works:** finding duplicate keys is a `GROUP BY HAVING`. The
+  answer is worthless without the *diagnosis*, and the diagnosis requires forming a
+  theory about what the extra rows represent and testing it against other columns.
+- **Agentic core:** hypothesis generation over candidate grains, each tested by a
+  query whose result determines the next hypothesis.
+- **Learn:** grain as the most consequential and least documented modelling fact;
+  investigating rather than reporting.
+- **Cost note:** local model, aggregate queries only. Cheap.
+- **Maps to:** §B/§E in `docs/008`. Modelling correctness, metric trust.
+
+### 188. `attrition-tracer` — where did the rows go? ⭐⭐⭐ 🤖 🧠 💻
+`#49 ingest-ledger` proves what arrived. This covers everything after: walks a
+pipeline stage by stage, and at each one decides whether the change in row count
+and key set is *expected* — an inner join that was meant to filter, a dedup that was
+meant to collapse — or silent loss: a join on a column with trailing whitespace, a
+filter written for a source that has since changed, a cast that quietly nulls.
+Handles the inverse too, where a fan-out multiplies rows nobody asked for.
+- **Why nothing simpler works:** row counts changing between stages is *normal*.
+  Only understanding what each stage is for separates the intended reduction from
+  the accidental one, and that intent lives in the code and the naming, not the
+  numbers.
+- **Agentic core:** at each stage, decide whether to accept the delta or investigate
+  it, and if investigating, decide what to compare.
+- **Learn:** conservation as a pipeline property; the difference between a filter
+  and a bug being intent alone.
+- **Cost note:** counts and key-set comparisons; no full data movement.
+- **Maps to:** §I/§G in `docs/008`. Silent data loss, mid-pipeline integrity.
+
+### 189. `rule-reality-auditor` — the code says it enforces this; the data disagrees ⭐⭐⭐ 🤖 🧠 💻
+Reads transform and application code for the rules it *claims* to enforce — a
+status transition that should be impossible, a total that should always reconcile,
+a field that should never be null when another is set — then goes and checks
+whether the data obeys. Where it does not, investigates when it started and what
+changed, and reports whether the code is wrong, the rule moved, or the enforcement
+has a hole.
+- **Why nothing simpler works:** `#35 dq-rule-suggester` infers rules *from data*,
+  so it can only find rules the data already follows — it is blind to the exact case
+  that matters. This starts from the claim and tests it, which is the opposite
+  direction and finds the opposite class of bug.
+- **Agentic core:** extracting an enforceable claim from code, translating it into a
+  query, and — when it fails — investigating whether the violation is a bug, a
+  legitimate exception, or a rule that changed.
+- **Learn:** cross-artifact contradiction hunting; testing the claim rather than
+  mining the data.
+- **Cost note:** local; code plus aggregate queries.
+- **Maps to:** §G/§H in `docs/008`. Quality, control assurance.
+
+### 190. `equivalence-adjudicator` — the rewrite gives different answers; does it matter? ⭐⭐⭐ 🤖 🧠 ☁️
+Migrations produce diffs. The diff is the easy part. This takes the rows that
+differ and adjudicates each class: float accumulation order, a `NULL` sort position
+that changed with the engine, a genuine logic bug, or a difference that is
+*correct* because the old version was wrong. Returns a verdict per class with the
+evidence, so a human signs off on a page rather than a spreadsheet.
+- **Why nothing simpler works:** a row-level diff on a migration of any size returns
+  thousands of differences and no judgement. Tolerances are the usual answer and are
+  how real bugs get waved through.
+- **Agentic core:** cluster the differences by suspected cause, form a hypothesis
+  for each cluster, test it with a targeted query, and rank by whether a human needs
+  to look.
+- **Learn:** equivalence as a graded verdict rather than a boolean; making a
+  sign-off tractable.
+- **Cost note:** the comparison is the expensive part; adjudication is cheap.
+- **Maps to:** §D in `docs/008`. Migration assurance. Feeds `#143`, `#145`.
+
+### 191. `hidden-coupling-finder` — these two pipelines are not as independent as you think ⭐⭐⭐ 🤖 🧠 💻
+Finds coupling nobody declared: two jobs writing the same staging table under
+different names, one silently depending on another's ordering, a shared temp
+schema, a config value that means different things to two teams, or two pipelines
+that only work because one always finishes first. Confirms each candidate by
+looking at what the data actually shows across runs.
+- **Why nothing simpler works:** declared lineage shows declared dependencies. The
+  dangerous couplings are the undeclared ones, which appear only as a correlation
+  between runs — and correlation over a scheduler is mostly coincidence, so
+  something has to sort real coupling from shared timing.
+- **Agentic core:** generate candidate couplings from code and logs, then design a
+  check that would distinguish coupling from coincidence, and run it.
+- **Learn:** implicit contracts between teams; distinguishing correlation from
+  dependency.
+- **Cost note:** logs, code, and light data checks.
+- **Maps to:** §H in `docs/008`. Change safety, blast radius.
+
+### 192. `fitness-assessor` — is this dataset fit for *that* purpose? ⭐⭐⭐ 🤖 🧠 ☁️
+Someone wants to use a dataset for something. This investigates whether it will
+hold: is the grain right for the question, is the population complete for the
+segment they care about, is history deep enough, is the freshness compatible with
+the decision, are the known quality issues in a column they depend on. Returns a
+fitness verdict with the specific caveats, not a quality score.
+- **Why nothing simpler works:** a quality score is purpose-free and therefore
+  meaningless — the same dataset is excellent for a trend and useless for a
+  reconciliation. Fitness only exists relative to a stated use, and checking it
+  requires exploring the data along the dimensions that use depends on.
+- **Agentic core:** translate a stated purpose into the checks that would falsify
+  it, run them, and follow up where a check comes back marginal.
+- **Learn:** fitness-for-purpose as the only meaningful quality question;
+  falsification as a method.
+- **Cost note:** aggregate queries; scales with the number of checks, not data size.
+- **Maps to:** §G/§E in `docs/008`. Consumption trust, data-product certification.
+
+### 193. `purpose-limitation-auditor` — is this data being used for what people consented to? ⭐⭐⭐ 🤖 🧠 ☁️
+Reads the privacy notice and consent model, then traces actual usage — queries,
+extracts, downstream joins, model training sets — and flags where data collected
+for one purpose is serving another. Distinguishes a genuine breach from a
+compatible secondary use, which is a legal judgement the regulation frames in prose
+and nothing encodes.
+- **Why nothing simpler works:** classification tells you a column is PII. Nothing
+  in the catalogue knows *why* it was collected, and purpose limitation is
+  precisely the mismatch between that and how it is used. The answer needs the
+  notice, the lineage and the usage together.
+- **Agentic core:** for each use found, retrieve the governing purpose, judge
+  compatibility, and investigate further where the join makes the purpose ambiguous.
+- **Learn:** GDPR purpose limitation as an engineering problem; defensible
+  judgement with a citation trail.
+- **Cost note:** private-cloud model, given the material. Query logs and lineage.
+- **Maps to:** §K in `docs/008`. Privacy compliance beyond PII detection.
+
+### 194. `population-drift-investigator` — the numbers are fine; the population changed ⭐⭐⭐ 🤖 🧠 💻
+`#137` asks why a number moved. This asks the harder question underneath: did the
+*population* change, and was that us or the world? Distinguishes a genuine business
+shift from an upstream filter change, a source that quietly stopped sending a
+segment, a join that started dropping a category, and a backfill that reshaped
+history. Investigates by segment until it can name the boundary.
+- **Why nothing simpler works:** aggregate monitoring cannot see this — totals stay
+  plausible while their composition changes underneath. Finding it means slicing by
+  dimensions nobody thought to alert on, chosen by what the previous slice showed.
+- **Agentic core:** iterative segmentation, where each split is chosen by the result
+  of the last.
+- **Learn:** composition versus magnitude; monitoring's blind spot.
+- **Cost note:** aggregate queries over segments.
+- **Maps to:** §E/§G in `docs/008`. Metric trust, silent upstream change.
+
+### 195. `silent-truncation-hunter` — where the pipeline quietly loses precision ⭐⭐ 🤖 🧠 💻
+Hunts the losses that never raise an error: a string truncated to a column width, a
+decimal rounded by an implicit cast, a timestamp losing sub-second precision at a
+boundary, a numeric overflowing to null, a unicode character mangled by an encoding
+hop. Reads the code for where a conversion happens, then checks the data at that
+point for evidence that it bit.
+- **Why nothing simpler works:** type analysis says a conversion is *possible*;
+  only the data says whether any value is close enough to the edge for it to
+  matter. Reporting every possible narrowing conversion is noise nobody reads.
+- **Agentic core:** find candidate conversions in code, design the query that would
+  prove harm, run it, and follow the value back to its source when it does.
+- **Learn:** lossy conversions as a silent class; evidence over possibility.
+- **Cost note:** aggregate queries at candidate points.
+- **Maps to:** §B/§I in `docs/008`. Silent corruption, migration parity.
+
+### 196. `reference-data-decay-monitor` — the code set stopped matching reality ⭐⭐ 🤖 🧠 💻
+Mappings rot quietly. New codes appear that map to nothing and fall to a default;
+mapped codes go extinct without anyone retiring them; a mapping that was right in
+2019 now sends a category to the wrong bucket. Watches the join between incoming
+codes and the reference set, and for each anomaly investigates whether it is a
+genuine new code, a source-side typo, a systematic upstream change, or a mapping
+that has quietly gone wrong.
+- **Why nothing simpler works:** an unmapped-code alert fires constantly and is
+  always muted, because most of them are noise. The value is entirely in triage,
+  which needs context about the source and the code's shape.
+- **Agentic core:** classify each anomaly by investigating its context, and escalate
+  only what a human should decide.
+- **Learn:** reference data as a living dependency; alert designs people do not mute.
+- **Cost note:** small recurring queries.
+- **Maps to:** §B/§G in `docs/008`. Reference data, cleansed-zone conformance.
+
+### 197. `query-intent-consolidator` — four hundred queries, eleven actual questions ⭐⭐⭐ 🤖 🧠 ☁️
+Reads the analyst query log and clusters by *intent* rather than by SQL similarity —
+two queries that look nothing alike can be the same question, and two near-identical
+ones can differ in a `WHERE` clause that changes everything. Names the real
+questions, then checks against the data whether a proposed dataset would actually
+serve each one, and proposes the handful of marts or products that would retire
+most of the log.
+- **Why nothing simpler works:** SQL similarity clusters by syntax and gets this
+  wrong in both directions. And a proposed mart is only useful if the data supports
+  it at the required grain and freshness, which has to be checked, not assumed.
+- **Agentic core:** cluster by intent, propose a serving design, test the design
+  against the data, and revise when it does not hold.
+- **Learn:** demand analysis from logs; designing for the questions rather than the
+  queries.
+- **Cost note:** log summaries plus verification queries.
+- **Maps to:** §E in `docs/008`. Semantic layer, data-product design, `#165` demand.
