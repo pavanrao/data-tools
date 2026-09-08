@@ -994,12 +994,61 @@
         <p><b>You can manufacture questions, at increasing fidelity.</b> Write a few
           documents where you plant the answers yourself, so their positions are
           known exactly — free and immediate. Then have a model read your real
-          documents and produce questions with verbatim quotes, locating each quote
-          in the source and discarding the ones it cannot find — one bill, once,
-          after which the question set is a file you keep forever. Then, once you
-          have traffic, use what people actually asked. Each step is closer to the
-          truth and none of them blocks shipping.</p>
+          documents and write questions about them — one bill, once, after which the
+          question set is a file you keep forever. Then, once you have traffic, use
+          what people actually asked. Each step is closer to the truth and none of
+          them blocks shipping.</p>
 
+        <h3>The middle step has a trap, and avoiding it costs you data</h3>
+        <p>Having a model generate questions is easy. Getting the <em>answer
+          positions</em> is where it goes wrong, and the obvious approach is the
+          dangerous one.</p>
+        <p>If you ask a model “which characters answer this?”, it will give you two
+          numbers. Models are bad at counting characters, so those numbers are often
+          off — and here is the problem: <b>a wrong position looks exactly like a
+          right one</b>. Nothing downstream can tell. Every strategy then gets
+          scored against the wrong stretch of text, and the whole evaluation is
+          quietly meaningless while appearing to work perfectly.</p>
+        <p>So don’t ask for positions. Ask the model to <b>quote the answer
+          word for word</b>, then go and find that quote in the document yourself.
+          Now a wrong answer cannot hide: the quote either is in the document or it
+          isn’t. If it isn’t, throw the question away.</p>
+        <p class="pull">Ask for a position and a mistake is invisible. Ask for a
+          quote and a mistake announces itself.</p>
+
+        <p>That trade is not free, and it is worth knowing the price before you
+          budget for it. Running this against a small model on a laptop
+          (Llama 3.1, 8 billion parameters) over two real documents:</p>
+      </div>
+
+      <div class="col">
+        <div class="scroll">
+          <table>
+            <caption>Questions generated from two real documents · Llama 3.1 8B, running locally</caption>
+            <thead><tr><th>outcome</th><th>count</th><th>what happened</th></tr></thead>
+            <tbody>
+              <tr><td class="hit">kept</td><td>2</td><td>quote found in the document, position verified</td></tr>
+              <tr><td class="miss">discarded</td><td>5</td><td>the model paraphrased instead of copying</td></tr>
+              <tr><td class="miss">discarded</td><td>1</td><td>the reply wasn’t readable</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p><b>A 25% yield.</b> Three quarters of what a small local model produced
+          was unusable — and almost all of it for the same reason: told to copy
+          text exactly, it rewrote it slightly instead.</p>
+        <p>But look at what that number <em>is</em>. It is a measurement of how much
+          you lost, not a corruption you never noticed. The two questions that
+          survived are exactly right. Had we asked for positions instead, we would
+          have had eight questions, felt fine about it, and been wrong about six of
+          them with no way to find out.</p>
+        <div class="note"><b>The practical read.</b> A low yield is a signal to use a
+          better model for this one step — not a reason to distrust what survived.
+          And it is a cheap step to upgrade, because you run it <em>once per set of
+          documents</em> and keep the result forever. Everything after it is free.</div>
+
+      </div>
+
+      <div class="col">
         <div class="note"><b>So the honest answer is that you don’t choose once.</b>
           Rule out the broken configurations for free. Take a sane default —
           recursive splitting at around 200 tokens is never the winner and never an
@@ -1222,6 +1271,12 @@
               numeric representations, so “retries” can match text that says
               “backoff”. Combining them by position rather than by score avoids
               having to make two incompatible scales comparable.</dd></div>
+
+          <div class="term"><dt>yield</dt>
+            <dd>Of the questions a model was asked to produce, the fraction that
+              could actually be verified against the document. It turns “is this
+              model good enough?” from a judgement into a number, and a low one
+              means you got <em>less</em> evaluation data — not worse data.</dd></div>
 
           <div class="term"><dt>question mix</dt>
             <dd>The distribution of things people actually ask — narrow lookups,
