@@ -812,10 +812,11 @@ Follows `docs/000_project-organization.md` §10.
       consistently; retrieval matters rarely and then enormously.* `FINDINGS.md` F10
 - [x] `annotate` — the model half of quote-then-locate. Built, and it closes the
       gap that made this a lab instrument: `score --corpus-dir` now works on your
-      own documents. Measured on `ollama/llama3.1`: **25% yield**, with 5 of 8
-      failures being the model paraphrasing when asked to copy verbatim. All
-      discarded rather than written in with plausible wrong offsets — which is C9's
-      whole argument, now with a number (`FINDINGS.md` F11)
+      own documents. Measured on `ollama/llama3.1` over 4 documents: **70% yield**,
+      and it varies by document — 4/5 on prose against 2/5 on dense markdown. Every
+      failure discarded rather than written in with plausible wrong offsets, which
+      is C9's whole argument (`FINDINGS.md` F11; an earlier 8-attempt run reported
+      25%, which was too small a sample to state a rate)
 - [x] Write the evidence card (`evidence/chunking-lab.jsonl`); wire `make demo-chunking`
       and `make chunking-benchmark`
 - [x] Write the explainer: [`docs/where-the-cut-falls.html`](../../docs/where-the-cut-falls.html),

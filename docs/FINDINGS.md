@@ -10,41 +10,43 @@ we're building or parking, and why. Append a new `## Iteration N` section at the
 
 ## Iteration 8 — 2026-09-07 — annotate, and what a weak model costs
 
-### F11 — quote-then-locate works, and a local 8B model yields 25%
-`annotate` closes the gap that made this tool a lab instrument: it manufactures
-gold spans from *your* documents, so `score --corpus-dir` works on something other
-than the two corpora that already had them.
+### F11 — quote-then-locate works. The yield depends on the *document* as much as the model.
+**Corrected.** This finding first reported a 25% yield for `ollama/llama3.1`, from
+8 attempts over 2 documents. A larger run — 20 attempts over 4 documents, same
+model — gives **70%**. The original number was not wrong so much as meaningless:
+**n=8 is not enough to report a rate**, and reporting one to two significant
+figures implied a precision it never had.
 
-Run against `ollama/llama3.1` over two real documents from this repo, 8 attempts:
+The larger run, and the reason it differs:
 
-```
-yield: 2/8 questions usable (25%)
-  discarded, reply was not usable JSON: 1
-  discarded, quote not found in the document: 5
-  excerpts located by: exact 3, whitespace 1
-```
+| document | kind of text | yield |
+|---|---|---|
+| `CONVENTIONS.md` | prose with short code blocks | **4/5** |
+| `tools/chunking-lab/README.md` | 56KB of dense markdown — tables, fences, nested lists | **2/5** |
+| (`docs/000`, `docs/007`) | mixed | 8/10 |
+| **all four** | | **14/20 (70%)** |
 
-**Five of eight failed because the model paraphrased instead of copying.** Asked
-for text quoted verbatim, an 8B model rewrites it — and that is precisely the
-failure C9 was designed around. Because the quote is located rather than trusted,
-the six bad questions were *discarded*, not written into the corpus with plausible
-wrong offsets. The two survivors were verified verbatim against the source.
+**So yield is a property of the (model, corpus) pair, not of the model.** Dense
+markdown is roughly half as annotatable as ordinary prose, because a model asked
+to copy a table row or a fenced block verbatim has far more to get exactly right
+than one copying a sentence. The 0/4 the README scored in the original run is
+entirely ordinary for a ~40% document — at p=0.4, four consecutive failures happen
+13% of the time.
 
-**This is the number C9 predicted would exist and nobody had.** "A weaker model
-produces less ground truth, not wrong ground truth" was an argument; 25% is what it
-costs in practice on a small local model. It also gives a concrete threshold for
-"is my model good enough for this": if the yield is this low, use a stronger model
-for the annotation pass — which is cheap, because it runs **once per corpus** and
-the result is a committed artifact.
+**What survives unchanged, and is the actual finding.** Every failure was
+*discarded*, not written in with plausible wrong offsets, and every kept question
+verified verbatim against its source. The mechanism does what it was designed to
+do; only the headline rate moved.
 
-The `by_stage` breakdown matters too. Three of four surviving excerpts matched
-*exactly* and one needed whitespace tolerance; none needed the fuzzy fallback. A
-corpus built mostly from fuzzy matches would be visibly less trustworthy, and this
-is where that shows.
+**How to use a yield number.** Read it per corpus, on your own documents, from
+enough attempts to mean something — and treat it as a signal to change model or
+accept a smaller evaluation set, never as a reason to distrust what survived.
+`chunking-lab annotate <dir> --model … --model …` compares models over identical
+windows.
 
-**Verdict.** The design holds under a real weak model. Keep the strong-model advice
-from README §10 — annotate with the best model you have, once, then never pay
-again.
+*(Superseded numbers kept deliberately: the first version of this entry said 25%,
+and a findings log that quietly edits its own history is worth less than one that
+shows where it was wrong.)*
 
 ## Iteration 7b — 2026-09-07 — which knob matters more
 

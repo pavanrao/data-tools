@@ -323,17 +323,19 @@ wrong answer, and that is strictly worse than a missing one.
 it has enough questions, so a weak model shows up as a longer run and a larger
 bill. Reporting the yield instead is the point of the decision.*
 
-**Measured** (`FINDINGS.md` F11). `ollama/llama3.1`, 8 attempts over two real
-documents: **2 usable, a 25% yield**. Five of the six failures were the model
-*paraphrasing* when asked to copy verbatim — the exact failure this design
-anticipates — and all six were discarded rather than written in with plausible
-wrong offsets. Of the surviving excerpts, three matched exactly and one needed
-whitespace tolerance; none needed the fuzzy fallback.
+**Measured** (`FINDINGS.md` F11). `ollama/llama3.1` over four real documents, 20
+attempts: **70% usable**. The failures are almost all the model *paraphrasing*
+when asked to copy verbatim — the exact failure this design anticipates — and every
+one was discarded rather than written in with plausible wrong offsets.
 
-So "a weaker model produces less ground truth, not wrong ground truth" now has a
-price attached: on a small local model it costs three quarters of the attempts.
-That is an argument for annotating with the best model you have — which is cheap,
-because it happens **once per corpus** and the result is a committed artifact.
+**The number moves with the document, not just the model.** Prose yielded 4/5;
+56KB of dense markdown — tables, code fences, nested lists — yielded 2/5. Copying a
+table row verbatim has far more to get exactly right than copying a sentence. So a
+yield is a property of the **(model, corpus) pair**, and quoting one without saying
+which corpus it came from means little.
+
+*An earlier run reported 25% from 8 attempts. That was too small a sample to state
+a rate at all — see the note in F11.*
 
 ### Hostile corpora ⚑
 

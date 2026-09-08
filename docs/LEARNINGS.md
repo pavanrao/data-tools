@@ -9,6 +9,29 @@ sprint; keep entries concrete.
 
 ---
 
+## Iteration 8b — 2026-09-07 — a rate from eight samples is not a rate
+
+### Do not report a percentage from single-digit trials
+"25% yield" was computed from 8 attempts and written into a findings log to two
+significant figures. A run four times larger, same model, gave 70%. Nothing was
+miscalculated; the sample was simply too small to carry a number, and formatting
+it as a percentage implied a precision it never had. **Either gather enough trials
+to state a rate, or state the raw counts and say the sample is small.**
+
+### When a measurement moves, look for the variable you did not control
+The tempting reading of 25% → 70% is noise, and it is partly that. But the
+per-document breakdown showed something better: 4/5 on prose, 2/5 on dense
+markdown full of tables and code fences. The first run happened to be half
+composed of the hardest document in the set. **A number that moves between runs is
+an invitation to find the variable you were averaging over** — here, that yield is
+a property of the (model, corpus) pair, which is more useful than either number.
+
+### Correct in place, and leave the old number visible
+The fix was to rewrite the finding and say plainly what it used to claim. A
+findings log that quietly edits its own history is worth less than one that shows
+where it was wrong — the whole value of writing verdicts down is being able to see
+which ones did not hold.
+
 ## Iteration 8 — 2026-09-07 — designing for the failure you expect
 
 ### Name a counter for what it counts, or it will lie in the report
