@@ -21,11 +21,12 @@ from pathlib import Path
 
 from chunking_lab.benchmark import Corpus, Question
 from chunking_lab.chunkers.base import Chunker
+from chunking_lab.embeddings import Embedder
 from chunking_lab.extrinsic import Extrinsic
 from chunking_lab.extrinsic import score as score_one
 from chunking_lab.intrinsic import Intrinsic, measure
 from chunking_lab.invariant import check
-from chunking_lab.retrieve import BM25Retriever
+from chunking_lab.retrieve import build as build_retriever
 
 
 @dataclass(frozen=True, slots=True)
@@ -78,6 +79,8 @@ def run(
     *,
     k: int | None = None,
     questions: Iterable[Question] | None = None,
+    retriever: str = "bm25",
+    embedder: Embedder | None = None,
 ) -> Iterator[Result]:
     """Score one chunker over one corpus, one row per question.
 
@@ -89,20 +92,20 @@ def run(
     check(chunking, corpus.text)
     intrinsic = measure(chunking, corpus.text)
 
-    with BM25Retriever(chunking) as retriever:
+    with build_retriever(retriever, chunking, embedder) as engine:
         for question in questions if questions is not None else corpus.questions:
             depth = k if k is not None else None
             # Retrieve generously, then let `score_one` truncate to the depth it
             # is scoring at -- so an adaptive k never asks for fewer chunks than
             # it needs and a fixed k never scores fewer than it asked for.
-            retrieved = retriever.search(question.text, k=depth or 20)
+            retrieved = engine.search(question.text, k=depth or 20)
             yield Result(
                 strategy=chunking.strategy,
                 corpus=corpus.name,
                 question_id=question.question_id,
                 question_kind=question.kind or "unlabelled",
                 code_path=chunking.code_path,
-                retriever=retriever.name,
+                retriever=engine.name,
                 source_sha256=corpus.provenance.sha256,
                 locator=corpus.provenance.locator,
                 intrinsic=intrinsic,

@@ -775,6 +775,15 @@ Follows `docs/000_project-organization.md` §10.
       which `explain` uses to turn a quoted answer into offsets
 - [ ] `report` (a rendered comparison), `annotate` and `suggest` — deferred by
       open question 3 until the metrics were proven. They are now
+- [x] Vector and hybrid (RRF) retrieval alongside BM25, with `--embedder` taking a
+      LiteLLM model string so a **local** encoder is the default path
+      (`ollama/nomic-embed-text`) and a hosted one is the override
+- [x] `axes` — is the chunker the big knob or the retriever? Each axis measured
+      with the other held fixed, compared by best/worst ratio. Refuses Precision Ω,
+      which is retriever-independent and would always show no spread. `make chunking-axes`
+- [ ] Run `axes` against a real encoder and record the verdict. The offline
+      embedder understates the retriever axis badly, so the tool warns and the
+      number stays unquoted until a real model has run
 - [ ] `annotate` — the model half of quote-then-locate, behind the `llm` extra.
       The deterministic half (`chunking_lab.locate`) is built and tested; what is
       missing is only the prompt that asks for verbatim quotes, plus reporting the

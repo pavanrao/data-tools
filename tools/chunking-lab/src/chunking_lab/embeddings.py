@@ -80,10 +80,17 @@ class HashingEmbedder:
 
 
 class ProviderEmbedder:
-    """Adapts ``data_tools_core.llm.EmbeddingProvider`` to what Tier 1 needs.
+    """A real encoder, wherever it lives: a local server or a hosted API.
 
-    The provider is resolved lazily so that constructing a chunker never requires
-    the ``llm`` extra -- only calling it does.
+    The model string is a LiteLLM identifier, and the shared config already
+    **defaults to local** -- ``ollama/nomic-embed-text`` against
+    ``DATA_TOOLS_API_BASE``. So running against a model on your own machine is the
+    default path and reaching for a hosted API is the override, not the other way
+    round. Either way this class never learns which it got; that is the point of
+    the seam (README section 10).
+
+    The provider is resolved lazily so constructing one never requires the extra --
+    only calling it does.
     """
 
     def __init__(self, model: str | None = None) -> None:
@@ -96,25 +103,81 @@ class ProviderEmbedder:
 
     def embed(self, texts: list[str]) -> list[list[float]]:
         if self._provider is None:
+            from dataclasses import replace
+
+            from data_tools_core.config import get_settings
             from data_tools_core.llm import get_embedding_provider
 
-            self._provider = get_embedding_provider()
-            self._model = self._model or getattr(self._provider, "model", None)
+            settings = get_settings()
+            if self._model:
+                # An explicit model on the command line beats the environment, so
+                # two runs against different encoders cannot be confused for one.
+                settings = replace(settings, embed_model=self._model)
+            self._provider = get_embedding_provider(settings)
+            self._model = settings.embed_model
         return self._provider.embed(list(texts))
 
 
-def resolve(name: str = "hashing") -> Embedder:
-    """Build an embedder by name.
+class CachingEmbedder:
+    """Embeds each distinct string once, however many times it is asked for.
 
-    ``hashing`` is the offline default. ``provider`` reads the configured model
-    from ``DATA_TOOLS_EMBED_MODEL`` and needs the ``llm`` extra installed; the
-    failure, if it is not, comes from ``data_tools_core.llm`` and names the extra.
+    Not an optimisation so much as a precondition. Comparing fourteen chunking
+    strategies over one corpus re-embeds heavily overlapping text fourteen times,
+    and against a local model each of those is an HTTP round trip. Without this the
+    experiment is dominated by re-embedding text it has already seen.
+
+    In-process only, deliberately. A cache that survives between runs is
+    `embeddings-cache` (#23) and belongs in its own tool rather than smuggled in
+    here; this one exists to make a single run finish.
+    """
+
+    def __init__(self, inner: Embedder) -> None:
+        self.inner = inner
+        self._seen: dict[str, list[float]] = {}
+        self.hits = 0
+        self.misses = 0
+
+    @property
+    def id(self) -> str:
+        return self.inner.id
+
+    def embed(self, texts: list[str]) -> list[list[float]]:
+        missing = [t for t in dict.fromkeys(texts) if t not in self._seen]
+        if missing:
+            for text, vector in zip(missing, self.inner.embed(missing), strict=True):
+                self._seen[text] = vector
+        self.hits += len(texts) - len(missing)
+        self.misses += len(missing)
+        return [self._seen[t] for t in texts]
+
+
+def resolve(name: str = "hashing", *, cache: bool = True) -> Embedder:
+    """Build an embedder from a name or an explicit model string.
+
+    Three ways to ask, covering the three situations that actually arise:
+
+    * ``hashing`` -- the offline fallback. Deterministic, needs nothing, and about
+      as good as a bag of words. For tests and for exercising a code path, never
+      for a number you intend to quote.
+    * ``provider`` -- whatever ``DATA_TOOLS_EMBED_MODEL`` says, which defaults to
+      ``ollama/nomic-embed-text`` on ``DATA_TOOLS_API_BASE``. The local path.
+    * any LiteLLM model string (anything containing ``/``) -- e.g.
+      ``ollama/qwen3-embedding``, ``ollama/nomic-embed-text``, or
+      ``openai/text-embedding-3-small``. Overrides the environment, so a run says
+      which encoder it used rather than inheriting one.
+
+    Wrapped in a :class:`CachingEmbedder` unless ``cache=False``.
     """
     if name == "hashing":
-        return HashingEmbedder()
-    if name == "provider":
-        return ProviderEmbedder()
-    raise ValueError(f"unknown embedder {name!r}; known: hashing, provider")
+        inner: Embedder = HashingEmbedder()
+    elif name == "provider" or "/" in name:
+        inner = ProviderEmbedder(model=None if name == "provider" else name)
+    else:
+        raise ValueError(
+            f"unknown embedder {name!r}; expected `hashing`, `provider`, or a model "
+            f"string such as `ollama/nomic-embed-text`"
+        )
+    return CachingEmbedder(inner) if cache else inner
 
 
 def cosine(left: list[float], right: list[float]) -> float:

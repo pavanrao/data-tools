@@ -18,7 +18,8 @@ README holds the usage.
 that governs them, the query-free intrinsic metrics, and the extrinsic metrics —
 **whose Precision Ω reproduces Chroma's published column exactly** (6.7 / 13.9 /
 17.7 / 29.9), and `chunking-lab score`, which ranks strategies against gold spans
-over a fixed BM25 retriever, the hostile corpus, `explain`, and `correlate` —
+over three retrievers (BM25, vector, hybrid-RRF), the hostile corpus, `explain`,
+`axes`, and `correlate` —
 which has now **run** the §9 experiment. `report`, `annotate` and `suggest` are
 not built yet.
 
@@ -102,6 +103,10 @@ document ─▶ chunker ─▶ Chunking(spans, provenance, strategy)
   generated gold span exact by construction, and `load_dir` / `write_dir`, which
   are also the bring-your-own-corpus path: any directory of documents plus a
   `gold.jsonl` can be scored.
+- **`retrieve.py`** — `BM25Retriever` (needs nothing), `VectorRetriever` and
+  `HybridRetriever` (reciprocal-rank fusion, `k=60`), plus `build()`. The
+  retriever is held **fixed** across a chunker comparison; varying both at once
+  measures neither (C5).
 - **`correlate.py`** — the §9 experiment as a query over accumulated `score --out`
   rows: tie-corrected Spearman, a partial correlation to remove the chunk-size
   confound, and a constant-signal check so "never varied" cannot be printed as
@@ -375,6 +380,34 @@ document ─▶ chunker ─▶ Chunking(spans, provenance, strategy)
   corpus, so a JSONL file stays interpretable months later without the corpus that
   produced it.
 
+- **Running against a local model is the default, not the fallback.** The shared
+  config already defaults to `ollama/nomic-embed-text` on `DATA_TOOLS_API_BASE`, so
+  reaching for a hosted API is the *override*. `--embedder` takes three shapes:
+  `hashing` (offline, weak, for exercising the path), `provider` (whatever the
+  environment says), or an explicit LiteLLM model string like
+  `ollama/qwen3-embedding`, which beats the environment so a run states its encoder
+  rather than inheriting one.
+
+- **The offline embedder is dangerous here in a way it was not for Tier 1.** For
+  semantic *chunking* a weak encoder produces a weak chunking, and `code_path`
+  records it. For *retrieval comparison* it produces a systematically biased
+  answer: a vector retriever built on a bag of words underperforms BM25 at BM25's
+  own game, so the experiment would conclude "the chunker matters more" as an
+  artifact of the encoder. So `score` and `axes` both print a warning when
+  `hashing` appears in the retriever name. The number is not wrong; the inference
+  from it would be.
+
+- **`CachingEmbedder` is a precondition, not an optimisation.** Fourteen strategies
+  over one corpus re-embed heavily overlapping text fourteen times, and against a
+  local model each is an HTTP round trip. In-process only — a cache that survives
+  between runs is `embeddings-cache` (#23) and belongs in its own tool.
+
+- **`axes` refuses Precision Ω, and that refusal is the interesting part.** Ω is
+  retriever-independent by construction, so the retriever axis would show a spread
+  of exactly 1.0 — not because the retriever does not matter, but because *that
+  metric cannot see it*. Comparing the axes has to happen on IoU or recall. A tool
+  that silently allowed Ω here would produce a confident, meaningless answer.
+
 - **A spec string is the identity of a run.** `recursive:400/200` names the
   strategy and every parameter that changes its output, and `fixed:512/0`
   normalises to `fixed:512` so one configuration cannot appear as two rows.
@@ -391,6 +424,11 @@ document ─▶ chunker ─▶ Chunking(spans, provenance, strategy)
 ```bash
 # the correctness proof: reproduce a published column, offline, no model
 make chunking-benchmark
+
+# which knob matters more: the chunker or the retriever?
+make chunking-axes                                          # local Ollama
+make chunking-axes EMBEDDER=ollama/qwen3-embedding          # another local model
+make chunking-axes EMBEDDER=openai/text-embedding-3-small   # hosted
 
 # the section 9 experiment: do query-free signals predict the ranking? (~100s)
 make chunking-correlate

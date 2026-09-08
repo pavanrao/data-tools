@@ -69,10 +69,11 @@ def test_critical_values_get_harder_to_beat_with_fewer_points():
 # ---------------------------------------------------------------------- points
 
 
-def _point(corpus, strategy, median, fidelity, omega):
+def _point(corpus, strategy, median, fidelity, omega, retriever="bm25/fts5"):
     return Point(
         corpus=corpus,
         strategy=strategy,
+        retriever=retriever,
         questions=10,
         intrinsic={"median_length": median, "boundary_fidelity": fidelity, "mid_table_rate": 0.0},
         extrinsic={"precision_omega": omega, "iou": omega / 2, "recall": 0.5, "precision": 0.1},
@@ -124,6 +125,21 @@ def test_a_signal_that_never_varies_is_marked_constant_not_zero():
     assert results["mid_table_rate"].constant is True
     assert results["mid_table_rate"].significant is False
     assert results["median_length"].constant is False
+
+
+def test_correlating_across_two_retrievers_keeps_only_one():
+    """Correlating over a mixed file would blend two experiments.
+
+    A results file can legitimately hold several retrievers -- that is how the two
+    axes are compared -- so `correlate` has to pick one rather than pool them.
+    """
+    points = [
+        _point("a.md", f"s{i}", 100 * i, 0.1 * i, 1.0 / i, retriever=retriever)
+        for retriever in ("bm25/fts5", "vector/fake")
+        for i in range(1, 6)
+    ]
+    results = correlate(points, control=None)
+    assert all(r.n == 5 for r in results), "pooled two retrievers into one correlation"
 
 
 def test_correlation_is_computed_per_corpus_not_pooled():
