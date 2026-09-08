@@ -19,6 +19,7 @@ from chunking_lab.extrinsic import precision_omega
 from chunking_lab.intrinsic import measure
 from chunking_lab.invariant import check
 from chunking_lab.locate import locate
+from chunking_lab.retrieve import RETRIEVERS
 
 #: Which strategies are implemented, and what each needs installed. Printed by
 #: `chunkers` so the gap between what is designed and what is built is visible
@@ -114,6 +115,20 @@ def build_parser() -> argparse.ArgumentParser:
         help="retrieval depth; default is per-question, at that question's number "
         "of gold-bearing chunks (the reference's retrieve=-1)",
     )
+    scoring.add_argument(
+        "--retriever",
+        default="bm25",
+        choices=list(RETRIEVERS),
+        help="bm25 needs nothing; vector and hybrid need --embedder. The retriever is "
+        "held FIXED across a chunker comparison -- varying both at once measures neither",
+    )
+    scoring.add_argument(
+        "--embedder",
+        default=None,
+        help="`hashing` (offline, weak, for exercising the path), `provider` (whatever "
+        "DATA_TOOLS_EMBED_MODEL says, defaulting to ollama/nomic-embed-text), or an "
+        "explicit model string like ollama/qwen3-embedding",
+    )
     scoring.add_argument("--limit", type=int, default=0, help="cap questions per corpus")
     scoring.add_argument(
         "--by-question-type",
@@ -161,6 +176,25 @@ def build_parser() -> argparse.ArgumentParser:
         help="signal to partial out, or `none` (default: median_length)",
     )
     corr.set_defaults(run=run_correlate)
+
+    axes = sub.add_parser(
+        "axes",
+        help="is the chunker the big knob, or the retriever?",
+        description=(
+            "Measures each axis with the other held fixed and compares the spread. "
+            "Needs a results file containing more than one retriever, which means "
+            "scoring the same strategies more than once."
+        ),
+    )
+    axes.add_argument("results", type=Path, help="JSONL written by `score --out`")
+    axes.add_argument(
+        "--metric",
+        default="iou",
+        choices=["iou", "recall", "precision"],
+        help="precision_omega is refused: it is retriever-independent by construction, "
+        "so the retriever axis would always show no spread",
+    )
+    axes.set_defaults(run=run_axes)
 
     return parser
 
@@ -267,21 +301,45 @@ def run_score(args: argparse.Namespace) -> int:
         if not corpora:
             raise ValueError(f"no benchmark corpus matched {sorted(wanted)}")
 
+    embedder = resolve(args.embedder) if args.embedder else None
+    if args.retriever != "bm25" and embedder is None:
+        raise ValueError(
+            f"the {args.retriever!r} retriever needs an encoder. Pass --embedder with a "
+            "model string (ollama/nomic-embed-text is the local default), or `hashing` "
+            "to exercise the path with an offline stand-in whose numbers mean nothing."
+        )
+
     results = []
     for spec in args.strategies:
         chunker = from_spec(spec)
         for corpus in corpora:
             questions = corpus.questions[: args.limit] if args.limit else None
-            results.extend(score.run(chunker, corpus, k=args.k, questions=questions))
+            results.extend(
+                score.run(
+                    chunker,
+                    corpus,
+                    k=args.k,
+                    questions=questions,
+                    retriever=args.retriever,
+                    embedder=embedder,
+                )
+            )
 
     summaries = score.summarise(results)
     total_questions = sum(
         len(c.questions[: args.limit] if args.limit else c.questions) for c in corpora
     )
+    engine = results[0].retriever if results else args.retriever
     print(
-        f"{len(corpora)} corpora, {total_questions} questions, retriever bm25/fts5, "
+        f"{len(corpora)} corpora, {total_questions} questions, retriever {engine}, "
         f"k={'per-question' if args.k is None else args.k}\n"
     )
+    if "hashing" in engine:
+        print(
+            "WARNING: this ran against the offline hashing embedder, which is a bag of\n"
+            "words. It exercises the code path; it is not evidence about vector\n"
+            "retrieval. Pass a real encoder, e.g. --embedder ollama/nomic-embed-text.\n"
+        )
     print(f"{'strategy':<26}{'P-omega':>9}{'IoU':>8}{'recall':>8}{'prec':>8}{'k':>6}")
     for row in summaries:
         print(
@@ -448,6 +506,62 @@ def run_correlate(args: argparse.Namespace) -> int:
         "\nRead the per-corpus columns, not the average: a signal that changes sign\n"
         "between corpora is telling you something an average would hide."
     )
+    return 0
+
+
+def run_axes(args: argparse.Namespace) -> int:
+    """Compare how much each axis moves the numbers, with the other held fixed."""
+    points = correlate_mod.load(args.results)
+    if not points:
+        raise ValueError(f"no result rows in {args.results}")
+
+    retrievers = sorted({p.retriever for p in points})
+    strategies = sorted({p.strategy for p in points})
+    if len(retrievers) < 2:
+        raise ValueError(
+            f"{args.results} has only one retriever ({retrievers[0]}), so there is no "
+            "retriever axis to measure. Score the same strategies again with "
+            "--retriever vector and --retriever hybrid, appending to the same file."
+        )
+
+    rows = correlate_mod.spreads(points, metric=args.metric)
+    chunker = [r for r in rows if r.axis == "chunker"]
+    retriever = [r for r in rows if r.axis == "retriever"]
+
+    print(
+        f"{len(strategies)} strategies x {len(retrievers)} retrievers over "
+        f"{len({p.corpus for p in points})} corpora, by {args.metric}\n"
+    )
+    print(f"{'axis':<12}{'held fixed':<34}{'corpus':<22}{'best/worst':>11}")
+    for row in sorted(rows, key=lambda r: (r.axis, r.corpus, r.held_fixed)):
+        ratio = "inf" if row.ratio == float("inf") else f"{row.ratio:.1f}x"
+        print(f"{row.axis:<12}{row.held_fixed[:32]:<34}{row.corpus[:20]:<22}{ratio:>11}")
+
+    def median(rows):
+        values = sorted(r.ratio for r in rows if r.ratio != float("inf"))
+        return values[len(values) // 2] if values else float("nan")
+
+    print(
+        f"\nmedian spread — chunker axis {median(chunker):.1f}x, "
+        f"retriever axis {median(retriever):.1f}x"
+    )
+    verdict = (
+        "the chunker moves this metric more than the retriever does"
+        if median(chunker) > median(retriever)
+        else "the retriever moves this metric more than the chunker does"
+    )
+    print(f"on these corpora, with these configurations: {verdict}.")
+    print(
+        "\nA spread is only as wide as the options given. Adding a worse chunker or a\n"
+        "better retriever moves these numbers, so read them as 'over this range of\n"
+        "choices', never as a property of chunking or retrieval in general."
+    )
+    if any("hashing" in r for r in retrievers):
+        print(
+            "\nWARNING: one of these retrievers used the offline hashing embedder, which\n"
+            "is a bag of words. It understates the retriever axis badly. Re-run with a\n"
+            "real encoder before quoting this."
+        )
     return 0
 
 

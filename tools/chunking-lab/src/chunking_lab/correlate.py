@@ -136,10 +136,14 @@ TARGETS = ("precision_omega", "iou", "recall", "precision")
 
 @dataclass(frozen=True, slots=True)
 class Point:
-    """One (corpus, strategy) pair: its intrinsic signals and its mean extrinsic scores."""
+    """One (corpus, strategy, retriever) cell: intrinsic signals and mean extrinsic scores."""
 
     corpus: str
     strategy: str
+    #: Which retriever produced the extrinsic scores. One results file can hold
+    #: several, because the two axes -- chunker and retriever -- are measured by
+    #: holding one fixed and moving the other, then compared by their *spreads*.
+    retriever: str
     questions: int
     intrinsic: dict[str, float]
     extrinsic: dict[str, float]
@@ -179,17 +183,18 @@ def load(path: Path) -> list[Point]:
     property of the chunking and are identical on every row of it, which is exactly
     the deliberate redundancy the schema was given so a row could be read alone.
     """
-    grouped: dict[tuple[str, str], list[dict]] = {}
+    grouped: dict[tuple[str, str, str], list[dict]] = {}
     with path.open(encoding="utf-8") as handle:
         for line in handle:
             line = line.strip()
             if not line:
                 continue
             row = json.loads(line)
-            grouped.setdefault((row["corpus"], row["strategy"]), []).append(row)
+            key = (row["corpus"], row["strategy"], row.get("retriever", "unknown"))
+            grouped.setdefault(key, []).append(row)
 
     points = []
-    for (corpus, strategy), rows in sorted(grouped.items()):
+    for (corpus, strategy, retriever), rows in sorted(grouped.items()):
         intrinsic = {
             key: float(rows[0]["intrinsic"][key])
             for key in SIGNALS
@@ -198,7 +203,7 @@ def load(path: Path) -> list[Point]:
         extrinsic = {
             key: statistics.mean(float(r["extrinsic"][key]) for r in rows) for key in TARGETS
         }
-        points.append(Point(corpus, strategy, len(rows), intrinsic, extrinsic))
+        points.append(Point(corpus, strategy, retriever, len(rows), intrinsic, extrinsic))
     return points
 
 
@@ -211,6 +216,15 @@ def correlate(
     pooling them would let a between-corpus difference masquerade as a
     within-corpus relationship.
     """
+    points = list(points)
+    retrievers = {p.retriever for p in points}
+    if len(retrievers) > 1:
+        # Correlating across retrievers would mix two experiments. Keep the one with
+        # the most configurations and let the caller notice via `Correlation.n`.
+        counts = {r: sum(1 for p in points if p.retriever == r) for r in retrievers}
+        keep = max(counts, key=lambda r: counts[r])
+        points = [p for p in points if p.retriever == keep]
+
     by_corpus: dict[str, list[Point]] = {}
     for point in points:
         by_corpus.setdefault(point.corpus, []).append(point)
@@ -272,3 +286,74 @@ def summarise(results: list[Correlation]) -> dict[str, dict[str, float]]:
         }
         for signal, rows in by_signal.items()
     }
+
+
+@dataclass(frozen=True, slots=True)
+class Spread:
+    """How much one axis moves a metric, holding the other axis fixed."""
+
+    axis: str
+    corpus: str
+    held_fixed: str
+    metric: str
+    n: int
+    best: tuple[str, float]
+    worst: tuple[str, float]
+
+    @property
+    def ratio(self) -> float:
+        """Best over worst. The comparable quantity across axes and corpora."""
+        return self.best[1] / self.worst[1] if self.worst[1] else float("inf")
+
+
+def spreads(points: list[Point], metric: str = "iou") -> list[Spread]:
+    """How far apart the best and worst configurations are, on each axis separately.
+
+    The question practitioners argue about without a number: **is the chunker the
+    big knob or the retriever?** It cannot be answered by moving both at once --
+    that measures neither (README C5) -- so each axis is measured with the other
+    held fixed, and the two are compared by the ratio between their best and worst.
+
+    One caveat that has to travel with the answer: this is not a metric-free
+    statement. Precision Omega cannot appear here at all, because it is
+    retriever-independent by construction and the retriever axis would show a
+    spread of exactly 1.0 -- not because the retriever does not matter, but because
+    that metric cannot see it. Use ``iou`` or ``recall``.
+    """
+    if metric == "precision_omega":
+        raise ValueError(
+            "precision_omega is retriever-independent by construction, so it cannot "
+            "compare the two axes -- the retriever axis would always show no spread. "
+            "Use iou or recall."
+        )
+
+    out: list[Spread] = []
+    by_corpus: dict[str, list[Point]] = {}
+    for point in points:
+        by_corpus.setdefault(point.corpus, []).append(point)
+
+    for corpus, group in sorted(by_corpus.items()):
+        # Chunker axis: for each retriever, how far apart are the strategies?
+        for retriever in sorted({p.retriever for p in group}):
+            cells = [p for p in group if p.retriever == retriever]
+            if len(cells) > 1:
+                out.append(_spread("chunker", corpus, retriever, metric, cells, "strategy"))
+        # Retriever axis: for each strategy, how far apart are the retrievers?
+        for strategy in sorted({p.strategy for p in group}):
+            cells = [p for p in group if p.strategy == strategy]
+            if len(cells) > 1:
+                out.append(_spread("retriever", corpus, strategy, metric, cells, "retriever"))
+    return out
+
+
+def _spread(axis, corpus, held, metric, cells, label_attr) -> Spread:
+    ranked = sorted(cells, key=lambda p: p.extrinsic[metric])
+    return Spread(
+        axis=axis,
+        corpus=corpus,
+        held_fixed=held,
+        metric=metric,
+        n=len(cells),
+        best=(getattr(ranked[-1], label_attr), ranked[-1].extrinsic[metric]),
+        worst=(getattr(ranked[0], label_attr), ranked[0].extrinsic[metric]),
+    )

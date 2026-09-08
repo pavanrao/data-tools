@@ -1,6 +1,6 @@
 .PHONY: help sync lint test demo demo-reconcile demo-compare demo-ask \
         demo-chunking chunking-benchmark chunking-correlate \
-        chunking-correlate-structured clean
+        chunking-correlate-structured chunking-axes clean
 
 help:
 	@echo "sync   install the whole collection in a dev venv"
@@ -11,6 +11,7 @@ help:
 	@echo "chunking-benchmark  reproduce Chroma's published Precision Omega column"
 	@echo "chunking-correlate  do query-free signals predict the measured ranking?"
 	@echo "chunking-correlate-structured  the same, on documents with tables and code"
+	@echo "chunking-axes       is the chunker the big knob, or the retriever?"
 
 sync:
 	uv sync --all-extras
@@ -101,8 +102,37 @@ chunking-correlate-structured:
 	@echo
 	uv run chunking-lab correlate $(STRUCTURED_RESULTS) --against iou
 
+# Which knob matters more? Each axis is measured with the other held fixed, then
+# compared by the ratio between best and worst -- moving both at once would measure
+# neither. Needs a real encoder to be worth quoting: EMBEDDER defaults to the local
+# Ollama model the shared config already defaults to.
+#
+#   make chunking-axes                                  # local Ollama
+#   make chunking-axes EMBEDDER=ollama/qwen3-embedding  # a different local model
+#   make chunking-axes EMBEDDER=openai/text-embedding-3-small  # hosted
+#
+# `hashing` runs with nothing installed but is a bag of words; the tool prints a
+# warning and you should not quote the result.
+EMBEDDER ?= ollama/nomic-embed-text
+AXES_DIR ?= tools/chunking-lab/corpus/structured
+AXES_RESULTS ?= chunking-axes-results.jsonl
+AXES_STRATEGIES ?= --strategy recursive:200 --strategy recursive:400 \
+                   --strategy structural --strategy sentence:2 --strategy fixed:800/400
+chunking-axes:
+	uv run python tools/chunking-lab/corpus/generate_docs.py $(AXES_DIR)
+	rm -f $(AXES_RESULTS)
+	uv run chunking-lab score --corpus-dir $(AXES_DIR) --out $(AXES_RESULTS) \
+	    --retriever bm25 $(AXES_STRATEGIES)
+	uv run chunking-lab score --corpus-dir $(AXES_DIR) --out $(AXES_RESULTS) \
+	    --retriever vector --embedder $(EMBEDDER) $(AXES_STRATEGIES)
+	uv run chunking-lab score --corpus-dir $(AXES_DIR) --out $(AXES_RESULTS) \
+	    --retriever hybrid --embedder $(EMBEDDER) $(AXES_STRATEGIES)
+	@echo
+	uv run chunking-lab axes $(AXES_RESULTS)
+
 clean:
 	rm -rf tools/ingest-ledger/corpus/hostile tools/ingest-ledger/corpus/rfp \
 	       tools/chunking-lab/corpus/hostile tools/chunking-lab/corpus/structured \
 	       chunking-results.jsonl chunking-structured-results.jsonl \
+	       chunking-axes-results.jsonl \
 	       *.ledger.db .pytest_cache .ruff_cache

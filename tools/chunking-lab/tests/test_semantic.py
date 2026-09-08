@@ -164,8 +164,10 @@ def test_constructing_a_provider_embedder_does_not_need_the_extra():
     assert embedder._provider is None
 
 
-def test_an_unknown_embedder_is_refused_by_name():
-    with pytest.raises(ValueError, match="known: hashing, provider"):
+def test_an_unknown_embedder_is_refused_with_a_usable_example():
+    """`magic` is not a LiteLLM model string, and guessing what was meant is worse
+    than saying so -- the error names the shape a model string actually has."""
+    with pytest.raises(ValueError, match="ollama/nomic-embed-text"):
         resolve("magic")
 
 

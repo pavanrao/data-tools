@@ -17,7 +17,11 @@ dependencies = [
 # claims: a Tier 1 result produced with the offline hashing fallback is not
 # evidence about semantic chunking, and folding the two together would hide that.
 # See README section 8.2.
-embeddings = ["data-tools-core[llm]"]
+# numpy is here for scoring, not for modelling: pure-Python cosine over a few
+# thousand chunks times a few hundred questions is minutes of arithmetic per
+# configuration, which turns a comparison into an overnight job. BM25 and every
+# Tier 0 path stay free of it.
+embeddings = ["data-tools-core[llm]", "numpy>=2.0"]
 llm = ["data-tools-core[llm]"]
 
 # Reproducing Chroma's published Precision Omega column (README C17) needs a
