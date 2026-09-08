@@ -178,9 +178,9 @@ standard formulation. SQLite's **FTS5** provides it with no dependency.
 **The trade-off.** Exact and fast and explainable; blind to synonyms. "Backoff"
 does not match "retries".
 
-**Where it lives.** `retrieve.BM25Retriever`. Chosen because it is deterministic —
-an embedding retriever would make every comparison depend on the encoder, and the
-point is to isolate the cuts.
+**Where it lives.** `retrieve.BM25Retriever`. It is the **default** because it is
+deterministic — a comparison of chunkers run over an embedding retriever would
+depend on the encoder, and the point is to isolate the cuts.
 
 ### Stopwords ⚑
 
@@ -204,8 +204,68 @@ nearby vectors, and similarity is usually **cosine** of the angle between them.
 **The trade-off.** Catches meaning that shares no words; costs a model, a vector
 index, and determinism.
 
-**Where it lives.** `embeddings.py`, behind the `embeddings` extra. Used by the
-Tier 1 chunkers to *place boundaries*, not to retrieve.
+**Where it lives.** `embeddings.py`, behind the `embeddings` extra. Used both to
+*place boundaries* (Tier 1 chunking) and to *retrieve* (`VectorRetriever`) — two
+different jobs for the same vectors, and a result records which encoder produced
+them either way.
+
+**Local is the default.** `DATA_TOOLS_EMBED_MODEL` defaults to
+`ollama/nomic-embed-text`, so running against a model on your own machine is the
+ordinary path and a hosted API is the override. `--embedder` also takes an explicit
+model string, which beats the environment so a run states its encoder rather than
+inheriting one.
+
+**The trap, and it is worse here than for chunking.** The offline `HashingEmbedder`
+is a bag of words. For semantic *chunking* it produces a weak chunking, and
+`code_path` records that. For a *retriever comparison* it produces a
+**systematically biased** answer — a vector retriever built on it loses to BM25 at
+BM25's own game, so the experiment would conclude "the chunker matters more" as an
+artefact of the encoder. Both `score` and `axes` warn when it is in play.
+
+### Hybrid retrieval and reciprocal-rank fusion ⚑ — `§2 Hybrid search`
+
+Run both retrievers and combine their rankings. **Reciprocal-rank fusion** does it
+using only *positions*: each chunk scores `1 / (60 + rank)` in each list and the
+scores are added, so a chunk ranked highly by either does well and one ranked
+highly by both does best.
+
+**The trade-off, and why fusion beats a weighted sum.** BM25 scores and cosine
+similarities are not on comparable scales, so blending the *scores* needs a weight
+that has to be re-tuned per corpus. Ranks have no scale, so RRF needs no
+calibration at all. What it gives up is the ability to express "this match was
+overwhelming" — a first place is a first place however far ahead it was.
+
+**Where it lives.** `retrieve.HybridRetriever`, `RRF_K = 60`. Same constant and
+same reasoning as `repo-rag`.
+
+### Which matters more, the chunker or the retriever? ⚑
+
+Not a concept so much as the question the two preceding sections raise, and it now
+has a measurement (`FINDINGS.md` F10, `make chunking-axes`).
+
+Each axis is measured with the other **held fixed** — moving both at once measures
+neither — and compared by the ratio between its best and worst configuration.
+
+| axis | median spread | max | exceeded 2× |
+|---|---|---|---|
+| chunker | 5.6× | 14.4× | **15 of 15** |
+| retriever | 1.3× | 14.9× | **4 of 25** |
+
+The medians say "the chunker matters more", and that is true and misleading. The
+two axes have almost identical **maxima**; what differs is **frequency**.
+
+> **Chunking matters consistently. Retrieval matters rarely and then enormously.**
+
+Every one of the four cases where retrieval mattered is BM25 collapsing and a
+semantic retriever rescuing it — 1.3 IoU against 19.7 in the worst. The tempting
+explanation, that retrieval matters more when chunking is worse, is **false**: the
+rank correlation between a configuration's quality and its retriever spread is
+−0.04.
+
+**One methodological point this cannot be separated from.** Precision Ω cannot be
+used to compare these axes. It is retriever-independent by construction, so the
+retriever axis would show a spread of exactly 1.0 — not because the retriever does
+not matter, but because that metric cannot see it. `axes` refuses it outright.
 
 ### Retrieval depth, k ⚑
 
