@@ -38,7 +38,7 @@ reason the log exists.
 | `ingest-ledger` | [README](../tools/ingest-ledger/README.md), [GETTING-STARTED](../tools/ingest-ledger/GETTING-STARTED.md) | those, plus [`double-entry-for-documents.html`](double-entry-for-documents.html) |
 | `docs-rag` | [README](../tools/docs-rag/README.md) | [`003`](003_docs-rag.md) |
 | `repo-rag` | [README](../tools/repo-rag/README.md) | [`004`](004_repo-rag.md) |
-| `chunking-lab` | [README](../tools/chunking-lab/README.md), [`where-the-cut-falls.html`](where-the-cut-falls.html) | [`006`](006_chunking-lab.md), concepts in [`007`](007_chunking-concepts.md) |
+| `chunking-lab` ✅ *closed* | [README](../tools/chunking-lab/README.md), [`where-the-cut-falls.html`](where-the-cut-falls.html) | [`006`](006_chunking-lab.md), concepts in [`007`](007_chunking-concepts.md) |
 
 New tools take the next number in the series.
 

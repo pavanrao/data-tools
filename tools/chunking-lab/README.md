@@ -1,4 +1,4 @@
-# chunking-lab — compare chunking strategies, and recommend one
+# chunking-lab — measure where the cuts fall, and what it costs you
 
 > **Its Precision Ω reproduces Chroma's published column exactly — 6.7 / 13.9 /
 > 17.7 / 29.9 over 472 gold-span questions — offline, with no retriever, no
@@ -8,9 +8,10 @@
 > 17.8 / 30.7: nearly right without overlap, ~28% high with it, and it would have
 > passed every test written against it. That is what §2 is about.
 
-**Status: Tier 0 and Tier 1 chunkers, both metric families, `score` and `explain`
-built and green.** `report`, `annotate` and `suggest` are specified below and not
-built — see the checklist in §13.
+**Status: complete as scoped, and closed.** Tier 0 and Tier 1 chunkers, both
+metric families, three retrievers, `score` / `explain` / `correlate` / `axes` /
+`annotate`, 318 tests green. Tier 2 and the recommender were promoted to their own
+topics (#91, #92) rather than left as half-promises — see §13.
 
 This document is the design record. It began as a handoff from the web session
 that designed it; the sources that session could not reach have since been
@@ -31,9 +32,18 @@ one this tool is built from, with the trade-off each forces and where it lives i
 the code.
 
 `chunking-lab` is idea **#25** in [`IDEAS.md`](../../IDEAS.md). It takes one
-corpus, runs it through many chunking strategies, and produces a score per
-strategy — then, given a few sample documents, recommends which strategy to use
-before you build a RAG pipeline at all.
+corpus, runs it through many chunking strategies, and scores each one **at the
+character level against gold spans** — so the number reflects where the
+boundaries landed rather than how good the retriever or the model happened to be.
+
+**It measures; it does not recommend.** The title used to say "and recommend one",
+which the tool never did. That gap is now a scope decision rather than an
+omission: recommending is [#92 `adaptive-chunk`](../../IDEAS.md), a reproduction
+of the published per-document recommender, and it belongs in its own topic because
+reproducing someone else's recommender and testing it is a result, whereas
+inventing another one would only have been completeness. Everything this tool
+turned out to be worth — the reproduction, the correlation experiments, the axis
+comparison — came from measuring.
 
 ---
 
@@ -800,10 +810,11 @@ Follows `docs/000_project-organization.md` §10.
       75%, `qwen2.5:14b` 75%, `phi4` 75% — **bigger did not help**, and an earlier
       run that seemed to show the opposite was our own default temperature of 0.8
       (`FINDINGS.md` F12)
-- [ ] `report` (a rendered comparison) and `suggest` — the last two unbuilt
-      commands. `suggest` is `score` plus a decision rule (C12), and its prior art
-      (Adaptive Chunking, LREC 2026) is substantial, so it needs a reason to exist
-      beyond completeness
+- [x] **Scope closed.** `report` is dropped — `score` already prints the
+      comparison, and a second renderer was cosmetic. `suggest` is promoted out to
+      [#92 `adaptive-chunk`](../../IDEAS.md), and Tier 2 to
+      [#91 `context-aug-lab`](../../IDEAS.md); both are their own topics rather
+      than bolt-ons, for reasons recorded in each entry
 - [x] Vector and hybrid (RRF) retrieval alongside BM25, with `--embedder` taking a
       LiteLLM model string so a **local** encoder is the default path
       (`ollama/nomic-embed-text`) and a hosted one is the override

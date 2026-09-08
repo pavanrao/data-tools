@@ -212,8 +212,13 @@ usable alone.
 - **Boundary with #53:** **#25 varies the chunker with the retriever fixed; #53
   varies the retriever with chunking fixed.** Neither subsumes the other.
 - **Built:** [`tools/chunking-lab/`](./tools/chunking-lab/) · design record in
-  [`docs/006_chunking-lab.md`](./docs/006_chunking-lab.md) · explainer
+  [`docs/006_chunking-lab.md`](./docs/006_chunking-lab.md) · concepts in
+  [`docs/007_chunking-concepts.md`](./docs/007_chunking-concepts.md) · explainer
   [`docs/where-the-cut-falls.html`](./docs/where-the-cut-falls.html)
+- **Scope closed.** It measures; it does not recommend. The two threads it left
+  open became their own topics rather than being bolted on: **#91
+  `context-aug-lab`** (Tier 2 — late chunking and contextual retrieval) and **#92
+  `adaptive-chunk`** (reproducing the published per-document recommender).
 - **Result:** its Precision Ω reproduces Chroma's published column exactly
   (6.7 / 13.9 / 17.7 / 29.9 over 472 gold-span questions), offline and model-free.
   `make chunking-benchmark`
@@ -944,6 +949,49 @@ spun-out portfolio repo.
   [`docs/005`](docs/005_concept-coverage.md#showcasing-the-work).
 
 ---
+
+### 91. `context-aug-lab` — do late chunking and contextual retrieval earn their cost? ⭐⭐⭐ 🧠 ☁️
+Tier 2 of the chunking taxonomy, split out of `chunking-lab` (#25) because it is a
+different experiment with a different cost model. #25 measures where the *cuts*
+go; this measures what happens when the cuts stay put and the **unit changes** —
+late chunking (embed the document, then pool per chunk), contextual retrieval (an
+LLM writes a 50–100 token blurb onto each chunk before indexing), and the
+LLM-boundary chunkers.
+- **Why it is separate:** #25's whole default path is model-free and deterministic.
+  This one is one LLM call per chunk at index time, so it can never be, and mixing
+  the two would forfeit the property that makes #25 runnable anywhere.
+- **The question worth answering:** the reported numbers disagree sharply. Anthropic
+  reports failed retrievals down 35/49/67%; *Reconstructing Context* (ECIR 2025)
+  measured the same family independently at **near-noise margins** (NDCG@5 0.317 vs
+  0.312). Somebody should settle which regime each result belongs to.
+- **Reuses:** `chunking-lab`'s corpora, gold spans, character-level metrics and
+  result schema — `Span` already carries `retrieval_text` and `return_text`
+  separately, which is exactly what this family needs.
+- **Cost note:** one chat call per chunk at index time. Local models make it free
+  and slow; budget a few dollars for a hosted comparison.
+- **Covers:** §2 The RAG pipeline (the augmentation half) · §5 Retrieval metrics.
+
+### 92. `adaptive-chunk` — reproduce the published recommender, then check it ⭐⭐⭐ 🧠 💻
+A POC of **Adaptive Chunking** (arXiv 2603.25333, LREC 2026), which selects a
+chunking method *per document* from five intrinsic metrics with no retrieval run —
+References Completeness, Intrachunk Cohesion, Document Contextual Coherence, Block
+Integrity, Size Compliance — and reports raising answer correctness to 72% from
+62–64%.
+
+This is deliberately **not** `chunking-lab suggest`. Building a recommender of our
+own would have been completeness; reproducing a published one and then testing it
+is a result either way.
+- **The question:** does it reproduce, and does its selection beat the best *fixed*
+  strategy on the same corpus? A per-document recommender has to beat "just use
+  recursive:200 everywhere" to be worth its complexity, and that baseline is
+  rarely the one reported.
+- **Why now:** `chunking-lab` (#25) already measured that its own model-free
+  intrinsic signals mostly proxy chunk size (F8), and that the structural ones do
+  not predict retrieval quality at all (F9). Those are close cousins of Adaptive
+  Chunking's five, so there is a specific, falsifiable thing to check.
+- **Reuses:** #25's corpora, gold spans, metrics, `correlate` and `axes`.
+- **Cost note:** the metrics are cheap; the evaluation is #25's, which is free.
+- **Covers:** §2 Chunking · §5 Retrieval metrics · the reproduction habit itself.
 
 ## G. Concept notes (markdown, not code)
 

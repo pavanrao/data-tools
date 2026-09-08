@@ -13,6 +13,37 @@ we're building or parking, and why. Append a new `## Iteration N` section at the
 
 ---
 
+## Iteration 9 — 2026-09-07 — closing the chunking topic
+
+### F18 — chunking-lab is a measuring instrument, and the recommender was never the value
+Closing verdict on idea #25, after 47 commits and ten measurements.
+
+**What it turned out to be worth** was reproduction and falsification, not
+recommendation. Every finding this topic produced came from measuring something:
+that Precision Ω reproduces a published column exactly (F15) and that our first
+reading of it would not have (F14); that query-free signals mostly proxy chunk size
+(F8); that the structural ones predict nothing at all (F9); that chunking matters
+consistently while retrieval matters rarely and enormously (F10); that a weak model
+yields less ground truth rather than wrong ground truth (F11); and that a default
+sampling temperature can impersonate a finding about model size (F12).
+
+**Not one of them came from recommending anything.** The tool's own title promised
+"and recommend one" and it never did. Rather than build `suggest` for completeness
+— against substantial prior art — the title is now aligned with what the tool is,
+and the two open threads are promoted to topics of their own: **#91
+`context-aug-lab`** (Tier 2, which cannot share this tool's model-free default) and
+**#92 `adaptive-chunk`** (reproduce the published recommender and test it against a
+fixed baseline).
+
+**The habit worth carrying forward.** Five of those ten findings are corrections to
+earlier claims made in this same log — a misread formula, a false prior-art claim,
+a rate from eight samples, a config bug wearing a finding's costume, and two
+decisions (C14, C16) that did not survive their sources. A findings log whose
+entries never change is not being checked.
+
+`report` is dropped: `score` already prints the comparison and a second renderer
+was cosmetic.
+
 ## Iteration 8 — 2026-09-07 — annotate, and what a weak model costs
 
 ### F12 — a generation-config bug looked exactly like a finding about model size
