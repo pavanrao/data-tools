@@ -27,9 +27,11 @@ class Scripted:
     def __init__(self, *replies: str) -> None:
         self.replies = list(replies)
         self.prompts: list[str] = []
+        self.options: list[dict] = []
 
-    def complete(self, prompt: str, **_: object) -> str:
+    def complete(self, prompt: str, **opts: object) -> str:
         self.prompts.append(prompt)
+        self.options.append(dict(opts))
         return self.replies[(len(self.prompts) - 1) % len(self.replies)]
 
 
@@ -58,6 +60,25 @@ def test_several_excerpts_become_several_spans():
     (question,) = corpus.questions
     assert len(question.gold) == 2
     assert all(DOC[a:b].strip() for a, b in question.gold)
+
+
+def test_generation_is_deterministic_because_copying_is_not_a_creative_task():
+    """Temperature 0 is a correctness requirement here, not a tuning preference.
+
+    The entire instruction is "copy this text character for character". Sampling
+    introduces variation into the one thing that must not vary, and the variation
+    is invisible in the reply -- a slightly reworded quote reads perfectly well and
+    simply fails to be found.
+
+    Found the expensive way: a first model comparison ran at Ollama's default of
+    0.8 and appeared to show a 14B model doing worse than a 7B. That looked like a
+    finding about model size and was an artefact of the sampling temperature.
+    """
+    provider = Scripted(_reply("q", "open for four hours"))
+    annotate("policy.md", DOC, provider, count=2)
+
+    assert provider.options, "no generation options were passed at all"
+    assert all(o.get("temperature") == 0.0 for o in provider.options), provider.options
 
 
 def test_the_prompt_forbids_referring_to_the_excerpt():
@@ -208,3 +229,90 @@ def test_quotes_are_located_against_the_whole_document_not_the_window():
 
 def test_the_prompt_names_the_excerpt_cap_it_enforces():
     assert f"1 and {MAX_EXCERPTS}" in PROMPT.format(window="x", max_excerpts=MAX_EXCERPTS)
+
+
+# ------------------------------------------------------- comparing models
+
+
+def test_comparing_models_asks_every_model_the_same_questions(monkeypatch, tmp_path, capsys):
+    """The comparison only means something if the windows are identical.
+
+    Same seed, same documents, so the only thing varying is the model. If each
+    model were asked about different passages, a yield difference could just be
+    one model getting easier text.
+    """
+    from chunking_lab import cli
+
+    document = tmp_path / "policy.md"
+    document.write_text(DOC * 60)  # long enough that windows are sampled, not whole
+
+    seen: dict[str, list[str]] = {}
+
+    def fake_provider(model):
+        provider = Scripted(_reply("q", "open for four hours"))
+        seen[model] = provider.prompts
+        return provider, model
+
+    monkeypatch.setattr(cli, "_chat_provider", fake_provider)
+    exit_code = cli.main(
+        [
+            "annotate",
+            str(tmp_path),
+            "--out",
+            str(tmp_path / "out"),
+            "--per-document",
+            "3",
+            "--seed",
+            "11",
+            "--model",
+            "ollama/a",
+            "--model",
+            "ollama/b",
+        ]
+    )
+    assert exit_code == 0
+    assert seen["ollama/a"] == seen["ollama/b"], "models were asked about different windows"
+
+    out = capsys.readouterr().out
+    assert "ollama/a" in out and "ollama/b" in out
+    assert "paraphrased" in out, "the dominant failure mode must be broken out"
+
+
+def test_comparing_models_writes_nothing(monkeypatch, tmp_path):
+    """It answers 'which model should I annotate with', not 'here is a corpus'."""
+    from chunking_lab import cli
+
+    (tmp_path / "policy.md").write_text(DOC)
+    out_dir = tmp_path / "out"
+
+    monkeypatch.setattr(
+        cli, "_chat_provider", lambda m: (Scripted(_reply("q", "open for four hours")), m)
+    )
+    cli.main(
+        [
+            "annotate",
+            str(tmp_path),
+            "--out",
+            str(out_dir),
+            "--per-document",
+            "1",
+            "--model",
+            "ollama/a",
+            "--model",
+            "ollama/b",
+        ]
+    )
+    assert not out_dir.exists()
+
+
+def test_a_single_model_still_writes_a_corpus(monkeypatch, tmp_path):
+    from chunking_lab import cli
+
+    (tmp_path / "policy.md").write_text(DOC)
+    out_dir = tmp_path / "out"
+
+    monkeypatch.setattr(
+        cli, "_chat_provider", lambda m: (Scripted(_reply("q", "open for four hours")), m)
+    )
+    assert cli.main(["annotate", str(tmp_path), "--out", str(out_dir), "--per-document", "1"]) == 0
+    assert (out_dir / "gold.jsonl").exists()

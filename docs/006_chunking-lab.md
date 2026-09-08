@@ -437,6 +437,24 @@ document ─▶ chunker ─▶ Chunking(spans, provenance, strategy)
   a run where every reply was unreadable. Now `call_failed` and `malformed`. A
   report that miscounts its own failure modes is worse than one that says less.
 
+- **`annotate` pins temperature 0, and that is a correctness requirement.** The
+  instruction is "copy this text character for character"; sampling injects
+  variation into the one thing that must not vary, and the damage is invisible —
+  a slightly reworded quote reads naturally and simply fails to be found. We
+  learned this the expensive way: passing no generation options meant inheriting
+  Ollama's default of 0.8, and a four-model comparison then appeared to show a 14B
+  model doing *worse* than a 7B. That looked like a finding about model size and
+  was an artefact of our own config, hitting the larger model hardest because more
+  capacity means more plausible variations to sample from. At temperature 0 the
+  effect vanished (`FINDINGS.md` F12). A test asserts the option reaches the
+  provider, so nobody removes it thinking it is a tuning knob.
+
+- **`--model` is repeatable, and the comparison writes nothing.** Given several
+  models it runs each over the *same* windows — same documents, same seed — and
+  reports yields side by side. Sharing the seed is the whole point: otherwise a
+  yield difference could just be one model drawing easier text. It answers "which
+  model should I annotate with", after which the real pass runs with the winner.
+
 - **A spec string is the identity of a run.** `recursive:400/200` names the
   strategy and every parameter that changes its output, and `fixed:512/0`
   normalises to `fixed:512` so one configuration cannot appear as two rows.
@@ -453,6 +471,9 @@ document ─▶ chunker ─▶ Chunking(spans, provenance, strategy)
 ```bash
 # the correctness proof: reproduce a published column, offline, no model
 make chunking-benchmark
+
+# which local model annotates best? identical windows, yields side by side
+make chunking-models
 
 # make gold spans for your own documents (local model by default)
 uv run chunking-lab annotate ./my-docs --out ./my-corpus --model ollama/llama3.1

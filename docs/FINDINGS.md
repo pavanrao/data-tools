@@ -10,41 +10,93 @@ we're building or parking, and why. Append a new `## Iteration N` section at the
 
 ## Iteration 8 — 2026-09-07 — annotate, and what a weak model costs
 
-### F11 — quote-then-locate works, and a local 8B model yields 25%
-`annotate` closes the gap that made this tool a lab instrument: it manufactures
-gold spans from *your* documents, so `score --corpus-dir` works on something other
-than the two corpora that already had them.
+### F12 — a generation-config bug looked exactly like a finding about model size
+The plan was to answer "which local model should I annotate with". The first run
+appeared to answer something more interesting — that a 14B model was *worse* than a
+7B — and that was an artefact of our own configuration.
 
-Run against `ollama/llama3.1` over two real documents from this repo, 8 attempts:
+**We passed no generation options at all**, so every call inherited Ollama's
+default **temperature 0.8**. The entire instruction is *"copy this text character
+for character"*; sampling injects variation into the one thing that must not vary,
+and the damage is invisible, because a slightly reworded quote reads perfectly
+naturally and simply fails to be found.
 
-```
-yield: 2/8 questions usable (25%)
-  discarded, reply was not usable JSON: 1
-  discarded, quote not found in the document: 5
-  excerpts located by: exact 3, whitespace 1
-```
+Same four models, same documents, same seed, only the temperature changed:
 
-**Five of eight failed because the model paraphrased instead of copying.** Asked
-for text quoted verbatim, an 8B model rewrites it — and that is precisely the
-failure C9 was designed around. Because the quote is located rather than trusted,
-the six bad questions were *discarded*, not written into the corpus with plausible
-wrong offsets. The two survivors were verified verbatim against the source.
+| model | temp 0.8 | temp 0 | change | exact | whitespace | time |
+|---|---|---|---|---|---|---|
+| `llama3.1` (8B) | 70% | **90%** | +20pp | 15 | 8 | 161s |
+| `qwen2.5:7b` | 80% | 75% | −5pp | 6 | 9 | 160s |
+| `qwen2.5:14b` | 55% | 75% | **+20pp** | 6 | 11 | 303s |
+| `phi4` (14B) | 80% | 75% | −5pp | 2 | 15 | 707s |
 
-**This is the number C9 predicted would exist and nobody had.** "A weaker model
-produces less ground truth, not wrong ground truth" was an argument; 25% is what it
-costs in practice on a small local model. It also gives a concrete threshold for
-"is my model good enough for this": if the yield is this low, use a stronger model
-for the annotation pass — which is cheap, because it runs **once per corpus** and
-the result is a committed artifact.
+**The artefact is gone.** At temperature 0 the 14B is no longer worse than the 7B;
+both sit at 75%. The two models that improved by 20 points are the two that were
+sampling-sensitive, and a larger model has more capacity to produce plausible
+variations — which is exactly why loose sampling hurt it most. The −5pp moves are
+one question out of twenty and are noise.
 
-The `by_stage` breakdown matters too. Three of four surviving excerpts matched
-*exactly* and one needed whitespace tolerance; none needed the fuzzy fallback. A
-corpus built mostly from fuzzy matches would be visibly less trustworthy, and this
-is where that shows.
+**Three things worth taking from this.**
 
-**Verdict.** The design holds under a real weak model. Keep the strong-model advice
-from README §10 — annotate with the best model you have, once, then never pay
-again.
+**Bigger did not help.** `llama3.1` — the 8B model already installed — leads at
+90%, and `qwen2.5:14b` is no better than the 7B while taking twice as long. The
+recommendation to pull a 14B "as the real upgrade" was wrong, and the measurement
+is what showed it. On this task, at this size, model *family* and *sampling
+config* both matter more than parameter count.
+
+**The interesting model difference is not yield, it is faithfulness.** Look at the
+exact column: `llama3.1` reproduced 15 excerpts exactly; `qwen2.5` 6; `phi4` only
+2, leaning on whitespace tolerance for 15 of its 17 matches. Models differ far more
+in *how faithfully they reproduce spacing* than in how often they succeed at all —
+and a corpus resting mostly on whitespace-normalised matches is a weaker artefact
+than one resting on exact ones, even at identical yield.
+
+**Yield is per (model, document), not per model.** Even at temperature 0 the
+spread within a single model is large: `qwen2.5:14b` scored 5/5 on `CONVENTIONS.md`
+and 1/5 on `docs/000`, and `qwen2.5:7b` scored 5/5 and 2/5 on two different
+documents. Quoting a single yield without saying which corpus produced it means
+little (see F11).
+
+**Reproduce:** `make chunking-models`. Every model sees identical windows — same
+documents, same seed — so a difference is the model rather than luck.
+
+### F11 — quote-then-locate works. The yield depends on the *document* as much as the model.
+**Corrected.** This finding first reported a 25% yield for `ollama/llama3.1`, from
+8 attempts over 2 documents. A larger run — 20 attempts over 4 documents, same
+model — gives **70%**. The original number was not wrong so much as meaningless:
+**n=8 is not enough to report a rate**, and reporting one to two significant
+figures implied a precision it never had.
+
+The larger run, and the reason it differs:
+
+| document | kind of text | yield |
+|---|---|---|
+| `CONVENTIONS.md` | prose with short code blocks | **4/5** |
+| `tools/chunking-lab/README.md` | 56KB of dense markdown — tables, fences, nested lists | **2/5** |
+| (`docs/000`, `docs/007`) | mixed | 8/10 |
+| **all four** | | **14/20 (70%)** |
+
+**So yield is a property of the (model, corpus) pair, not of the model.** Dense
+markdown is roughly half as annotatable as ordinary prose, because a model asked
+to copy a table row or a fenced block verbatim has far more to get exactly right
+than one copying a sentence. The 0/4 the README scored in the original run is
+entirely ordinary for a ~40% document — at p=0.4, four consecutive failures happen
+13% of the time.
+
+**What survives unchanged, and is the actual finding.** Every failure was
+*discarded*, not written in with plausible wrong offsets, and every kept question
+verified verbatim against its source. The mechanism does what it was designed to
+do; only the headline rate moved.
+
+**How to use a yield number.** Read it per corpus, on your own documents, from
+enough attempts to mean something — and treat it as a signal to change model or
+accept a smaller evaluation set, never as a reason to distrust what survived.
+`chunking-lab annotate <dir> --model … --model …` compares models over identical
+windows.
+
+*(Superseded numbers kept deliberately: the first version of this entry said 25%,
+and a findings log that quietly edits its own history is worth less than one that
+shows where it was wrong.)*
 
 ## Iteration 7b — 2026-09-07 — which knob matters more
 

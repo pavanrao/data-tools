@@ -214,9 +214,13 @@ def build_parser() -> argparse.ArgumentParser:
     )
     ann.add_argument(
         "--model",
+        action="append",
         default=None,
+        dest="models",
         help="LiteLLM chat model string. Defaults to DATA_TOOLS_CHAT_MODEL, which "
-        "defaults to ollama/llama3.1 -- so local is the ordinary path",
+        "defaults to ollama/llama3.1 -- so local is the ordinary path. Repeatable: "
+        "give it more than once to compare models on identical windows, which is how "
+        "you find out whether a bigger model is worth its disk space",
     )
     ann.add_argument("--seed", type=int, default=0, help="window sampling seed")
     ann.add_argument("--glob", default="*.md", help="which files to read when path is a directory")
@@ -636,13 +640,70 @@ def _chat_provider(model: str | None):
     return get_chat_provider(settings), settings.chat_model
 
 
+def _compare_models(args: argparse.Namespace, documents: list[Path], models: list[str]) -> int:
+    """Run every model over the *same* windows and report the yields side by side.
+
+    The seed is shared, so each model is asked about identical passages -- the only
+    thing varying is the model, which is what makes the comparison mean anything.
+    Nothing is written: this answers "which model should I annotate with", and you
+    then run the real pass with the winner.
+    """
+    print(
+        f"comparing {len(models)} models over {len(documents)} document(s), "
+        f"{args.per_document} attempts each, seed {args.seed}\n"
+    )
+    rows = []
+    for model in models:
+        provider, resolved = _chat_provider(model)
+        totals = annotate_mod.Yield()
+        for document in documents:
+            _, produced = annotate_mod.annotate(
+                document.name,
+                document.read_text(encoding="utf-8"),
+                provider,
+                count=args.per_document,
+                seed=args.seed,
+            )
+            stages = dict(totals.by_stage)
+            for key, value in produced.by_stage.items():
+                stages[key] = stages.get(key, 0) + value
+            totals = annotate_mod.Yield(
+                asked=totals.asked + produced.asked,
+                kept=totals.kept + produced.kept,
+                call_failed=totals.call_failed + produced.call_failed,
+                malformed=totals.malformed + produced.malformed,
+                unlocatable=totals.unlocatable + produced.unlocatable,
+                by_stage=stages,
+            )
+        rows.append((resolved, totals))
+        print(f"  {resolved:<28} {totals.kept:>3}/{totals.asked:<4} {totals.rate:>6.0%}")
+
+    print(f"\n{'model':<28}{'yield':>7}{'kept':>6}{'paraphrased':>13}{'bad JSON':>10}{'exact':>7}")
+    for model, y in sorted(rows, key=lambda r: -r[1].rate):
+        print(
+            f"{model:<28}{y.rate:>7.0%}{y.kept:>6}{y.unlocatable:>13}"
+            f"{y.malformed:>10}{y.by_stage.get('exact', 0):>7}"
+        )
+    print(
+        "\n`paraphrased` is the model rewriting text it was told to copy verbatim --\n"
+        "the dominant failure, and the one a larger model is most likely to fix.\n"
+        "`exact` counts excerpts found without any whitespace or fuzzy tolerance;\n"
+        "a corpus built mostly from fuzzy matches is worth less than its yield suggests."
+    )
+    return 0
+
+
 def run_annotate(args: argparse.Namespace) -> int:
     """Manufacture gold spans, keeping only the ones that could be verified."""
     documents = sorted(args.path.glob(args.glob)) if args.path.is_dir() else [args.path]
     if not documents:
         raise ValueError(f"no files matching {args.glob!r} in {args.path}")
 
-    provider, model = _chat_provider(args.model)
+    models = args.models or [None]
+    if len(models) > 1:
+        return _compare_models(args, documents, models)
+
+    provider, model = _chat_provider(models[0])
     print(f"annotating {len(documents)} document(s) with {model}\n")
 
     corpora, totals = [], annotate_mod.Yield()

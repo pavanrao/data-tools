@@ -795,6 +795,11 @@ Follows `docs/000_project-organization.md` §10.
       column cannot tell you
 - [x] Quote-then-locate (C9's cascade: exact → whitespace-tolerant → fuzzy at ≥98),
       which `explain` uses to turn a quoted answer into offsets
+- [x] Compare annotation models over identical windows (`--model` repeatable,
+      `make chunking-models`). Measured on an M1 Pro: `llama3.1` 90%, `qwen2.5:7b`
+      75%, `qwen2.5:14b` 75%, `phi4` 75% — **bigger did not help**, and an earlier
+      run that seemed to show the opposite was our own default temperature of 0.8
+      (`FINDINGS.md` F12)
 - [ ] `report` (a rendered comparison) and `suggest` — the last two unbuilt
       commands. `suggest` is `score` plus a decision rule (C12), and its prior art
       (Adaptive Chunking, LREC 2026) is substantial, so it needs a reason to exist
@@ -812,10 +817,11 @@ Follows `docs/000_project-organization.md` §10.
       consistently; retrieval matters rarely and then enormously.* `FINDINGS.md` F10
 - [x] `annotate` — the model half of quote-then-locate. Built, and it closes the
       gap that made this a lab instrument: `score --corpus-dir` now works on your
-      own documents. Measured on `ollama/llama3.1`: **25% yield**, with 5 of 8
-      failures being the model paraphrasing when asked to copy verbatim. All
-      discarded rather than written in with plausible wrong offsets — which is C9's
-      whole argument, now with a number (`FINDINGS.md` F11)
+      own documents. Measured on `ollama/llama3.1` over 4 documents: **70% yield**,
+      and it varies by document — 4/5 on prose against 2/5 on dense markdown. Every
+      failure discarded rather than written in with plausible wrong offsets, which
+      is C9's whole argument (`FINDINGS.md` F11; an earlier 8-attempt run reported
+      25%, which was too small a sample to state a rate)
 - [x] Write the evidence card (`evidence/chunking-lab.jsonl`); wire `make demo-chunking`
       and `make chunking-benchmark`
 - [x] Write the explainer: [`docs/where-the-cut-falls.html`](../../docs/where-the-cut-falls.html),
