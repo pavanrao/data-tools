@@ -107,10 +107,15 @@ when a specific piece of work needs them. Neither is a difficulty rating.
 
 ### §2 · RAG & grounding — Spine
 
+*`chunking-lab` (#25) is closed. Its two open threads are tagged below as
+**#91 `context-aug-lab`** (Tier 2 — late chunking and contextual retrieval, which
+cannot share #25's model-free default) and **#92 `adaptive-chunk`** (reproduce the
+published per-document recommender, then check it beats a fixed strategy).*
+
 | Card | Covered by |
 | --- | --- |
-| The RAG pipeline | #1 `docs-rag` ✅ · #2 `repo-rag` ✅ · #53 `retrieval-bench` |
-| Chunking | #25 `chunking-lab` ✅ (six families, character-level scoring, Precision Ω reproduced against a published table) · #2 `repo-rag` (AST-aware) ✅ |
+| The RAG pipeline | #1 `docs-rag` ✅ · #2 `repo-rag` ✅ · #53 `retrieval-bench` · #91 `context-aug-lab` (the augmentation half — what changes when the cuts stay put and the *unit* changes) |
+| Chunking | #25 `chunking-lab` ✅ (six families, character-level scoring, Precision Ω reproduced against a published table) · #2 `repo-rag` (AST-aware) ✅ · #92 `adaptive-chunk` (per-document strategy selection, reproduced from LREC 2026 and tested against a fixed baseline) · #91 `context-aug-lab` (family 6, which moves no boundaries at all) |
 | Hybrid search | #53 `retrieval-bench` (exact-code query set) · #2 `repo-rag` ✅ · #25 `chunking-lab` ✅ (BM25 vs vector vs RRF hybrid, and *how much* the retriever axis moves things against the chunker axis) |
 | Re-ranking | #53 `retrieval-bench` (two-stage, cost/benefit measured) · #91 `context-aug-lab` (contextual retrieval vs late chunking, where the vendor and independent numbers disagree) |
 | Grounding, citations & the empty case | #49 `ingest-ledger` ✅ (refuses when evidence is absent) · #1 `docs-rag` ✅ |
@@ -138,7 +143,7 @@ when a specific piece of work needs them. Neither is a difficulty rating.
 | Card | Covered by |
 | --- | --- |
 | Golden set / eval set | #9 `eval-harness` · N5 · #25 `chunking-lab` ✅ (gold *spans*; quote-then-locate, and yield as the honest failure mode) |
-| Retrieval metrics vs. generation metrics | #9 `eval-harness` (faithfulness vs. context precision) · #53 `retrieval-bench` · N5 · #25 `chunking-lab` ✅ (chunk-level vs character-level; why recall alone scores a useless chunker 100%) |
+| Retrieval metrics vs. generation metrics | #9 `eval-harness` (faithfulness vs. context precision) · #53 `retrieval-bench` · N5 · #25 `chunking-lab` ✅ (chunk-level vs character-level; why recall alone scores a useless chunker 100%) · #91 `context-aug-lab` · #92 `adaptive-chunk` (both reuse #25's corpora, gold spans and metrics rather than inventing their own) |
 | LLM-as-judge | #57 `judge-lab` (calibrated against human labels) |
 | Task metrics vs. vibes | #57 `judge-lab` · #66 `tabular-lab` (hard metrics where they exist) |
 
