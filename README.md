@@ -47,7 +47,7 @@ Parked means built and installed, but not under active development;
 five-minute walkthrough that ends with the tool refusing to answer a question —
 no prior RAG knowledge needed.
 
-See [`IDEAS.md`](./IDEAS.md) for the running backlog of **90** tool ideas. Pick
+See [`IDEAS.md`](./IDEAS.md) for the running backlog of **167** tool ideas. Pick
 one, move it into a `tools/<name>/` directory, and build.
 
 **Before adding a tool**, read
@@ -67,6 +67,13 @@ ending in a measured number rather than a description.
 [`docs/005_concept-coverage.md`](./docs/005_concept-coverage.md) maps all 98
 concepts to what covers each, and sets out what makes a tool ready to show
 someone.
+
+Sections **H–J** come at it from a third direction: *enterprise data-engineering
+problems* — legacy onboarding, lineage, contracts, migration — where a language
+model is genuinely load-bearing rather than decorative. Every entry states its
+**agentic core**, which is the bar for being in there at all. Three tiers by
+ambition: **H** small and sharp, **I** bounded agents doing one enterprise job,
+**J** full systems, where the "small tool" rule is waived on purpose.
 
 ## Repo layout
 
