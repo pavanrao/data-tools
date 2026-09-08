@@ -401,8 +401,22 @@ installed, and it is what CI runs.
 
 ### 8.3 The retriever is held fixed
 
-BM25 over SQLite FTS5 (already used in `repo-rag`), with `HashingEmbedder`
-(from `ingest-ledger`) as a second deterministic option.
+BM25 over SQLite FTS5 (already used in `repo-rag`) is the **default**, because a
+chunker comparison run over an embedding retriever would depend on the encoder,
+and the point is to isolate the cuts.
+
+Two more are available for the *other* experiment — measuring the retriever axis
+itself: `vector` (cosine over an encoder) and `hybrid` (reciprocal-rank fusion at
+k=60). `--embedder` takes `hashing`, `provider`, or an explicit LiteLLM model
+string; **local is the default path** (`ollama/nomic-embed-text`) and a hosted API
+is the override.
+
+**Fixed means fixed within a comparison, not fixed forever.** Holding the
+retriever constant is what makes a chunker ranking mean something; running the
+same strategies again under a different retriever and comparing the *spreads* is
+how the two axes get compared without moving both at once. `axes` does that, and
+it refuses Precision Ω, which is retriever-independent by construction and would
+report no retriever effect at all.
 
 This is what keeps `chunking-lab` (#25) distinct from **`retrieval-bench` (#53)**:
 **#53 varies the retriever with chunking fixed; #25 varies the chunker with the
@@ -410,7 +424,15 @@ retriever fixed.** Neither subsumes the other. Say so in both READMEs.
 
 Every result row records **which path ran** (rule 2), so a semantic-chunker row
 can never be silently compared against a run where the embeddings extra was
-absent.
+absent — and every row records its `retriever`, so one results file can hold both
+axes without confusing them.
+
+**Measured** (`FINDINGS.md` F10): chunker axis 5.6× median and over 2× in **15 of
+15** cases; retriever axis 1.3× median and over 2× in **4 of 25**. Their maxima are
+nearly identical (14.4× vs 14.9×), so the two axes differ in *frequency*, not in
+size. **Chunking matters consistently; retrieval matters rarely and then
+enormously** — every one of those four cases is BM25 collapsing and a semantic
+retriever rescuing it.
 
 ### 8.4 Ground truth without hand annotation
 
