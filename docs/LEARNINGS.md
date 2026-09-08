@@ -9,6 +9,36 @@ sprint; keep entries concrete.
 
 ---
 
+## Iteration 7b — 2026-09-07 — summary statistics that hide the finding
+
+### A median is the wrong summary for an axis that fails rarely
+The `axes` command originally printed two medians and a verdict: chunker 5.6×,
+retriever 1.3×, "the chunker moves this metric more". True, and it buried the
+result. The two axes have nearly identical *maxima* (14.4× and 14.9×) and wildly
+different *frequencies* (15/15 versus 4/25). The interesting finding is not which
+is bigger, it is that one matters always and the other matters seldom and then
+catastrophically — and a median cannot express that.
+
+**Report a distribution whenever the thing being summarised can be rare and
+large.** The command now prints n, min, median, max and how often each axis
+exceeded 2×, and says outright to read the per-row table rather than the summary.
+I only noticed because two outliers in the raw output looked wrong; if the table
+had not been printed above the summary, the finding would have been lost.
+
+### Guard against the bias you expect, then check whether it happened
+The offline embedder was expected to understate the retriever axis, so the tool
+warned and the number stayed unquoted until a real encoder ran. Then the real
+encoder gave 5.6×/1.3× against the fallback's 5.9×/1.5× — the retriever axis got
+*slightly smaller*, not larger. The precaution was right as method and wrong as
+prediction, and both halves are worth keeping: you could not have known without
+running it, which is the entire argument for running it.
+
+### Check the obvious explanation before publishing it
+"The retriever matters more when the chunking is worse" is a tidy story, fits the
+data at a glance, and is false here: the rank correlation is −0.04. It would have
+been very easy to assert it from the two outliers and never look. One `spearman`
+call is cheaper than a wrong claim in a findings log.
+
 ## Iteration 7 — 2026-09-07 — closing a gap in a measurement
 
 ### Ask what the metric can physically see before blaming the signal

@@ -781,9 +781,11 @@ Follows `docs/000_project-organization.md` §10.
 - [x] `axes` — is the chunker the big knob or the retriever? Each axis measured
       with the other held fixed, compared by best/worst ratio. Refuses Precision Ω,
       which is retriever-independent and would always show no spread. `make chunking-axes`
-- [ ] Run `axes` against a real encoder and record the verdict. The offline
-      embedder understates the retriever axis badly, so the tool warns and the
-      number stays unquoted until a real model has run
+- [x] Run `axes` against a real encoder and record the verdict. Done against
+      `ollama/nomic-embed-text` in 21s: **chunker 5.6× median, retriever 1.3×** —
+      but the medians hide it. The maxima are nearly identical (14.4× vs 14.9×);
+      what differs is frequency, 15/15 against 4/25. *Chunking matters
+      consistently; retrieval matters rarely and then enormously.* `FINDINGS.md` F10
 - [ ] `annotate` — the model half of quote-then-locate, behind the `llm` extra.
       The deterministic half (`chunking_lab.locate`) is built and tested; what is
       missing is only the prompt that asks for verbatim quotes, plus reporting the

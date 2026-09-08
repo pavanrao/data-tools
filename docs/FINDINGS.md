@@ -8,6 +8,49 @@ we're building or parking, and why. Append a new `## Iteration N` section at the
 
 ---
 
+## Iteration 7b — 2026-09-07 — which knob matters more
+
+### F10 — the chunker always matters; the retriever usually doesn't, and occasionally matters just as much
+Run against a real encoder (`ollama/nomic-embed-text`, 768-dim, local — 21
+seconds). Five strategies × three retrievers × five corpora, each axis measured
+with the other held fixed, compared by the best/worst ratio in IoU.
+
+| axis | n | min | median | max | exceeds 2× |
+|---|---|---|---|---|---|
+| chunker | 15 | 4.2× | **5.6×** | 14.4× | **15/15** |
+| retriever | 25 | 1.0× | **1.3×** | 14.9× | **4/25** |
+
+**The median answer — "the chunker matters more" — is true and hides the
+interesting half.** The two axes do not differ in *size*; their maxima are
+effectively identical (14.4× vs 14.9×). They differ in **how often**. Changing the
+chunker moved IoU by more than 2× in *every case tested*. Changing the retriever
+did so in 4 of 25, and was under 1.2× in half of them.
+
+So the honest statement is not "chunking is the big knob". It is:
+
+> **Chunking matters consistently. Retrieval matters rarely and then enormously.**
+
+That is a different piece of advice. It says: fix chunking first because it always
+pays, but do not assume retrieval is settled — the cases where it matters are
+catastrophic, not marginal.
+
+**Every one of the four cases is BM25 collapsing and a semantic retriever rescuing
+it.** `recursive:200` on `spec.md`: BM25 scores 1.3 IoU, vector scores 19.7.
+`structural` on `runbook.md`: 2.7 against 33.6. Semantic retrieval beat BM25 on
+*every* strategy tested, but usually by 1.05–1.26× — and once by 2.01×.
+
+**A hypothesis that did not survive.** The obvious explanation is that the
+retriever matters more when the chunking is worse. It does not: the rank
+correlation between a configuration's IoU and its retriever spread is **−0.04**,
+which is nothing. Whatever makes BM25 collapse is not simply bad chunking.
+
+**Caveats that travel with this.** Five strategies and three retrievers, so a
+spread is only as wide as the options offered — adding a worse chunker or a
+reranker moves these numbers. Synthetic documentation corpus. One encoder. And the
+comparison is on IoU: Precision Ω cannot be used, because it is
+retriever-independent by construction and would report no retriever effect at all.
+`make chunking-axes`.
+
 ## Iteration 7 — 2026-09-07 — the structural signals, finally tested
 
 ### F9 — `mid_table_rate` does not predict retrieval quality. `split_fence_rate` barely does.
