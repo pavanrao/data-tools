@@ -1096,6 +1096,8 @@ Three tiers, deliberately: **H** small and sharp (days), **I** bounded agents (o
 enterprise job, real multi-step agency), **J** full systems (the "small tool" rule
 waived on purpose).
 
+Coverage for these is mapped in [`docs/008_data-engineering-coverage.md`](./docs/008_data-engineering-coverage.md) by the *problem* each solves; where an entry also exercises an AI concept, it is tagged in [`docs/005_concept-coverage.md`](./docs/005_concept-coverage.md) as well.
+
 ## H. Small, sharp AI tools — enterprise data engineering (#93–117)
 
 Buildable in days, one job each — but unlike section E's plumbing, **the AI is the whole

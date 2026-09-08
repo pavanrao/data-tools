@@ -25,6 +25,7 @@ Four kinds of document, deliberately kept apart. A verdict filed in a design doc
 | [`005`](005_concept-coverage.md) | Concept coverage — 98 AI/data-engineering concepts mapped to sections F–G of `IDEAS.md`, plus the showcase criteria | Current, plan |
 | [`006`](006_chunking-lab.md) | `chunking-lab` (#25) — compare chunking strategies, scored at the character level | Current |
 | [`007`](007_chunking-concepts.md) | Chunking concepts — the reference: every concept `chunking-lab` is built from, with its trade-off and where it lives | Current |
+| [`008`](008_data-engineering-coverage.md) | Data-engineering coverage — which enterprise data problems sections H–J cover, and which are bare. The second axis; `005` is the first | Current, plan |
 
 The series is **append-only**. A superseded decision is annotated in place with
 a status line and a pointer to what replaced it, never deleted — see D1a and D2a
