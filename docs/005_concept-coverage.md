@@ -167,7 +167,7 @@ published per-document recommender, then check it beats a fixed strategy).*
 | Card | Covered by |
 | --- | --- |
 | Agent vs. pipeline | #58 `agent-governor` (same task three ways) · N2 |
-| The ReAct loop | #58 `agent-governor` (iteration ceiling, spend cap, cost per run) · #118 `db-archaeologist` (hypothesis → test → revise, over a database nobody understands) |
+| The ReAct loop | #58 `agent-governor` (iteration ceiling, spend cap, cost per run) · #118 `db-archaeologist` (hypothesis → test → revise, over a database nobody understands) · **all of section L** 🤖 (each entry names the single-prompt approach it beats, so the loop has to earn its place) |
 | Tool calling & MCP | #58 `agent-governor` (arg validation) · #16 `mcp-gateway` · #2 `repo-rag` ✅ · N3 (MCP as standardisation) · #148 `estate-knowledge-graph` (the substrate every other agent queries) |
 | Memory & context management | #58 `agent-governor` (overflow + staleness) · #50 `token-ledger` |
 | Frameworks: LangChain / LangGraph / crewAI / Pydantic AI | #58 `agent-governor` (chain vs. graph, built both) · N3 |

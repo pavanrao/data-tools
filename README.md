@@ -47,7 +47,7 @@ Parked means built and installed, but not under active development;
 five-minute walkthrough that ends with the tool refusing to answer a question —
 no prior RAG knowledge needed.
 
-See [`IDEAS.md`](./IDEAS.md) for the running backlog of **183** tool ideas. Pick
+See [`IDEAS.md`](./IDEAS.md) for the running backlog of **197** tool ideas. Pick
 one, move it into a `tools/<name>/` directory, and build.
 
 **Before adding a tool**, read
@@ -79,6 +79,12 @@ Section **K** is a class of its own: 🔒 **metadata-plane** agents that work fr
 schema, infrastructure, logs and code and **never read a row**. That is a
 deployment property — no data-residency review, no PII assessment, no production
 data access — so they can run in CI against a repository and a catalogue export.
+
+Section **L** takes data access back, and pays for it with a stricter bar: the
+loop *is* the solution — hypothesis, query, revise, where what to look at next is
+not knowable until you have looked. Single-prompt work does not qualify, so every
+entry names the simpler approach and says where it fails. These run where the data
+already is, on an on-prem or private-cloud model.
 
 ## Repo layout
 

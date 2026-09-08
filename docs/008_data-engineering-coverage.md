@@ -31,6 +31,18 @@ schema diff and a `GROUP BY` does not belong in H–J, and several ideas in sect
 A–E are marked ⚠️ **Deterministic** precisely because their core job is not an AI
 problem at all.
 
+## Two classes of agent, deliberately
+
+**Section K (🔒)** works from schema, infrastructure, logs and code, and never reads
+a row. **Section L (🤖)** reads the data, and pays for that access with a stricter
+bar: the loop *is* the solution — hypothesis, query, revise, where what to look at
+next is not knowable until you have looked.
+
+The trade is explicit. K buys deployability: no data-residency review, no PII
+assessment, runnable in CI. L buys answers that are only visible in the data, and
+accepts running where the data already is — an on-prem or private-cloud model.
+Neither is the better class; they fail at different things.
+
 ## The 🔒 metadata-plane class
 
 Section **K** of `IDEAS.md` is a distinct class worth reading as a group: tools that
@@ -77,6 +89,7 @@ What the columns *mean*, which no schema records.
 | Sentinel values — is `9999-12-31` a date or a null? | #97 `null-semantics-detective` |
 | Mixed units, currencies and scales in one column | #98 `units-detective` |
 | Reference data and code-set alignment | #99 `code-set-mapper` |
+| The code set stopped matching reality | #196 `reference-data-decay-monitor` 🤖 |
 | Naming conventions across an estate | #107 `naming-harmonizer` |
 | Time zones, calendars and effective dating | #168 `temporal-linter` 🔒 (effective-dated joins, exclusive-bound `BETWEEN`, DST-unsafe arithmetic — from DDL and SQL alone) |
 | Encoding, collation and locale drift | #170 `collation-conformance` 🔒 (where two engines disagree about `'a' = 'A'`, from DDL and platform config) · #98 `units-detective` (scale, needs values) |
@@ -86,6 +99,7 @@ What the columns *mean*, which no schema records.
 | Problem | Covered by |
 | --- | --- |
 | Source→target column mappings | #100 `mapping-suggester` |
+| One row per *what*, actually? | #187 `grain-detective` 🤖 |
 | How two systems' tables join | #101 `join-key-suggester` |
 | MDM match/merge in the gray zone | #123 `match-merge-adjudicator` (adjudicated, with evidence) |
 | Survivorship rules and golden-record policy | #169 `survivorship-auditor` 🔒 (recovers the policy from the merge code; flags attributes with no rule) · #123 adjudicates a pair, this states the rule |
@@ -99,6 +113,7 @@ What the columns *mean*, which no schema records.
 | Stored procedures → a modern engine | #119 `proc-modernizer` (tested SparkSQL) |
 | Mainframe job flows → an orchestrator | #120 `jcl-flow-reconstructor` |
 | SQL dialect migration | #116 `dialect-translator` (verified, not just translated) |
+| The rewrite gives different answers; does it matter? | #190 `equivalence-adjudicator` 🤖 |
 | Copy-paste transform sprawl | #135 `dedup-refactorer` |
 | A whole ETL estate | #143 `etl-migration-factory` · #145 `platform-migration-copilot` |
 
@@ -112,6 +127,8 @@ What the columns *mean*, which no schema records.
 | 4,000 reports that should be 400 | #147 `bi-rationalizer` |
 | Building and *maintaining* a semantic layer | #149 `semantic-layer-factory` |
 | "Why did this number move?" | #137 `number-change-detective` · #142 `lineage-narrator` |
+| The numbers are fine; the *population* changed | #194 `population-drift-investigator` 🤖 |
+| Four hundred queries, eleven actual questions | #197 `query-intent-consolidator` 🤖 |
 | Trustworthy chat-with-data | #164 `analysis-copilot` (answers with proof) |
 
 ## §F · Catalog, glossary & documentation
@@ -133,6 +150,9 @@ What the columns *mean*, which no schema records.
 | Contracts extracted from legacy artifacts | #106 `contract-from-docs` |
 | Contracts that stay alive | #151 `contract-lifecycle-system` · #19 `data-contract-linter` |
 | DQ rules that learn the business rhythm | #155 `quality-sentinel-network` · #35 `dq-rule-suggester` |
+| The code claims to enforce it; does the data obey? | #189 `rule-reality-auditor` 🤖 (starts from the claim, not the data) |
+| Is this dataset fit for *that* purpose? | #192 `fitness-assessor` 🤖 |
+| What you are owed versus what you are getting | #185 `sla-portfolio-auditor` 🤖 |
 | The quarantine pile nobody triages | #130 `quarantine-adjudicator` |
 | Telling a source system it broke, with evidence | #114 `failure-notifier` |
 | Will this change break a consumer? | #183 `schema-contract-differ` 🔒 (reads consumer code, not the catalogue) |
@@ -147,6 +167,8 @@ What the columns *mean*, which no schema records.
 | Business-rule-aware edge cases | #110 `edge-case-smith` |
 | Reviewing generated orchestration code | #111 `dag-reviewer` |
 | Blast radius of a change | #112 `change-risk-scorer` (as a PR comment) |
+| Pipelines that are not as independent as they look | #191 `hidden-coupling-finder` 🤖 |
+| Running two schema versions while consumers migrate | #186 `version-coexistence-manager` 🤖 |
 | Does the DAG match what the SQL reads? | #172 `dependency-truth-checker` 🔒 |
 | Can this safely be re-run? | #173 `idempotency-auditor` 🔒 |
 | Will this DDL change take the table offline? | #175 `migration-hazard-reviewer` 🔒 |
@@ -167,6 +189,9 @@ What the columns *mean*, which no schema records.
 | Incidents → runbooks | #115 `runbook-writer` |
 | When did the data go wrong? | #133 `snapshot-debugger` |
 | Chasing a control-total mismatch | #125 `recon-investigator` · #28 `load-reconciler` |
+| The window where two systems are never consistent | #184 `boundary-prober` 🤖 |
+| Where did the rows go, stage by stage? | #188 `attrition-tracer` 🤖 (after ingest; #49 covers the boundary) |
+| Where does the pipeline quietly lose precision? | #195 `silent-truncation-hunter` 🤖 |
 | Audit evidence, assembled | #141 `audit-evidence-compiler` |
 | Streaming operations — watermarks, unbounded state, checkpoint compatibility | #171 `stream-topology-reviewer` 🔒 · #81 `stream-lab` (the concept lab) |
 | One failure or four hundred? | #177 `retry-storm-diagnoser` 🔒 |
@@ -194,6 +219,7 @@ What the columns *mean*, which no schema records.
 | What breaks if I revoke this? | #178 `grant-impact-explainer` 🔒 |
 | Subject rights (DSAR) | #159 `dsar-orchestrator` |
 | Privacy impact assessments | #140 `pia-drafter` |
+| Is the data used for what people consented to? | #193 `purpose-limitation-auditor` 🤖 |
 | Retention and legal hold | #161 `retention-lifecycle-enforcer` |
 | Regulation changes → policy changes | #160 `reg-change-compliance-system` |
 
@@ -216,16 +242,25 @@ lives in metadata* — a collation setting, a watermark config, a `COALESCE` cha
 and where the failure is semantic rather than statistical. They were bare because
 sections H–J lean on reading data, and these four cannot be solved that way.
 
-**Still bare, and worth naming:**
+**Closed in turn by section L**, which trades section K's data-free deployability
+for answers only visible in the data:
 
-- **Cross-system transaction boundaries.** When a logical unit of work spans two
-  systems with no shared transaction, nothing here reasons about the window where
-  they disagree.
-- **Vendor and third-party feed SLAs as a portfolio.** `#158 source-watchtower`
-  watches for breakage; nobody models the commercial relationship — what you are
-  owed, what you are getting, and what the contract says about it.
-- **Data model versioning for consumers.** `#183` catches a break; nothing helps
-  you run two versions of a schema concurrently while consumers migrate.
+| was bare | now |
+|---|---|
+| Cross-system transaction boundaries | #184 `boundary-prober` 🤖 — probes for the *envelope* of disagreement, not a single mismatch |
+| Vendor feed SLAs as a portfolio | #185 `sla-portfolio-auditor` 🤖 — obligations in prose, mapped to evidence that is somewhere different for every vendor |
+| Concurrent schema versions | #186 `version-coexistence-manager` 🤖 — operates the expand-migrate-**contract** window, and the contract step is the one everyone skips |
+
+**Still bare after that**, and stated rather than hidden:
+
+- **Multi-tenant data isolation assurance.** Nothing here proves that tenant A's
+  data cannot reach tenant B through a join, a cached result or a shared model.
+- **Upstream schema negotiation.** `#158` sees drift coming and `#185` measures the
+  contract; nothing helps you *negotiate* the change with the source team before it
+  ships.
+- **Deletion propagation.** `#159` fulfils a subject request and `#161` enforces
+  retention, but proving a delete actually reached every copy — replicas, caches,
+  backups, extracts, model training sets — is unaddressed.
 
 ## Relationship to 005
 
