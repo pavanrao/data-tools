@@ -337,6 +337,20 @@ which corpus it came from means little.
 *An earlier run reported 25% from 8 attempts. That was too small a sample to state
 a rate at all — see the note in F11.*
 
+**The generation temperature is part of this concept, not a detail.** Sampling is
+variation, and this task's whole requirement is *no* variation. Run at a default
+temperature and quotes come back subtly reworded — invisible in the reply, fatal at
+locate time. `annotate` pins temperature 0. Skipping that once turned a four-model
+comparison into an apparent finding that a 14B model was worse than a 7B, which was
+purely an artefact of the sampling config (`FINDINGS.md` F12).
+
+**And yield is not the only thing to read.** Across four local models the yields
+cluster at 75–90%, which makes them look interchangeable; the *stage* breakdown
+does not. `llama3.1` reproduced 15 excerpts exactly, `phi4` only 2 — leaning on
+whitespace tolerance for nearly every match. Same yield, materially weaker
+artefact, because a gold span recovered by normalising whitespace rests on a looser
+guarantee than one matched character for character.
+
 ### Hostile corpora ⚑
 
 Documents written so that a specific strategy provably fails on them, with the

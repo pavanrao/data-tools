@@ -43,6 +43,19 @@ WINDOW = 4000
 #: answer and becomes a summary of the window.
 MAX_EXCERPTS = 3
 
+#: Generation options. **Temperature 0 is not a tuning preference here, it is a
+#: correctness requirement.** The entire instruction is "copy this text character
+#: for character"; sampling introduces variation into the one thing that must not
+#: vary, and the variation is invisible in the reply -- a slightly reworded quote
+#: reads perfectly well and simply fails to be found.
+#:
+#: This was found the expensive way. A first comparison ran at Ollama's default of
+#: 0.8 and appeared to show a 14B model doing *worse* than a 7B, which looked like
+#: a finding about model size and was an artefact of the sampling temperature --
+#: hitting the larger model hardest, because it has more capacity to produce
+#: plausible variations.
+OPTIONS = {"temperature": 0.0}
+
 PROMPT = """\
 You are building an evaluation set for a document retrieval system.
 
@@ -172,7 +185,9 @@ def annotate(
     for window in _windows(text, count, rng):
         asked += 1
         try:
-            raw = provider.complete(PROMPT.format(window=window, max_excerpts=MAX_EXCERPTS))
+            raw = provider.complete(
+                PROMPT.format(window=window, max_excerpts=MAX_EXCERPTS), **OPTIONS
+            )
         except Exception:  # noqa: BLE001 - a failed call is a discarded question, not a crash
             call_failed += 1
             continue

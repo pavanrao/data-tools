@@ -795,6 +795,11 @@ Follows `docs/000_project-organization.md` §10.
       column cannot tell you
 - [x] Quote-then-locate (C9's cascade: exact → whitespace-tolerant → fuzzy at ≥98),
       which `explain` uses to turn a quoted answer into offsets
+- [x] Compare annotation models over identical windows (`--model` repeatable,
+      `make chunking-models`). Measured on an M1 Pro: `llama3.1` 90%, `qwen2.5:7b`
+      75%, `qwen2.5:14b` 75%, `phi4` 75% — **bigger did not help**, and an earlier
+      run that seemed to show the opposite was our own default temperature of 0.8
+      (`FINDINGS.md` F12)
 - [ ] `report` (a rendered comparison) and `suggest` — the last two unbuilt
       commands. `suggest` is `score` plus a decision rule (C12), and its prior art
       (Adaptive Chunking, LREC 2026) is substantial, so it needs a reason to exist

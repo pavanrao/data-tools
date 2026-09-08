@@ -27,9 +27,11 @@ class Scripted:
     def __init__(self, *replies: str) -> None:
         self.replies = list(replies)
         self.prompts: list[str] = []
+        self.options: list[dict] = []
 
-    def complete(self, prompt: str, **_: object) -> str:
+    def complete(self, prompt: str, **opts: object) -> str:
         self.prompts.append(prompt)
+        self.options.append(dict(opts))
         return self.replies[(len(self.prompts) - 1) % len(self.replies)]
 
 
@@ -58,6 +60,25 @@ def test_several_excerpts_become_several_spans():
     (question,) = corpus.questions
     assert len(question.gold) == 2
     assert all(DOC[a:b].strip() for a, b in question.gold)
+
+
+def test_generation_is_deterministic_because_copying_is_not_a_creative_task():
+    """Temperature 0 is a correctness requirement here, not a tuning preference.
+
+    The entire instruction is "copy this text character for character". Sampling
+    introduces variation into the one thing that must not vary, and the variation
+    is invisible in the reply -- a slightly reworded quote reads perfectly well and
+    simply fails to be found.
+
+    Found the expensive way: a first model comparison ran at Ollama's default of
+    0.8 and appeared to show a 14B model doing worse than a 7B. That looked like a
+    finding about model size and was an artefact of the sampling temperature.
+    """
+    provider = Scripted(_reply("q", "open for four hours"))
+    annotate("policy.md", DOC, provider, count=2)
+
+    assert provider.options, "no generation options were passed at all"
+    assert all(o.get("temperature") == 0.0 for o in provider.options), provider.options
 
 
 def test_the_prompt_forbids_referring_to_the_excerpt():

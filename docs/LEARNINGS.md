@@ -9,6 +9,40 @@ sprint; keep entries concrete.
 
 ---
 
+## Iteration 8c — 2026-09-07 — check the config before you believe the comparison
+
+### A generation-config bug is indistinguishable from a model-quality finding
+Comparing four local models produced an interesting-looking result: the 14B was
+worse than the 7B. It was our default sampling temperature — 0.8, inherited
+because we passed no options — and it hit the larger model hardest, since more
+capacity means more plausible variations to sample from. At temperature 0 the
+effect vanished entirely.
+
+**Before comparing models, check every parameter you did not set.** A default you
+never chose is still a variable in the experiment, and this one produced a clean,
+publishable, completely wrong conclusion.
+
+### Temperature 0 is a correctness requirement for extraction, not a preference
+For "copy this text character for character", sampling introduces variation into
+the one thing that must not vary — and the failure is invisible in the output, so
+it surfaces only as an unexplained drop in downstream verification. Any task whose
+success criterion is *exact reproduction* should be deterministic, and the code
+should say why, so nobody later removes it thinking it is a tuning knob.
+
+### The user asking "is it our prompt?" was worth more than another run
+The measurement was already recorded and about to be written up as a finding about
+model size. The question that unstuck it was not a better experiment, it was
+someone asking whether the instrument was at fault. **When a result is surprising,
+the first hypothesis should be your own setup**, and it is worth inviting that
+challenge explicitly rather than waiting to be lucky.
+
+### Report the failure mode, not just the success rate
+All four models land at 75-90% yield, which makes them look interchangeable. The
+`exact` versus `whitespace` breakdown says otherwise: llama3.1 reproduced 15
+excerpts exactly, phi4 only 2. Same yield, materially different faithfulness, and a
+corpus built on whitespace-normalised matches is a weaker artefact than one built
+on exact ones. **A single headline rate hides which kind of right the answer was.**
+
 ## Iteration 8b — 2026-09-07 — a rate from eight samples is not a rate
 
 ### Do not report a percentage from single-digit trials

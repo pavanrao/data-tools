@@ -10,6 +10,56 @@ we're building or parking, and why. Append a new `## Iteration N` section at the
 
 ## Iteration 8 — 2026-09-07 — annotate, and what a weak model costs
 
+### F12 — a generation-config bug looked exactly like a finding about model size
+The plan was to answer "which local model should I annotate with". The first run
+appeared to answer something more interesting — that a 14B model was *worse* than a
+7B — and that was an artefact of our own configuration.
+
+**We passed no generation options at all**, so every call inherited Ollama's
+default **temperature 0.8**. The entire instruction is *"copy this text character
+for character"*; sampling injects variation into the one thing that must not vary,
+and the damage is invisible, because a slightly reworded quote reads perfectly
+naturally and simply fails to be found.
+
+Same four models, same documents, same seed, only the temperature changed:
+
+| model | temp 0.8 | temp 0 | change | exact | whitespace | time |
+|---|---|---|---|---|---|---|
+| `llama3.1` (8B) | 70% | **90%** | +20pp | 15 | 8 | 161s |
+| `qwen2.5:7b` | 80% | 75% | −5pp | 6 | 9 | 160s |
+| `qwen2.5:14b` | 55% | 75% | **+20pp** | 6 | 11 | 303s |
+| `phi4` (14B) | 80% | 75% | −5pp | 2 | 15 | 707s |
+
+**The artefact is gone.** At temperature 0 the 14B is no longer worse than the 7B;
+both sit at 75%. The two models that improved by 20 points are the two that were
+sampling-sensitive, and a larger model has more capacity to produce plausible
+variations — which is exactly why loose sampling hurt it most. The −5pp moves are
+one question out of twenty and are noise.
+
+**Three things worth taking from this.**
+
+**Bigger did not help.** `llama3.1` — the 8B model already installed — leads at
+90%, and `qwen2.5:14b` is no better than the 7B while taking twice as long. The
+recommendation to pull a 14B "as the real upgrade" was wrong, and the measurement
+is what showed it. On this task, at this size, model *family* and *sampling
+config* both matter more than parameter count.
+
+**The interesting model difference is not yield, it is faithfulness.** Look at the
+exact column: `llama3.1` reproduced 15 excerpts exactly; `qwen2.5` 6; `phi4` only
+2, leaning on whitespace tolerance for 15 of its 17 matches. Models differ far more
+in *how faithfully they reproduce spacing* than in how often they succeed at all —
+and a corpus resting mostly on whitespace-normalised matches is a weaker artefact
+than one resting on exact ones, even at identical yield.
+
+**Yield is per (model, document), not per model.** Even at temperature 0 the
+spread within a single model is large: `qwen2.5:14b` scored 5/5 on `CONVENTIONS.md`
+and 1/5 on `docs/000`, and `qwen2.5:7b` scored 5/5 and 2/5 on two different
+documents. Quoting a single yield without saying which corpus produced it means
+little (see F11).
+
+**Reproduce:** `make chunking-models`. Every model sees identical windows — same
+documents, same seed — so a difference is the model rather than luck.
+
 ### F11 — quote-then-locate works. The yield depends on the *document* as much as the model.
 **Corrected.** This finding first reported a 25% yield for `ollama/llama3.1`, from
 8 attempts over 2 documents. A larger run — 20 attempts over 4 documents, same
