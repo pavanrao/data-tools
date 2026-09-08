@@ -31,6 +31,21 @@ schema diff and a `GROUP BY` does not belong in H–J, and several ideas in sect
 A–E are marked ⚠️ **Deterministic** precisely because their core job is not an AI
 problem at all.
 
+## The 🔒 metadata-plane class
+
+Section **K** of `IDEAS.md` is a distinct class worth reading as a group: tools that
+work from **schema, infrastructure, logs and code, and never read a row value**.
+
+That is a deployment property, not a purity claim. A tool that touches no data needs
+no data-residency review, no PII assessment and no production data access — it can
+run in CI against a repository and a catalogue export. Roughly a third of the ideas
+in sections H–J read row values and cannot make that claim.
+
+It is also where the work is most clearly semantic: with no values to profile,
+everything is inferred from naming, structure, config and intent. Each entry states
+what a deterministic tool would already catch, so the model's share of the job is
+explicit.
+
 ## How to read a row
 
 **Covered** means an idea exists and is specific enough to build from — not that it
@@ -63,8 +78,8 @@ What the columns *mean*, which no schema records.
 | Mixed units, currencies and scales in one column | #98 `units-detective` |
 | Reference data and code-set alignment | #99 `code-set-mapper` |
 | Naming conventions across an estate | #107 `naming-harmonizer` |
-| **Time zones, calendars and effective dating** | *bare* |
-| **Encoding, collation and locale drift** | *partly* — #98 `units-detective` touches scale, not encoding |
+| Time zones, calendars and effective dating | #168 `temporal-linter` 🔒 (effective-dated joins, exclusive-bound `BETWEEN`, DST-unsafe arithmetic — from DDL and SQL alone) |
+| Encoding, collation and locale drift | #170 `collation-conformance` 🔒 (where two engines disagree about `'a' = 'A'`, from DDL and platform config) · #98 `units-detective` (scale, needs values) |
 
 ## §C · Mapping, matching & integration
 
@@ -73,7 +88,7 @@ What the columns *mean*, which no schema records.
 | Source→target column mappings | #100 `mapping-suggester` |
 | How two systems' tables join | #101 `join-key-suggester` |
 | MDM match/merge in the gray zone | #123 `match-merge-adjudicator` (adjudicated, with evidence) |
-| **Survivorship rules and golden-record policy** | *bare* — #123 adjudicates a pair, not a policy |
+| Survivorship rules and golden-record policy | #169 `survivorship-auditor` 🔒 (recovers the policy from the merge code; flags attributes with no rule) · #123 adjudicates a pair, this states the rule |
 
 ## §D · Transform understanding & modernisation
 
@@ -108,6 +123,8 @@ What the columns *mean*, which no schema records.
 | Catalog enrichment / auto-classification | #95 `column-semantics-tagger` |
 | Documentation that cannot go stale | #167 `as-built-documentarian` |
 | One queryable brain over catalog + lineage + stewardship | #148 `estate-knowledge-graph` |
+| What does this 4,000-line config estate actually do? | #176 `config-archaeologist` 🔒 |
+| How did this table get this shape? | #179 `schema-historian` 🔒 |
 
 ## §G · Contracts, quality & stewardship
 
@@ -118,6 +135,7 @@ What the columns *mean*, which no schema records.
 | DQ rules that learn the business rhythm | #155 `quality-sentinel-network` · #35 `dq-rule-suggester` |
 | The quarantine pile nobody triages | #130 `quarantine-adjudicator` |
 | Telling a source system it broke, with evidence | #114 `failure-notifier` |
+| Will this change break a consumer? | #183 `schema-contract-differ` 🔒 (reads consumer code, not the catalogue) |
 | The steward's queue, triaged | #163 `steward-command-center` |
 | The ad-hoc request firehose | #165 `data-request-desk` |
 
@@ -129,6 +147,10 @@ What the columns *mean*, which no schema records.
 | Business-rule-aware edge cases | #110 `edge-case-smith` |
 | Reviewing generated orchestration code | #111 `dag-reviewer` |
 | Blast radius of a change | #112 `change-risk-scorer` (as a PR comment) |
+| Does the DAG match what the SQL reads? | #172 `dependency-truth-checker` 🔒 |
+| Can this safely be re-run? | #173 `idempotency-auditor` 🔒 |
+| Will this DDL change take the table offline? | #175 `migration-hazard-reviewer` 🔒 |
+| Is this notebook ready to be a pipeline? | #181 `notebook-promotion-reviewer` 🔒 |
 | Schema drift — the "what now?" after detection | #134 `drift-ripple-planner` · #158 `source-watchtower` (moved left of the failure) |
 | Why did it get slow or wrong? | #131 `regression-bisector` |
 | Why does dev ≠ test ≠ prod? | #132 `env-drift-explainer` |
@@ -146,6 +168,8 @@ What the columns *mean*, which no schema records.
 | When did the data go wrong? | #133 `snapshot-debugger` |
 | Chasing a control-total mismatch | #125 `recon-investigator` · #28 `load-reconciler` |
 | Audit evidence, assembled | #141 `audit-evidence-compiler` |
+| Streaming operations — watermarks, unbounded state, checkpoint compatibility | #171 `stream-topology-reviewer` 🔒 · #81 `stream-lab` (the concept lab) |
+| One failure or four hundred? | #177 `retry-storm-diagnoser` 🔒 |
 
 ## §J · Cost & portfolio
 
@@ -153,6 +177,9 @@ What the columns *mean*, which no schema records.
 | --- | --- |
 | Compute cost per feed or domain | #41 `finops-attributor` · #157 `autonomous-finops-governor` |
 | Performance fixes as validated PRs | #129 `spark-tuner` · #79 `spark-clinic` |
+| Partitioning driven by the queries actually run | #174 `partition-advisor` 🔒 |
+| The bill went up on Tuesday | #180 `cost-jump-explainer` 🔒 (explains a delta; #41 apportions steady state) |
+| What is nothing reading? | #182 `orphan-asset-finder` 🔒 (separates dead from dormant) |
 | Storage hygiene across an estate | #136 `deprecation-planner` |
 | The whole nightly batch, optimised | #156 `pipeline-portfolio-optimizer` |
 
@@ -164,6 +191,7 @@ What the columns *mean*, which no schema records.
 | Test environments without PII | #166 `synthetic-environment-fabricator` |
 | Does the masking actually hold? | #139 `reident-tester` (attack your own control) |
 | What can this role actually see? | #138 `access-explainer` · #162 `access-governance-suite` |
+| What breaks if I revoke this? | #178 `grant-impact-explainer` 🔒 |
 | Subject rights (DSAR) | #159 `dsar-orchestrator` |
 | Privacy impact assessments | #140 `pia-drafter` |
 | Retention and legal hold | #161 `retention-lifecycle-enforcer` |
@@ -171,19 +199,33 @@ What the columns *mean*, which no schema records.
 
 ---
 
-## What is bare
+## What was bare, and what closed it
 
-Named honestly, because an empty row is the most useful thing a coverage map
-produces:
+All four gaps this map named are now covered — by section **K**, whose entries work
+from schema, infrastructure, logs and code and never read a row:
 
-- **Time zones, calendars and effective dating** (§B). Endemic in insurance and
-  finance, and nothing here touches it.
-- **Survivorship rules and golden-record policy** (§C). `#123` adjudicates one
-  match; deciding *which* value wins across sources is a different problem.
-- **Encoding, collation and locale drift** (§B). Partly implied, never targeted.
-- **Streaming-specific operations.** Sections H–J are batch-shaped throughout;
-  `#81 stream-lab` in section F is the only streaming coverage, and it is a concept
-  lab rather than an enterprise tool.
+| was bare | now |
+|---|---|
+| Time zones, calendars, effective dating | #168 `temporal-linter` 🔒 |
+| Survivorship and golden-record policy | #169 `survivorship-auditor` 🔒 |
+| Encoding, collation and locale drift | #170 `collation-conformance` 🔒 |
+| Streaming operations | #171 `stream-topology-reviewer` 🔒 |
+
+That is not an accident of scheduling. All four are problems where the *evidence
+lives in metadata* — a collation setting, a watermark config, a `COALESCE` chain —
+and where the failure is semantic rather than statistical. They were bare because
+sections H–J lean on reading data, and these four cannot be solved that way.
+
+**Still bare, and worth naming:**
+
+- **Cross-system transaction boundaries.** When a logical unit of work spans two
+  systems with no shared transaction, nothing here reasons about the window where
+  they disagree.
+- **Vendor and third-party feed SLAs as a portfolio.** `#158 source-watchtower`
+  watches for breakage; nobody models the commercial relationship — what you are
+  owed, what you are getting, and what the contract says about it.
+- **Data model versioning for consumers.** `#183` catches a break; nothing helps
+  you run two versions of a schema concurrently while consumers migrate.
 
 ## Relationship to 005
 
