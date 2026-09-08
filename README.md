@@ -47,7 +47,7 @@ Parked means built and installed, but not under active development;
 five-minute walkthrough that ends with the tool refusing to answer a question —
 no prior RAG knowledge needed.
 
-See [`IDEAS.md`](./IDEAS.md) for the running backlog of **167** tool ideas. Pick
+See [`IDEAS.md`](./IDEAS.md) for the running backlog of **183** tool ideas. Pick
 one, move it into a `tools/<name>/` directory, and build.
 
 **Before adding a tool**, read
@@ -74,6 +74,11 @@ model is genuinely load-bearing rather than decorative. Every entry states its
 **agentic core**, which is the bar for being in there at all. Three tiers by
 ambition: **H** small and sharp, **I** bounded agents doing one enterprise job,
 **J** full systems, where the "small tool" rule is waived on purpose.
+
+Section **K** is a class of its own: 🔒 **metadata-plane** agents that work from
+schema, infrastructure, logs and code and **never read a row**. That is a
+deployment property — no data-residency review, no PII assessment, no production
+data access — so they can run in CI against a repository and a catalogue export.
 
 ## Repo layout
 

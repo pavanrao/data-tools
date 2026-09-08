@@ -16,6 +16,7 @@ Difficulty: ⭐ starter · ⭐⭐ intermediate · ⭐⭐⭐ involved
 - 🤖 **Agentic** — multi-step, tool-using agent work *is* the tool (not narration bolted on)
 - 🏛️ **System** — multi-component platform/product; the "small tool" rule is intentionally waived
 - ⚠️ **Deterministic** — core job needs no LLM/RAG; kept for learning value, but AI is optional here
+- 🔒 **Data-free** — works from schema, infrastructure, logs and code only; never reads a row value, so it needs no data-residency review and can run in CI
 
 ---
 
@@ -1887,3 +1888,257 @@ feed ("what's different since last quarter") and drift flags where docs were han
 4. **#12 `filesystem-rag-mcp`** — the "aha": RAG *as* an MCP tool.
 5. **#9 `eval-harness`** — so every later tweak is measurable.
 6. Anything from C — combined pipelines, now that the pieces exist.
+
+---
+
+## K. Metadata-plane agents — no access to the data itself (#168–183) 🔒
+
+Everything here works from **schema, infrastructure, logs and code**. None of it
+reads a row.
+
+That constraint is not an academic exercise; it is what makes these deployable.
+A tool that never touches data needs no data-residency review, no PII assessment,
+no production access, and can run in CI against a repository and a catalogue
+export. Roughly a third of the ideas in sections H–J read row values and cannot
+make that claim — `#97 null-semantics-detective` has to see the sentinels,
+`#101 join-key-suggester` has to measure value overlap. These cannot and do not.
+
+It is also where the work is genuinely *semantic* rather than statistical. With no
+values to profile, everything has to be inferred from naming, structure, config and
+intent — which is exactly what a language model is for, and exactly what a linter
+is not. Every entry below states what a deterministic tool would already catch, so
+the AI's share of the job is explicit rather than assumed.
+
+**The four gaps `docs/008` named as bare are the first four entries.**
+
+### 168. `temporal-linter` — the time bugs that survive every code review ⭐⭐ 🧠 💻 🔒
+Reads DDL and transform SQL and flags temporal reasoning that is wrong in ways a
+type checker cannot see: an effective-dated table joined as though it were current;
+`BETWEEN valid_from AND valid_to` where `valid_to` is exclusive, so boundary rows
+count twice; a naive `TIMESTAMP` compared against one with a zone; `+ INTERVAL '24
+hours'` where the business means "next day" and a DST boundary makes those
+different; calendar-day arithmetic on a column whose name says business days.
+- **Agentic core:** the type system is satisfied by all of these. Deciding that
+  `party_eff_dt` makes a table effective-dated, and that a join ignoring it is
+  therefore a bug, is reading *intent* from naming and shape — no schema states it.
+- **Deterministic part:** parsing SQL, matching types, spotting `BETWEEN` on two
+  date columns. That is the easy half and it is already free.
+- **Learn:** temporal data modelling; where LLM judgement beats static analysis and
+  where it does not; writing findings a reviewer will act on rather than mute.
+- **Cost note:** local model over DDL and SQL; no data, no cluster. $0.
+- **Maps to:** §B in `docs/008` — the bare row. Bitemporal modelling, SCD2 correctness.
+
+### 169. `survivorship-auditor` — which source wins, and who decided ⭐⭐ 🧠 💻 🔒
+Golden-record rules are never written down; they live inside `COALESCE` chains,
+priority `CASE` expressions and `ROW_NUMBER() OVER (ORDER BY source_rank)`. This
+reads the merge code and states, per attribute, which source wins under which
+conditions — then flags attributes with **no** rule (silently last-writer-wins),
+rules that contradict between two pipelines writing the same target, and rules that
+changed in a commit whose message says something else.
+- **Agentic core:** recovering a *policy* from an implementation. The rule is
+  distributed across joins, window functions and null handling, and stating it in
+  business terms is the whole deliverable.
+- **Deterministic part:** finding the merge statements and their target columns.
+- **Learn:** reading intent out of code; contradiction detection across sources;
+  presenting a policy for sign-off rather than a diff.
+- **Cost note:** local; SQL only. $0.
+- **Maps to:** §C in `docs/008` — the bare row. MDM governance, golden-record policy.
+
+### 170. `collation-conformance` — where two engines will disagree about `'a' = 'A'` ⭐⭐ 🧠 💻 🔒
+Reads DDL collations, database and session settings, connector and Spark configs,
+and the comparisons in transform code. Reports where a join or `DISTINCT` crosses a
+collation boundary, where a sort will order differently on the target engine than
+the source, where an implicit charset conversion happens, and where `UPPER()` is
+doing the work a case-insensitive collation was supposed to do.
+- **Agentic core:** the facts are spread across DDL, platform config and code, in
+  different languages, and none of them individually is wrong. The finding is the
+  *combination* — which is inference, not lookup.
+- **Deterministic part:** extracting declared collations and charsets.
+- **Learn:** why a migration changes row counts with no data change; config as a
+  correctness surface.
+- **Cost note:** local; config and DDL. $0.
+- **Maps to:** §B in `docs/008` — the bare row. Migration assurance, cross-engine parity.
+
+### 171. `stream-topology-reviewer` — the state that grows forever ⭐⭐⭐ 🧠 💻 🔒
+Reads streaming job code plus its topic, checkpoint and cluster config, and reports
+the failures that only appear in week three: a stream-stream join with no watermark
+(unbounded state), allowed-lateness longer than the watermark so late data is
+dropped after being promised, a parallelism or key change that silently
+invalidates checkpointed state on the next deploy, and an ordering assumption the
+partitioning does not actually guarantee.
+- **Agentic core:** these are *interactions* between code and config, and the
+  symptom appears far from the cause. Judging that a particular join will retain
+  state indefinitely means understanding what the job is trying to do.
+- **Deterministic part:** extracting watermark and window settings.
+- **Learn:** streaming state, watermarks and lateness; why streaming failures are
+  slow; reading logs for rebalance storms.
+- **Cost note:** local; code, config and log summaries. $0.
+- **Maps to:** §I in `docs/008` — the bare row. Streaming operations.
+
+### 172. `dependency-truth-checker` — what the DAG says versus what the SQL reads ⭐⭐⭐ 🧠 💻 🔒
+Extracts the tables each task actually reads and writes, compares that against the
+dependencies the orchestrator declares, and reports both directions: a task reading
+a table nobody upstream produces in this run (a race waiting for a slow day), and a
+declared dependency nothing justifies (a schedule slower than it needs to be).
+- **Agentic core:** the read set is only partly static — dynamic SQL, templated
+  table names, config indirection and `EXEC` of generated strings all need a model
+  to resolve, and to say honestly when it cannot.
+- **Deterministic part:** static SQL parsing, which covers the easy majority.
+- **Learn:** lineage from code rather than from a catalogue; expressing "I could not
+  resolve this" as a first-class output.
+- **Cost note:** local; repository only. $0.
+- **Maps to:** §H in `docs/008`. Orchestration correctness, the 3am race condition.
+
+### 173. `idempotency-auditor` — can this safely be re-run? ⭐⭐ 🧠 💻 🔒
+Reads a transform and answers the question every on-call engineer asks at 3am.
+Flags `INSERT` where `MERGE` was meant, `CURRENT_TIMESTAMP` baked into a stored
+value, sequence or identity generation on a retryable path, appends with no natural
+key, and external side effects that will fire twice.
+- **Agentic core:** idempotency is a property of *intent* — an append is correct for
+  an event log and a bug for a dimension. Only reading what the table is for
+  separates the two.
+- **Deterministic part:** finding non-deterministic function calls.
+- **Learn:** exactly-once as a design property rather than a framework promise.
+- **Cost note:** local; SQL only. $0.
+- **Maps to:** §H/§I in `docs/008`. Backfill safety, incident recovery.
+
+### 174. `partition-advisor` — partition for the queries you actually run ⭐⭐ 🧠 💻 🔒
+Reads the **query log** — predicates, join keys, group-bys, and their frequency —
+plus current DDL, and recommends partitioning and clustering with the evidence
+attached: which queries improve, which get worse, what the skew risk is. Never sees
+a value; only which columns are filtered on and how often.
+- **Agentic core:** query logs are enormous and repetitive. Clustering thousands of
+  statements into a handful of *access patterns*, and naming them, is the work; a
+  histogram of column frequencies is not a recommendation.
+- **Deterministic part:** parsing predicates out of the log.
+- **Learn:** physical design driven by evidence rather than by folklore; stating a
+  recommendation with its losers as well as its winners.
+- **Cost note:** local; log summaries. $0.
+- **Maps to:** §J in `docs/008`. Performance and cost, without a data scan.
+
+### 175. `migration-hazard-reviewer` — will this DDL change take the table offline? ⭐⭐ 🧠 💻 🔒
+Given a schema change and the engine it runs on, predicts what actually happens:
+a full table rewrite, a blocking lock, a default backfill, an index rebuild — and
+separately, which downstream readers break, from code rather than from a catalogue.
+Proposes the safe multi-step version where one exists.
+- **Agentic core:** the hazard depends on engine, version, table size class and the
+  exact change; it is documented in prose across a dozen release notes and encoded
+  nowhere machine-readable.
+- **Deterministic part:** diffing the DDL.
+- **Learn:** online schema change; expand-migrate-contract as a pattern.
+- **Cost note:** local; DDL and repository. $0.
+- **Maps to:** §H in `docs/008`. Change safety, release confidence.
+
+### 176. `config-archaeologist` — what does this 4,000-line YAML actually do? ⭐⭐ 🧠 💻 🔒
+Reads a metadata-driven pipeline's configuration estate and explains it in prose:
+what each feed is configured to do, which settings are defaults nobody chose, which
+are copy-paste from a feed that no longer exists, which contradict each other, and
+which are load-bearing in a way their name does not suggest.
+- **Agentic core:** config-as-code estates outgrow anyone's memory. A schema
+  validator says the YAML is *valid*; only reading it says the retry policy on this
+  feed makes its SLA unachievable.
+- **Deterministic part:** schema validation and duplicate detection (`#29
+  config-linter` ⚠️ already does this deterministically — this is the layer above).
+- **Learn:** summarising a large structured estate without hallucinating specifics;
+  citing the file and line for every claim.
+- **Cost note:** local; config only. $0.
+- **Maps to:** §F in `docs/008`. Config-as-code governance.
+
+### 177. `retry-storm-diagnoser` — one failure or four hundred? ⭐⭐ 🧠 💻 🔒
+Reads run logs and separates the originating failure from its amplification: the
+retry policy that turned one timeout into a thundering herd, the downstream job
+that failed only because its upstream was still retrying, the alert that fired
+forty times for one cause. Outputs the causal chain and names the amplifier.
+- **Agentic core:** log correlation across systems with no shared trace ID, where
+  the same event is described differently by each component. Pattern-matching on
+  ERROR lines produces the noise, not the diagnosis.
+- **Deterministic part:** parsing timestamps and grouping by job.
+- **Learn:** incident forensics from logs; distinguishing cause from consequence.
+- **Cost note:** local model over log summaries. $0.
+- **Maps to:** §I in `docs/008`. Incident response, alert fatigue.
+
+### 178. `grant-impact-explainer` — what breaks if I revoke this? ⭐⭐ 🧠 💻 🔒
+The inverse of `#138 access-explainer`. Given a proposed permission change, reads
+IaC, catalogue grants, service-account usage in code, and query logs, and reports
+which pipelines, dashboards and service accounts would stop working — separating
+"used last week" from "granted in 2019 and never exercised".
+- **Agentic core:** entitlement graphs are indirect — role inherits role, view
+  masks table, service account is shared between two systems. Resolving the chain
+  and judging what is genuinely in use requires reading code and usage together.
+- **Deterministic part:** expanding the grant graph.
+- **Learn:** least privilege as an achievable state; access certification that does
+  not break production.
+- **Cost note:** local; IaC, catalogue and log summaries. $0.
+- **Maps to:** §K in `docs/008`. Access governance, least-privilege campaigns.
+
+### 179. `schema-historian` — how did this table get this shape? ⭐⭐ 🧠 💻 🔒
+Reads the migration history and version-control record for one table and tells its
+story: which columns arrived together and therefore belong to one feature, which
+are vestigial from a project that was cancelled, which were widened in an incident,
+and which have never been referenced by any code since they were added.
+- **Agentic core:** a migration log is a sequence of mechanical diffs; the story is
+  the *why*, recovered by correlating diffs with commit messages, tickets and the
+  code that arrived alongside them.
+- **Deterministic part:** replaying the migrations.
+- **Learn:** archaeology as a deliverable; separating evidence from inference in a
+  narrative output.
+- **Cost note:** local; VCS and migration files. $0.
+- **Maps to:** §F in `docs/008`. Catalogue enrichment, deprecation groundwork.
+
+### 180. `cost-jump-explainer` — the bill went up on Tuesday ⭐⭐ 🧠 💻 🔒
+Correlates a cost or runtime jump against what changed: commits merged, config
+edits, cluster resizes, schedule changes, and upstream volume shifts visible in row
+*counts* — never row contents. Ranks candidate causes with the evidence for each,
+and says plainly when the change is upstream and not yours.
+- **Agentic core:** correlation is easy and usually wrong. Judging that a config
+  change three days earlier explains a jump today, because of how the schedule
+  interacts with it, is reasoning over heterogeneous evidence.
+- **Deterministic part:** the time series and the change list.
+- **Learn:** attribution under confounding; refusing to name a cause when the
+  evidence is thin. Complements `#41 finops-attributor`, which apportions steady
+  state rather than explaining a delta.
+- **Cost note:** local; billing exports and logs. $0.
+- **Maps to:** §J in `docs/008`. FinOps, capacity management.
+
+### 181. `notebook-promotion-reviewer` — is this ready to be a pipeline? ⭐⭐ 🧠 💻 🔒
+Reads a notebook and reports what stands between it and production: hidden state
+from out-of-order execution, hardcoded paths and credentials, absent error
+handling, cells that silently depend on a variable defined three cells up and
+deleted since, and non-deterministic ordering that will differ on a cluster.
+- **Agentic core:** notebooks encode execution order in a way the file does not.
+  Judging that a cell depends on state no longer created means reading the notebook
+  as a *narrative*, not as a program.
+- **Deterministic part:** import and variable analysis.
+- **Learn:** the notebook-to-production gap, stated as a checklist a reviewer can use.
+- **Cost note:** local. $0.
+- **Maps to:** §H in `docs/008`. Promotion gates, analyst-to-engineer handoff.
+
+### 182. `orphan-asset-finder` — what is nothing reading? ⭐⭐ 🧠 💻 🔒
+Combines lineage from code, query logs and job schedules to find tables, columns
+and jobs nothing consumes — then, crucially, separates *dead* from *dormant*: the
+quarterly regulatory extract that runs four times a year is not orphaned, and the
+table read only by a BI tool whose queries never reach the log needs saying so
+rather than deleting.
+- **Agentic core:** the honest answer is about *unknowns*. Naming the blind spots —
+  BI tools, ad-hoc access, external consumers — and refusing to recommend deletion
+  where visibility is incomplete is the judgement that makes it usable. Feeds
+  `#136 deprecation-planner`, which plans the retirement this finds.
+- **Deterministic part:** the reachability graph.
+- **Learn:** reasoning about coverage gaps; recommending inaction under uncertainty.
+- **Cost note:** local; logs and code. $0.
+- **Maps to:** §J in `docs/008`. Estate hygiene, storage cost.
+
+### 183. `schema-contract-differ` — will this change break a consumer? ⭐⭐ 🧠 💻 🔒
+Sits in CI on the *producing* side. Given a schema change and the declared contract,
+classifies it as compatible, forward-compatible, or breaking — and where breaking,
+names which consumer and which line of their code, reading the downstream
+repositories rather than guessing from the catalogue.
+- **Agentic core:** compatibility is semantic, not structural. Widening a column is
+  safe unless a consumer parses it positionally; adding a nullable column is safe
+  unless someone does `SELECT *` into a fixed-width extract. Only reading consumer
+  code decides.
+- **Deterministic part:** the structural diff and the contract check
+  (`#19 data-contract-linter` does this).
+- **Learn:** compatibility classes; shifting a break left of the merge.
+- **Cost note:** local; multi-repository. $0.
+- **Maps to:** §G in `docs/008`. Contracts, change management.

@@ -117,7 +117,7 @@ when a specific piece of work needs them. Neither is a difficulty rating.
 | Temperature & sampling | #51 `decode-lab` · N1 |
 | Hallucination | #51 `decode-lab` · #49 `ingest-ledger` (refusal path) · N1 |
 | Structured output / function calling | #52 `schema-guard` · N1 · #93 `vendor-spec-reader`, #106 `contract-from-docs` (schema-constrained JSON as the *deliverable*, not a convenience) |
-| **Deterministic core, optional model** | #49 `ingest-ledger` ✅ · #25 `chunking-lab` ✅ (Tier 0 runs with nothing installed) · #94 `copybook-decoder`, #96 `fixed-width-inferrer` (deterministic parse, LLM only for the semantics it cannot reach) — *where the model is **not** the answer, and what you gain by keeping it optional* |
+| **Deterministic core, optional model** | #49 `ingest-ledger` ✅ · #25 `chunking-lab` ✅ (Tier 0 runs with nothing installed) · #94 `copybook-decoder`, #96 `fixed-width-inferrer` (deterministic parse, LLM only for the semantics it cannot reach) — *where the model is **not** the answer, and what you gain by keeping it optional* · **all of section K** 🔒 — every entry states what a deterministic tool already catches, so the model's share is explicit |
 
 ### §2 · RAG & grounding — Spine
 
@@ -160,7 +160,7 @@ published per-document recommender, then check it beats a fixed strategy).*
 | Retrieval metrics vs. generation metrics | #9 `eval-harness` (faithfulness vs. context precision) · #53 `retrieval-bench` · N5 · #25 `chunking-lab` ✅ (chunk-level vs character-level; why recall alone scores a useless chunker 100%) · #91 `context-aug-lab` · #92 `adaptive-chunk` (both reuse #25's corpora, gold spans and metrics rather than inventing their own) |
 | LLM-as-judge | #57 `judge-lab` (calibrated against human labels) |
 | Task metrics vs. vibes | #57 `judge-lab` · #66 `tabular-lab` (hard metrics where they exist) |
-| **Calibrated confidence & honest uncertainty** | #95 `column-semantics-tagger`, #97 `null-semantics-detective`, #118 `db-archaeologist` (confidence-ranked output routed to human review) · #25 `chunking-lab` ✅ (the *yield* a weak model produces, reported rather than hidden) — *saying how sure you are, in a way a reader can act on* |
+| **Calibrated confidence & honest uncertainty** | #95 `column-semantics-tagger`, #97 `null-semantics-detective`, #118 `db-archaeologist` (confidence-ranked output routed to human review) · #25 `chunking-lab` ✅ (the *yield* a weak model produces, reported rather than hidden) — *saying how sure you are, in a way a reader can act on* · #172 `dependency-truth-checker`, #182 `orphan-asset-finder` (naming the blind spot, and declining to recommend deletion into it) |
 
 ### §6 · Agentic AI — Spine
 
