@@ -6,6 +6,11 @@ we're building or parking, and why. Append a new `## Iteration N` section at the
 
 > For reusable craft, see [LEARNINGS.md](./LEARNINGS.md).
 
+> **On the numbering.** IDs are allocation order, not chronological. F13–F17 were
+> written before F8–F12 but were originally given numbers already in use by
+> iterations 1–3; they were renumbered rather than left ambiguous, and the
+> surrounding `## Iteration` headings remain the reliable chronology.
+
 ---
 
 ## Iteration 8 — 2026-09-07 — annotate, and what a weak model costs
@@ -237,7 +242,7 @@ on the rest is screening on chunk size wearing a hat. `make chunking-correlate`.
 
 ## Iteration 5 — 2026-09-07 — ingest-ledger
 
-### F7 — `ingest-ledger`'s memory cap never worked on macOS, and the ledger said it did
+### F17 — `ingest-ledger`'s memory cap never worked on macOS, and the ledger said it did
 The subprocess memory cap is one of the tool's two headline safety mechanisms.
 `RLIMIT_AS` is not settable on Darwin, the worker called `setrlimit`
 unconditionally, and so every file extracted through the default (subprocess) path
@@ -258,7 +263,7 @@ claims are what these tools exist to find.
 
 ## Iteration 4 — 2026-09-07 — chunking-lab
 
-### F4 — chunking-lab's contribution is reproducibility, not novelty
+### F13 — chunking-lab's contribution is reproducibility, not novelty
 The design record proposed that query-free intrinsic metrics screening chunking
 configurations was an unclaimed mechanism, and that measuring whether they predict
 retrieval ranking was the contribution. A proper related-work sweep says otherwise:
@@ -271,9 +276,9 @@ embeddings, or an LLM — and this one does not. Tier 0 runs with nothing instal
 offline, deterministically. **No novelty claim goes in the shipped docs.** The tool
 is worth building as an instrument; it is not a result.
 
-### F5a — the reproduction worked, and the misreading is measured
+### F14 — the reproduction worked, and the misreading is measured
 
-F5 proposed checking Precision Ω against Chroma's published column instead of
+F15 proposed checking Precision Ω against Chroma's published column instead of
 against our own understanding. Done, and it reproduces **all four values exactly**
 — 6.7 / 13.9 / 17.7 / 29.9 — over 472 questions, offline, with no retriever and no
 model, because Precision Ω involves no retrieval.
@@ -288,7 +293,7 @@ implemented so the gap stays under test.
 Cost: about an hour of re-fetching sources plus a 1.6MB download. Do this whenever
 a tool's headline number has a published counterpart.
 
-### F5 — a published table is a better correctness test than a unit test
+### F15 — a published table is a better correctness test than a unit test
 Precision Omega touches no retrieval, and Chroma's five corpora with 472 gold-span
 questions are MIT-licensed. So "is our headline metric implemented correctly?" can
 be a **falsifiable offline check against someone else's published numbers**, not an
@@ -299,7 +304,7 @@ Generalises: before writing a metric, check whether a public benchmark plus a
 published results table exists. Reproducing three numbers is worth more than thirty
 tests you wrote against your own understanding.
 
-### F6 — the semantic-chunking verdict is corpus-dependent, which is the thesis
+### F16 — the semantic-chunking verdict is corpus-dependent, which is the thesis
 "Is Semantic Chunking Worth the Computational Cost?" is read as "no". The full
 paper is more useful than its title: it **measures no cost or latency at all** (a
 stated limitation), and semantic chunking *wins decisively* on topically
