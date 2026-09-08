@@ -1016,6 +1016,112 @@
       </div>
     </section>
 
+
+    <!-- 7e : which knob matters more ------------------------------------- -->
+    <section>
+      <div class="col">
+        <h2>Is chunking even the part worth fixing?</h2>
+        <p>Fair challenge. A search system has other moving parts — most obviously
+          the search engine itself. If swapping that does more than any amount of
+          fiddling with boundaries, this whole piece is advice about the wrong
+          knob.</p>
+        <p>So we measured both. Change the chunking with the search engine held
+          still; change the search engine with the chunking held still; see how far
+          each one moves the score. (Never both at once — that measures neither.)</p>
+      </div>
+
+      <div class="col">
+        <div class="scroll">
+          <table>
+            <caption>How far apart the best and worst settings land, as a multiple · 5 strategies × 3 search engines × 5 documents</caption>
+            <thead>
+              <tr><th>what you change</th><th>typical effect</th><th>biggest seen</th><th>mattered more than 2×</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>the chunking</td><td class="hit">5.6×</td><td>14.4×</td><td class="hit">15 of 15 times</td></tr>
+              <tr><td>the search engine</td><td>1.3×</td><td>14.9×</td><td class="miss">4 of 25 times</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>Read the middle column and the answer is “chunking, obviously.” Read the
+          <em>last two together</em> and it changes. The biggest effect either one
+          ever had is almost the same — 14.4 against 14.9. What differs is how
+          <b>often</b>.</p>
+      </div>
+
+      <div class="col">
+        <figure class="fig">
+          <svg class="dia" viewBox="0 0 760 250" role="img"
+               aria-label="Changing the chunking moved the score by more than double in every one of fifteen cases. Changing the search engine did so in only four of twenty-five, but when it did the effect was as large as chunking's largest.">
+            <text class="mono" x="8" y="18">CHANGING THE CHUNKING — 15 cases</text>
+            <text class="lbl" x="8" y="36">each block is one case; filled means it moved the score more than 2x</text>
+            <rect class="holds" x="8"   y="48" width="42" height="26" rx="2"/>
+            <rect class="holds" x="56"  y="48" width="42" height="26" rx="2"/>
+            <rect class="holds" x="104" y="48" width="42" height="26" rx="2"/>
+            <rect class="holds" x="152" y="48" width="42" height="26" rx="2"/>
+            <rect class="holds" x="200" y="48" width="42" height="26" rx="2"/>
+            <rect class="holds" x="248" y="48" width="42" height="26" rx="2"/>
+            <rect class="holds" x="296" y="48" width="42" height="26" rx="2"/>
+            <rect class="holds" x="344" y="48" width="42" height="26" rx="2"/>
+            <rect class="holds" x="392" y="48" width="42" height="26" rx="2"/>
+            <rect class="holds" x="440" y="48" width="42" height="26" rx="2"/>
+            <rect class="holds" x="488" y="48" width="42" height="26" rx="2"/>
+            <rect class="holds" x="536" y="48" width="42" height="26" rx="2"/>
+            <rect class="holds" x="584" y="48" width="42" height="26" rx="2"/>
+            <rect class="holds" x="632" y="48" width="42" height="26" rx="2"/>
+            <rect class="holds" x="680" y="48" width="42" height="26" rx="2"/>
+            <text class="cap" x="8" y="94">every single time</text>
+
+            <line class="ln-soft" x1="8" y1="116" x2="752" y2="116"/>
+
+            <text class="mono" x="8" y="146">CHANGING THE SEARCH ENGINE — 25 cases</text>
+            <text class="lbl" x="8" y="164">same scale; hollow means it barely moved the score at all</text>
+            <rect class="holds" x="8"   y="176" width="42" height="26" rx="2"/>
+            <rect class="holds" x="56"  y="176" width="42" height="26" rx="2"/>
+            <rect class="holds" x="104" y="176" width="42" height="26" rx="2"/>
+            <rect class="holds" x="152" y="176" width="42" height="26" rx="2"/>
+            <rect class="strip" x="200" y="176" width="42" height="26" rx="2"/>
+            <rect class="strip" x="248" y="176" width="42" height="26" rx="2"/>
+            <rect class="strip" x="296" y="176" width="42" height="26" rx="2"/>
+            <rect class="strip" x="344" y="176" width="42" height="26" rx="2"/>
+            <rect class="strip" x="392" y="176" width="42" height="26" rx="2"/>
+            <rect class="strip" x="440" y="176" width="42" height="26" rx="2"/>
+            <rect class="strip" x="488" y="176" width="42" height="26" rx="2"/>
+            <rect class="strip" x="536" y="176" width="42" height="26" rx="2"/>
+            <rect class="strip" x="584" y="176" width="42" height="26" rx="2"/>
+            <rect class="strip" x="632" y="176" width="42" height="26" rx="2"/>
+            <rect class="strip" x="680" y="176" width="42" height="26" rx="2"/>
+            <text class="cap" x="8" y="222">4 of 25 — but those four were as big as anything chunking did</text>
+            <text class="lbl" x="470" y="222">(15 of the 25 shown)</text>
+          </svg>
+          <figcaption><b>The two are not big and small. They are frequent and
+            rare.</b> Chunking moved the score meaningfully in every case tested.
+            The search engine usually made almost no difference — and then, four
+            times out of twenty-five, made an enormous one.</figcaption>
+        </figure>
+      </div>
+
+      <div class="col">
+        <p>Which is a more useful thing to know than “chunking matters more”,
+          because it is different advice:</p>
+        <p class="pull">Fix the chunking first, because it always pays. But don’t
+          assume the search engine is settled — when it goes wrong it doesn’t go
+          slightly wrong.</p>
+        <p>All four of the bad cases were the same failure. The keyword search
+          engine, which matches on shared words, simply lost the answer — scoring
+          1.3 where a meaning-based engine scored 19.7 on the identical chunks. It
+          didn’t degrade. It collapsed.</p>
+        <div class="note"><b>One tempting explanation that turned out to be
+          wrong.</b> The obvious story is that the search engine matters more when
+          the chunking is bad — that a good chunking makes the engine irrelevant.
+          It reads well, it fits the two worst cases, and it is not true: across all
+          25 measurements the relationship between how good a chunking was and how
+          much the engine mattered is <b>−0.04</b>, which is nothing at all. Worth
+          saying out loud, because that paragraph very nearly got written the other
+          way.</div>
+      </div>
+    </section>
+
     <!-- 7b : glossary ---------------------------------------------------- -->
     <section>
       <div class="col">
@@ -1109,6 +1215,13 @@
               same order?” Order rather than value, because the question is whether
               screening would have picked the same winner — not whether it predicts
               the exact score.</dd></div>
+
+          <div class="term"><dt>keyword vs meaning search</dt>
+            <dd>Keyword search ranks by words the question and the text share —
+              fast, exact, and blind to synonyms. Meaning-based search compares
+              numeric representations, so “retries” can match text that says
+              “backoff”. Combining them by position rather than by score avoids
+              having to make two incompatible scales comparable.</dd></div>
 
           <div class="term"><dt>question mix</dt>
             <dd>The distribution of things people actually ask — narrow lookups,
