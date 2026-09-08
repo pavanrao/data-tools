@@ -795,8 +795,10 @@ Follows `docs/000_project-organization.md` §10.
       column cannot tell you
 - [x] Quote-then-locate (C9's cascade: exact → whitespace-tolerant → fuzzy at ≥98),
       which `explain` uses to turn a quoted answer into offsets
-- [ ] `report` (a rendered comparison), `annotate` and `suggest` — deferred by
-      open question 3 until the metrics were proven. They are now
+- [ ] `report` (a rendered comparison) and `suggest` — the last two unbuilt
+      commands. `suggest` is `score` plus a decision rule (C12), and its prior art
+      (Adaptive Chunking, LREC 2026) is substantial, so it needs a reason to exist
+      beyond completeness
 - [x] Vector and hybrid (RRF) retrieval alongside BM25, with `--embedder` taking a
       LiteLLM model string so a **local** encoder is the default path
       (`ollama/nomic-embed-text`) and a hosted one is the override
@@ -808,10 +810,12 @@ Follows `docs/000_project-organization.md` §10.
       but the medians hide it. The maxima are nearly identical (14.4× vs 14.9×);
       what differs is frequency, 15/15 against 4/25. *Chunking matters
       consistently; retrieval matters rarely and then enormously.* `FINDINGS.md` F10
-- [ ] `annotate` — the model half of quote-then-locate, behind the `llm` extra.
-      The deterministic half (`chunking_lab.locate`) is built and tested; what is
-      missing is only the prompt that asks for verbatim quotes, plus reporting the
-      **yield** so a weak model shows up as a number rather than as bad ground truth
+- [x] `annotate` — the model half of quote-then-locate. Built, and it closes the
+      gap that made this a lab instrument: `score --corpus-dir` now works on your
+      own documents. Measured on `ollama/llama3.1`: **25% yield**, with 5 of 8
+      failures being the model paraphrasing when asked to copy verbatim. All
+      discarded rather than written in with plausible wrong offsets — which is C9's
+      whole argument, now with a number (`FINDINGS.md` F11)
 - [x] Write the evidence card (`evidence/chunking-lab.jsonl`); wire `make demo-chunking`
       and `make chunking-benchmark`
 - [x] Write the explainer: [`docs/where-the-cut-falls.html`](../../docs/where-the-cut-falls.html),

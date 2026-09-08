@@ -9,6 +9,32 @@ sprint; keep entries concrete.
 
 ---
 
+## Iteration 8 — 2026-09-07 — designing for the failure you expect
+
+### Name a counter for what it counts, or it will lie in the report
+`annotate` shipped with `unparseable` counting *provider exceptions* while bad
+JSON landed in `malformed`. Both names sounded right and neither described what it
+held, so the report said "unreadable JSON: 0" for a run where every reply was
+unreadable. A test caught it, and the fix was in the code rather than the test:
+`call_failed` and `malformed`, each named for the thing that actually happened.
+
+### An asymmetric failure mode is a design choice, and it is worth paying for
+Asking a model for character offsets and asking for a verbatim quote look like the
+same request with different ergonomics. They are not. Wrong offsets are *invisible*
+-- they score every strategy against the wrong text and nothing downstream can
+detect it. A quote that cannot be found is *loud*, and the question simply goes
+away. Given a choice between a failure you cannot see and one you can count,
+**take the countable one even when it costs you data**: on a local 8B model this
+one costs 75% of the attempts, and the alternative would have been a corpus that
+looked complete and was quietly wrong.
+
+### Locate against the whole document, not the window you sampled
+The model is shown a 4000-character window, but the quote must be found in the
+*whole* document, because the offsets have to address the text that will actually
+be chunked. Locating within the window and adding the offset seems equivalent and
+is not: the model often quotes text that also appears elsewhere, and the window is
+an artefact of sampling rather than a real boundary.
+
 ## Iteration 7b — 2026-09-07 — summary statistics that hide the finding
 
 ### A median is the wrong summary for an axis that fails rarely

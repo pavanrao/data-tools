@@ -323,6 +323,18 @@ wrong answer, and that is strictly worse than a missing one.
 it has enough questions, so a weak model shows up as a longer run and a larger
 bill. Reporting the yield instead is the point of the decision.*
 
+**Measured** (`FINDINGS.md` F11). `ollama/llama3.1`, 8 attempts over two real
+documents: **2 usable, a 25% yield**. Five of the six failures were the model
+*paraphrasing* when asked to copy verbatim — the exact failure this design
+anticipates — and all six were discarded rather than written in with plausible
+wrong offsets. Of the surviving excerpts, three matched exactly and one needed
+whitespace tolerance; none needed the fuzzy fallback.
+
+So "a weaker model produces less ground truth, not wrong ground truth" now has a
+price attached: on a small local model it costs three quarters of the attempts.
+That is an argument for annotating with the best model you have — which is cheap,
+because it happens **once per corpus** and the result is a committed artifact.
+
 ### Hostile corpora ⚑
 
 Documents written so that a specific strategy provably fails on them, with the
