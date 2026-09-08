@@ -1171,6 +1171,138 @@
       </div>
     </section>
 
+
+    <!-- 7f : the setting that wasn't set -------------------------------- -->
+    <section>
+      <div class="col">
+        <h2>The bug that looked like a discovery</h2>
+        <p>One more, because it is the most useful mistake in this whole piece and
+          it very nearly got published as a result.</p>
+        <p>Having built the question-generator, the obvious next question was
+          <em>which model should run it?</em> So we ran four of them on the same
+          documents and counted how many questions each produced that we could
+          actually verify.</p>
+      </div>
+
+      <div class="col">
+        <div class="scroll">
+          <table>
+            <caption>First run · four models on a laptop · 20 attempts each · higher is better</caption>
+            <thead><tr><th>model</th><th>size</th><th>usable questions</th></tr></thead>
+            <tbody>
+              <tr><td>qwen2.5</td><td>7B</td><td class="hit">80%</td></tr>
+              <tr><td>phi4</td><td>14B</td><td class="hit">80%</td></tr>
+              <tr><td>llama3.1</td><td>8B</td><td>70%</td></tr>
+              <tr><td>qwen2.5</td><td><b>14B</b></td><td class="miss">55%</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>Look at the last row. The <em>bigger</em> Qwen did clearly worse than the
+          smaller one. That is a genuinely interesting claim — bigger models being
+          worse at copying text exactly, perhaps because they are more inclined to
+          “improve” what they read — and it is the kind of thing that gets written
+          up and repeated.</p>
+        <p>It was our fault.</p>
+      </div>
+
+      <div class="col">
+        <h3>The setting nobody set</h3>
+        <p>Language models have a dial called <b>temperature</b>. It controls how
+          much randomness goes into choosing each next word. High temperature is
+          what you want for writing; it produces variety. Low temperature is what
+          you want for anything that must come out the same way twice.</p>
+        <p>We never set it, so it took the server's default — which is tuned for
+          chat, not for copying. We were asking models to reproduce text
+          <em>character for character</em> while telling them to be a bit
+          creative.</p>
+        <p class="pull">And a slightly reworded quote reads perfectly well. It just
+          isn’t in the document any more.</p>
+        <p>That is also exactly why it looked like a size effect. A bigger model has
+          more ways to phrase something plausibly, so turning on randomness hurts it
+          <em>more</em>. The apparent finding about model size was a finding about
+          our configuration, wearing a costume.</p>
+      </div>
+
+      <div class="col">
+        <figure class="fig">
+          <svg class="dia" viewBox="0 0 760 270" role="img"
+               aria-label="With randomness on, the 14B model scored 55% and the 7B scored 80%, suggesting bigger is worse. With randomness off, both score 75% and the smallest model leads at 90% — the apparent size effect disappears.">
+            <text class="mono" x="8" y="18">RANDOMNESS ON — the server default</text>
+            <line class="ln-soft" x1="150" y1="30" x2="150" y2="118"/>
+            <line class="ln-soft" x1="700" y1="30" x2="700" y2="118"/>
+            <text class="lbl" x="150" y="132" text-anchor="middle">0%</text>
+            <text class="lbl" x="700" y="132" text-anchor="middle">100%</text>
+
+            <text class="lbl" x="8" y="48">llama3.1 8B</text>
+            <rect class="strip" x="150" y="36" width="385" height="16" rx="2"/>
+            <text class="lbl" x="545" y="48">70%</text>
+
+            <text class="lbl" x="8" y="72">qwen2.5 7B</text>
+            <rect class="strip" x="150" y="60" width="440" height="16" rx="2"/>
+            <text class="lbl" x="600" y="72">80%</text>
+
+            <text class="lbl" x="8" y="96">qwen2.5 14B</text>
+            <rect class="holds" x="150" y="84" width="302" height="16" rx="2"/>
+            <text class="cap" x="462" y="96">55% — “bigger is worse?”</text>
+
+            <line class="ln-soft" x1="8" y1="150" x2="752" y2="150"/>
+
+            <text class="mono" x="8" y="180">RANDOMNESS OFF — same models, same documents</text>
+            <line class="ln-soft" x1="150" y1="192" x2="150" y2="256"/>
+            <line class="ln-soft" x1="700" y1="192" x2="700" y2="256"/>
+
+            <text class="lbl" x="8" y="210">llama3.1 8B</text>
+            <rect class="goldbar" x="150" y="198" width="495" height="16" rx="2"/>
+            <text class="cap" x="655" y="210">90%</text>
+
+            <text class="lbl" x="8" y="234">qwen2.5 7B</text>
+            <rect class="strip" x="150" y="222" width="412" height="16" rx="2"/>
+            <text class="lbl" x="572" y="234">75%</text>
+
+            <text class="lbl" x="8" y="258">qwen2.5 14B</text>
+            <rect class="strip" x="150" y="246" width="412" height="16" rx="2"/>
+            <text class="lbl" x="572" y="258">75% — the gap is gone</text>
+          </svg>
+          <figcaption><b>One setting, and the finding evaporates.</b> With
+            randomness switched off the two Qwen models are identical, and the
+            smallest model in the group wins outright. Nothing about the models
+            changed between these two charts.</figcaption>
+        </figure>
+      </div>
+
+      <div class="col">
+        <h3>What was actually true</h3>
+        <p><b>The bigger model was never worth it.</b> At the correct setting, the
+          14B scores the same as the 7B and takes twice as long. The best performer
+          was the 8B model that was already installed before any of this started.</p>
+        <p><b>And the headline number hides the more useful difference.</b> All four
+          models land between 75% and 90%, which makes them look interchangeable.
+          They are not — what differs is how <em>faithfully</em> they copy:</p>
+        <div class="scroll">
+          <table>
+            <caption>Of the quotes that were found, how many matched the document exactly rather than needing spacing to be normalised</caption>
+            <thead><tr><th>model</th><th>matched exactly</th><th>needed spacing fixed up</th></tr></thead>
+            <tbody>
+              <tr><td>llama3.1 8B</td><td class="hit">15</td><td>8</td></tr>
+              <tr><td>qwen2.5 7B</td><td>6</td><td>9</td></tr>
+              <tr><td>qwen2.5 14B</td><td>6</td><td>11</td></tr>
+              <tr><td>phi4 14B</td><td class="miss">2</td><td>15</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>Same yield, very different quality of evidence. A question whose answer
+          was matched character-for-character rests on a firmer footing than one
+          recovered by quietly fixing up the spacing — and if you only read the
+          percentage, those look identical.</p>
+        <div class="note"><b>The transferable bit.</b> Before comparing anything,
+          check the settings you didn’t choose. A default you never made a decision
+          about is still a variable in your experiment — and this one produced a
+          clean, plausible, publishable result that was entirely wrong. The question
+          that unstuck it wasn’t a better experiment. It was someone asking
+          “<em>is the problem how we’re asking?</em>”</div>
+      </div>
+    </section>
+
     <!-- 7b : glossary ---------------------------------------------------- -->
     <section>
       <div class="col">
@@ -1271,6 +1403,13 @@
               numeric representations, so “retries” can match text that says
               “backoff”. Combining them by position rather than by score avoids
               having to make two incompatible scales comparable.</dd></div>
+
+          <div class="term"><dt>temperature</dt>
+            <dd>How much randomness a model uses when choosing each next word. High
+              for writing, where variety is the point. <b>Zero</b> for anything that
+              must come out the same way twice — copying text, extracting fields,
+              producing structured output. Leaving it at a default tuned for chat is
+              a common and invisible way to break an extraction task.</dd></div>
 
           <div class="term"><dt>yield</dt>
             <dd>Of the questions a model was asked to produce, the fraction that
