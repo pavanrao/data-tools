@@ -537,20 +537,52 @@ def run_axes(args: argparse.Namespace) -> int:
         ratio = "inf" if row.ratio == float("inf") else f"{row.ratio:.1f}x"
         print(f"{row.axis:<12}{row.held_fixed[:32]:<34}{row.corpus[:20]:<22}{ratio:>11}")
 
-    def median(rows):
+    def summarise(rows):
         values = sorted(r.ratio for r in rows if r.ratio != float("inf"))
-        return values[len(values) // 2] if values else float("nan")
+        if not values:
+            return None
+        at = lambda q: values[min(len(values) - 1, round((len(values) - 1) * q))]  # noqa: E731
+        return {
+            "n": len(values),
+            "min": values[0],
+            "median": at(0.5),
+            "max": values[-1],
+            "over2": sum(1 for v in values if v > 2),
+        }
 
-    print(
-        f"\nmedian spread — chunker axis {median(chunker):.1f}x, "
-        f"retriever axis {median(retriever):.1f}x"
-    )
-    verdict = (
-        "the chunker moves this metric more than the retriever does"
-        if median(chunker) > median(retriever)
-        else "the retriever moves this metric more than the chunker does"
-    )
-    print(f"on these corpora, with these configurations: {verdict}.")
+    print(f"\n{'axis':<12}{'n':>4}{'min':>8}{'median':>9}{'max':>8}{'>2x':>10}")
+    stats = {}
+    for label, rows in (("chunker", chunker), ("retriever", retriever)):
+        s = summarise(rows)
+        stats[label] = s
+        if s:
+            share = f"{s['over2']}/{s['n']}"
+            print(
+                f"{label:<12}{s['n']:>4}{s['min']:>7.1f}x{s['median']:>8.1f}x"
+                f"{s['max']:>7.1f}x{share:>10}"
+            )
+
+    # A median is a poor summary of a skewed distribution, and these are skewed:
+    # one axis can matter almost always while the other matters rarely and hugely.
+    # Report how *often* each axis moves things, not just how much on average.
+    c, r = stats.get("chunker"), stats.get("retriever")
+    if c and r:
+        c_rate, r_rate = c["over2"] / c["n"], r["over2"] / r["n"]
+        print(
+            f"\nthe chunker exceeds 2x in {c['over2']} of {c['n']} cases; "
+            f"the retriever in {r['over2']} of {r['n']}."
+        )
+        if c_rate > r_rate and r["max"] >= c["max"] * 0.7:
+            print(
+                "So the two axes fail differently, and a median hides it: the chunker\n"
+                "matters consistently, while the retriever usually does not matter at all\n"
+                f"and occasionally matters as much as the chunker ever does ({r['max']:.1f}x).\n"
+                "Read the per-row table above, not the summary."
+            )
+        elif c_rate > r_rate:
+            print("On these corpora the chunker is the more consistent lever.")
+        else:
+            print("On these corpora the retriever is the more consistent lever.")
     print(
         "\nA spread is only as wide as the options given. Adding a worse chunker or a\n"
         "better retriever moves these numbers, so read them as 'over this range of\n"

@@ -408,6 +408,15 @@ document ─▶ chunker ─▶ Chunking(spans, provenance, strategy)
   metric cannot see it*. Comparing the axes has to happen on IoU or recall. A tool
   that silently allowed Ω here would produce a confident, meaningless answer.
 
+- **`axes` reports a distribution because a median hid the finding.** It first
+  printed two medians and a verdict — chunker 5.6×, retriever 1.3×, "the chunker
+  moves this metric more". True, and it buried the result: the two axes have nearly
+  identical *maxima* (14.4× and 14.9×) and completely different *frequencies*
+  (15/15 versus 4/25). One matters always, the other seldom and then
+  catastrophically, and no median can say that. It now prints n, min, median, max
+  and the over-2× count, and tells the reader to prefer the per-row table. The
+  outliers were only noticed because that table is printed above the summary.
+
 - **A spec string is the identity of a run.** `recursive:400/200` names the
   strategy and every parameter that changes its output, and `fixed:512/0`
   normalises to `fixed:512` so one configuration cannot appear as two rows.
