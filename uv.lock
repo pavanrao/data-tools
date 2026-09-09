@@ -12,6 +12,7 @@ members = [
     "data-tools-docs-rag",
     "data-tools-ingest-ledger",
     "data-tools-repo-rag",
+    "data-tools-sqlite-mcp",
 ]
 
 [manifest.dependency-groups]
@@ -664,6 +665,21 @@ requires-dist = [
     { name = "data-tools-core", extras = ["llm"], marker = "extra == 'llm'", editable = "shared/data-tools-core" },
     { name = "mcp", specifier = ">=2.2.0,<3" },
     { name = "sqlite-vec", specifier = ">=0.1" },
+]
+
+[[package]]
+name = "data-tools-sqlite-mcp"
+version = "0.1.0"
+source = { editable = "tools/sqlite-mcp" }
+dependencies = [
+    { name = "data-tools-core" },
+    { name = "mcp" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "data-tools-core", editable = "shared/data-tools-core" },
+    { name = "mcp", specifier = ">=2.2.0,<3" },
 ]
 
 [[package]]

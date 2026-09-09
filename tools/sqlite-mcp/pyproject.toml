@@ -1,0 +1,36 @@
+[project]
+name = "data-tools-sqlite-mcp"
+version = "0.1.0"
+description = "Read-only SQL access to a SQLite file as an MCP server, with the limits enforced by the database rather than by parsing."
+requires-python = ">=3.13"
+dependencies = [
+    "data-tools-core",
+    # Not an extra: serving SQL over MCP is the whole tool. The SDK is light and
+    # no model is involved. Bounded below 3.0 for the reason D3 records; patch
+    # and minor float so security fixes are not gated on a manual bump.
+    "mcp>=2.2.0,<3",
+]
+
+[project.scripts]
+sqlite-mcp = "sqlite_mcp.cli:main"
+
+[project.entry-points."data_tools.tools"]
+sqlite-mcp = "sqlite_mcp.cli:main"
+
+# Advertised so `mcp-gateway` (#16) can mount this behind one endpoint without
+# hardcoding it. A zero-argument factory, so discovery never opens a database.
+[project.entry-points."data_tools.mcp"]
+sqlite-mcp = "sqlite_mcp.mcp_server:create_server"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/sqlite_mcp"]
+
+# Dev-only: resolve the shared library from the workspace. uv strips
+# [tool.uv.sources] from built wheels, so deleting this one block is the entire
+# "decouple from the workspace" step. See docs/000 (the spin-out seam).
+[tool.uv.sources]
+data-tools-core = { workspace = true }

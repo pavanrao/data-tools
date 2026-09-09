@@ -111,7 +111,7 @@ else covers, plus a hostile corpus that asserts each failure is caught.
 > **M** (#198–#217) covers the surface that arrived with it. The decision is
 > recorded as D10 in [`docs/001`](docs/001_architecture-and-decisions.md).
 
-### 11. `sqlite-mcp` — safe SQL access as an MCP server ⭐⭐ 🔌 💻
+### 11. `sqlite-mcp` — safe SQL access as an MCP server ✅ ⭐⭐ 🔌 💻
 An MCP server exposing read-only `query`, `schema`, and `sample` tools over a
 SQLite/DuckDB file, with row limits and query allow-listing. `query` declares an
 `outputSchema`, so a result is a typed record rather than a paragraph; `schema`
@@ -122,6 +122,12 @@ with real value — it touches a system the model cannot reach on its own.
   how a client discovers them now that there is no handshake: `server/discover`,
   plus capabilities carried in `_meta` on every request.
 - **Cost note:** the server is free; pairs with any model as the client.
+- **Built:** [`tools/sqlite-mcp/`](./tools/sqlite-mcp/). The read-only guarantee
+  is SQLite's own authorizer rather than a check on the SQL, refusals come back
+  as typed results rather than errors, and the row cap reports that it fired.
+  Design record [`docs/009`](docs/009_sqlite-mcp.md); concepts
+  [`docs/010`](docs/010_mcp-concepts.md); the write-up is
+  [`let-the-database-say-no.html`](docs/let-the-database-say-no.html).
 
 ### 12. `filesystem-rag-mcp` — retrieval as an MCP capability ⭐⭐⭐ 🔌 🧠 💻
 Combine #1 with MCP: expose `search_docs` and `get_chunk` tools so *any* MCP

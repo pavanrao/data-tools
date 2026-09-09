@@ -1,0 +1,517 @@
+<title>Let the Database Say No</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;0,6..72,700;1,6..72,400&family=Source+Sans+3:ital,wght@0,400;0,600;1,400&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+
+<style>
+  /* ---- tokens: complete light palette on bare :root ------------------- */
+  :root {
+    --paper:        #F2EFEA;
+    --surface:      #FEFDFB;
+    --sunken:       #E8E3DB;
+    --ink:          #1E1B16;
+    --ink-muted:    #6A6357;
+    --rule:         #D6CFC3;
+    --rule-strong:  #B8AE9D;
+    --accent:       #8A4B1F;
+    --accent-ink:   #6E3A17;
+    --accent-wash:  #EFE2D5;
+    --ok:           #3B6A4A;
+    --ok-wash:      #DFEADF;
+    --bad:          #92302A;
+    --bad-wash:     #F3DEDB;
+    --shadow:       0 1px 2px rgba(30,27,22,.06), 0 8px 24px -16px rgba(30,27,22,.28);
+
+    --measure: 66ch;
+    --step--1: .875rem;
+    --step-0:  1.0625rem;
+    --step-1:  1.1875rem;
+    --step-2:  1.375rem;
+    --step-3:  clamp(1.55rem, 1.1rem + 1.6vw, 2.1rem);
+    --step-4:  clamp(2.1rem, 1.3rem + 3.4vw, 3.4rem);
+
+    --font-display: "Newsreader", "Iowan Old Style", Georgia, serif;
+    --font-body: "Source Sans 3", "Helvetica Neue", Arial, sans-serif;
+    --font-mono: "IBM Plex Mono", "SFMono-Regular", Consolas, monospace;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --paper:       #14120F;
+      --surface:     #1D1A16;
+      --sunken:      #191612;
+      --ink:         #E8E2D8;
+      --ink-muted:   #A79E90;
+      --rule:        #332E27;
+      --rule-strong: #4B443A;
+      --accent:      #D99A63;
+      --accent-ink:  #EBBB8C;
+      --accent-wash: #2C2117;
+      --ok:          #7FB891;
+      --ok-wash:     #1B2A20;
+      --bad:         #DE8378;
+      --bad-wash:    #2E1A18;
+      --shadow:      0 1px 2px rgba(0,0,0,.4), 0 10px 28px -18px rgba(0,0,0,.9);
+    }
+  }
+  :root[data-theme="dark"] {
+    --paper:       #14120F;
+    --surface:     #1D1A16;
+    --sunken:      #191612;
+    --ink:         #E8E2D8;
+    --ink-muted:   #A79E90;
+    --rule:        #332E27;
+    --rule-strong: #4B443A;
+    --accent:      #D99A63;
+    --accent-ink:  #EBBB8C;
+    --accent-wash: #2C2117;
+    --ok:          #7FB891;
+    --ok-wash:     #1B2A20;
+    --bad:         #DE8378;
+    --bad-wash:    #2E1A18;
+    --shadow:      0 1px 2px rgba(0,0,0,.4), 0 10px 28px -18px rgba(0,0,0,.9);
+  }
+
+  /* ---- base ----------------------------------------------------------- */
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--font-body);
+    font-size: var(--step-0);
+    line-height: 1.62;
+    margin: 0;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: var(--measure); margin: 0 auto; padding: 0 1.25rem 6rem; }
+
+  /* ---- masthead ------------------------------------------------------- */
+  header.masthead {
+    border-bottom: 1px solid var(--rule);
+    background: var(--surface);
+    padding: 3.5rem 1.25rem 2.25rem;
+    margin-bottom: 3rem;
+  }
+  header.masthead .inner { max-width: var(--measure); margin: 0 auto; }
+  .kicker {
+    font-family: var(--font-mono);
+    font-size: var(--step--1);
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin: 0 0 .9rem;
+  }
+  h1 {
+    font-family: var(--font-display);
+    font-size: var(--step-4);
+    line-height: 1.06;
+    font-weight: 700;
+    letter-spacing: -.015em;
+    margin: 0 0 1rem;
+    text-wrap: balance;
+  }
+  .standfirst {
+    font-size: var(--step-1);
+    color: var(--ink-muted);
+    margin: 0 0 1.5rem;
+    text-wrap: pretty;
+  }
+  .byline {
+    font-family: var(--font-mono);
+    font-size: var(--step--1);
+    color: var(--ink-muted);
+    border-top: 1px solid var(--rule);
+    padding-top: .9rem;
+    margin: 0;
+  }
+
+  /* ---- flow ----------------------------------------------------------- */
+  h2 {
+    font-family: var(--font-display);
+    font-size: var(--step-3);
+    line-height: 1.18;
+    font-weight: 600;
+    letter-spacing: -.01em;
+    margin: 3.25rem 0 .85rem;
+    text-wrap: balance;
+  }
+  h3 {
+    font-family: var(--font-body);
+    font-size: var(--step-1);
+    font-weight: 600;
+    margin: 2.25rem 0 .5rem;
+  }
+  p { margin: 0 0 1.15rem; text-wrap: pretty; }
+  a { color: var(--accent); text-underline-offset: .18em; }
+  strong { font-weight: 600; }
+  ul, ol { margin: 0 0 1.15rem; padding-left: 1.3rem; }
+  li { margin-bottom: .5rem; }
+  li::marker { color: var(--rule-strong); }
+
+  code {
+    font-family: var(--font-mono);
+    font-size: .89em;
+    background: var(--sunken);
+    border: 1px solid var(--rule);
+    border-radius: 4px;
+    padding: .08em .34em;
+  }
+  pre {
+    font-family: var(--font-mono);
+    font-size: var(--step--1);
+    line-height: 1.55;
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-left: 3px solid var(--accent);
+    border-radius: 6px;
+    padding: 1rem 1.1rem;
+    overflow-x: auto;
+    margin: 0 0 1.5rem;
+    box-shadow: var(--shadow);
+  }
+  pre code { background: none; border: 0; padding: 0; font-size: inherit; }
+
+  /* ---- devices -------------------------------------------------------- */
+  .lede-rule {
+    border: 0;
+    border-top: 1px solid var(--rule);
+    margin: 2.75rem 0;
+  }
+  blockquote {
+    margin: 0 0 1.5rem;
+    padding: .2rem 0 .2rem 1.15rem;
+    border-left: 3px solid var(--rule-strong);
+    color: var(--ink-muted);
+    font-style: italic;
+  }
+  .callout {
+    background: var(--accent-wash);
+    border: 1px solid var(--rule);
+    border-radius: 8px;
+    padding: 1.05rem 1.2rem;
+    margin: 0 0 1.5rem;
+  }
+  .callout p:last-child { margin-bottom: 0; }
+  .callout .label {
+    font-family: var(--font-mono);
+    font-size: var(--step--1);
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    color: var(--accent-ink);
+    display: block;
+    margin-bottom: .4rem;
+  }
+
+  .verdicts { margin: 0 0 1.75rem; }
+  .verdict {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: .75rem;
+    align-items: baseline;
+    border: 1px solid var(--rule);
+    border-radius: 6px;
+    padding: .7rem .9rem;
+    margin-bottom: .5rem;
+    background: var(--surface);
+  }
+  .tag {
+    font-family: var(--font-mono);
+    font-size: var(--step--1);
+    font-weight: 600;
+    padding: .1rem .45rem;
+    border-radius: 4px;
+    white-space: nowrap;
+  }
+  .tag.no  { background: var(--bad-wash);  color: var(--bad); }
+  .tag.yes { background: var(--ok-wash);   color: var(--ok); }
+  .verdict p { margin: 0; font-size: var(--step--1); }
+
+  .tablewrap { overflow-x: auto; margin: 0 0 1.6rem; }
+  table { border-collapse: collapse; width: 100%; font-size: var(--step--1); }
+  th, td {
+    text-align: left;
+    padding: .55rem .7rem;
+    border-bottom: 1px solid var(--rule);
+    vertical-align: top;
+  }
+  th {
+    font-family: var(--font-mono);
+    font-weight: 600;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+    font-size: .78rem;
+    color: var(--ink-muted);
+    border-bottom-color: var(--rule-strong);
+  }
+
+  footer.end {
+    margin-top: 4rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--rule);
+    font-size: var(--step--1);
+    color: var(--ink-muted);
+  }
+  footer.end a { color: var(--accent); }
+</style>
+
+<header class="masthead">
+  <div class="inner">
+    <p class="kicker">data-tools · building #11</p>
+    <h1>Let the Database Say No</h1>
+    <p class="standfirst">
+      Almost every SQL-over-MCP server decides whether a query is safe by reading
+      the query. That is a denylist made of string matching, and it is wrong the
+      moment SQL grows a feature you did not think of. There is a better place to
+      put the guard, and the database has been offering it for twenty years.
+    </p>
+    <p class="byline">9 September 2026 · the first MCP server in this collection</p>
+  </div>
+</header>
+
+<div class="wrap">
+
+<p>
+  I set out to build the smallest useful MCP server: read-only SQL over a SQLite
+  file. Three tools, a row cap, done in an afternoon. The interesting part turned
+  out not to be the protocol at all.
+</p>
+
+<p>
+  It was this question. <strong>When an agent sends you a statement, how do you
+  decide whether to run it?</strong>
+</p>
+
+<h2>The answer everyone reaches for</h2>
+
+<p>
+  Look at the SQL. If it starts with <code>SELECT</code>, run it. If it contains
+  <code>DROP</code> or <code>DELETE</code> or <code>UPDATE</code>, refuse. Most
+  published examples do some version of this, and it is the first thing anyone
+  writes, myself included.
+</p>
+
+<p>
+  It is a denylist, and it inherits every denylist's problem: it has to
+  anticipate. Consider what it must already handle correctly.
+</p>
+
+<div class="verdicts">
+  <div class="verdict">
+    <span class="tag no">misses</span>
+    <p><code>WITH x AS (DELETE FROM t RETURNING *) SELECT * FROM x</code> — starts with <code>WITH</code>, and in several engines that is a write.</p>
+  </div>
+  <div class="verdict">
+    <span class="tag no">misses</span>
+    <p><code>PRAGMA journal_mode = WAL</code> — no forbidden keyword anywhere, and it changes the database.</p>
+  </div>
+  <div class="verdict">
+    <span class="tag no">misses</span>
+    <p><code>SELECT 1; DROP TABLE orders</code> — starts with <code>SELECT</code>, if you only check the beginning.</p>
+  </div>
+  <div class="verdict">
+    <span class="tag no">refuses wrongly</span>
+    <p><code>SELECT * FROM shipments WHERE note LIKE '%DELETE%'</code> — a keyword scan says no to a perfectly ordinary query.</p>
+  </div>
+</div>
+
+<p>
+  You can fix each of these. You cannot fix the category. Every fix is a patch
+  against a shape someone thought of, and the list of shapes is owned by whoever
+  maintains the SQL dialect, not by you. Worse, the failure is silent in the
+  direction that matters: nothing tells you when the guard has quietly stopped
+  covering something.
+</p>
+
+<h2>The answer that does not have to anticipate</h2>
+
+<p>
+  SQLite will answer the question for you. Two mechanisms, both older than the
+  problem.
+</p>
+
+<p>
+  First, open the file read-only. Not a flag your code checks. The file is opened
+  in a mode where writing is not a thing that can happen.
+</p>
+
+<pre><code>con = sqlite3.connect(f"file:{path}?mode=ro", uri=True)</code></pre>
+
+<p>
+  Second, install an <strong>authorizer</strong>. SQLite calls it before every
+  action it is about to take, and hands you what the action is, which table, and
+  which column. You return OK or DENY.
+</p>
+
+<pre><code>_READ_ACTIONS = frozenset({
+    sqlite3.SQLITE_SELECT,
+    sqlite3.SQLITE_READ,
+    sqlite3.SQLITE_FUNCTION,
+})
+
+def authorize(action, arg1, *rest):
+    if action not in _READ_ACTIONS:
+        return sqlite3.SQLITE_DENY
+    return sqlite3.SQLITE_OK
+
+con.set_authorizer(authorize)</code></pre>
+
+<p>
+  That is the whole guard. It is an allowlist, so it is wrong only in the safe
+  direction. It does not care how the statement is spelled, whether it uses a
+  CTE, or what SQL adds next year. The engine that will execute the thing is the
+  same one deciding whether it may.
+</p>
+
+<div class="callout">
+  <span class="label">The general form</span>
+  <p>
+    Put the boundary where the system already enforces one. On a warehouse this
+    is a read-only role granted on a narrow set of views, not a string check in
+    your server. The lesson survives the change of engine; the regex does not.
+  </p>
+</div>
+
+<h2>It failed on my own code first, which is the point</h2>
+
+<p>
+  I wrote the guard, then wrote <code>schema()</code>, which reads column
+  information with <code>PRAGMA table_info</code>. It was refused. My own tool
+  could not read its own schema.
+</p>
+
+<p>
+  This was the guard working. <code>PRAGMA</code> is a single authorizer action
+  covering both <code>table_info</code>, which reads metadata, and
+  <code>journal_mode</code>, which changes the database. It cannot be allowed
+  wholesale. So the fix names the one pragma the tool needs:
+</p>
+
+<pre><code>_READ_PRAGMAS = frozenset({"table_info"})</code></pre>
+
+<p>
+  Sit with that for a second. A denylist would have let <em>every</em> pragma
+  through, including the ones that write, and nothing would have failed. I would
+  have shipped it. Deny-by-default failed loudly, in development, on the safe
+  side. That is the entire argument for it in one incident.
+</p>
+
+<hr class="lede-rule">
+
+<h2>The second thing I got wrong: refusals</h2>
+
+<p>
+  Having refused something, how do you say so? The obvious move is to raise an
+  error. The protocol has a perfectly good error channel.
+</p>
+
+<p>
+  It is the wrong channel. An error tells a model <em>something broke</em>, and
+  the reasonable response to something breaking is to try again. But nothing
+  broke. The server worked exactly as designed. What the model needs to know is
+  not that it failed, but <strong>what to do differently</strong>.
+</p>
+
+<p>So a refusal comes back as an ordinary, successful result that happens to say no:</p>
+
+<pre><code>{
+  "refused": true,
+  "guard": "not-read-only",
+  "reason": "this database is served read-only; the statement asked to change it"
+}</code></pre>
+
+<p>
+  Two fields, two audiences. <code>guard</code> is a stable token, so code can
+  branch on it and a model can recognise it without parsing English.
+  <code>reason</code> is the sentence a person reads. The result is not an error,
+  so nothing downstream treats it as a transient failure to retry.
+</p>
+
+<div class="tablewrap">
+  <table>
+    <thead>
+      <tr><th>Guard</th><th>Fires when</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><code>not-read-only</code></td><td>The statement asked to change something.</td></tr>
+      <tr><td><code>multiple-statements</code></td><td>A second statement tried to ride along after a semicolon.</td></tr>
+      <tr><td><code>table-not-allowed</code></td><td>The table is outside what this server exposes.</td></tr>
+      <tr><td><code>unreadable-database</code></td><td>The file could not be opened read-only at all.</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<h2>The cap has to admit it is a cap</h2>
+
+<p>
+  Every one of these servers limits how many rows it returns, because otherwise
+  one careless query eats the entire context window. Fine. But a truncated result
+  that does not say it was truncated is worse than no result, because the first
+  page of an answer is indistinguishable from the whole answer.
+</p>
+
+<pre><code>{"rows": [["ada"], ["bob"]], "truncated": true, "row_limit": 2, "elapsed_ms": 0.18}</code></pre>
+
+<p>
+  <code>elapsed_ms</code> is there as a placeholder for the field that matters on
+  a real warehouse, where it would be bytes scanned and money. A model cannot
+  trade accuracy against cost when it has no idea what anything costs. On SQLite
+  that is a rounding error. On Snowflake it is the whole bill, and the compute
+  dwarfs the tokens by an amount that surprises people.
+</p>
+
+<h2>Was the server worth building at all?</h2>
+
+<p>
+  Honest answer, for the case you are probably imagining: no. You at a terminal,
+  with credentials you already have, should write the SQL. A server there is pure
+  overhead, and this project had already reached that conclusion in writing about
+  a different tool.
+</p>
+
+<p>It changes when one of three things is true.</p>
+
+<ul>
+  <li><strong>The consumer is not you.</strong> A colleague who does not write SQL, an agent running unattended, a client with no shell. The guards are what make handing it over acceptable.</li>
+  <li><strong>The work is a loop.</strong> Why did last night's load drop by a third is fifteen queries, each depending on what the last returned. Pasting SQL back and forth fifteen times is unbearable.</li>
+  <li><strong>The access needs governing.</strong> Someone other than you is asking, and there has to be a limit and a record.</li>
+</ul>
+
+<p>
+  Note that none of those three is about the protocol. They are about who is
+  asking and how often. The protocol's contribution is narrower and still real:
+  write the server once, and every client can use it. That is the problem it
+  exists to solve, and it is why the specification compares itself to the
+  language server protocol.
+</p>
+
+<h2>What I would tell someone starting</h2>
+
+<ul>
+  <li><strong>Build a server, not a client.</strong> The server side is where the design decisions are.</li>
+  <li><strong>Point it at something the model cannot already reach.</strong> A database qualifies. A folder of text files does not, and you will conclude it was redundant.</li>
+  <li><strong>Write the guards first.</strong> They are the product. The query execution is four lines.</li>
+  <li><strong>Test the round trip, not the registration.</strong> Listing your tools proves nothing about what a consumer actually reads.</li>
+</ul>
+
+<p>
+  That last one caught a real bug for me. In the Python SDK, a tool annotated
+  <code>-&gt; dict</code> registers with no output schema and silently returns
+  nothing structured. Annotated <code>-&gt; dict[str, object]</code>, it works.
+  Nothing errors, nothing warns, and the tool looks identical in a listing. Only
+  a test that goes through a client and reads the structured content catches it.
+</p>
+
+<footer class="end">
+  <p>
+    <code>sqlite-mcp</code> is idea #11 in
+    <a href="https://github.com/pavanrao/data-tools/blob/main/IDEAS.md">this backlog</a>.
+    The design record is <code>docs/009_sqlite-mcp.md</code>; the protocol concepts
+    it exercises, and the ones it does not, are in <code>docs/010_mcp-concepts.md</code>.
+  </p>
+  <p>
+    Written against MCP protocol revision 2026-07-28, which removed the
+    initialize handshake and protocol-level sessions. If a tutorial you are
+    reading mentions either, it predates this.
+  </p>
+</footer>
+
+</div>

@@ -39,6 +39,10 @@ Every tool in this repo aims to be:
   with citations to the source file. *Parked.*
 - [`repo-rag`](./tools/repo-rag/) (#2) — ask-your-codebase RAG with AST-aware
   chunking, hybrid retrieval, and a read-only MCP server. *Parked.*
+- [`sqlite-mcp`](./tools/sqlite-mcp/) (#11) — read-only SQL over a SQLite file,
+  as a CLI and an MCP server, with the limits enforced by the database rather
+  than by reading the SQL. The first server written against protocol revision
+  2026-07-28. **Actively developed.**
 
 Parked means built and installed, but not under active development;
 [`docs/FINDINGS.md`](./docs/FINDINGS.md) records why.
