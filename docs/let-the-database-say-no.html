@@ -5,22 +5,25 @@
 
 <style>
   /* ---- tokens: complete light palette on bare :root ------------------- */
+  /* The page is about permission decisions, so the decision is the only
+     saturated thing on it: permit-green and deny-red carry all the chroma,
+     and the structure around them stays graphite. */
   :root {
-    --paper:        #F2EFEA;
-    --surface:      #FEFDFB;
-    --sunken:       #E8E3DB;
-    --ink:          #1E1B16;
-    --ink-muted:    #6A6357;
-    --rule:         #D6CFC3;
-    --rule-strong:  #B8AE9D;
-    --accent:       #8A4B1F;
-    --accent-ink:   #6E3A17;
-    --accent-wash:  #EFE2D5;
-    --ok:           #3B6A4A;
-    --ok-wash:      #DFEADF;
-    --bad:          #92302A;
-    --bad-wash:     #F3DEDB;
-    --shadow:       0 1px 2px rgba(30,27,22,.06), 0 8px 24px -16px rgba(30,27,22,.28);
+    --paper:        #EAECEE;
+    --surface:      #FBFCFC;
+    --sunken:       #DDE1E4;
+    --ink:          #16191C;
+    --ink-muted:    #5C646B;
+    --rule:         #C6CCD1;
+    --rule-strong:  #9AA3AB;
+    --accent:       #2F3A42;
+    --accent-ink:   #1D262C;
+    --accent-wash:  #DCE1E5;
+    --ok:           #1F6B45;
+    --ok-wash:      #D5E7DC;
+    --bad:          #A32320;
+    --bad-wash:     #F5DAD8;
+    --shadow:       0 1px 2px rgba(22,25,28,.06), 0 8px 24px -16px rgba(22,25,28,.28);
 
     --measure: 66ch;
     --step--1: .875rem;
@@ -37,38 +40,38 @@
 
   @media (prefers-color-scheme: dark) {
     :root:not([data-theme="light"]) {
-      --paper:       #14120F;
-      --surface:     #1D1A16;
-      --sunken:      #191612;
-      --ink:         #E8E2D8;
-      --ink-muted:   #A79E90;
-      --rule:        #332E27;
-      --rule-strong: #4B443A;
-      --accent:      #D99A63;
-      --accent-ink:  #EBBB8C;
-      --accent-wash: #2C2117;
-      --ok:          #7FB891;
-      --ok-wash:     #1B2A20;
-      --bad:         #DE8378;
-      --bad-wash:    #2E1A18;
+      --paper:       #101315;
+      --surface:     #191D20;
+      --sunken:      #15181B;
+      --ink:         #E2E6E9;
+      --ink-muted:   #9AA3AA;
+      --rule:        #2A3034;
+      --rule-strong: #414A50;
+      --accent:      #B8C4CC;
+      --accent-ink:  #D6DEE4;
+      --accent-wash: #1E252A;
+      --ok:          #5FB98C;
+      --ok-wash:     #16281F;
+      --bad:         #E8807A;
+      --bad-wash:    #2C1918;
       --shadow:      0 1px 2px rgba(0,0,0,.4), 0 10px 28px -18px rgba(0,0,0,.9);
     }
   }
   :root[data-theme="dark"] {
-    --paper:       #14120F;
-    --surface:     #1D1A16;
-    --sunken:      #191612;
-    --ink:         #E8E2D8;
-    --ink-muted:   #A79E90;
-    --rule:        #332E27;
-    --rule-strong: #4B443A;
-    --accent:      #D99A63;
-    --accent-ink:  #EBBB8C;
-    --accent-wash: #2C2117;
-    --ok:          #7FB891;
-    --ok-wash:     #1B2A20;
-    --bad:         #DE8378;
-    --bad-wash:    #2E1A18;
+    --paper:       #101315;
+    --surface:     #191D20;
+    --sunken:      #15181B;
+    --ink:         #E2E6E9;
+    --ink-muted:   #9AA3AA;
+    --rule:        #2A3034;
+    --rule-strong: #414A50;
+    --accent:      #B8C4CC;
+    --accent-ink:  #D6DEE4;
+    --accent-wash: #1E252A;
+    --ok:          #5FB98C;
+    --ok-wash:     #16281F;
+    --bad:         #E8807A;
+    --bad-wash:    #2C1918;
     --shadow:      0 1px 2px rgba(0,0,0,.4), 0 10px 28px -18px rgba(0,0,0,.9);
   }
 
@@ -97,7 +100,7 @@
     font-size: var(--step--1);
     letter-spacing: .08em;
     text-transform: uppercase;
-    color: var(--accent);
+    color: var(--ink-muted);
     margin: 0 0 .9rem;
   }
   h1 {
@@ -141,7 +144,19 @@
     margin: 2.25rem 0 .5rem;
   }
   p { margin: 0 0 1.15rem; text-wrap: pretty; }
-  a { color: var(--accent); text-underline-offset: .18em; }
+  a {
+    color: var(--accent-ink);
+    text-decoration-color: var(--rule-strong);
+    text-underline-offset: .18em;
+  }
+  a:hover { text-decoration-color: currentColor; }
+  a:focus-visible,
+  pre:focus-visible,
+  .tablewrap:focus-visible {
+    outline: 2px solid var(--ok);
+    outline-offset: 3px;
+    border-radius: 3px;
+  }
   strong { font-weight: 600; }
   ul, ol { margin: 0 0 1.15rem; padding-left: 1.3rem; }
   li { margin-bottom: .5rem; }
@@ -355,10 +370,34 @@ def authorize(action, arg1, *rest):
 con.set_authorizer(authorize)</code></pre>
 
 <p>
-  That is the whole guard. It is an allowlist, so it is wrong only in the safe
-  direction. It does not care how the statement is spelled, whether it uses a
-  CTE, or what SQL adds next year. The engine that will execute the thing is the
-  same one deciding whether it may.
+  That is the whole guard. It does not care how the statement is spelled, whether
+  it uses a CTE, or what SQL adds next year. The engine that will execute the
+  thing is the same one deciding whether it may. Run the four cases from above
+  past it:
+</p>
+
+<div class="verdicts">
+  <div class="verdict">
+    <span class="tag yes">denies</span>
+    <p>The writing CTE. It reaches <code>SQLITE_DELETE</code>, which is not a read.</p>
+  </div>
+  <div class="verdict">
+    <span class="tag yes">denies</span>
+    <p>The pragma. <code>SQLITE_PRAGMA</code> is not in the allowed set.</p>
+  </div>
+  <div class="verdict">
+    <span class="tag yes">denies</span>
+    <p>The chained <code>DROP</code> — twice over, since one call carries one statement.</p>
+  </div>
+  <div class="verdict">
+    <span class="tag yes">allows</span>
+    <p>The <code>LIKE '%DELETE%'</code> query. It is a read, and the text inside it was never the question.</p>
+  </div>
+</div>
+
+<p>
+  Four for four, and not because I thought about any of them. It is an allowlist
+  in the engine, so it is wrong only in the safe direction.
 </p>
 
 <div class="callout">
@@ -425,7 +464,7 @@ con.set_authorizer(authorize)</code></pre>
   so nothing downstream treats it as a transient failure to retry.
 </p>
 
-<div class="tablewrap">
+<div class="tablewrap" tabindex="0">
   <table>
     <thead>
       <tr><th>Guard</th><th>Fires when</th></tr>
