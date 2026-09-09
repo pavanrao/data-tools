@@ -72,9 +72,12 @@ a working pattern for it, used three times already —
 `pytest.mark.skipif` at `chunking-lab/tests/test_reproduction.py:27`.
 
 The failure mode is the bad one: a green suite on a developer machine that has
-run `make sync`, and a red suite for anyone who runs a bare `uv sync`, or for CI
-if it ever stops installing extras. It also makes rule 6 untrue in a way nobody
-notices, which is worse than the two tests being wrong.
+run `make sync`, and a red suite for anyone who runs a bare `uv sync`. CI does
+not catch it either — both workflow jobs run `uv sync --all-extras`
+(`.github/workflows`, lines 16 and 27), so the extras are always present there.
+Nothing anywhere currently exercises the bare environment that rule 6 describes,
+which is why this went unnoticed, and it makes rule 6 untrue in a way that is
+worse than the two tests being wrong.
 
 **What a fix has to decide.** Not obvious enough to do in passing, which is why
 this is an entry rather than a commit:
