@@ -185,6 +185,60 @@ The RAG tools were written for 3.13; `ingest-ledger` targeted 3.11. Unified on
 codebase already leans on `StrEnum`, `slots=True` dataclasses, and PEP 604
 unions throughout.
 
+### D10 — Target MCP revision **2026-07-28**; Tasks over bespoke polling
+
+> **Status: current.** Adopted 2026-09.
+
+Revision `2026-07-28` reshaped MCP rather than extending it, and the backlog was
+written against the old shape. Section B of `IDEAS.md` has been rewritten and
+section M (#198–#217) added on the assumptions below. This is the decision those
+forty-odd entries rest on.
+
+**What the revision changed.** The `initialize` / `notifications/initialized`
+handshake is removed and the protocol is stateless — each request carries its own
+`io.modelcontextprotocol/protocolVersion` and `clientCapabilities` in `_meta`, and
+a server advertises itself through the new `server/discover` RPC. Protocol-level
+sessions and `Mcp-Session-Id` are removed; cross-call state is an explicit,
+server-minted handle passed as an ordinary tool argument. Server-initiated
+requests are replaced by **Multi Round-Trip Requests**: the server returns an
+`InputRequiredResult` and the client retries the original request carrying
+`inputResponses`. `resources/subscribe` and the HTTP GET endpoint are replaced by
+one opt-in `subscriptions/listen` stream. List and read results carry `ttlMs` and
+`cacheScope`, and `tools/list` should be deterministically ordered so caches hit.
+SSE resumability is gone: a broken stream loses the in-flight request.
+
+**Three rules for new servers in this collection.**
+
+1. **Do not adopt Roots, Sampling or Logging.** All three are deprecated with a
+   twelve-month minimum window. Pass paths as tool parameters or resource URIs;
+   call a model through `data_tools_core.llm` rather than asking the client to
+   sample; log to `stderr` or OpenTelemetry. This also keeps rule 3 of
+   `CONVENTIONS.md` intact — a server that samples through its client has smuggled
+   a model into the deterministic core.
+2. **Long-running work returns a task, not a status tool.** Anything that can
+   exceed a few seconds — a backfill, a full-table profile, a Spark job — uses the
+   `io.modelcontextprotocol/tasks` extension. The bespoke `run_job` +
+   `job_status` pair that #14 originally proposed is no longer ours to design.
+3. **A result is typed and cacheable.** Declare `outputSchema`, return
+   `structuredContent`, and set `ttlMs` and `cacheScope` honestly — `ttlMs` is a
+   freshness claim about the underlying data, not a round number. This is rule 5
+   (*every non-obvious status is evidence-bearing*) expressed in the protocol's
+   own vocabulary.
+
+**On the SDK pin.** `repo-rag` depends on `mcp>=2.1.1,<3` and the workspace locks
+`2.1.1`; the v2 line is the rework that carries this revision, and the pin already
+admits the current `2.2.0`. **Not yet verified against a running server** — the
+first section M tool built should refresh the lock and confirm that
+`server/discover`, MRTR and the tasks extension are present in the pinned version,
+then amend this decision in place with what it found. D3's lesson applies: a pin
+bounds the API surface you must edit, not the runtime assumptions the dependency
+makes.
+
+**What is deliberately not decided here.** MCP Apps (#214) and Skills over MCP are
+*extensions*, negotiated per request and optional on both sides. Nothing in the
+collection depends on them, and a tool that uses one must degrade to a plain
+result when the client does not support it.
+
 ## Other defaults
 
 - CLIs use stdlib **argparse**; pytest runs in `--import-mode=importlib`

@@ -47,7 +47,7 @@ Parked means built and installed, but not under active development;
 five-minute walkthrough that ends with the tool refusing to answer a question —
 no prior RAG knowledge needed.
 
-See [`IDEAS.md`](./IDEAS.md) for the running backlog of **197** tool ideas. Pick
+See [`IDEAS.md`](./IDEAS.md) for the running backlog of **217** tool ideas. Pick
 one, move it into a `tools/<name>/` directory, and build.
 
 **Before adding a tool**, read
@@ -64,7 +64,7 @@ platform can reuse. Sections **F–G** (*Concept labs* and *Concept
 notes*) work the other way round: they start from a concept that recurs across
 AI and data engineering and build the smallest thing that exercises it for real,
 ending in a measured number rather than a description.
-[`docs/005_concept-coverage.md`](./docs/005_concept-coverage.md) maps all 98
+[`docs/005_concept-coverage.md`](./docs/005_concept-coverage.md) maps all 103
 concepts to what covers each, and sets out what makes a tool ready to show
 someone.
 
@@ -85,6 +85,16 @@ loop *is* the solution — hypothesis, query, revise, where what to look at next
 not knowable until you have looked. Single-prompt work does not qualify, so every
 entry names the simpler approach and says where it fails. These run where the data
 already is, on an on-prem or private-cloud model.
+
+Section **M** turns the lens on the plumbing. It is the only section where the
+*protocol* is the subject rather than the delivery mechanism, and it exists
+because MCP changed shape in revision **2026-07-28** — no handshake, no sessions,
+long-running work moved to an extension, Roots and Sampling deprecated. Every
+entry names the mechanism it exercises and has to be materially worse as a plain
+CLI. Two tiers: ten **protocol labs** that each end in a measured number, and ten
+**servers that do not exist in the industry today**. Section **B** is the
+original six, rewritten against the same revision, and now reads as the starter
+set that leads into M.
 
 ## Repo layout
 
