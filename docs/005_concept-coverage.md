@@ -2,7 +2,7 @@
 
 **Status:** plan · **Date:** 2026-09-04
 
-A working map of the concepts that recur across AI and data engineering — 98 of
+A working map of the concepts that recur across AI and data engineering — 103 of
 them, in 21 groups — and, for each one, the smallest thing in this collection
 that exercises it for real. It exists so that learning this stack is a build
 queue rather than a reading list.
@@ -17,10 +17,11 @@ on a laptop for free. The split is roughly:
 | **F · Labs** (#50–#90, 41 new tools) | small tools that produce a measured number | 84 |
 | **G · Notes** (N1–N5, markdown + prompts) | positions and trade-offs where no tool earns its keep | 14 |
 | **Existing backlog** (#1–#49) | ideas already in `IDEAS.md`, some already built | 24 (shared) |
+| **M · MCP servers** (#198–#217, 20 new) | ten protocol labs that end in a number, ten servers that do not exist yet | 5 |
 
 Concepts are counted where their *primary* coverage sits; many are touched twice
 (a note states the trade-off, a lab produces the number). Nothing is skipped —
-the matrix below lists all 98.
+the matrix below lists all 103.
 
 ## Why this shape
 
@@ -132,7 +133,7 @@ published per-document recommender, then check it beats a fixed strategy).*
 | Chunking | #25 `chunking-lab` ✅ (six families, character-level scoring, Precision Ω reproduced against a published table) · #2 `repo-rag` (AST-aware) ✅ · #92 `adaptive-chunk` (per-document strategy selection, reproduced from LREC 2026 and tested against a fixed baseline) · #91 `context-aug-lab` (family 6, which moves no boundaries at all) |
 | Hybrid search | #53 `retrieval-bench` (exact-code query set) · #2 `repo-rag` ✅ · #25 `chunking-lab` ✅ (BM25 vs vector vs RRF hybrid, and *how much* the retriever axis moves things against the chunker axis) |
 | Re-ranking | #53 `retrieval-bench` (two-stage, cost/benefit measured) · #91 `context-aug-lab` (contextual retrieval vs late chunking, where the vendor and independent numbers disagree) |
-| Grounding, citations & the empty case | #49 `ingest-ledger` ✅ (refuses when evidence is absent) · #1 `docs-rag` ✅ · #126 `rca-investigator`, #142 `lineage-narrator` (an evidence chain is the product, not a footnote) |
+| Grounding, citations & the empty case | #49 `ingest-ledger` ✅ (refuses when evidence is absent) · #1 `docs-rag` ✅ · #126 `rca-investigator`, #142 `lineage-narrator` (an evidence chain is the product, not a footnote) · #208 `provenance-mcp` (provenance made a required field of the tool's result schema, so an unsourced number cannot be returned) |
 
 ### §3 · Fine-tuning — Spine
 
@@ -160,7 +161,7 @@ published per-document recommender, then check it beats a fixed strategy).*
 | Retrieval metrics vs. generation metrics | #9 `eval-harness` (faithfulness vs. context precision) · #53 `retrieval-bench` · N5 · #25 `chunking-lab` ✅ (chunk-level vs character-level; why recall alone scores a useless chunker 100%) · #91 `context-aug-lab` · #92 `adaptive-chunk` (both reuse #25's corpora, gold spans and metrics rather than inventing their own) |
 | LLM-as-judge | #57 `judge-lab` (calibrated against human labels) |
 | Task metrics vs. vibes | #57 `judge-lab` · #66 `tabular-lab` (hard metrics where they exist) |
-| **Calibrated confidence & honest uncertainty** | #95 `column-semantics-tagger`, #97 `null-semantics-detective`, #118 `db-archaeologist` (confidence-ranked output routed to human review) · #25 `chunking-lab` ✅ (the *yield* a weak model produces, reported rather than hidden) — *saying how sure you are, in a way a reader can act on* · #172 `dependency-truth-checker`, #182 `orphan-asset-finder` (naming the blind spot, and declining to recommend deletion into it) |
+| **Calibrated confidence & honest uncertainty** | #95 `column-semantics-tagger`, #97 `null-semantics-detective`, #118 `db-archaeologist` (confidence-ranked output routed to human review) · #25 `chunking-lab` ✅ (the *yield* a weak model produces, reported rather than hidden) — *saying how sure you are, in a way a reader can act on* · #172 `dependency-truth-checker`, #182 `orphan-asset-finder` (naming the blind spot, and declining to recommend deletion into it) · #209 `freshness-gate-mcp` (a typed refusal carrying the evidence, at the moment an agent would otherwise have answered) |
 
 ### §6 · Agentic AI — Spine
 
@@ -168,7 +169,12 @@ published per-document recommender, then check it beats a fixed strategy).*
 | --- | --- |
 | Agent vs. pipeline | #58 `agent-governor` (same task three ways) · N2 |
 | The ReAct loop | #58 `agent-governor` (iteration ceiling, spend cap, cost per run) · #118 `db-archaeologist` (hypothesis → test → revise, over a database nobody understands) · **all of section L** 🤖 (each entry names the single-prompt approach it beats, so the loop has to earn its place) |
-| Tool calling & MCP | #58 `agent-governor` (arg validation) · #16 `mcp-gateway` · #2 `repo-rag` ✅ · N3 (MCP as standardisation) · #148 `estate-knowledge-graph` (the substrate every other agent queries) |
+| Tool calling & MCP | #58 `agent-governor` (arg validation) · #16 `mcp-gateway` · #2 `repo-rag` ✅ · N3 (MCP as standardisation) · #148 `estate-knowledge-graph` (the substrate every other agent queries) · #198 `discover-probe` (what a server advertises versus what it does) · #204 `resource-or-tool` (the three server primitives, measured against each other) |
+| Async tool execution & long-running work | #199 `run-as-task` (a backfill as a durable task handle, surviving a client restart) · #205 `stream-break` (what a dropped stream costs now that resumability is gone) · #78 `job-runner` |
+| Tool-surface scale, caching & change notification | #201 `tool-surface-budget` (token cost and selection accuracy from 10 to 4,000 tools) · #202 `listen-lab` (push versus poll, and where the crossover sits) · #210 `surface-synth` (the tool list as a working set rather than an inventory) · #50 `token-ledger` |
+| Typed tool contracts & server-initiated input | #203 `typed-result-lab` (what a declared result schema is worth, measured) · #213 `contract-mcp` (the data contract *is* the tool's output schema) · #200 `approval-gate` (the human gate as a protocol feature, not a prompt convention) · #52 `schema-guard` (the model's output, where #203 is the tool's) |
+| Capability, identity & egress control | #207 `warehouse-oauth` (the agent queries as the person, so row-level security applies) · #215 `aggregate-only-mcp` (real data, provably non-identifying — the middle ground K and L skip) · #216 `egress-ledger-mcp` (what actually crossed the boundary, per column, per session) · #15 `secrets-aware-env-mcp` |
+| Interactive tool UI | #214 `lineage-app` (a lineage graph or a 400-row mapping approval, rendered in the conversation rather than read aloud) |
 | Memory & context management | #58 `agent-governor` (overflow + staleness) · #50 `token-ledger` |
 | Frameworks: LangChain / LangGraph / crewAI / Pydantic AI | #58 `agent-governor` (chain vs. graph, built both) · N3 |
 | Guardrails & human-in-the-loop | #58 `agent-governor` (read/write split, confirmation gates, audit log) · #123 `match-merge-adjudicator`, #130 `quarantine-adjudicator`, #163 `steward-command-center` (the gray zone routed to a human, with the evidence attached) |
@@ -179,8 +185,8 @@ published per-document recommender, then check it beats a fixed strategy).*
 | --- | --- |
 | Model version pinning & provider drift | #60 `model-pin` |
 | Prompts as versioned artifacts | #59 `promptops` (eval gate blocks the merge) |
-| Cost & token economics | #50 `token-ledger` · #24 `model-router` · #41 `finops-attributor` |
-| Observability for LLM systems | #61 `llm-trace` (trace a complaint to the call) |
+| Cost & token economics | #50 `token-ledger` · #24 `model-router` · #41 `finops-attributor` · #211 `budget-mcp` (the balance returned to the agent, so it can plan against a limit it can see) |
+| Observability for LLM systems | #61 `llm-trace` (trace a complaint to the call) · #206 `trace-through` (one trace id from the agent turn to the Spark stage it caused) · #217 `mcp-replay` (the exchange recorded and replayed, so an agent is testable in CI) |
 | Failure handling & degradation | #24 `model-router`, extended: timeouts, backoff, circuit breaking, shedding, degraded-but-useful fallback |
 
 ### §8 · LLM serving & inference — Adjacent
@@ -255,7 +261,7 @@ published per-document recommender, then check it beats a fixed strategy).*
 
 | Card | Covered by |
 | --- | --- |
-| Experiment tracking (MLflow, W&B) | #75 `runcard` (reproducibility contract) |
+| Experiment tracking (MLflow, W&B) | #75 `runcard` (reproducibility contract) · #212 `snapshot-mcp` (the same contract for an agent session over mutable data — pinned to a snapshot, replayable next quarter) |
 | Model registry & promotion | #75 `runcard` (approval gate, rollback drill) |
 | Data drift vs. concept drift | #76 `drift-sentry` (PSI, KL, quantiles) |
 | Ground-truth lag | #76 `drift-sentry` (lag registry; proxy monitoring) |

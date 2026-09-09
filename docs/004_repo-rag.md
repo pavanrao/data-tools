@@ -44,7 +44,9 @@ question ─▶ embed ─▶ hybrid search (RRF) ─▶ grounded prompt ─▶ C
   already covers other files acceptably.
 - All tests are model-free (fake embedder; MCP tool registration checked via
   `list_tools()`).
-- On the **MCP SDK 2.x** (`mcp>=2.1.1,<3`). Three things the upgrade settled:
+- On the **MCP SDK 2.x** (`mcp>=2.2.0,<3`; floor raised from `2.1.1` by D10,
+  which also records what the v2 line does and does not yet give us). Three
+  things the upgrade settled:
   - `FastMCP` → `MCPServer` (`mcp.server.mcpserver`); `@server.tool()`,
     `server.run()` and `await server.list_tools()` are unchanged.
   - Tool return annotations must be **parameterised**: a bare `-> dict`

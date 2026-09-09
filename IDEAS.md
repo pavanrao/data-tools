@@ -104,45 +104,80 @@ else covers, plus a hostile corpus that asserts each failure is caught.
 
 ## B. MCP-focused tools
 
+> **Status note, 2026-09-08.** These six were written against MCP as it stood in
+> early 2025 and have been rewritten against revision **2026-07-28**, which
+> removed the `initialize` handshake, protocol-level sessions and
+> `resources/subscribe`, and deprecated Roots, Sampling and Logging. Section
+> **M** (#198–#217) covers the surface that arrived with it. The decision is
+> recorded as D10 in [`docs/001`](docs/001_architecture-and-decisions.md).
+
 ### 11. `sqlite-mcp` — safe SQL access as an MCP server ⭐⭐ 🔌 💻
 An MCP server exposing read-only `query`, `schema`, and `sample` tools over a
-SQLite/DuckDB file, with row limits and query allow-listing.
-- **Learn:** the canonical MCP pattern — exposing tools + resources safely; how
-  an LLM client discovers and calls them.
+SQLite/DuckDB file, with row limits and query allow-listing. `query` declares an
+`outputSchema`, so a result is a typed record rather than a paragraph; `schema`
+returns a `ttlMs` so a client stops re-reading a file that has not changed. **F2**
+in [`docs/FINDINGS.md`](docs/FINDINGS.md) argues this is the one in section B
+with real value — it touches a system the model cannot reach on its own.
+- **Learn:** the canonical MCP pattern — exposing tools and resources safely, and
+  how a client discovers them now that there is no handshake: `server/discover`,
+  plus capabilities carried in `_meta` on every request.
 - **Cost note:** the server is free; pairs with any model as the client.
 
 ### 12. `filesystem-rag-mcp` — retrieval as an MCP capability ⭐⭐⭐ 🔌 🧠 💻
 Combine #1 with MCP: expose `search_docs` and `get_chunk` tools so *any* MCP
-client (Claude Desktop, an agent) can do RAG over your files on demand.
-- **Learn:** the difference between baking RAG into a prompt vs. offering it as a
-  *tool* the model calls when needed.
+client can do RAG over your files on demand. Worth building once to learn the
+shape, but build it knowing the answer — **F2** found that a retrieval server
+earns little next to a client that can already read the files itself. That
+finding is why section M points at warehouses, orchestrators and catalogs rather
+than at folders of documents.
+- **Learn:** the difference between baking RAG into a prompt and offering it as a
+  *tool* the model calls when needed — and the negative result that follows.
 - **Cost note:** retrieval local; generation handled by whatever client connects.
 
 ### 13. `http-fetch-mcp` — guarded web fetch/extract tool ⭐⭐ 🔌 💻
 MCP server with a `fetch_url` tool that fetches, strips boilerplate, and returns
-clean Markdown — with domain allow-lists, size caps, and timeouts.
+clean Markdown — with domain allow-lists, size caps, and timeouts. The guards are
+the tool. The spec now states plainly that tool descriptions and annotations are
+*untrusted* unless the server itself is, so a fetched page carrying instructions
+is an injection vector into whatever runs next.
 - **Learn:** building *safe* MCP tools (SSRF guards, limits) — the unglamorous
-  but essential part.
+  but essential part; and why a tool's own description can never be a security
+  control.
 - **Cost note:** pure plumbing, no model cost.
 
 ### 14. `cron-pipeline-mcp` — schedule + run pipelines via MCP ⭐⭐⭐ 🔌 💻
-Expose `list_jobs`, `run_job`, `job_status` over MCP so an LLM agent can trigger
-and monitor your ETL jobs conversationally.
-- **Learn:** MCP for *actions/side-effects* (not just retrieval); idempotency,
-  confirmations, and progress reporting.
+Expose `list_jobs` and `run_job` over MCP so an agent can trigger and monitor ETL
+jobs conversationally. The `job_status` polling tool this originally proposed is
+now the protocol's job: a run returns a durable task handle under the
+`io.modelcontextprotocol/tasks` extension and the client polls `tasks/get`.
+#199 `run-as-task` is that mechanism studied on its own; this entry is the
+orchestrator-specific application of it — Airflow, Dagster or cron behind one
+server, with #46 `airflow-state-probe` as the read-only half.
+- **Learn:** MCP for *actions and side-effects*, not just retrieval; idempotency,
+  confirmation gates, and why a durable handle beats a bespoke status tool.
 - **Cost note:** orchestration only; jobs do the real work.
 
 ### 15. `secrets-aware-env-mcp` — config/secrets broker for agents ⭐⭐ 🔌 💻
-MCP server that exposes *names* of available config/keys and injects them into
-allowed jobs without ever returning secret values to the model.
-- **Learn:** safe capability design — letting an LLM *use* a secret without
-  *seeing* it.
+MCP server that exposes the *names* of available config keys and injects their
+values into allowed jobs without ever returning a secret to the model. Sessions
+are gone from the protocol, so a broker that must remember a grant across calls
+mints its own handle and hands it back as an ordinary tool argument — which makes
+the grant inspectable and revocable rather than implicit in a connection.
+- **Learn:** safe capability design — letting a model *use* a secret without
+  *seeing* it; and holding server state explicitly now that the transport will
+  not hold it for you.
 - **Cost note:** free; a reusable building block for every other tool.
 
 ### 16. `mcp-gateway` — multiplex several MCP servers behind one ⭐⭐⭐ 🔌 💻
 A façade MCP server that aggregates tools from #11/#13/#15 under one connection,
-with namespacing, auth, and per-tool rate limits.
-- **Learn:** MCP client *and* server in one process; tool routing/composition.
+with namespacing, auth, and per-tool rate limits. Aggregation is more than a name
+prefix: the façade merges the capability and extension sets its backends report
+from `server/discover`, decides what to advertise when only one backend supports
+an extension, fans out `subscriptions/listen` opt-ins, and namespaces task ids so
+two backends cannot collide. This is the seam `CONVENTIONS.md` describes — every
+installed tool's `data_tools.mcp` factory mounted behind one endpoint.
+- **Learn:** MCP client *and* server in one process; tool routing and capability
+  composition, which is where the interesting failures live.
 - **Cost note:** infrastructure; no model cost.
 
 ---
@@ -1076,6 +1111,23 @@ first, and each lab feeds the next.
 12. **#90 `evidence-index`** — run it continuously from step 2 onward; it tells
     you which concepts still have no measurement behind them, and renders what
     does.
+
+### MCP track (section M)
+
+The protocol changed shape in revision 2026-07-28, so the order below starts by
+seeing what it is now rather than by building on what section B assumed.
+
+1. **#198 `discover-probe`** — point it at the servers you already use. An hour,
+   and the rest of the section stops being abstract.
+2. **#11 `sqlite-mcp`**, rewritten — one clean server, current spec, against a
+   system a model cannot otherwise reach.
+3. **#203 `typed-result-lab` + #201 `tool-surface-budget`** — the two things that
+   bite first, a result contract and a tool list that will not fit.
+4. **#199 `run-as-task` + #200 `approval-gate`** — the async and human-gate pair;
+   between them they replace everything #14 originally hand-rolled.
+5. **#207 `warehouse-oauth`** — the one that decides whether any of this is
+   deployable at work.
+6. **Anything from M.2** — by then you can judge which of them you believe.
 
 ---
 
@@ -2402,3 +2454,428 @@ most of the log.
   queries.
 - **Cost note:** log summaries plus verification queries.
 - **Maps to:** §E in `docs/008`. Semantic layer, data-product design, `#165` demand.
+
+---
+
+## M. MCP servers for data platforms (#198–#217) 🔌
+
+Sections K and L are about *what an agent reasons over*. This one is about **the
+protocol it reasons through**, and it exists because that protocol changed shape.
+
+Revision **2026-07-28** is not an increment on the MCP that section B describes.
+The `initialize` handshake is gone and MCP is stateless — every request carries
+its own protocol version and capabilities, and a server announces itself through
+`server/discover`. Protocol-level sessions are gone; a server that needs state
+across calls mints an explicit handle and passes it as an ordinary tool argument.
+Server-initiated requests are gone, replaced by **Multi Round-Trip Requests**: the
+server returns an `InputRequiredResult` and the client *retries* the original
+request carrying `inputResponses`. Long-running work moved into the **Tasks**
+extension. `resources/subscribe` became one opt-in `subscriptions/listen` stream.
+List results now carry `ttlMs` and `cacheScope`. Roots, Sampling and Logging are
+deprecated, and so is the transport half the ecosystem was built on.
+
+**The bar.** The protocol is the subject, not a delivery detail. Every entry names
+the mechanism it exercises in a `Protocol surface` line, and has to be materially
+worse as a library call or a CLI — if wrapping the same logic in `argparse` loses
+nothing, it does not belong here. The second filter comes from **F2** in
+[`docs/FINDINGS.md`](docs/FINDINGS.md): a retrieval server earns little next to a
+client that can already read files, so the server must reach a system the model
+cannot. Every entry below points at a warehouse, an orchestrator, a catalog, a
+lakehouse table or a ledger.
+
+**Two tiers.** **M.1** are protocol labs, and section F's rule applies to them —
+each ends by writing down a number that did not exist before it ran, and files an
+evidence card so #90 `evidence-index` can read it back. **M.2** are servers that
+do not exist in the industry today; each states what the current state of the art
+does instead, and if that line is weak the idea does not belong.
+
+### M.1 · Protocol labs (#198–#207)
+
+### 198. `discover-probe` — what does this server actually support? ⭐⭐ 🔌 💻
+Points at any MCP server and reports what it really is: which protocol revisions
+it accepts, which capabilities and extensions it advertises through
+`server/discover`, whether it still expects a handshake, and which deprecated
+features it depends on. Then it checks the advertisement against behaviour — a
+server claiming an extension it does not implement is common, and nothing in the
+protocol catches it.
+- **Protocol surface:** `server/discover`; statelessness and per-request
+  `io.modelcontextprotocol/protocolVersion` and `clientCapabilities` in `_meta`;
+  `UnsupportedProtocolVersionError`; the deprecated-features registry.
+- **Learn:** why the handshake was removed and what statelessness costs per call;
+  how to negotiate a version without a connection to hang it on; reading a spec
+  revision as a diff rather than as a document.
+- **Measures:** round-trips and bytes per tool call, handshake versus stateless,
+  at one call and at fifty. Plus the fraction of the servers you probe whose
+  advertisement does not match what they do.
+- **Cost note:** no model needed; it is a client. $0.
+- **Maps to:** §6 in `docs/005` — *Tool calling & MCP*.
+
+### 199. `run-as-task` — the backfill that outlives the connection ⭐⭐⭐ 🔌 💻
+An eight-hour backfill cannot be a blocking tool call, and the workaround
+everybody writes — a `run_job` tool plus a `job_status` tool the model has to
+remember to poll — is now the protocol's job. This wraps a real Spark or dbt run
+as a durable task: `CreateTaskResult` with a `taskId` minted before the response
+is sent, `tasks/get` polling at the server's suggested interval, `tasks/cancel`
+that the server is free to ignore, and a TTL that says how long the answer
+survives.
+- **Protocol surface:** the `io.modelcontextprotocol/tasks` extension —
+  `CreateTaskResult`, `tasks/get`, `tasks/cancel`, `ttlMs`, `pollIntervalMs`,
+  `notifications/tasks`; extension negotiation through `server/discover`.
+- **Learn:** durable handles versus open connections; cooperative cancellation and
+  why it cannot be guaranteed; designing a status message an agent can act on
+  rather than one that only reads well.
+- **Measures:** whether the run survives killing and restarting the client
+  mid-flight; polling overhead in requests and tokens against
+  `notifications/tasks`; the wall-clock point where a blocking call starts losing.
+- **Cost note:** local orchestrator, local model. The job costs what the job costs.
+- **Maps to:** §6 in `docs/005` — *Async tool execution & long-running work*.
+
+### 200. `approval-gate` — the tool call that stops and asks ⭐⭐⭐ 🔌 💻
+A partition overwrite or a DDL apply should not happen because a model was
+confident. This is the pause, done properly: the server returns an
+`InputRequiredResult` describing exactly what is about to be rewritten, the client
+puts it in front of a human, and the *original* request is retried carrying the
+answer. The interesting part is `requestState` — the server has no session to
+remember what it was doing, so whatever it needs to resume has to survive the
+round trip in the open.
+- **Protocol surface:** Multi Round-Trip Requests — `InputRequiredResult`,
+  `inputRequests`, `inputResponses`, `requestState`, `resultType`; elicitation
+  under MRTR; the `input_required` task status for gates inside a long run.
+- **Learn:** human-in-the-loop as a protocol feature rather than a prompt
+  convention; why a stateless server must externalise its own resume state; what
+  a confirmation has to say to be worth reading.
+- **Measures:** how far into a multi-step destructive plan the model gets before
+  the first gate fires; whether `requestState` survives a client restart between
+  the interim result and the retry.
+- **Cost note:** local model; a scratch warehouse. $0.
+- **Maps to:** §6 in `docs/005` — *Typed tool contracts & server-initiated input*.
+
+### 201. `tool-surface-budget` — four thousand tables will not fit ⭐⭐⭐ 🔌 💻
+Every catalog-backed MCP server hits the same wall. One generic `query` tool tells
+the model nothing about what exists; one tool per table is unusable long before a
+real warehouse runs out of tables. This measures the whole curve — token cost per
+turn, prompt-cache hit rate, and tool-selection accuracy as the surface grows —
+and tests the three things the protocol offers against it: deterministic
+`tools/list` ordering so caches hit, `ttlMs` and `cacheScope` so clients stop
+re-listing, and the `completion` utility so a name can be found rather than
+listed.
+- **Protocol surface:** `tools/list` size and deterministic ordering;
+  `CacheableResult` with `ttlMs` and `cacheScope`; pagination; the `completion`
+  utility for argument autocomplete.
+- **Learn:** what a tool list actually costs in a prompt; why ordering is a
+  caching decision; when to stop listing and start completing.
+- **Measures:** tokens per turn and prompt-cache hit rate at 10, 100, 1,000 and
+  4,000 tools; the size at which the model starts selecting the wrong table, and
+  how much of that ordering and completion buy back.
+- **Cost note:** the token bill is the experiment. Budget a few dollars, and reuse
+  #50 `token-ledger` to account for it.
+- **Maps to:** §6 in `docs/005` — *Tool-surface scale, caching & change
+  notification*.
+
+### 202. `listen-lab` — telling the agent the partition landed ⭐⭐ 🔌 💻
+An agent that asks "is it there yet?" every thirty seconds is paying for the
+question. This exposes table freshness as a subscription instead: the client opts
+in to specific notification types over one long-lived stream, the server tags what
+it sends with a subscription id, and the arrival of a partition is pushed rather
+than discovered. It also has to handle what the revision took away —
+`resources/subscribe` is gone, per-resource subscription is now an opt-in class,
+and the stream can simply break.
+- **Protocol surface:** `subscriptions/listen`; the opt-in types
+  (`resourcesListChanged`, `resourceSubscriptions`, `toolsListChanged`,
+  `promptsListChanged`); `io.modelcontextprotocol/subscriptionId`; the separation
+  of request-scoped notifications from the listen stream.
+- **Learn:** push versus poll and where the crossover actually sits; why
+  request-scoped progress and connection-scoped change notification are different
+  channels; designing for a stream that has no resumability.
+- **Measures:** notification latency against the polling interval it replaces, and
+  the request count each costs over a night; the recovery time after a killed
+  stream, and how many events fall in the hole.
+- **Cost note:** no model in the loop. $0.
+- **Maps to:** §6 in `docs/005` — *Tool-surface scale, caching & change
+  notification*.
+
+### 203. `typed-result-lab` — a verdict, not a paragraph ⭐⭐ 🔌 💻
+A data-quality tool that returns prose forces the next step to parse English. One
+that declares an `outputSchema` and returns `structuredContent` gives the caller a
+record — and gives the model a shape to reason about before it calls. This builds
+the same DQ check both ways over the same runs and counts what the difference is
+worth, including the parts of JSON Schema 2020-12 the revision now permits and
+most servers get wrong: `$ref` resolution, and composition keywords with no bound.
+- **Protocol surface:** `outputSchema` and `structuredContent`; JSON Schema
+  2020-12 keywords, `$ref` resolution requirements, composition-keyword resource
+  bounds.
+- **Boundary with #52:** `schema-guard` is about constraining what the *model*
+  emits. This is about what the *tool* promises to return, which is a contract the
+  server owes its callers whether or not a model is involved.
+- **Learn:** result contracts as an interface; where schema strictness helps a
+  model and where it just fails the call; validating twice, at the server and at
+  the client.
+- **Measures:** parse-failure rate and downstream re-prompts, prose versus typed,
+  over a fixed set of runs; tokens spent per successful extraction.
+- **Cost note:** local model, local DuckDB. $0.
+- **Maps to:** §6 in `docs/005` — *Typed tool contracts & server-initiated input*.
+
+### 204. `resource-or-tool` — the same catalog, offered three ways ⭐⭐ 🔌 🧠 💻
+MCP has three server primitives and almost every data server uses exactly one.
+This exposes one catalog as resources, as tools, and as prompts — the pipeline
+runbook as a prompt is the case nobody builds — and measures which the model
+reaches for, what each costs, and where each is wrong. The answer is not obvious:
+resources are context the client chooses to include, tools are what the model
+decides to call, and the distinction moves work between the two.
+- **Protocol surface:** resources and resource templates; tools; prompts;
+  `resources/read` with `ttlMs`; the client-driven versus model-driven split.
+- **Learn:** the primitive taxonomy, which is the part of MCP most often skipped;
+  who decides what enters the context window; when a prompt is the right answer
+  and a tool is not.
+- **Measures:** which primitive the model uses for the same twenty questions, at
+  what token cost, with what answer accuracy against a fixed key.
+- **Cost note:** local model over a small catalog. $0.
+- **Maps to:** §6 in `docs/005` — *Tool calling & MCP*.
+
+### 205. `stream-break` — twenty minutes in, the connection drops ⭐⭐ 🔌 💻
+The revision removed SSE stream resumability and message redelivery. A broken
+response stream now loses the in-flight request outright, and the client must
+re-issue it with a new id — which for a warehouse query means paying for it twice.
+This measures that honestly across both transports, and finds the duration at
+which returning a task handle beats holding the connection open.
+- **Protocol surface:** stdio versus Streamable HTTP; the removal of
+  `Last-Event-ID` and SSE event ids; the required `Mcp-Method` and `Mcp-Name`
+  headers; `x-mcp-header` for custom headers from tool parameters.
+- **Learn:** what a transport guarantees and what it does not; why resumability was
+  dropped rather than fixed; picking a transport for a workload instead of by
+  default.
+- **Measures:** wall-clock and dollars lost re-issuing an interrupted query at 1, 5
+  and 20 minutes; the crossover duration where #199's task handle wins.
+- **Cost note:** a scratch warehouse and a proxy that cuts connections. Cheap.
+- **Maps to:** §6 in `docs/005` — *Async tool execution & long-running work*.
+
+### 206. `trace-through` — one id from the agent turn to the Spark stage ⭐⭐⭐ 🔌 💻
+"Which of last night's spend was the agent?" is currently unanswerable, because
+the trail stops at the MCP boundary. The revision documents OpenTelemetry context
+propagation in `_meta`, which closes it: the client's `traceparent` reaches the
+server, the server stamps it into the warehouse query tag and the Spark job group,
+and one identifier now spans a conversation turn and the compute it caused.
+- **Protocol surface:** OpenTelemetry `traceparent`, `tracestate` and `baggage`
+  conventions for `_meta` keys; propagation across a stateless request boundary.
+  Read `_meta` directly — the SDK's `mcp.server._otel` is private, so depending on
+  it would put a private import in the one place D10 says not to.
+- **Learn:** distributed tracing across a protocol that deliberately forgets; where
+  a span should start and stop when the caller is a model; attributing cost to a
+  cause rather than to a service account.
+- **Measures:** the fraction of a night's warehouse spend attributable to a single
+  agent turn, and how much of the trail survives two hops.
+- **Cost note:** local collector, local Spark. $0.
+- **Maps to:** §7 in `docs/005` — *Observability for LLM systems*, alongside
+  #61 `llm-trace` and #41 `finops-attributor`.
+
+### 207. `warehouse-oauth` — the agent queries as the person ⭐⭐⭐ 🔌 ☁️
+Almost every data MCP server in production today holds one service account, which
+means row-level security, column masking and audit all see the same principal no
+matter who is asking. This is the version that does not: the server is an OAuth
+resource server, the human's identity reaches the warehouse, and two users asking
+the same question through the same server get different rows. It is the single
+biggest thing standing between MCP and an enterprise data platform.
+- **Protocol surface:** the authorization resource-server model; Client ID Metadata
+  Documents, now preferred over Dynamic Client Registration; the `iss` parameter
+  validation requirement; credentials bound to their issuer; enterprise-managed
+  authorization.
+- **Learn:** token audience, and why a token for one server must not work on
+  another; delegated versus service identity, and what each does to an audit log;
+  why DCR was deprecated.
+- **Measures:** the row-count difference two principals see through one server —
+  the check that either passes or the whole design is decorative.
+- **Cost note:** a hosted warehouse trial and a local identity provider. Cheap.
+- **Maps to:** §6 in `docs/005` — *Capability, identity & egress control*.
+
+### M.2 · Servers that do not exist yet (#208–#217)
+
+### 208. `provenance-mcp` — where did that number come from? ⭐⭐⭐ 🔌 💻
+Every tool result carries the collection's `Provenance` in `structuredContent` —
+source path, content hash, unit kind, unit id — so any figure an agent quotes can
+be walked back to the byte range it came from, by the client, without asking the
+server a second question. The `outputSchema` makes provenance mandatory rather
+than a courtesy, which means a tool physically cannot return an unsourced number.
+- **Why nothing does this today:** data servers return values. Citation is treated
+  as a RAG concern and disappears the moment the answer comes from SQL. Nothing
+  makes provenance part of the *result contract*, so it stays optional and
+  therefore usually absent.
+- **Protocol surface:** `outputSchema` and `structuredContent` carrying a required
+  provenance object; resource links back to the underlying unit.
+- **Learn:** the collection's data seam expressed over its MCP seam; making a
+  guarantee structural instead of behavioural.
+- **Cost note:** builds on #49 `ingest-ledger`, which already carries the type. $0.
+- **Maps to:** §2 in `docs/005` — grounding and citation.
+
+### 209. `freshness-gate-mcp` — the server that declines to answer ⭐⭐ 🔌 💻
+Tools that check their own inputs before answering, and refuse when the evidence
+is not there: the partition has not landed, the ingest is incomplete, the upstream
+feed is two days late. The refusal is not an error — it is a typed result carrying
+the ledger evidence for *why*, so the agent can say "I cannot answer this yet, and
+here is what is missing" rather than confidently reporting yesterday's number.
+- **Why nothing does this today:** every data server answers. Freshness is
+  monitored somewhere else, on a dashboard nobody is looking at while the agent is
+  talking, so the staleness never reaches the thing making the claim.
+- **Protocol surface:** a typed refusal in `structuredContent` rather than a
+  JSON-RPC error; `ttlMs` reflecting real data freshness rather than a guess;
+  `subscriptions/listen` to withdraw the refusal when the data lands.
+- **Learn:** refusal as a feature, which is #49 `ingest-ledger`'s whole thesis,
+  moved to where an agent will actually encounter it.
+- **Cost note:** reads the ledger; no model needed to decide. $0.
+- **Maps to:** §5 in `docs/005` — *Calibrated confidence & honest uncertainty*.
+
+### 210. `surface-synth` — a tool surface shaped like the question ⭐⭐⭐ 🔌 🧠 ☁️
+Given a four-thousand-table catalog and a task, this synthesises the twenty tools
+that task needs — narrow, well named, with real schemas — advertises exactly those,
+and prunes them as the task narrows, telling connected clients through
+`toolsListChanged`. The tool list becomes a working set rather than an inventory.
+- **Why nothing does this today:** servers pick one of two losing options, a single
+  generic `query` tool that carries no information about what exists, or a static
+  list too large to put in a prompt. #201 measures how badly both lose; this is the
+  third option, and it needs the protocol's dynamic tool list to be possible at
+  all.
+- **Protocol surface:** dynamic `tools/list` with the `toolsListChanged`
+  notification; deterministic ordering and `ttlMs` so a changing list still caches;
+  per-request capabilities, since there is no session to hang a working set on.
+- **Learn:** tool surfaces as retrieval; what a model needs in a tool name to pick
+  correctly; keeping a cache useful when the thing cached is generated.
+- **Cost note:** synthesis is a hosted-model job done once per task, then cached.
+  Cheap per session.
+- **Maps to:** §6 in `docs/005` — *Tool-surface scale, caching & change
+  notification*.
+
+### 211. `budget-mcp` — the server tells the agent what it has left ⭐⭐⭐ 🔌 💻
+Every result carries what it cost — bytes scanned, slots, dollars — and the running
+balance of a per-session budget the server enforces. When a query would exceed it
+the server does not simply refuse: it returns what that query would have cost and
+what a sampled or narrowed version would cost instead, so the agent can choose.
+The model plans against a budget because it can finally see one.
+- **Why nothing does this today:** cost governance lives in the warehouse, and the
+  only signal reaching the agent is a query that failed. Nothing meters tool calls
+  back to the caller, so an agent cannot trade accuracy against spend — it has no
+  idea what anything costs.
+- **Protocol surface:** cost accounting in `structuredContent` on every result;
+  server-minted session handles, now that sessions are not the transport's job; a
+  typed over-budget refusal carrying alternatives.
+- **Learn:** feedback loops between a model and a resource limit; making a
+  constraint legible to something that can reason about it.
+- **Cost note:** the point of the tool is that this line stays small. Cheap.
+- **Maps to:** §7 in `docs/005` — *Cost & token economics*, alongside
+  #50 `token-ledger` and #41 `finops-attributor`.
+
+### 212. `snapshot-mcp` — the session you can replay next quarter ⭐⭐⭐ 🔌 💻
+Pins an entire agent session to a lakehouse snapshot minted at the first call and
+returned as a server handle the client passes back on every subsequent one. Every
+query in that session resolves against the same Iceberg or Delta snapshot, so the
+transcript is not a story about what the data said in June — it is a thing you can
+run again in September and get the same numbers from.
+- **Why nothing does this today:** time travel exists in every lakehouse engine and
+  no MCP server exposes it as session scope. Agent transcripts over mutable tables
+  are unreproducible by construction, which becomes a problem the moment anyone
+  audits a decision. The move to explicit server-minted handles is what makes this
+  expressible cleanly.
+- **Protocol surface:** server-minted handles as ordinary tool arguments, replacing
+  what a session id used to do; snapshot ids echoed in `structuredContent`;
+  `cacheScope` set correctly for a pinned read.
+- **Learn:** reproducibility over mutable data; why statelessness pushed state into
+  the open, and why that turned out to be better.
+- **Cost note:** local Iceberg or Delta tables. $0.
+- **Maps to:** §7 in `docs/005` — reproducibility, alongside #75 `runcard`.
+
+### 213. `contract-mcp` — the schema in the tool *is* the contract ⭐⭐⭐ 🔌 💻
+Generates the server's whole tool surface from the data contracts, so a tool's
+`outputSchema` is the contract rather than a copy of it. Change the contract in a
+way that breaks a consumer and the tool list changes visibly, `toolsListChanged`
+fires, and every connected agent sees it at the next call — a breaking change
+becomes something that happens *to callers*, not a line in a review nobody read.
+- **Why nothing does this today:** contracts are validated out of band, in CI,
+  against artefacts, and the consumer finds out later. Nothing makes a violation
+  visible at the point of consumption, because until now a tool surface was a
+  static file rather than a projection of anything.
+- **Protocol surface:** `outputSchema` generated from the contract;
+  `toolsListChanged` as a breaking-change signal; `ttlMs` and `cacheScope` tuned so
+  a stale contract cannot be cached past its usefulness.
+- **Learn:** contracts as executable interfaces; making a governance artefact
+  load-bearing so it cannot rot.
+- **Cost note:** deterministic generation, no model. $0.
+- **Maps to:** §6 in `docs/005` — *Typed tool contracts & server-initiated input*.
+  Complements #19 `data-contract-linter` and #183 `schema-contract-differ`.
+
+### 214. `lineage-app` — the graph you can click, in the conversation ⭐⭐⭐ 🔌 🧠 💻
+Column-level lineage, a reconciliation diff, or four hundred proposed
+source-to-target mappings, rendered as an interactive view inside the chat rather
+than described in prose. Click a node to expand it and the view calls back into the
+server for detail; approve a mapping and that decision returns to the model as
+context. Approving four hundred mappings by reading them aloud is the status quo,
+and it is why nobody does it.
+- **Why nothing does this today:** data tooling has not adopted MCP Apps at all.
+  The alternative is a separate web app with its own auth, its own state, and no
+  connection to the conversation that produced the thing being reviewed.
+- **Protocol surface:** the MCP Apps extension — a `ui://` resource referenced from
+  the tool's `_meta.ui.resourceUri`, sandboxed iframe rendering, the `ui/` JSON-RPC
+  dialect over postMessage, `_meta.ui.csp` for what the view may load.
+- **Learn:** where a picture beats a paragraph for an agent's output; bidirectional
+  UI as a protocol rather than a framework; the sandbox model and what it forbids.
+- **Cost note:** the view is static HTML; the model cost is the lineage work
+  itself. Cheap.
+- **Maps to:** §6 in `docs/005` — *Interactive tool UI*. Renders #30 `sql-lineage`,
+  #38 `lineage-explorer` and #100 `mapping-suggester`.
+
+### 215. `aggregate-only-mcp` — exploration without a residency review ⭐⭐⭐ 🔌 💻
+A server that answers only aggregates, enforces a minimum group size and a
+k-anonymity floor in the query planner rather than in a policy document, and
+refuses anything that would isolate an individual — explaining which constraint it
+hit. An agent gets to explore production data; the deployment gets to say, with
+evidence, that no row value ever left.
+- **Why nothing does this today:** the choice on offer is all or nothing. Section K
+  buys deployability by never reading a row; section L buys answers by accepting a
+  full data-residency review. The middle — real data, provably non-identifying — is
+  where most exploratory work actually sits, and no server occupies it.
+- **Protocol surface:** the guarantee expressed as `outputSchema` (aggregates only,
+  with a group-size field), a typed refusal naming the violated constraint, and
+  tool annotations that describe the limit honestly.
+- **Learn:** privacy as an interface property rather than a review outcome;
+  k-anonymity and differential-privacy mechanics where they are cheap; writing a
+  refusal an analyst can legitimately work around.
+- **Cost note:** local DuckDB, no model in the enforcement path. $0.
+- **Maps to:** §6 in `docs/005` — *Capability, identity & egress control*.
+
+### 216. `egress-ledger-mcp` — how much data left during that session? ⭐⭐⭐ 🔌 💻
+A gateway that accounts, per column and per session, exactly which values crossed
+the boundary into a model's context — how many distinct values of which columns,
+classified against the catalog's sensitivity tags — and emits the evidence a
+privacy review asks for. Not a policy. A ledger.
+- **Why nothing does this today:** it is the first question a privacy review asks
+  about an AI system and nobody can answer it. Query logs record that a query ran,
+  not what a model saw. The accounting has to happen at the protocol boundary,
+  which is exactly where a gateway sits.
+- **Protocol surface:** a gateway in the shape of #16 `mcp-gateway`, tallying every
+  result that passes through it; `cacheScope` respected so a cached read is still
+  counted once; per-request client identity from `_meta` rather than from a
+  session.
+- **Learn:** measuring an exposure rather than asserting a control; what a gateway
+  can see that neither endpoint can.
+- **Cost note:** counting is deterministic; the classifier can be local. $0.
+- **Maps to:** §6 in `docs/005` — *Capability, identity & egress control*. Feeds
+  #140 `pia-drafter` and #193 `purpose-limitation-auditor`.
+
+### 217. `mcp-replay` — an agent you can put in CI ⭐⭐ 🔌 💻
+Records every MCP exchange of a pipeline-agent run — requests, results, task polls,
+interim `input_required` results and the retries that answered them — and replays
+them deterministically. The agent becomes testable with no warehouse, no
+credentials and no model, which is the collection's own rule about tests applied to
+the one thing nobody applies it to.
+- **Why nothing does this today:** MCP has inspectors and proxies for watching
+  traffic live. It has no fixture format, so agent behaviour is verified by running
+  against real systems and hoping, and a regression is noticed in production.
+  Replaying MRTR correctly is the hard part, and the reason it has not been done.
+- **Protocol surface:** the full request and result envelope including `_meta`;
+  `resultType` discrimination between `complete`, `input_required` and `task`;
+  `requestState` round-tripping; task polling sequences replayed in order. The SDK
+  ships no in-memory client/server pair any more, only a raw stream factory in
+  `mcp.shared.memory`, so building that harness is part of this tool rather than
+  something it can borrow.
+- **Learn:** determinism at a protocol boundary; recording enough to replay without
+  recording secrets; what an agent regression test actually has to assert.
+- **Cost note:** replay needs neither model nor warehouse — that is the point. $0.
+- **Maps to:** §7 in `docs/005` — *Observability for LLM systems*, alongside
+  #61 `llm-trace` and #59 `promptops`.
