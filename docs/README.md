@@ -1,6 +1,6 @@
 # docs
 
-Four kinds of document, deliberately kept apart. A verdict filed in a design doc
+Five kinds of document, deliberately kept apart. A verdict filed in a design doc
 — or craft filed in a decision log — is a thing nobody finds again.
 
 | Document | Holds | Cadence |
@@ -10,6 +10,7 @@ Four kinds of document, deliberately kept apart. A verdict filed in a design doc
 | `NNN_*.md` | **Design + decision records**, one per feature or tool. | Append the next number |
 | [`LEARNINGS.md`](LEARNINGS.md) | Reusable **craft** — transferable beyond any one tool. | Prepend `## Iteration N` |
 | [`FINDINGS.md`](FINDINGS.md) | Project **verdicts** — what we build, park, and why. | Prepend `## Iteration N` |
+| [`BACKLOG.md`](BACKLOG.md) | **Known defects** and deferred work — what is broken, how to reproduce it, what a fix must decide. | Edited in place; entries `B1`, `B2`, … |
 
 **Start here:** [`000_project-organization.md`](000_project-organization.md).
 
