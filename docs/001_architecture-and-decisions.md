@@ -109,7 +109,9 @@ vector KNN; FTS5 (built into SQLite) provides keyword search for repo-rag's
 hybrid retrieval. MCP servers use the official `mcp` Python SDK.
 
 **Amendment (2026-09), resolved:** the SDK was briefly pinned `<2` after 2.x
-renamed `FastMCP` to `MCPServer`. **Now upgraded to `mcp>=2.1.1,<3`.** Rule 4
+renamed `FastMCP` to `MCPServer`. **Now upgraded to `mcp>=2.1.1,<3`.**
+*(Floor raised to `>=2.2.0,<3` by D10; the bound below 3.0 is the part that
+matters and is unchanged.)* Rule 4
 held exactly as intended — the rename itself cost three lines in the one adapter
 module. What it did *not* contain was a behavioural change: 2.x dispatches tool
 calls on a **worker thread**, which broke `CodeStore`'s thread-affine SQLite
@@ -225,14 +227,50 @@ SSE resumability is gone: a broken stream loses the in-flight request.
    (*every non-obvious status is evidence-bearing*) expressed in the protocol's
    own vocabulary.
 
-**On the SDK pin.** `repo-rag` depends on `mcp>=2.1.1,<3` and the workspace locks
-`2.1.1`; the v2 line is the rework that carries this revision, and the pin already
-admits the current `2.2.0`. **Not yet verified against a running server** — the
-first section M tool built should refresh the lock and confirm that
-`server/discover`, MRTR and the tasks extension are present in the pinned version,
-then amend this decision in place with what it found. D3's lesson applies: a pin
-bounds the API surface you must edit, not the runtime assumptions the dependency
-makes.
+**On the SDK pin — checked, 2026-09.** `repo-rag` now depends on `mcp>=2.2.0,<3`
+and the workspace locks `2.2.0`. This paragraph originally said the pin was "not
+yet verified"; it has been, and the first thing that turned up was that the
+premise was wrong.
+
+**The pin was never the blocker.** `2.1.1` already declared `2026-07-28` as its
+`LATEST_PROTOCOL_VERSION`. Nothing was gated on bumping it. The SDK also models
+both eras explicitly — `HANDSHAKE_PROTOCOL_VERSIONS` holds the four revisions
+reachable through `initialize`, `MODERN_PROTOCOL_VERSIONS` holds `2026-07-28`
+alone — so a server can speak the current revision without abandoning older
+clients. That is a better position than "the handshake is gone" implies, and it
+is worth knowing before building anything in section M.
+
+**What is present**, confirmed against the installed package rather than the
+release notes. `mcp_types` carries `DiscoverRequest` / `DiscoverResult`;
+`InputRequiredResult` with `InputRequests` and `InputResponses`; the full task
+set (`CreateTaskResult`, `GetTaskRequest`, `CancelTaskRequest`, `TaskStatus`);
+`SubscriptionsListenRequest` with `SubscriptionFilter`; and `CacheableResult`.
+Server-side, `mcp.server.caching`, `.subscriptions`, `.request_state`,
+`.extension` and `.apps` all import clean. A tool registered with a
+`-> dict[str, object]` annotation gets a generated `output_schema` and returns a
+`CallToolResult`, which is the machinery #203 and #208 both assume.
+
+**What `2.2.0` actually changed over `2.1.1`:** no module added or removed, and
+nineteen files touched — thirteen of them in `auth`, covering OAuth2, client
+credentials, identity assertion, bearer auth, the provider and the authorize
+handler. It is a security and correctness release, not a feature release. That
+makes it matter most to #207 `warehouse-oauth`, and it is the reason the floor
+moved rather than being left at `2.1.1`.
+
+**Two findings for the backlog.** `mcp.server._otel` is private, so #206
+`trace-through` must not import it and should read `_meta` directly. And the
+in-memory client/server helper that older SDKs shipped is gone from
+`mcp.shared.memory`, which leaves only a raw stream factory — so #217
+`mcp-replay` has to bring its own harness, and that is now part of its scope
+rather than a surprise.
+
+**Still not exercised end to end.** Everything above was verified in-process:
+tools registered and called through `MCPServer`, types and modules imported. No
+server was run over stdio or Streamable HTTP, so `server/discover`, MRTR and the
+tasks extension are confirmed as *present machinery*, not as working round trips.
+#198 `discover-probe` is the tool that closes that gap, which is why it is first
+in the section M build order. D3's lesson still applies: a pin bounds the API
+surface you must edit, not the runtime assumptions the dependency makes.
 
 **What is deliberately not decided here.** MCP Apps (#214) and Skills over MCP are
 *extensions*, negotiated per request and optional on both sides. Nothing in the

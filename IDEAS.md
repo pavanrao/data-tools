@@ -2657,6 +2657,8 @@ server, the server stamps it into the warehouse query tag and the Spark job grou
 and one identifier now spans a conversation turn and the compute it caused.
 - **Protocol surface:** OpenTelemetry `traceparent`, `tracestate` and `baggage`
   conventions for `_meta` keys; propagation across a stateless request boundary.
+  Read `_meta` directly — the SDK's `mcp.server._otel` is private, so depending on
+  it would put a private import in the one place D10 says not to.
 - **Learn:** distributed tracing across a protocol that deliberately forgets; where
   a span should start and stop when the caller is a model; attributing cost to a
   cause rather than to a service account.
@@ -2868,7 +2870,10 @@ the one thing nobody applies it to.
   Replaying MRTR correctly is the hard part, and the reason it has not been done.
 - **Protocol surface:** the full request and result envelope including `_meta`;
   `resultType` discrimination between `complete`, `input_required` and `task`;
-  `requestState` round-tripping; task polling sequences replayed in order.
+  `requestState` round-tripping; task polling sequences replayed in order. The SDK
+  ships no in-memory client/server pair any more, only a raw stream factory in
+  `mcp.shared.memory`, so building that harness is part of this tool rather than
+  something it can borrow.
 - **Learn:** determinism at a protocol boundary; recording enough to replay without
   recording secrets; what an agent regression test actually has to assert.
 - **Cost note:** replay needs neither model nor warehouse — that is the point. $0.
