@@ -2,7 +2,7 @@
 
 **Status:** plan · **Date:** 2026-09-04
 
-A working map of the concepts that recur across AI and data engineering — 103 of
+A working map of the concepts that recur across AI and data engineering — 104 of
 them, in 21 groups — and, for each one, the smallest thing in this collection
 that exercises it for real. It exists so that learning this stack is a build
 queue rather than a reading list.
@@ -14,14 +14,14 @@ on a laptop for free. The split is roughly:
 
 | Track | What it is | Concepts |
 | --- | --- | --- |
-| **F · Labs** (#50–#90, 41 new tools) | small tools that produce a measured number | 84 |
+| **F · Labs** (#50–#90 and #218, 42 new tools) | small tools that produce a measured number | 85 |
 | **G · Notes** (N1–N5, markdown + prompts) | positions and trade-offs where no tool earns its keep | 14 |
 | **Existing backlog** (#1–#49) | ideas already in `IDEAS.md`, some already built | 24 (shared) |
 | **M · MCP servers** (#198–#217, 20 new) | ten protocol labs that end in a number, ten servers that do not exist yet | 5 |
 
 Concepts are counted where their *primary* coverage sits; many are touched twice
 (a note states the trade-off, a lab produces the number). Nothing is skipped —
-the matrix below lists all 103.
+the matrix below lists all 104.
 
 ## Why this shape
 
@@ -152,6 +152,7 @@ published per-document recommender, then check it beats a fixed strategy).*
 | The three stages | #56 `preference-forge` · N4 |
 | DPO vs. PPO | #56 `preference-forge` (DPO run; PPO argued) · N4 |
 | Preference data collection | #56 `preference-forge` (agreement measured) · N4 |
+| What alignment does to style | #218 `ai-sniffer` (mode collapse measured in the output text — variance, frame repetition, concreteness — rather than asserted) · N4 |
 
 ### §5 · Evaluation — Spine (measure first)
 
@@ -160,8 +161,8 @@ published per-document recommender, then check it beats a fixed strategy).*
 | Golden set / eval set | #9 `eval-harness` · N5 · #25 `chunking-lab` ✅ (gold *spans*; quote-then-locate, and yield as the honest failure mode) |
 | Retrieval metrics vs. generation metrics | #9 `eval-harness` (faithfulness vs. context precision) · #53 `retrieval-bench` · N5 · #25 `chunking-lab` ✅ (chunk-level vs character-level; why recall alone scores a useless chunker 100%) · #91 `context-aug-lab` · #92 `adaptive-chunk` (both reuse #25's corpora, gold spans and metrics rather than inventing their own) |
 | LLM-as-judge | #57 `judge-lab` (calibrated against human labels) |
-| Task metrics vs. vibes | #57 `judge-lab` · #66 `tabular-lab` (hard metrics where they exist) |
-| **Calibrated confidence & honest uncertainty** | #95 `column-semantics-tagger`, #97 `null-semantics-detective`, #118 `db-archaeologist` (confidence-ranked output routed to human review) · #25 `chunking-lab` ✅ (the *yield* a weak model produces, reported rather than hidden) — *saying how sure you are, in a way a reader can act on* · #172 `dependency-truth-checker`, #182 `orphan-asset-finder` (naming the blind spot, and declining to recommend deletion into it) · #209 `freshness-gate-mcp` (a typed refusal carrying the evidence, at the moment an agent would otherwise have answered) |
+| Task metrics vs. vibes | #57 `judge-lab` · #66 `tabular-lab` (hard metrics where they exist) · #218 `ai-sniffer` (counting the habit instead of arguing about the prose) |
+| **Calibrated confidence & honest uncertainty** | #95 `column-semantics-tagger`, #97 `null-semantics-detective`, #118 `db-archaeologist` (confidence-ranked output routed to human review) · #25 `chunking-lab` ✅ (the *yield* a weak model produces, reported rather than hidden) — *saying how sure you are, in a way a reader can act on* · #172 `dependency-truth-checker`, #182 `orphan-asset-finder` (naming the blind spot, and declining to recommend deletion into it) · #209 `freshness-gate-mcp` (a typed refusal carrying the evidence, at the moment an agent would otherwise have answered) · #218 `ai-sniffer` (the distributions overlap, so it locates habits and refuses to name an author) |
 
 ### §6 · Agentic AI — Spine
 

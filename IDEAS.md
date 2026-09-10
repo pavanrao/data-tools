@@ -111,7 +111,7 @@ else covers, plus a hostile corpus that asserts each failure is caught.
 > **M** (#198–#217) covers the surface that arrived with it. The decision is
 > recorded as D10 in [`docs/001`](docs/001_architecture-and-decisions.md).
 
-### 11. `sqlite-mcp` — safe SQL access as an MCP server ⭐⭐ 🔌 💻
+### 11. `sqlite-mcp` — safe SQL access as an MCP server ✅ ⭐⭐ 🔌 💻
 An MCP server exposing read-only `query`, `schema`, and `sample` tools over a
 SQLite/DuckDB file, with row limits and query allow-listing. `query` declares an
 `outputSchema`, so a result is a typed record rather than a paragraph; `schema`
@@ -122,6 +122,12 @@ with real value — it touches a system the model cannot reach on its own.
   how a client discovers them now that there is no handshake: `server/discover`,
   plus capabilities carried in `_meta` on every request.
 - **Cost note:** the server is free; pairs with any model as the client.
+- **Built:** [`tools/sqlite-mcp/`](./tools/sqlite-mcp/). The read-only guarantee
+  is SQLite's own authorizer rather than a check on the SQL, refusals come back
+  as typed results rather than errors, and the row cap reports that it fired.
+  Design record [`docs/009`](docs/009_sqlite-mcp.md); concepts
+  [`docs/010`](docs/010_mcp-concepts.md); the write-up is
+  [`let-the-database-say-no.html`](docs/let-the-database-say-no.html).
 
 ### 12. `filesystem-rag-mcp` — retrieval as an MCP capability ⭐⭐⭐ 🔌 🧠 💻
 Combine #1 with MCP: expose `search_docs` and `get_chunk` tools so *any* MCP
@@ -1031,6 +1037,42 @@ is a result either way.
 - **Reuses:** #25's corpora, gold spans, metrics, `correlate` and `axes`.
 - **Cost note:** the metrics are cheap; the evaluation is #25's, which is free.
 - **Covers:** §2 Chunking · §5 Retrieval metrics · the reproduction habit itself.
+
+### 218. `ai-sniffer` — the tells in your own draft ⭐⭐ 💻 🔌
+Counts the habits that make prose read as machine-written, and refuses to say
+whether it was. Sentence-length variance; contraction rate; the recurring
+"not X, but Y" pivot; paragraphs that keep landing on a short sentence; hedge
+density; and how much concrete detail the text carries at all — digits, dates,
+proper nouns, quoted error strings. Findings arrive with positions, so the
+output is *line 40, fourth consecutive paragraph ending short* rather than a
+score, because locating a habit is reliable where classifying an author is not.
+The number is the **overlap** between a pre-2022 human corpus and a generated
+one, per signal: how often any threshold would misclassify. That unreliability
+is the finding rather than a caveat, and it is why the tool has no verdict mode.
+The *break it on purpose* step is pointing it at deliberately idiosyncratic
+human writing, counting the false positives, and then pointing it at this
+repository's own documentation.
+- **Learn:** where the tells come from — post-training, not pretraining, since
+  a base model's prose is far more varied; mode collapse as something you can
+  *measure in the text* rather than assert; why shape (variance, frame
+  repetition, concreteness) is countable while meaning is not; and how register
+  confounds all of it, which is what forces located findings over a score.
+- **On the one signal that needs a model:** per-token surprisal is the strongest
+  published family, and computing it is trivial — a forward pass and a
+  log-softmax against a small local model. Start from the **two-model ratio**,
+  perplexity under one model over cross-perplexity between two, rather than raw
+  perplexity or single-model curvature; it was built against exactly the
+  false-positive problem this lab exists to characterise. Expect it to do worse
+  here than in its papers, because you will not have the model that produced the
+  text and a paraphrase pass defeats the whole family. Check the current state of
+  that subfield before committing to a method — it moves.
+- **Cost note:** the deterministic core needs no model at all — every signal
+  above is arithmetic, a closed word list or a regex. Generating the comparison
+  corpus is a few hundred local completions. $0. Surprisal sits behind the `llm`
+  extra and records which path ran, per rule 2, so the free signals stay
+  measurable on their own.
+- **Covers:** §4 What alignment does to style · §5 Task metrics vs. vibes ·
+  §5 Calibrated confidence & honest uncertainty.
 
 ## G. Concept notes (markdown, not code)
 
