@@ -1057,11 +1057,20 @@ repository's own documentation.
   *measure in the text* rather than assert; why shape (variance, frame
   repetition, concreteness) is countable while meaning is not; and how register
   confounds all of it, which is what forces located findings over a score.
+- **On the one signal that needs a model:** per-token surprisal is the strongest
+  published family, and computing it is trivial — a forward pass and a
+  log-softmax against a small local model. Start from the **two-model ratio**,
+  perplexity under one model over cross-perplexity between two, rather than raw
+  perplexity or single-model curvature; it was built against exactly the
+  false-positive problem this lab exists to characterise. Expect it to do worse
+  here than in its papers, because you will not have the model that produced the
+  text and a paraphrase pass defeats the whole family. Check the current state of
+  that subfield before committing to a method — it moves.
 - **Cost note:** the deterministic core needs no model at all — every signal
   above is arithmetic, a closed word list or a regex. Generating the comparison
-  corpus is a few hundred local completions. $0. Per-token surprisal, the
-  strongest published signal, sits behind the `llm` extra and records which path
-  ran, per rule 2.
+  corpus is a few hundred local completions. $0. Surprisal sits behind the `llm`
+  extra and records which path ran, per rule 2, so the free signals stay
+  measurable on their own.
 - **Covers:** §4 What alignment does to style · §5 Task metrics vs. vibes ·
   §5 Calibrated confidence & honest uncertainty.
 
