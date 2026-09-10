@@ -273,10 +273,9 @@
     <p class="kicker">data-tools · building #11</p>
     <h1>Let the Database Say No</h1>
     <p class="standfirst">
-      Almost every SQL-over-MCP server decides whether a query is safe by reading
-      the query. That is a denylist made of string matching, and it is wrong the
-      moment SQL grows a feature you did not think of. There is a better place to
-      put the guard, and the database has been offering it for twenty years.
+      Most SQL-over-MCP servers decide whether a query is safe by reading the
+      query. That's a denylist, and denylists have to guess what's coming. SQLite
+      has had a better answer sitting in it for twenty years.
     </p>
     <p class="byline">9 September 2026 · the first MCP server in this collection</p>
   </div>
@@ -285,34 +284,30 @@
 <div class="wrap">
 
 <p>
-  I set out to build the smallest useful MCP server: read-only SQL over a SQLite
-  file. Three tools, a row cap, done in an afternoon. The interesting part turned
-  out not to be the protocol at all.
+  The plan was a small MCP server: read-only SQL over a SQLite file, three tools,
+  a row cap. I assumed the time would go on the protocol. It didn't. Nearly all
+  of it went on one question that turned out to be harder than it looks — when an
+  agent hands you a SQL statement, how do you decide whether to run it?
+</p>
+
+<h2>First attempt: read the SQL</h2>
+
+<p>
+  Look at the statement. If it starts with <code>SELECT</code>, run it. If it
+  contains <code>DROP</code> or <code>DELETE</code> or <code>UPDATE</code>,
+  refuse. Most published examples do a version of this, and it's what I wrote
+  first.
 </p>
 
 <p>
-  It was this question. <strong>When an agent sends you a statement, how do you
-  decide whether to run it?</strong>
-</p>
-
-<h2>The answer everyone reaches for</h2>
-
-<p>
-  Look at the SQL. If it starts with <code>SELECT</code>, run it. If it contains
-  <code>DROP</code> or <code>DELETE</code> or <code>UPDATE</code>, refuse. Most
-  published examples do some version of this, and it is the first thing anyone
-  writes, myself included.
-</p>
-
-<p>
-  It is a denylist, and it inherits every denylist's problem: it has to
-  anticipate. Consider what it must already handle correctly.
+  It's a denylist, so it has to anticipate. Here's what mine already needed to
+  get right, before anything unusual turned up:
 </p>
 
 <div class="verdicts">
   <div class="verdict">
     <span class="tag no">misses</span>
-    <p><code>WITH x AS (DELETE FROM t RETURNING *) SELECT * FROM x</code> — starts with <code>WITH</code>, and in several engines that is a write.</p>
+    <p><code>WITH x AS (DELETE FROM t RETURNING *) SELECT * FROM x</code> — starts with <code>WITH</code>, and in several engines that's a write.</p>
   </div>
   <div class="verdict">
     <span class="tag no">misses</span>
@@ -320,39 +315,41 @@
   </div>
   <div class="verdict">
     <span class="tag no">misses</span>
-    <p><code>SELECT 1; DROP TABLE orders</code> — starts with <code>SELECT</code>, if you only check the beginning.</p>
+    <p><code>SELECT 1; DROP TABLE orders</code> — starts with <code>SELECT</code>, if you only check the front.</p>
   </div>
   <div class="verdict">
     <span class="tag no">refuses wrongly</span>
-    <p><code>SELECT * FROM shipments WHERE note LIKE '%DELETE%'</code> — a keyword scan says no to a perfectly ordinary query.</p>
+    <p><code>SELECT * FROM shipments WHERE note LIKE '%DELETE%'</code> — a keyword scan says no to an ordinary query.</p>
   </div>
 </div>
 
 <p>
-  You can fix each of these. You cannot fix the category. Every fix is a patch
-  against a shape someone thought of, and the list of shapes is owned by whoever
-  maintains the SQL dialect, not by you. Worse, the failure is silent in the
-  direction that matters: nothing tells you when the guard has quietly stopped
-  covering something.
+  Every one of these has a fix, and that's sort of the problem. They're patches
+  against shapes somebody happened to think of, and the list of shapes belongs to
+  whoever maintains the SQL dialect rather than to me. The part that bothered me
+  more is that the failures are quiet. If a new syntax slips past the check next
+  year, nothing tells you. The server keeps returning results and you keep
+  believing it's read-only.
 </p>
 
-<h2>The answer that does not have to anticipate</h2>
+<h2>Letting SQLite decide</h2>
 
 <p>
-  SQLite will answer the question for you. Two mechanisms, both older than the
-  problem.
+  SQLite will answer the question for you, using two things that have been in
+  there for years and don't come up much.
 </p>
 
 <p>
-  First, open the file read-only. Not a flag your code checks. The file is opened
-  in a mode where writing is not a thing that can happen.
+  First, open the file read-only. Not a flag your code consults later — the
+  handle can't write, in the same way a file opened for reading can't be written
+  to.
 </p>
 
 <pre><code>con = sqlite3.connect(f"file:{path}?mode=ro", uri=True)</code></pre>
 
 <p>
   Second, install an <strong>authorizer</strong>. SQLite calls it before every
-  action it is about to take, and hands you what the action is, which table, and
+  action it's about to take and tells you what the action is, which table, and
   which column. You return OK or DENY.
 </p>
 
@@ -370,83 +367,95 @@ def authorize(action, arg1, *rest):
 con.set_authorizer(authorize)</code></pre>
 
 <p>
-  That is the whole guard. It does not care how the statement is spelled, whether
-  it uses a CTE, or what SQL adds next year. The engine that will execute the
-  thing is the same one deciding whether it may. Run the four cases from above
-  past it:
+  That's the guard. It doesn't care how the statement is spelled, or whether it
+  uses a CTE, or what SQL grows next year, because the engine that's about to run
+  the thing is the same one deciding whether it may. Those four cases from
+  earlier:
 </p>
 
 <div class="verdicts">
   <div class="verdict">
     <span class="tag yes">denies</span>
-    <p>The writing CTE. It reaches <code>SQLITE_DELETE</code>, which is not a read.</p>
+    <p>The writing CTE. It reaches <code>SQLITE_DELETE</code>, which isn't a read.</p>
   </div>
   <div class="verdict">
     <span class="tag yes">denies</span>
-    <p>The pragma. <code>SQLITE_PRAGMA</code> is not in the allowed set.</p>
+    <p>The pragma. <code>SQLITE_PRAGMA</code> isn't in the allowed set.</p>
   </div>
   <div class="verdict">
     <span class="tag yes">denies</span>
-    <p>The chained <code>DROP</code> — twice over, since one call carries one statement.</p>
+    <p>The chained <code>DROP</code>, twice over — one call carries one statement anyway.</p>
   </div>
   <div class="verdict">
     <span class="tag yes">allows</span>
-    <p>The <code>LIKE '%DELETE%'</code> query. It is a read, and the text inside it was never the question.</p>
+    <p>The <code>LIKE '%DELETE%'</code> query. It's a read, and the text inside it was never the question.</p>
   </div>
 </div>
 
 <p>
-  Four for four, and not because I thought about any of them. It is an allowlist
-  in the engine, so it is wrong only in the safe direction.
+  All four, and I didn't reason about any of them. That's the trade an allowlist
+  buys you: it can be wrong, but only by refusing something it should have
+  allowed, which you find out about immediately because someone complains.
 </p>
 
 <div class="callout">
   <span class="label">The general form</span>
   <p>
-    Put the boundary where the system already enforces one. On a warehouse this
-    is a read-only role granted on a narrow set of views, not a string check in
-    your server. The lesson survives the change of engine; the regex does not.
+    Put the boundary where the system already enforces one. On a warehouse that's
+    a read-only role granted on a narrow set of views, not a string check in your
+    server. Same idea, different engine.
   </p>
 </div>
 
-<h2>It failed on my own code first, which is the point</h2>
+<h2>The guard's first victim was me</h2>
 
 <p>
-  I wrote the guard, then wrote <code>schema()</code>, which reads column
-  information with <code>PRAGMA table_info</code>. It was refused. My own tool
-  could not read its own schema.
+  I wrote the authorizer, then wrote <code>schema()</code>, which reads column
+  information with <code>PRAGMA table_info</code>. It got refused. My own tool
+  couldn't read its own schema, and the message SQLite gives you is three words
+  long:
+</p>
+
+<pre><code>sqlite3.DatabaseError: not authorized</code></pre>
+
+<p>
+  No mention of which action, which table, or which pragma. I spent a while
+  assuming I'd broken the connection string.
 </p>
 
 <p>
-  This was the guard working. <code>PRAGMA</code> is a single authorizer action
-  covering both <code>table_info</code>, which reads metadata, and
-  <code>journal_mode</code>, which changes the database. It cannot be allowed
-  wholesale. So the fix names the one pragma the tool needs:
+  What's actually going on is that <code>PRAGMA</code> is one authorizer action
+  covering everything from <code>table_info</code>, which reads metadata, to
+  <code>journal_mode</code>, which changes the database. It can't be allowed
+  wholesale, so the fix names the one pragma the tool needs:
 </p>
 
 <pre><code>_READ_PRAGMAS = frozenset({"table_info"})</code></pre>
 
 <p>
-  Sit with that for a second. A denylist would have let <em>every</em> pragma
-  through, including the ones that write, and nothing would have failed. I would
-  have shipped it. Deny-by-default failed loudly, in development, on the safe
-  side. That is the entire argument for it in one incident.
+  I'd have preferred to discover this some other way, but it's the strongest
+  argument for the approach that I have. A denylist would have let every pragma
+  through, including the ones that write, and nothing would have failed. I'd have
+  shipped it and never known. Instead the allowlist broke my own code in
+  development, which is the cheapest place for it to break.
 </p>
 
 <hr class="lede-rule">
 
-<h2>The second thing I got wrong: refusals</h2>
+<h2>How do you say no?</h2>
 
 <p>
-  Having refused something, how do you say so? The obvious move is to raise an
-  error. The protocol has a perfectly good error channel.
+  Having refused something, you have to report it. The obvious move is to raise
+  an error — the protocol has a perfectly good error channel and it's right
+  there.
 </p>
 
 <p>
-  It is the wrong channel. An error tells a model <em>something broke</em>, and
-  the reasonable response to something breaking is to try again. But nothing
-  broke. The server worked exactly as designed. What the model needs to know is
-  not that it failed, but <strong>what to do differently</strong>.
+  I don't think it's the right channel, though. An error tells a model that
+  something broke, and the sensible response to something breaking is to try
+  again. But nothing broke. The server did exactly what it was built to do. The
+  model doesn't need to know that the call failed; it needs to know what to do
+  differently.
 </p>
 
 <p>So a refusal comes back as an ordinary, successful result that happens to say no:</p>
@@ -458,10 +467,10 @@ con.set_authorizer(authorize)</code></pre>
 }</code></pre>
 
 <p>
-  Two fields, two audiences. <code>guard</code> is a stable token, so code can
-  branch on it and a model can recognise it without parsing English.
-  <code>reason</code> is the sentence a person reads. The result is not an error,
-  so nothing downstream treats it as a transient failure to retry.
+  <code>guard</code> is a stable token, so code can branch on it and a model can
+  recognise it without parsing English. <code>reason</code> is for whoever reads
+  the transcript afterwards. Since the result isn't an error, nothing downstream
+  treats it as a blip worth retrying.
 </p>
 
 <div class="tablewrap" tabindex="0">
@@ -473,82 +482,102 @@ con.set_authorizer(authorize)</code></pre>
       <tr><td><code>not-read-only</code></td><td>The statement asked to change something.</td></tr>
       <tr><td><code>multiple-statements</code></td><td>A second statement tried to ride along after a semicolon.</td></tr>
       <tr><td><code>table-not-allowed</code></td><td>The table is outside what this server exposes.</td></tr>
-      <tr><td><code>unreadable-database</code></td><td>The file could not be opened read-only at all.</td></tr>
+      <tr><td><code>unreadable-database</code></td><td>The file couldn't be opened read-only at all.</td></tr>
     </tbody>
   </table>
 </div>
 
-<h2>The cap has to admit it is a cap</h2>
+<h2>If you truncate, say so</h2>
 
 <p>
-  Every one of these servers limits how many rows it returns, because otherwise
-  one careless query eats the entire context window. Fine. But a truncated result
-  that does not say it was truncated is worse than no result, because the first
-  page of an answer is indistinguishable from the whole answer.
+  Every server like this caps how many rows it returns, or one careless query
+  eats the whole context window. The cap isn't the interesting bit. What matters
+  is that a truncated result which doesn't mention it was truncated is worse than
+  no result at all, because the first page of an answer looks exactly like the
+  entire answer.
 </p>
 
 <pre><code>{"rows": [["ada"], ["bob"]], "truncated": true, "row_limit": 2, "elapsed_ms": 0.18}</code></pre>
 
 <p>
-  <code>elapsed_ms</code> is there as a placeholder for the field that matters on
-  a real warehouse, where it would be bytes scanned and money. A model cannot
-  trade accuracy against cost when it has no idea what anything costs. On SQLite
-  that is a rounding error. On Snowflake it is the whole bill, and the compute
-  dwarfs the tokens by an amount that surprises people.
+  <code>elapsed_ms</code> is standing in for the field that'll matter on a real
+  warehouse, where it would be bytes scanned and money. A model can't trade
+  accuracy against cost if it has no idea what anything costs. On SQLite that's a
+  rounding error and the field is nearly pointless. On Snowflake it's the whole
+  bill — the compute dwarfs the token spend by more than people expect, and the
+  agent's loop is what drives it.
 </p>
 
-<h2>Was the server worth building at all?</h2>
+<h2>Was it worth building?</h2>
 
 <p>
-  Honest answer, for the case you are probably imagining: no. You at a terminal,
-  with credentials you already have, should write the SQL. A server there is pure
-  overhead, and this project had already reached that conclusion in writing about
-  a different tool.
+  For the case you're probably picturing, no. You, at a terminal, with
+  credentials you already have, should just write the SQL. A server there is
+  overhead. I'd reached the same conclusion about a different tool in this
+  project a few weeks ago and it applies here too.
 </p>
 
-<p>It changes when one of three things is true.</p>
+<p>It changes when the situation does:</p>
 
 <ul>
-  <li><strong>The consumer is not you.</strong> A colleague who does not write SQL, an agent running unattended, a client with no shell. The guards are what make handing it over acceptable.</li>
-  <li><strong>The work is a loop.</strong> Why did last night's load drop by a third is fifteen queries, each depending on what the last returned. Pasting SQL back and forth fifteen times is unbearable.</li>
-  <li><strong>The access needs governing.</strong> Someone other than you is asking, and there has to be a limit and a record.</li>
+  <li><strong>The consumer isn't you.</strong> A colleague who doesn't write SQL, an agent running unattended, a client with no shell. The guards are what make handing it over acceptable.</li>
+  <li><strong>The work is a loop.</strong> "Why did last night's load drop by a third" is fifteen queries, each depending on what the last one returned. Pasting SQL back and forth fifteen times is miserable.</li>
+  <li><strong>The access needs governing.</strong> Someone else is asking, and there has to be a limit and a record of it.</li>
 </ul>
 
 <p>
-  Note that none of those three is about the protocol. They are about who is
-  asking and how often. The protocol's contribution is narrower and still real:
-  write the server once, and every client can use it. That is the problem it
-  exists to solve, and it is why the specification compares itself to the
-  language server protocol.
+  None of those is really about MCP. They're about who's asking and how often.
+  What the protocol contributes is narrower: write the server once and every
+  client can use it, which is genuinely the problem it exists to solve, and why
+  the spec keeps comparing itself to the language server protocol.
 </p>
 
-<h2>What I would tell someone starting</h2>
-
-<ul>
-  <li><strong>Build a server, not a client.</strong> The server side is where the design decisions are.</li>
-  <li><strong>Point it at something the model cannot already reach.</strong> A database qualifies. A folder of text files does not, and you will conclude it was redundant.</li>
-  <li><strong>Write the guards first.</strong> They are the product. The query execution is four lines.</li>
-  <li><strong>Test the round trip, not the registration.</strong> Listing your tools proves nothing about what a consumer actually reads.</li>
-</ul>
+<h2>Loose ends</h2>
 
 <p>
-  That last one caught a real bug for me. In the Python SDK, a tool annotated
-  <code>-&gt; dict</code> registers with no output schema and silently returns
-  nothing structured. Annotated <code>-&gt; dict[str, object]</code>, it works.
-  Nothing errors, nothing warns, and the tool looks identical in a listing. Only
-  a test that goes through a client and reads the structured content catches it.
+  Two things I'd tell someone doing this next. Build a server rather than a
+  client, because the server side is where the design decisions live. And point
+  it at something the model can't already reach — a database qualifies, a folder
+  of text files doesn't, and if you build the second one you'll spend a week
+  discovering it was redundant.
+</p>
+
+<p>
+  Then test the round trip rather than the registration, which caught a real bug
+  for me. In the Python SDK a tool annotated <code>-&gt; dict</code> registers
+  with no output schema and returns nothing structured. Annotated
+  <code>-&gt; dict[str, object]</code>, it works. Nothing errors, nothing warns,
+  and the tool looks identical when you list it. The only test that catches it is
+  one that goes through a client and reads what comes back.
+</p>
+
+<p>
+  The thing I'm still unsure about is the shape. Three tools felt obvious, but
+  MCP has resources and prompts too, and a schema listing is arguably a resource
+  I turned into a tool without thinking about it. Resources get included when the
+  client decides; tools get called when the model decides. Which is right here
+  probably depends on the client, and I don't have a number either way. There's a
+  lab in the backlog to measure it. I haven't run it.
 </p>
 
 <footer class="end">
   <p>
+    <strong>How this was made.</strong> <code>sqlite-mcp</code> and this write-up
+    were both built with Claude Code, across two afternoons. The commit history
+    and the design record are in the repo if you want to see the shape of that.
+    Every error message quoted here was copied out of a terminal rather than
+    recalled.
+  </p>
+  <p>
     <code>sqlite-mcp</code> is idea #11 in
     <a href="https://github.com/pavanrao/data-tools/blob/main/IDEAS.md">this backlog</a>.
-    The design record is <code>docs/009_sqlite-mcp.md</code>; the protocol concepts
-    it exercises, and the ones it does not, are in <code>docs/010_mcp-concepts.md</code>.
+    The design record is <code>docs/009_sqlite-mcp.md</code>; the protocol
+    concepts it exercises, and the ones it doesn't, are in
+    <code>docs/010_mcp-concepts.md</code>.
   </p>
   <p>
     Written against MCP protocol revision 2026-07-28, which removed the
-    initialize handshake and protocol-level sessions. If a tutorial you are
+    initialize handshake and protocol-level sessions. If a tutorial you're
     reading mentions either, it predates this.
   </p>
 </footer>
