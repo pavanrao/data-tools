@@ -1038,6 +1038,33 @@ is a result either way.
 - **Cost note:** the metrics are cheap; the evaluation is #25's, which is free.
 - **Covers:** §2 Chunking · §5 Retrieval metrics · the reproduction habit itself.
 
+### 218. `ai-sniffer` — the tells in your own draft ⭐⭐ 💻 🔌
+Counts the habits that make prose read as machine-written, and refuses to say
+whether it was. Sentence-length variance; contraction rate; the recurring
+"not X, but Y" pivot; paragraphs that keep landing on a short sentence; hedge
+density; and how much concrete detail the text carries at all — digits, dates,
+proper nouns, quoted error strings. Findings arrive with positions, so the
+output is *line 40, fourth consecutive paragraph ending short* rather than a
+score, because locating a habit is reliable where classifying an author is not.
+The number is the **overlap** between a pre-2022 human corpus and a generated
+one, per signal: how often any threshold would misclassify. That unreliability
+is the finding rather than a caveat, and it is why the tool has no verdict mode.
+The *break it on purpose* step is pointing it at deliberately idiosyncratic
+human writing, counting the false positives, and then pointing it at this
+repository's own documentation.
+- **Learn:** where the tells come from — post-training, not pretraining, since
+  a base model's prose is far more varied; mode collapse as something you can
+  *measure in the text* rather than assert; why shape (variance, frame
+  repetition, concreteness) is countable while meaning is not; and how register
+  confounds all of it, which is what forces located findings over a score.
+- **Cost note:** the deterministic core needs no model at all — every signal
+  above is arithmetic, a closed word list or a regex. Generating the comparison
+  corpus is a few hundred local completions. $0. Per-token surprisal, the
+  strongest published signal, sits behind the `llm` extra and records which path
+  ran, per rule 2.
+- **Covers:** §4 What alignment does to style · §5 Task metrics vs. vibes ·
+  §5 Calibrated confidence & honest uncertainty.
+
 ## G. Concept notes (markdown, not code)
 
 Concepts where the honest deliverable is a written position plus a prompt you
