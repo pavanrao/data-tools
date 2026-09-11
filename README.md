@@ -102,19 +102,28 @@ set that leads into M.
 
 ## How this was built
 
-Built with Claude Code, and the commit history shows it. Worth stating plainly
-rather than leaving someone to infer it from the co-authorship trailers.
+Built with Claude Code. Nearly every commit says so in its trailer, so it is
+better stated here than left to be worked out.
 
-The judgment is the part worth reviewing. Claims in
-[`docs/FINDINGS.md`](./docs/FINDINGS.md) are backed by measurements under
-[`evidence/`](./evidence/); reproductions are checked against published numbers
-rather than against my own expectations, including where a published paper and
-its own implementation disagree; and corrections are made in place with the
-superseded number left visible.
-[`docs/LEARNINGS.md`](./docs/LEARNINGS.md) records what that discipline cost to
-acquire — a config bug that looked exactly like a finding, a percentage quoted
-from too few trials, a memory cap that never worked while the ledger said it
-did.
+Worth describing how that actually goes, because the interesting part is not
+that a model wrote the code. Claude writes most of the code and most of the
+prose. I set the direction, argue with what comes back, and decide what is
+true — which turns out to be more work than it sounds, because a draft that
+reads well can still be wrong and a tool whose tests pass can still be solving
+the wrong problem. `chunking-lab` was kept because its numbers matched a
+published table to within 0.05 of a percentage point. `repo-rag` was parked
+because the honest answer was that it duplicated something the client could
+already do.
+
+Two documents record that process rather than its output.
+[`docs/FINDINGS.md`](./docs/FINDINGS.md) holds the verdicts: what got built,
+what got parked, and what the reasoning was.
+[`docs/LEARNINGS.md`](./docs/LEARNINGS.md) holds the craft, including the parts
+learned the expensive way — a generation-config bug that looked exactly like a
+finding about model size, a rate quoted from single-digit trials, a memory cap
+that never worked while the ledger reported that it did. Corrections are made
+in place with the superseded number left visible, which is why a few entries
+read as arguments with an earlier version of me.
 
 ## Repo layout
 
