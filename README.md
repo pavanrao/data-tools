@@ -100,6 +100,22 @@ CLI. Two tiers: ten **protocol labs** that each end in a measured number, and te
 original six, rewritten against the same revision, and now reads as the starter
 set that leads into M.
 
+## How this was built
+
+Built with Claude Code, and the commit history shows it. Worth stating plainly
+rather than leaving someone to infer it from the co-authorship trailers.
+
+The judgment is the part worth reviewing. Claims in
+[`docs/FINDINGS.md`](./docs/FINDINGS.md) are backed by measurements under
+[`evidence/`](./evidence/); reproductions are checked against published numbers
+rather than against my own expectations, including where a published paper and
+its own implementation disagree; and corrections are made in place with the
+superseded number left visible.
+[`docs/LEARNINGS.md`](./docs/LEARNINGS.md) records what that discipline cost to
+acquire — a config bug that looked exactly like a finding, a percentage quoted
+from too few trials, a memory cap that never worked while the ledger said it
+did.
+
 ## Repo layout
 
 A [uv workspace](https://docs.astral.sh/uv/concepts/projects/workspaces/) of
