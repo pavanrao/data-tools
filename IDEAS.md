@@ -450,7 +450,7 @@ can ask in plain English: "did the nightly party load finish?", "is feed X late 
 ## F. Concept labs — the AI/data stack, one measured lab at a time
 
 Sections A–E start from a problem and build a tool. Section F starts from a
-**concept** — the 98 ideas in the concept map (`docs/005_concept-coverage.md`)
+**concept** — the 104 concepts in the concept map (`docs/005_concept-coverage.md`)
 that recur across AI and data engineering — and builds the smallest thing that
 exercises it for real, on a laptop, for roughly nothing.
 
@@ -980,7 +980,7 @@ produced by `tabular-lab` (#66).
 ### 90. `evidence-index` — what has been measured, and what hasn't ⭐⭐ 💻 🔌
 The capstone, and the reason every other lab writes an evidence card.
 `evidence-index` reads `evidence/*.jsonl` across the whole collection and answers
-three questions: which of the 98 concepts have a measured result behind them,
+three questions: which of the 104 concepts have a measured result behind them,
 which have only a note, and which have nothing at all. It validates each card
 (does the number have a baseline? a stated scale? a reproduction command?),
 refuses cards whose claim is an adjective rather than a measurement, and renders

@@ -100,6 +100,31 @@ CLI. Two tiers: ten **protocol labs** that each end in a measured number, and te
 original six, rewritten against the same revision, and now reads as the starter
 set that leads into M.
 
+## How this was built
+
+Built with Claude Code. Nearly every commit says so in its trailer, so it is
+better stated here than left to be worked out.
+
+Worth describing how that actually goes, because the interesting part is not
+that a model wrote the code. Claude writes most of the code and most of the
+prose. I set the direction, argue with what comes back, and decide what is
+true — which turns out to be more work than it sounds, because a draft that
+reads well can still be wrong and a tool whose tests pass can still be solving
+the wrong problem. `chunking-lab` was kept because its numbers matched a
+published table to within 0.05 of a percentage point. `repo-rag` was parked
+because the honest answer was that it duplicated something the client could
+already do.
+
+Two documents record that process rather than its output.
+[`docs/FINDINGS.md`](./docs/FINDINGS.md) holds the verdicts: what got built,
+what got parked, and what the reasoning was.
+[`docs/LEARNINGS.md`](./docs/LEARNINGS.md) holds the craft, including the parts
+learned the expensive way — a generation-config bug that looked exactly like a
+finding about model size, a rate quoted from single-digit trials, a memory cap
+that never worked while the ledger reported that it did. Corrections are made
+in place with the superseded number left visible, which is why a few entries
+read as arguments with an earlier version of me.
+
 ## Repo layout
 
 A [uv workspace](https://docs.astral.sh/uv/concepts/projects/workspaces/) of

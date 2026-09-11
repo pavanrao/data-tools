@@ -14,8 +14,9 @@ replaced.
 
 A collection of small, independent data-pipeline tools, built one at a time, as
 a way to learn MCP and RAG in anger. [`IDEAS.md`](../IDEAS.md) holds the running
-backlog of 49 ideas; sections A–D are RAG/MCP tools and infrastructure, section
-E is generic pipeline plumbing.
+backlog of 218 ideas; sections A–D are RAG/MCP tools and infrastructure, section
+E is generic pipeline plumbing, and F onward are the later axes described in
+[`../README.md`](../README.md).
 
 The collection is built under one governing tension, and nearly every structural
 decision below is an answer to it:
@@ -32,7 +33,7 @@ repos" fails the first. A **uv workspace** is the shape that satisfies all three
 ```
 data-tools/
 ├── CONVENTIONS.md              # the normative rules (short)
-├── IDEAS.md                    # the 48-idea backlog
+├── IDEAS.md                    # the running backlog of tool ideas
 ├── Makefile                    # sync / lint / test / demo
 ├── pyproject.toml              # workspace root — NOT a package
 ├── .python-version             # 3.13
