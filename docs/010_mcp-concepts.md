@@ -19,6 +19,7 @@ claims and the difference is the point.
 | **Built** | Used in a shipped tool, exercised by tests |
 | **Verified** | Confirmed working against a running server, not yet load-bearing |
 | **Present** | Confirmed in the SDK by inspection only |
+| **Types only** | The protocol's message shapes exist in the SDK, but nothing implements the behaviour; building against it means writing the lifecycle yourself |
 | **Unread** | On the map, nothing done |
 
 Backlog ideas are referenced as `#N`. The protocol revision throughout is
@@ -179,7 +180,15 @@ that idea is first in the section M build order.
 
 ## 8 · Long-running work: the Tasks extension
 
-**Status: Present** · nothing built against it
+**Status: Types only** · nothing built against it
+
+> **Corrected 2026-09-14.** This entry originally said **Present**, which
+> overstated it. Checking the installed SDK before starting on #199 found the
+> July extension's messages — `tasks/get`, `tasks/update`, the
+> `io.modelcontextprotocol/tasks` identifier — only in `mcp_types`. Neither
+> `MCPServer` nor the extension module gives a tool any way to return a task.
+> And `tasks/list` and `tasks/result`, both removed by the July revision, are
+> still defined right beside them.
 
 A call that can exceed a few seconds should not block a connection. The Tasks
 extension returns a durable `taskId`, and the client polls `tasks/get`. The
@@ -187,7 +196,9 @@ handle survives a client restart.
 
 Every hand-rolled `run_job` plus `job_status` pair is a worse version of this,
 including the one idea #14 originally proposed. #199 `run-as-task` is the entry
-that will move this to Built.
+that will move this to Built, and it now carries more than the idea entry says:
+the task lifecycle has to be implemented on the low-level server rather than
+called.
 
 ---
 
