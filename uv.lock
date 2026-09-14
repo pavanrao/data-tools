@@ -9,6 +9,7 @@ resolution-markers = [
 members = [
     "data-tools-chunking-lab",
     "data-tools-core",
+    "data-tools-discover-probe",
     "data-tools-docs-rag",
     "data-tools-ingest-ledger",
     "data-tools-repo-rag",
@@ -582,6 +583,21 @@ llm = [
 
 [package.metadata]
 requires-dist = [{ name = "litellm", marker = "extra == 'llm'", specifier = ">=1.0" }]
+
+[[package]]
+name = "data-tools-discover-probe"
+version = "0.1.0"
+source = { editable = "tools/discover-probe" }
+dependencies = [
+    { name = "data-tools-core" },
+    { name = "mcp" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "data-tools-core", editable = "shared/data-tools-core" },
+    { name = "mcp", specifier = ">=2.2.0,<3" },
+]
 
 [[package]]
 name = "data-tools-docs-rag"

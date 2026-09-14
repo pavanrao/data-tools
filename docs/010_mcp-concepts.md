@@ -159,7 +159,7 @@ one should keep the separation, and it is one input to #201
 
 ## 7 · Statelessness and the vanished handshake
 
-**Status: Present** · nothing built against it
+**Status: Built** (`server/discover`) · `discover-probe` (#198)
 
 Revision 2026-07-28 removed the `initialize` handshake and protocol-level
 sessions. Every request now carries its own protocol version and client
@@ -172,9 +172,24 @@ its own connection. The SDK also keeps both eras, with four revisions still
 reachable through the old handshake, so a server can speak the current revision
 without dropping older clients.
 
-Being confirmed present is not the same as having used it. #198
-`discover-probe` is the tool that changes this entry's status, and it is why
-that idea is first in the section M build order.
+#198 `discover-probe` now drives `discover` and `initialize` separately, each
+on its own connection, against real servers over stdio. What it learned is in
+[`011`](011_discover-probe.md), and two things belong here.
+
+**The SDK's default connection mode hides the answer.** Left on `auto`, the
+client tries `discover`, falls back to the handshake, and gives you a session
+without saying which path worked. Its own docstring calls that fallback a
+denylist. Use `ClientSession.discover()` and `initialize()` directly whenever
+you need to know rather than just connect.
+
+**Capabilities are computed per era, honestly.** A server built on the SDK
+claims `list_changed` and resource subscriptions through `discover` and denies
+them through `initialize`, because change notification runs over
+`subscriptions/listen` in the July revision only. That isn't an inconsistency.
+
+**And on 2026-09-14, none of the six official reference servers answered
+`discover`.** The TypeScript SDK's newest release predates the revision, and the
+Python reference servers are still on the v1 SDK.
 
 ---
 
@@ -227,9 +242,13 @@ Small things that cost time and are not in anyone's tutorial.
    to get right and is invisible when wrong.
 2. **`mcp.server._otel` is private.** #206 must read `_meta` directly rather
    than import it.
-3. **The SDK ships no in-memory client and server pair.** Only a raw stream
-   factory. An in-process round trip has to reach for the lowlevel server
-   attribute, which is private and therefore fragile — and building a proper
-   harness is now part of #217 `mcp-replay`.
+3. **The SDK's in-memory client and server pair is private.**
+   `mcp.client._memory.InMemoryTransport` connects a client to a server over
+   real JSON-RPC framing, which is what `discover-probe`'s tests run on.
+   *Corrected 2026-09-14: this finding originally said no such pair existed, only
+   a raw stream factory in `mcp.shared.memory`. The search had missed a private
+   module.* It still sits behind an underscore, so depending on it is fragile, and
+   a record-and-replay harness remains part of #217 `mcp-replay`'s scope, since a
+   live connection is not a fixture.
 4. **Deny-by-default will fail your own code first.** That is the mechanism
    working. §4.
