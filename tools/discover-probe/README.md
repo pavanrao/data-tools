@@ -108,7 +108,8 @@ Microsoft's Playwright server and dbt Labs' had not.
 The full table, the finding about error codes, and two claims the design record's
 first version made and got wrong are in
 [`docs/011_discover-probe.md`](../../docs/011_discover-probe.md). The evidence card
-is [`evidence/discover-probe.jsonl`](../../evidence/discover-probe.jsonl).
+is [`evidence/discover-probe.jsonl`](../../evidence/discover-probe.jsonl). The
+write-up is [Which Protocol Is Your MCP Server Speaking?](https://pavanrao.github.io/posts/which-protocol-is-your-mcp-server-speaking/).
 
 ## Scope
 
