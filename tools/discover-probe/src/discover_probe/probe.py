@@ -14,13 +14,14 @@ lock rather than the server.
 
 from __future__ import annotations
 
-from dataclasses import asdict, dataclass, field
+from dataclasses import asdict, dataclass, field, replace
 from typing import Any, Literal
 
 import anyio
 from mcp.client.session import ClientSession
 from mcp.shared.exceptions import MCPError
 from mcp.shared.jsonrpc_dispatcher import JSONRPCDispatcher
+from mcp_types.jsonrpc import CONNECTION_CLOSED, REQUEST_TIMEOUT
 
 Status = Literal["ok", "rejected", "unreachable"]
 """What one negotiation path did. ``rejected`` means the server answered and
@@ -52,6 +53,8 @@ class PathOutcome:
     server_name: str | None = None
     listings: dict[str, str] = field(default_factory=dict)
     error: str | None = None
+    attempts: int = 1
+    first_error: str | None = None
 
 
 @dataclass(frozen=True, slots=True)
@@ -65,6 +68,17 @@ class Report:
 
     def to_dict(self) -> dict[str, Any]:
         return asdict(self)
+
+
+# Errors the SDK raises on the client's own behalf, dressed as MCPError. A closed
+# connection means the server process is gone; a request timeout means nobody
+# answered. Neither is the server saying no.
+_CLIENT_SIDE_ERRORS = frozenset({CONNECTION_CLOSED, REQUEST_TIMEOUT})
+
+
+def status_for_error(exc: MCPError) -> Status:
+    """Classify an MCPError by whether the *server* actually produced it."""
+    return "unreachable" if exc.code in _CLIENT_SIDE_ERRORS else "rejected"
 
 
 def classify_era(discover: Status, handshake: Status) -> Era:
@@ -117,7 +131,6 @@ async def _run_path(open_transport, path: Literal["discover", "handshake"], time
             ):
                 if path == "discover":
                     result = await session.discover()
-                    session.adopt(result)
                     versions = list(result.supported_versions)
                     info = (result.meta or {}).get("io.modelcontextprotocol/serverInfo") or {}
                     name = info.get("name")
@@ -140,7 +153,7 @@ async def _run_path(open_transport, path: Literal["discover", "handshake"], time
         if isinstance(leaf, TimeoutError):
             return PathOutcome(status="unreachable", error=f"timed out after {timeout:g}s")
         if isinstance(leaf, MCPError):
-            return PathOutcome(status="rejected", error=f"error {leaf.code}: {leaf}")
+            return PathOutcome(status=status_for_error(leaf), error=f"error {leaf.code}: {leaf}")
         if not isinstance(leaf, Exception):
             raise  # KeyboardInterrupt and friends are the operator's, not evidence
         return PathOutcome(status="unreachable", error=f"{type(leaf).__name__}: {leaf}")
@@ -150,8 +163,12 @@ async def _run_path(open_transport, path: Literal["discover", "handshake"], time
 
 
 def _path_check(name: str, outcome: PathOutcome, describe) -> Check:
+    retried = outcome.attempts > 1
     if outcome.status == "ok":
-        return Check(name, "pass", describe(outcome))
+        note = f" (retried: first attempt {outcome.first_error})" if retried else ""
+        return Check(name, "pass", describe(outcome) + note)
+    if retried:
+        return Check(name, "fail", f"{outcome.status} on both attempts: {outcome.error}")
     return Check(name, "fail", f"{outcome.status}: {outcome.error}")
 
 
@@ -232,6 +249,16 @@ async def probe(open_transport, *, target: str, timeout: float = 10.0) -> Report
     """
     discover = await _run_path(open_transport, "discover", timeout)
     handshake = await _run_path(open_transport, "handshake", timeout)
+
+    # Discover goes first, so on a first npx or uvx run it also absorbs the package
+    # download, and can time out while the handshake that follows finds a warm
+    # cache. Unanswered discover from a server that has just proved it is alive
+    # earns one retry. A server that really never answers times out twice, and the
+    # evidence says so, so the retry cannot turn silence into a pass.
+    if discover.status == "unreachable" and handshake.status == "ok":
+        again = await _run_path(open_transport, "discover", timeout)
+        discover = replace(again, attempts=2, first_error=discover.error)
+
     return Report(
         target=target,
         era=classify_era(discover.status, handshake.status),

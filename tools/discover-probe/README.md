@@ -41,8 +41,25 @@ are features a server asks the *client* for during a call, so no probe that
 doesn't make calls can see whether a server relies on them.
 
 **A silent server is not a server that said no.** Each path is `ok`, `rejected`
-(it answered and refused) or `unreachable` (nothing usable came back). An outage
-is never counted as evidence about which protocol something speaks.
+(it answered and refused) or `unreachable` (nothing usable came back). The SDK
+reports a server process that died, and a request nobody answered, as errors too;
+the probe counts both as `unreachable`, never as a refusal. An outage is never
+evidence about which protocol something speaks.
+
+**When a server never connects, you see why.** Server stderr stays out of a
+healthy report, but if either path fails to connect, its last lines are kept —
+usually the only explanation there is:
+
+```console
+server stderr (last lines):
+Error: In-memory databases require the --read-write flag.
+```
+
+**A cold start gets one retry.** Discover runs first, so on a first `npx` or `uvx`
+run it also absorbs the package download and can time out while the handshake
+after it succeeds. If discover got no answer and the handshake then worked, the
+probe retries discover once and says so in the evidence. A server that really
+never answers times out twice and is reported that way.
 
 ## Use
 
@@ -75,17 +92,23 @@ any `--` in the server's own arguments.
 | --- | --- |
 | `0` | probed, and every advertised listing worked |
 | `1` | the server advertised a listing that failed |
-| `2` | the server never answered |
+| `2` | the server never answered, including one that crashed on startup |
 
 A legacy-only server exits `0`. Not speaking the July revision is a fact about
 the server, reported in the output. It isn't a lie the server told.
 
 ## What it found
 
-Probed on 2026-09-14, all six official reference servers at their latest
-published versions are legacy-only. Details, and the finding about error codes,
-are in [`docs/011_discover-probe.md`](../../docs/011_discover-probe.md) and the
-evidence card at [`evidence/discover-probe.jsonl`](../../evidence/discover-probe.jsonl).
+Probed on 2026-09-14, across twelve servers — the six official reference servers,
+five vendor servers and `sqlite-mcp` as a control — the SDK's major version
+decided the era every time. v1 meant the old handshake only; v2 meant both. None
+of the reference servers had migrated. Upstash, MotherDuck and AWS Labs had;
+Microsoft's Playwright server and dbt Labs' had not.
+
+The full table, the finding about error codes, and two claims the design record's
+first version made and got wrong are in
+[`docs/011_discover-probe.md`](../../docs/011_discover-probe.md). The evidence card
+is [`evidence/discover-probe.jsonl`](../../evidence/discover-probe.jsonl).
 
 ## Scope
 
@@ -95,10 +118,10 @@ other people's endpoints is a separate decision.
 
 ## Tests
 
-26 tests, model-free and network-free. The wire tests run real servers through
+30 tests, model-free and network-free. The wire tests run real servers through
 `InMemoryTransport` rather than the SDK's in-process shortcut, which skips
-JSON-RPC framing and would make a probe test prove nothing. One test spawns a
-real subprocess over stdio.
+JSON-RPC framing and would make a probe test prove nothing. Two tests spawn real
+subprocesses over stdio, one of which crashes on startup.
 
 ```bash
 uv run pytest tools/discover-probe/tests/

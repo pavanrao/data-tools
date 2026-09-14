@@ -54,3 +54,17 @@ def test_a_double_dash_inside_the_server_command_is_passed_through(capsys):
     payload = json.loads(capsys.readouterr().out)
     assert payload["target"].endswith("-- extra")
     assert payload["era"] == "both"
+
+
+CRASHES = Path(__file__).parent / "servers" / "crashes.py"
+
+
+def test_a_server_that_crashes_on_startup_is_unreachable_and_says_why(capsys):
+    # The probe used to call this "neither", exit 0, and discard the one line that
+    # explained it. A dead server is not a server that refused anything.
+    code = main(["--json", "stdio", "--", sys.executable, str(CRASHES)])
+
+    payload = json.loads(capsys.readouterr().out)
+    assert payload["era"] == "unreachable"
+    assert code == 2
+    assert "require the --read-write flag" in payload["server_stderr"]

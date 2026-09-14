@@ -16,8 +16,8 @@ from __future__ import annotations
 
 import argparse
 import json
-import os
 import sys
+import tempfile
 from collections.abc import Sequence
 
 import anyio
@@ -76,16 +76,35 @@ def main(argv: Sequence[str] | None = None) -> int:
         parser.error("stdio needs a server command after --")
 
     target = " ".join(command)
-    # The server's own stderr is noise in a probe report; one handle, closed after.
-    with open(os.devnull, "w") as errlog:
+    # Server stderr stays out of a healthy report, but when a path never connected
+    # it is usually the only explanation there is, so it is kept and shown then.
+    with tempfile.TemporaryFile("w+") as errlog:
         opener = _stdio_opener(command[0], command[1:], errlog)
         report = anyio.run(lambda: probe(opener, target=target, timeout=args.timeout))
+        errlog.seek(0)
+        stderr_tail = _tail(errlog.read()) if _any_unreachable(report) else ""
 
     if args.json:
-        print(json.dumps(report.to_dict(), indent=2))
+        payload = report.to_dict()
+        if stderr_tail:
+            payload["server_stderr"] = stderr_tail
+        print(json.dumps(payload, indent=2))
     else:
         print(render(report))
+        if stderr_tail:
+            print("\nserver stderr (last lines):\n" + stderr_tail)
     return exit_code(report)
+
+
+def _any_unreachable(report: Report) -> bool:
+    return "unreachable" in (report.discover.status, report.handshake.status)
+
+
+def _tail(text: str, lines: int = 12) -> str:
+    # Each negotiation path starts the server afresh, so a server that fails at
+    # startup prints the same complaint once per path. Show each line once.
+    kept = list(dict.fromkeys(line for line in text.splitlines() if line.strip()))
+    return "\n".join(kept[-lines:])
 
 
 if __name__ == "__main__":  # pragma: no cover

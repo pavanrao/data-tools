@@ -59,3 +59,21 @@ def test_a_server_that_goes_silent_times_out_instead_of_hanging_the_probe(never_
 
     assert report.era == "unreachable"
     assert "timed out" in check(report, "discover").evidence
+
+
+def test_a_cold_start_that_times_out_discover_is_retried_once(cold_start):
+    report = run(cold_start, timeout=0.5)
+
+    assert report.discover.status == "ok"
+    assert report.era == "both"
+    # The retry is disclosed, not hidden: a reader can see the first attempt failed.
+    assert "retried" in check(report, "discover").evidence
+
+
+def test_a_server_that_really_never_answers_discover_stays_unreachable(hangs_on_discover):
+    # The retry must not launder real silence into a pass.
+    report = run(hangs_on_discover, timeout=0.5)
+
+    assert report.discover.status == "unreachable"
+    assert report.era == "legacy-only"
+    assert "both attempts" in check(report, "discover").evidence

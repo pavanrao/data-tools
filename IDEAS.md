@@ -2551,12 +2551,14 @@ protocol catches it.
   advertisement does not match what they do.
 - **Cost note:** no model needed; it is a client. $0.
 - **Maps to:** §6 in `docs/005` — *Tool calling & MCP*.
-- **Built:** [`tools/discover-probe/`](./tools/discover-probe/). On 2026-09-14
-  none of the six official reference servers answered `server/discover`: the
-  TypeScript SDK's newest release predates the July revision, and the Python
-  reference servers are still on the v1 SDK. The two SDK families also refuse
-  the method with different error codes, and the Python one is wrong. Design
-  record [`docs/011`](docs/011_discover-probe.md); evidence
+- **Built:** [`tools/discover-probe/`](./tools/discover-probe/). On 2026-09-14,
+  across twelve servers, the SDK's major version decided the era every time: v1
+  meant the old handshake only, v2 meant both. None of the six official reference
+  servers had migrated; Upstash, MotherDuck and AWS Labs had, Microsoft's
+  Playwright and dbt Labs had not. The two v1 SDKs also refuse an unknown method
+  with different codes, `-32601` from TypeScript and `-32602` from Python. Design
+  record [`docs/011`](docs/011_discover-probe.md), which records two claims this
+  entry first made and got wrong; evidence
   [`evidence/discover-probe.jsonl`](evidence/discover-probe.jsonl).
 
 ### 199. `run-as-task` — the backfill that outlives the connection ⭐⭐⭐ 🔌 💻

@@ -81,18 +81,49 @@ def refuses_to_connect():
     return open_transport
 
 
+@asynccontextmanager
+async def _silent_transport():
+    """Connects, then never delivers a byte in either direction."""
+    send, receive = anyio.create_memory_object_stream(0)
+    back_send, back_receive = anyio.create_memory_object_stream(0)
+    async with send, receive, back_send, back_receive:
+        yield back_receive, send
+
+
 @pytest.fixture
 def never_answers():
     """A transport that connects and then goes silent forever."""
+    return _silent_transport
+
+
+@pytest.fixture
+def cold_start():
+    """Silent on the first connection, then an ordinary server.
+
+    The shape of a first ``npx``/``uvx`` run: discover goes first, so it absorbs the
+    package download, and the handshake that follows finds a warm cache. Found when
+    dbt-mcp timed out on discover once and answered normally on every run after.
+    """
+    server = _server_with_a_tool("cold-start")
+    opened = 0
 
     def open_transport():
-        @asynccontextmanager
-        async def silent():
-            send, receive = anyio.create_memory_object_stream(0)
-            back_send, back_receive = anyio.create_memory_object_stream(0)
-            async with send, receive, back_send, back_receive:
-                yield back_receive, send
-
-        return silent()
+        nonlocal opened
+        opened += 1
+        if opened == 1:
+            return _silent_transport()
+        return InMemoryTransport(server._lowlevel_server)
 
     return open_transport
+
+
+@pytest.fixture
+def hangs_on_discover():
+    """Alive and answering the handshake, but never replying to discover at all."""
+    server = _server_with_a_tool("hangs-on-discover")
+
+    async def hang(ctx, params):
+        await anyio.sleep_forever()
+
+    server._lowlevel_server.add_request_handler("server/discover", types.RequestParams, hang)
+    return _opener(server)

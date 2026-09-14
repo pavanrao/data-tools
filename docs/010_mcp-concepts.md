@@ -187,9 +187,14 @@ claims `list_changed` and resource subscriptions through `discover` and denies
 them through `initialize`, because change notification runs over
 `subscriptions/listen` in the July revision only. That isn't an inconsistency.
 
-**And on 2026-09-14, none of the six official reference servers answered
-`discover`.** The TypeScript SDK's newest release predates the revision, and the
-Python reference servers are still on the v1 SDK.
+**On 2026-09-14, the SDK's major version decided the era for all twelve
+servers probed.** v1, TypeScript or Python, meant the old handshake only; v2
+meant both. None of the six official reference servers had migrated; three of
+five vendor servers had. TypeScript v2 ships as new packages —
+`@modelcontextprotocol/server` and friends — so bumping `@modelcontextprotocol/sdk`
+never gets you there. *Corrected the same day: this paragraph first said the
+TypeScript SDK's newest release predated the revision. That was true only of the
+old package name.*
 
 ---
 
