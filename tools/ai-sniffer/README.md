@@ -76,7 +76,7 @@ text.
 Without a configured model it doesn't fall back to a default: it exits `2` and names
 both ways to get a review.
 
-In Claude Code, the agent file does the same job with no key: link or copy
+In Claude Code, the agent file does the same job with no key: copy
 `agent/ai-sniffer.md` into `~/.claude/agents/` and ask for an ai-sniffer review.
 
 ## Eval
