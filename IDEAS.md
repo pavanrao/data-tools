@@ -2533,7 +2533,7 @@ does instead, and if that line is weak the idea does not belong.
 
 ### M.1 · Protocol labs (#198–#207)
 
-### 198. `discover-probe` — what does this server actually support? ⭐⭐ 🔌 💻
+### 198. `discover-probe` — what does this server actually support? ✅ ⭐⭐ 🔌 💻
 Points at any MCP server and reports what it really is: which protocol revisions
 it accepts, which capabilities and extensions it advertises through
 `server/discover`, whether it still expects a handshake, and which deprecated
@@ -2551,6 +2551,15 @@ protocol catches it.
   advertisement does not match what they do.
 - **Cost note:** no model needed; it is a client. $0.
 - **Maps to:** §6 in `docs/005` — *Tool calling & MCP*.
+- **Built:** [`tools/discover-probe/`](./tools/discover-probe/). On 2026-09-14,
+  across twelve servers, the SDK's major version decided the era every time: v1
+  meant the old handshake only, v2 meant both. None of the six official reference
+  servers had migrated; Upstash, MotherDuck and AWS Labs had, Microsoft's
+  Playwright and dbt Labs had not. The two v1 SDKs also refuse an unknown method
+  with different codes, `-32601` from TypeScript and `-32602` from Python. Design
+  record [`docs/011`](docs/011_discover-probe.md), which records two claims this
+  entry first made and got wrong; evidence
+  [`evidence/discover-probe.jsonl`](evidence/discover-probe.jsonl).
 
 ### 199. `run-as-task` — the backfill that outlives the connection ⭐⭐⭐ 🔌 💻
 An eight-hour backfill cannot be a blocking tool call, and the workaround
@@ -2913,8 +2922,9 @@ the one thing nobody applies it to.
 - **Protocol surface:** the full request and result envelope including `_meta`;
   `resultType` discrimination between `complete`, `input_required` and `task`;
   `requestState` round-tripping; task polling sequences replayed in order. The SDK
-  ships no in-memory client/server pair any more, only a raw stream factory in
-  `mcp.shared.memory`, so building that harness is part of this tool rather than
+  keeps its in-memory client/server pair in a private module
+  (`mcp.client._memory`), and a live connection is not a replayable fixture
+  anyway, so building that harness is part of this tool rather than
   something it can borrow.
 - **Learn:** determinism at a protocol boundary; recording enough to replay without
   recording secrets; what an agent regression test actually has to assert.

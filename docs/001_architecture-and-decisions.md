@@ -262,6 +262,10 @@ moved rather than being left at `2.1.1`.
 in-memory client/server helper that older SDKs shipped is gone from
 `mcp.shared.memory`, which leaves only a raw stream factory — so #217
 `mcp-replay` has to bring its own harness, and that is now part of its scope
+*(corrected 2026-09-14: the pair still exists as
+`mcp.client._memory.InMemoryTransport`, in a private module the search missed;
+`mcp-replay` still needs a record-and-replay harness, for the different reason
+that a live connection is not a fixture)*
 rather than a surprise.
 
 **Still not exercised end to end.** Everything above was verified in-process:

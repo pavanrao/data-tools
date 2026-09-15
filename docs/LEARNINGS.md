@@ -9,6 +9,31 @@ sprint; keep entries concrete.
 
 ---
 
+## Iteration 10 — 2026-09-14 — truncating the field a conclusion rests on
+
+### A 40-character summary produced a finding the data didn't contain
+Probing the six MCP reference servers, we summarised the JSON reports with a script
+that cut each error message to 40 characters so the table would fit a terminal:
+
+```python
+c["discover"]["evidence"][:40]
+```
+
+The Python servers' rows came out as `rejected: error -32602: Invalid request`. That
+looked like the code and the message disagreeing, since `-32602` means invalid params
+and "Invalid request" is the name of `-32600`. It went into the design record, the
+evidence card, a backlog entry and a pull request description as a finding. The full
+message had been in the report on disk the whole time: "Invalid request parameters",
+which matches `-32602`. The slice had cut off the one word the claim depended on.
+
+Nobody checked it against the raw report. It surfaced a few hours later, when a
+re-run's summary happened to use a 52-character slice and the full message fit.
+
+**Before a summary becomes a claim, read the raw record for the field the claim rests
+on.** Truncating, rounding or taking the first N items is fine for spotting a pattern,
+and each of them decides which details survive without saying so. Here the check would
+have been one `grep` against the JSON file.
+
 ## Iteration 8c — 2026-09-07 — check the config before you believe the comparison
 
 ### A generation-config bug is indistinguishable from a model-quality finding

@@ -43,6 +43,11 @@ Every tool in this repo aims to be:
   as a CLI and an MCP server, with the limits enforced by the database rather
   than by reading the SQL. The first server written against protocol revision
   2026-07-28. **Actively developed.**
+- [`discover-probe`](./tools/discover-probe/) (#198) — asks an MCP server what it
+  speaks, one negotiation path at a time, and checks its advertised capabilities
+  against what it actually does. Found that which protocol era a server speaks
+  comes down to one dependency line, and that none of the official reference
+  servers had moved to it.
 
 Parked means built and installed, but not under active development;
 [`docs/FINDINGS.md`](./docs/FINDINGS.md) records why.

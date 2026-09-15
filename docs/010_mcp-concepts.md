@@ -19,6 +19,7 @@ claims and the difference is the point.
 | **Built** | Used in a shipped tool, exercised by tests |
 | **Verified** | Confirmed working against a running server, not yet load-bearing |
 | **Present** | Confirmed in the SDK by inspection only |
+| **Types only** | The protocol's message shapes exist in the SDK, but nothing implements the behaviour; building against it means writing the lifecycle yourself |
 | **Unread** | On the map, nothing done |
 
 Backlog ideas are referenced as `#N`. The protocol revision throughout is
@@ -158,7 +159,7 @@ one should keep the separation, and it is one input to #201
 
 ## 7 · Statelessness and the vanished handshake
 
-**Status: Present** · nothing built against it
+**Status: Built** (`server/discover`) · `discover-probe` (#198)
 
 Revision 2026-07-28 removed the `initialize` handshake and protocol-level
 sessions. Every request now carries its own protocol version and client
@@ -171,15 +172,43 @@ its own connection. The SDK also keeps both eras, with four revisions still
 reachable through the old handshake, so a server can speak the current revision
 without dropping older clients.
 
-Being confirmed present is not the same as having used it. #198
-`discover-probe` is the tool that changes this entry's status, and it is why
-that idea is first in the section M build order.
+#198 `discover-probe` now drives `discover` and `initialize` separately, each
+on its own connection, against real servers over stdio. What it learned is in
+[`011`](011_discover-probe.md), and two things belong here.
+
+**The SDK's default connection mode hides the answer.** Left on `auto`, the
+client tries `discover`, falls back to the handshake, and gives you a session
+without saying which path worked. Its own docstring calls that fallback a
+denylist. Use `ClientSession.discover()` and `initialize()` directly whenever
+you need to know rather than just connect.
+
+**Capabilities are computed per era, honestly.** A server built on the SDK
+claims `list_changed` and resource subscriptions through `discover` and denies
+them through `initialize`, because change notification runs over
+`subscriptions/listen` in the July revision only. That isn't an inconsistency.
+
+**On 2026-09-14, the SDK's major version decided the era for all twelve
+servers probed.** v1, TypeScript or Python, meant the old handshake only; v2
+meant both. None of the six official reference servers had migrated; three of
+five vendor servers had. TypeScript v2 ships as new packages —
+`@modelcontextprotocol/server` and friends — so bumping `@modelcontextprotocol/sdk`
+never gets you there. *Corrected the same day: this paragraph first said the
+TypeScript SDK's newest release predated the revision. That was true only of the
+old package name.*
 
 ---
 
 ## 8 · Long-running work: the Tasks extension
 
-**Status: Present** · nothing built against it
+**Status: Types only** · nothing built against it
+
+> **Corrected 2026-09-14.** This entry originally said **Present**, which
+> overstated it. Checking the installed SDK before starting on #199 found the
+> July extension's messages — `tasks/get`, `tasks/update`, the
+> `io.modelcontextprotocol/tasks` identifier — only in `mcp_types`. Neither
+> `MCPServer` nor the extension module gives a tool any way to return a task.
+> And `tasks/list` and `tasks/result`, both removed by the July revision, are
+> still defined right beside them.
 
 A call that can exceed a few seconds should not block a connection. The Tasks
 extension returns a durable `taskId`, and the client polls `tasks/get`. The
@@ -187,7 +216,9 @@ handle survives a client restart.
 
 Every hand-rolled `run_job` plus `job_status` pair is a worse version of this,
 including the one idea #14 originally proposed. #199 `run-as-task` is the entry
-that will move this to Built.
+that will move this to Built, and it now carries more than the idea entry says:
+the task lifecycle has to be implemented on the low-level server rather than
+called.
 
 ---
 
@@ -216,9 +247,13 @@ Small things that cost time and are not in anyone's tutorial.
    to get right and is invisible when wrong.
 2. **`mcp.server._otel` is private.** #206 must read `_meta` directly rather
    than import it.
-3. **The SDK ships no in-memory client and server pair.** Only a raw stream
-   factory. An in-process round trip has to reach for the lowlevel server
-   attribute, which is private and therefore fragile — and building a proper
-   harness is now part of #217 `mcp-replay`.
+3. **The SDK's in-memory client and server pair is private.**
+   `mcp.client._memory.InMemoryTransport` connects a client to a server over
+   real JSON-RPC framing, which is what `discover-probe`'s tests run on.
+   *Corrected 2026-09-14: this finding originally said no such pair existed, only
+   a raw stream factory in `mcp.shared.memory`. The search had missed a private
+   module.* It still sits behind an underscore, so depending on it is fragile, and
+   a record-and-replay harness remains part of #217 `mcp-replay`'s scope, since a
+   live connection is not a fixture.
 4. **Deny-by-default will fail your own code first.** That is the mechanism
    working. §4.
