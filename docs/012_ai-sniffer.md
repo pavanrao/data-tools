@@ -1,0 +1,175 @@
+# 012 — `ai-sniffer` (#218): the habits in agent-written prose
+
+**Status:** plan · **Date:** 2026-09-14
+
+## Purpose
+
+> More of what people read is now drafted by agents, and it carries habits readers
+> learn to recognise, like recurring sentence shapes and paragraphs that end on a
+> neat line. Once readers notice them they start skimming, and a well-researched
+> piece gets skimmed along with everything else. This finds those habits in a draft
+> and quotes each one, so whoever has the real details can fix them. Deciding who
+> wrote the text is out of scope.
+
+## Why a linter and an agent
+
+Checking the MCP protocol post on 2026-09-14 settled this. The word-level check —
+contraction rate, hedges, reader instructions, sentence-length variation — passed the
+first draft, and the draft still read as generated. What it missed lived in structure:
+antithesis split across two sentences, verbless fragments in threes, one-line
+dramatic beats, section endings built to land a point. A pattern that reads one
+sentence at a time can't see any of those.
+
+So the work splits by what each part is good at. The **linter** counts what can be
+counted, is free, and gives the same answer every time. The **reviewer**, a prompt
+run by a model, gets the text and the linter's report and spends its judgement on
+structure. Neither ever issues a verdict about authorship.
+
+## Scope
+
+**In:** the linter as a CLI; the reviewer prompt, usable as a Claude Code agent and
+through the repo's model layer; an eval measuring what each catches; installation at
+account level; a write-up.
+
+**Out:** model-based surprisal scoring and the human-versus-generated corpus
+comparison #218 first described, both possible later phases; automatic triggering
+through hooks; any rewriting of the text by the reviewer.
+
+## 1 · The linter: `ai-sniffer check`
+
+Standard library only, so the base install has no dependencies at all.
+
+**Input.** Markdown or HTML, chosen by extension. Code fences, tables, front matter
+and HTML tags are removed before analysis, and inline code becomes a placeholder
+token. Every finding keeps the line number from the original file.
+
+| Signal | What it reports |
+| --- | --- |
+| Contraction rate | contractions per 100 words |
+| Hedges | each hedge from a closed list, with its line |
+| Emphasis words | each from a closed list such as `exactly`, `precisely` and `genuinely`, with its line |
+| Reader instructions | each from a closed list such as `note that` and `keep in mind`, with its line |
+| Sentence rhythm | mean length, coefficient of variation, and runs of similar-length sentences |
+| One-sentence paragraphs | each, with its line |
+| Repeated skeletons | sentences that reduce to the same closed-class skeleton once content words are removed |
+| Concrete detail | digits, dates, quoted strings and code tokens per 100 words |
+| Section closers | the last sentence of every section, extracted for the reviewer rather than judged |
+
+**Output.** Findings with line, quoted text and signal name, plus the metrics and the
+extracted closers. No score. `--json` for machines. Exit `0`; `--strict` exits `1`
+when there's any finding, for CI; `2` when the input can't be read.
+
+## 2 · The reviewer
+
+One file, `tools/ai-sniffer/agent/ai-sniffer.md`. YAML frontmatter makes it a Claude
+Code agent (`model: haiku`, tools `Read`, `Grep`, `Bash`); the body is the prompt.
+
+The prompt carries the purpose statement, then a **catalogue of habits**. Each entry
+has a definition and a real example quoted from one of our own drafts. For the
+word-level habits the prompt says to use the linter's report when one is supplied, and
+to check them itself when it isn't. The structural ones are always the reviewer's job:
+
+- antithesis across two sentences ("It wasn't X. It was Y.")
+- verbless parallel fragments ("Both A, both B, opposite C.")
+- a short paragraph used as a dramatic beat
+- a section ending built to land a point
+- the same point made twice in adjacent sentences
+- clichés, and emphasis like "the whole point"
+- generic detail standing in for a real one ("the evidence looked solid")
+- triads used as a habit rather than because there were three things
+
+**Rules the prompt states.** Quote the exact text with its line. Give each finding a
+severity: high, medium or low. A single natural use isn't a finding. Never write
+replacement text. For generic detail, say the passage needs a real specific from the
+author, and never propose one. Never comment on who wrote it.
+
+**Output.** A JSON list of findings — line, habit, quote, severity, why — followed by
+a short plain summary.
+
+## 3 · The optional model path: `ai-sniffer review`
+
+Runs the linter, then sends the same prompt, the report and the text through
+`data_tools_core.llm`'s `ChatProvider`, behind the `llm` extra. The model comes from
+`DATA_TOOLS_CHAT_MODEL`, so a hosted model such as
+`anthropic/claude-haiku-4-5-20251001` uses a key from `DATA_TOOLS_API_KEY` or the
+provider's own variable, and a local Ollama model needs no key.
+
+Without the extra or a configured model it exits `2` and names both ways to get a
+review — the Claude Code agent, or configuring a model. It never quietly falls back.
+Output records which model ran (CONVENTIONS rule 2). The prompt is read from the
+agent file with its frontmatter stripped, so there's one copy.
+
+Tests inject a fake `ChatProvider`; nothing touches a network.
+
+## 4 · The eval
+
+**Drafts.** Two before-and-after pairs where the only change between commits is the
+tone rewrite:
+
+| Post | Before | After |
+| --- | --- | --- |
+| *Let the Database Say No* (HTML, data-tools) | `372bb84` | `138a26c` |
+| *Which Protocol Is Your MCP Server Speaking?* (markdown, site) | `cfa59de` | `2e91d3d` |
+
+The protocol post's later commit `901cbc9` is excluded, since it also removed a
+section.
+
+**Labels.** Every habit in both *before* drafts, labelled by line, habit and quote in
+`tools/ai-sniffer/eval/labels.json`. **Reviewed by Pavan before anything is scored**;
+until then they're one reader's judgement.
+
+**Setups.** The linter alone; Haiku without the linter's report; Haiku with it; Sonnet
+without; Sonnet with. Model setups run as subagents from a Claude Code session with the
+model set per run, reading the prompt and draft from disk so the text never passes
+through the orchestrating context. This measures the prompt, not whether Claude Code
+loads the agent file; that's checked separately at install. Each model setup runs
+**three times per draft**, since output varies between runs: four model setups, four
+drafts, three runs, 48 in total.
+
+**Scoring.** A deterministic script. A finding matches a label when both are in the
+same draft and, after whitespace and case are normalised, their quotes share a run of
+at least 20 characters — or one contains the other, when a quote is shorter than that.
+The habit name is compared separately, since categories blur. Unmatched findings on an *after* draft
+count as false alarms. Unmatched findings on a *before* draft are listed for review,
+because some will be real habits the labels missed.
+
+**Reported as counts**, per LEARNINGS 8b: labelled habits caught out of the total, and
+false alarms, as the lowest and highest across three runs. The result goes in
+`evidence/ai-sniffer.jsonl`.
+
+**Limits, stated in the write-up.** Two posts. One labeller, who also did the
+rewrites. A reviewer from the same model family as the writer, which is the open
+question the eval exists to answer.
+
+## 5 · Where it lives
+
+**In the repo:** `tools/ai-sniffer/` (linter, reviewer file, `review` command, eval),
+this record, #218 marked built.
+
+**At account level:** `uv tool install --editable tools/ai-sniffer`, so the command
+works from any project and tracks the checkout; a symlink from `~/.claude/agents/`
+to the reviewer file. Two things to verify first: that an editable tool install works
+from inside the workspace, and that Claude Code loads an agent through a symlink. Both
+change the machine's setup, so they happen only after a yes at that point.
+
+**Conventions:** the writing table in `data-tools/CLAUDE.md` is replaced by a pointer
+to the reviewer's catalogue, so there's a single definition. The site repo gets a
+short `CLAUDE.md` saying to run ai-sniffer on posts before publishing.
+
+**Write-up:** one post on the site, written last, and reviewed by ai-sniffer before
+it's published.
+
+## Build order
+
+1. Linter, test-first.
+2. Reviewer prompt, with examples quoted from the drafts.
+3. `review` command, test-first against a fake provider.
+4. Labels, then **stop for Pavan's review**.
+5. Eval runs and scoring.
+6. Design record, evidence card, #218 built.
+7. The two `CLAUDE.md` changes.
+8. Account-level install, **after a yes**.
+9. The post.
+
+The branch stacks on `worktree-discover-probe` (PR #25), since it continues that
+branch's doc and iteration numbering. It rebases onto `main` once #25 merges.
