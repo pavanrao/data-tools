@@ -45,6 +45,12 @@ def ollama_post(path: str, body: dict) -> dict:
         return json.loads(response.read())
 
 
+def is_truncated(prompt_tokens: int, num_ctx: int) -> bool:
+    """Ollama cuts an over-long prompt to half the window plus two, keeping 4 tokens at the
+    start, so the instructions are lost; a prompt that fills the window is also suspect."""
+    return prompt_tokens >= num_ctx - TRUNCATION_MARGIN or prompt_tokens == num_ctx // 2 + 2
+
+
 def run_one(model: str, request: str, num_ctx: int, post: Post = ollama_post) -> tuple[str, dict]:
     show = post("/api/show", {"model": model})
     started = time.time()
@@ -70,7 +76,7 @@ def run_one(model: str, request: str, num_ctx: int, post: Post = ollama_post) ->
             "output": round(r.get("eval_duration", 0) / 1e9, 1),
             "total": round(r.get("total_duration", (time.time() - started) * 1e9) / 1e9, 1),
         },
-        "truncated": r.get("prompt_eval_count", 0) >= num_ctx - TRUNCATION_MARGIN,
+        "truncated": is_truncated(r.get("prompt_eval_count", 0), num_ctx),
     }
     return r["message"]["content"], meta
 

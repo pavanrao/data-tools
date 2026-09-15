@@ -159,12 +159,18 @@ def run_files(draft_dir: Path) -> list[Path]:
     return sorted(p for p in draft_dir.glob("run-*.*") if not p.name.endswith(".meta.json"))
 
 
+def truncated(run_file: Path) -> bool:
+    """Whether a local run's prompt was cut short, from the metadata beside it."""
+    meta = run_file.with_name(run_file.name.split(".")[0] + ".meta.json")
+    return meta.exists() and bool(json.loads(meta.read_text(encoding="utf-8")).get("truncated"))
+
+
 def score_all(labels: list[dict], meta: dict, hand_only: bool) -> dict:
     stems = {name.split(".")[0]: name for name in meta}
     setups = {}
     for setup_dir in sorted(p for p in RUNS.iterdir() if p.is_dir()):
         runs: dict[int, dict[str, dict]] = {}
-        unreadable = []
+        unreadable, cut_short = [], []
         for draft_dir in sorted(p for p in setup_dir.iterdir() if p.is_dir()):
             draft = stems[draft_dir.name]
             for run_file in run_files(draft_dir):
@@ -172,12 +178,15 @@ def score_all(labels: list[dict], meta: dict, hand_only: bool) -> dict:
                 findings, ok = read_run(run_file)
                 if not ok:
                     unreadable.append(str(run_file.relative_to(HERE)))
+                if truncated(run_file):
+                    cut_short.append(str(run_file.relative_to(HERE)))
                 runs.setdefault(n, {})[draft] = score_run(
                     draft, findings, labels, meta, build_labels.DRAFTS, hand_only
                 )
         setups[setup_dir.name] = {
             "summary": summarise(runs, meta),
             "unreadable_runs": unreadable,
+            "truncated_runs": cut_short,
             "runs": runs,
         }
     return setups
@@ -202,6 +211,8 @@ def main() -> int:
                     f"false alarms {fa['min']}–{fa['max']}"
                 )
             bad = f"  unreadable {len(r['unreadable_runs'])}" if r["unreadable_runs"] else ""
+            if r["truncated_runs"]:
+                bad += f"  truncated {len(r['truncated_runs'])}"
             print(f"  {setup:<14} " + " | ".join(cells) + bad)
     return 0
 

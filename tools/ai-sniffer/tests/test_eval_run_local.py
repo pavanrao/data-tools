@@ -126,3 +126,21 @@ def test_a_chunked_run_writes_one_merged_reply_and_sums_its_cost(local, eval_scr
     assert meta["chunks"] == 2
     assert (meta["prompt_tokens"], meta["output_tokens"]) == (1800, 80)
     assert ok and len(findings) == 2
+
+
+def test_ollama_halving_an_over_long_prompt_counts_as_truncated(local):
+    # Ollama logs "truncating input prompt limit=16386" for a 32768 window: it cuts an
+    # over-long prompt to half the window plus two, so a full-window check misses it.
+    _, meta = local.run_one("qwen2.5:7b", "x", num_ctx=32768, post=FakeOllama(prompt_tokens=16386))
+
+    assert meta["truncated"] is True
+
+
+def test_the_scorer_lists_truncated_runs(eval_script, tmp_path):
+    score = eval_script("score")
+    (tmp_path / "run-1.meta.json").write_text('{"truncated": true}')
+    (tmp_path / "run-2.meta.json").write_text('{"truncated": false}')
+
+    assert score.truncated(tmp_path / "run-1.md") is True
+    assert score.truncated(tmp_path / "run-2.md") is False
+    assert score.truncated(tmp_path / "run-3.md") is False
