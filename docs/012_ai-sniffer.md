@@ -130,8 +130,15 @@ the Cut Falls* runs to about 5,600 words and sixteen sections, so the models get
 whole post, which is what makes it a length test, but only sections 1, 4, 7, 10 and 13
 are labelled and scored. Those were chosen here, before any run, and spread through
 the post rather than taken from the start, where habits may cluster. Held-out labels
-are written before any model sees either post. **Pavan reviews all labels before
-anything is scored**; until then they're one reader's judgement.
+are written before any model sees either post. ~~**Pavan reviews all labels before
+anything is scored**; until then they're one reader's judgement.~~ *(Changed
+2026-09-15: the review runs alongside the build instead of blocking it.)* Pavan marks
+each label keep, change or drop on a review page, and the marks are applied to
+`build_labels.py` when he's done. Until then every unmarked label counts as keep, and
+any score is reported as provisional against the labels at `bb882e0`. Model findings
+are saved to disk, so applying the marks means rescoring, not rerunning. Both scores
+get reported, along with whether he'd seen any findings before finishing his review,
+since corrections made after seeing what a model caught can drift toward the model.
 
 **Setups.** The linter alone; Haiku without the linter's report; Haiku with it; Sonnet
 without; Sonnet with. Model setups run as subagents from a Claude Code session with the
@@ -186,9 +193,10 @@ it's published.
 
 ## Build order
 
-1. Labels, then **stop for Pavan's review**. *(Moved first on 2026-09-14, was step 4:
+1. Labels, ~~then **stop for Pavan's review**~~. *(Moved first on 2026-09-14, was step 4:
    labelling the held-out posts before writing the prompt keeps the prompt from being
-   shaped around them.)*
+   shaped around them. The stop was lifted on 2026-09-15; the review runs alongside
+   steps 2–5, see Labels above.)*
 2. Linter, test-first.
 3. Reviewer prompt, with examples quoted from the development drafts only.
 4. `review` command, test-first against a fake provider.
