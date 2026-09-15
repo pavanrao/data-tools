@@ -1,0 +1,1382 @@
+{
+  "drafts": {
+    "dev-database-before.html": {
+      "role": "development",
+      "source": "data-tools 372bb84"
+    },
+    "dev-protocol-before.md": {
+      "role": "development",
+      "source": "pavanrao.github.io cfa59de"
+    },
+    "heldout-double-entry.html": {
+      "role": "held-out",
+      "source": "data-tools b265882"
+    },
+    "heldout-where-the-cut-falls.html": {
+      "role": "held-out",
+      "source": "data-tools b265882",
+      "scored_line_ranges": [
+        [
+          268,
+          301
+        ],
+        [
+          384,
+          461
+        ],
+        [
+          617,
+          677
+        ],
+        [
+          751,
+          781
+        ],
+        [
+          1072,
+          1177
+        ]
+      ]
+    },
+    "clean-database-after.html": {
+      "role": "clean",
+      "source": "data-tools 138a26c"
+    },
+    "clean-protocol-after.md": {
+      "role": "clean",
+      "source": "pavanrao.github.io 2e91d3d"
+    }
+  },
+  "scoring": {
+    "match": "same draft; normalised quotes share a run of at least 20 characters, or one contains the other when a quote is shorter than 20",
+    "recall_counts": [
+      "high",
+      "medium"
+    ],
+    "neutral": [
+      "low"
+    ]
+  },
+  "labels": [
+    {
+      "id": "dev-database-before-01",
+      "draft": "dev-database-before.html",
+      "line": 276,
+      "habit": "hedge",
+      "severity": "medium",
+      "quote": "Almost every SQL-over-MCP server decides whether a query is safe"
+    },
+    {
+      "id": "dev-database-before-02",
+      "draft": "dev-database-before.html",
+      "line": 279,
+      "habit": "closer",
+      "severity": "medium",
+      "quote": "the database has been offering it for twenty years"
+    },
+    {
+      "id": "dev-database-before-03",
+      "draft": "dev-database-before.html",
+      "line": 289,
+      "habit": "fragment",
+      "severity": "high",
+      "quote": "Three tools, a row cap, done in an afternoon."
+    },
+    {
+      "id": "dev-database-before-04",
+      "draft": "dev-database-before.html",
+      "line": 289,
+      "habit": "closer",
+      "severity": "medium",
+      "quote": "The interesting part turned out not to be the protocol at all."
+    },
+    {
+      "id": "dev-database-before-05",
+      "draft": "dev-database-before.html",
+      "line": 294,
+      "habit": "dramatic-beat",
+      "severity": "high",
+      "quote": "It was this question."
+    },
+    {
+      "id": "dev-database-before-06",
+      "draft": "dev-database-before.html",
+      "line": 302,
+      "habit": "hedge",
+      "severity": "medium",
+      "quote": "Most published examples do some version of this"
+    },
+    {
+      "id": "dev-database-before-07",
+      "draft": "dev-database-before.html",
+      "line": 309,
+      "habit": "reader-instruction",
+      "severity": "high",
+      "quote": "Consider what it must already handle correctly."
+    },
+    {
+      "id": "dev-database-before-08",
+      "draft": "dev-database-before.html",
+      "line": 332,
+      "habit": "antithesis",
+      "severity": "high",
+      "quote": "You can fix each of these. You cannot fix the category."
+    },
+    {
+      "id": "dev-database-before-09",
+      "draft": "dev-database-before.html",
+      "line": 333,
+      "habit": "antithesis",
+      "severity": "medium",
+      "quote": "is owned by whoever maintains the SQL dialect, not by you"
+    },
+    {
+      "id": "dev-database-before-10",
+      "draft": "dev-database-before.html",
+      "line": 342,
+      "habit": "fragment",
+      "severity": "high",
+      "quote": "Two mechanisms, both older than the problem."
+    },
+    {
+      "id": "dev-database-before-11",
+      "draft": "dev-database-before.html",
+      "line": 347,
+      "habit": "antithesis",
+      "severity": "high",
+      "quote": "Not a flag your code checks. The file is opened in a mode where writing is not a thing that can happen."
+    },
+    {
+      "id": "dev-database-before-12",
+      "draft": "dev-database-before.html",
+      "line": 373,
+      "habit": "dramatic-beat",
+      "severity": "high",
+      "quote": "That is the whole guard."
+    },
+    {
+      "id": "dev-database-before-13",
+      "draft": "dev-database-before.html",
+      "line": 399,
+      "habit": "fragment",
+      "severity": "high",
+      "quote": "Four for four, and not because I thought about any of them."
+    },
+    {
+      "id": "dev-database-before-14",
+      "draft": "dev-database-before.html",
+      "line": 399,
+      "habit": "closer",
+      "severity": "high",
+      "quote": "It is an allowlist in the engine, so it is wrong only in the safe direction."
+    },
+    {
+      "id": "dev-database-before-15",
+      "draft": "dev-database-before.html",
+      "line": 408,
+      "habit": "antithesis",
+      "severity": "high",
+      "quote": "The lesson survives the change of engine; the regex does not."
+    },
+    {
+      "id": "dev-database-before-16",
+      "draft": "dev-database-before.html",
+      "line": 412,
+      "habit": "cliche-emphasis",
+      "severity": "medium",
+      "quote": "It failed on my own code first, which is the point"
+    },
+    {
+      "id": "dev-database-before-17",
+      "draft": "dev-database-before.html",
+      "line": 416,
+      "habit": "dramatic-beat",
+      "severity": "medium",
+      "quote": "table_info. It was refused."
+    },
+    {
+      "id": "dev-database-before-18",
+      "draft": "dev-database-before.html",
+      "line": 421,
+      "habit": "dramatic-beat",
+      "severity": "medium",
+      "quote": "This was the guard working."
+    },
+    {
+      "id": "dev-database-before-19",
+      "draft": "dev-database-before.html",
+      "line": 430,
+      "habit": "reader-instruction",
+      "severity": "high",
+      "quote": "Sit with that for a second."
+    },
+    {
+      "id": "dev-database-before-20",
+      "draft": "dev-database-before.html",
+      "line": 432,
+      "habit": "triad",
+      "severity": "medium",
+      "quote": "Deny-by-default failed loudly, in development, on the safe side."
+    },
+    {
+      "id": "dev-database-before-21",
+      "draft": "dev-database-before.html",
+      "line": 433,
+      "habit": "closer",
+      "severity": "high",
+      "quote": "That is the entire argument for it in one incident."
+    },
+    {
+      "id": "dev-database-before-22",
+      "draft": "dev-database-before.html",
+      "line": 442,
+      "habit": "emphasis-word",
+      "severity": "low",
+      "quote": "The protocol has a perfectly good error channel."
+    },
+    {
+      "id": "dev-database-before-23",
+      "draft": "dev-database-before.html",
+      "line": 446,
+      "habit": "dramatic-beat",
+      "severity": "high",
+      "quote": "It is the wrong channel."
+    },
+    {
+      "id": "dev-database-before-24",
+      "draft": "dev-database-before.html",
+      "line": 448,
+      "habit": "emphasis-word",
+      "severity": "low",
+      "quote": "The server worked exactly as designed."
+    },
+    {
+      "id": "dev-database-before-25",
+      "draft": "dev-database-before.html",
+      "line": 448,
+      "habit": "antithesis",
+      "severity": "high",
+      "quote": "What the model needs to know is not that it failed, but what to do differently."
+    },
+    {
+      "id": "dev-database-before-26",
+      "draft": "dev-database-before.html",
+      "line": 461,
+      "habit": "fragment",
+      "severity": "high",
+      "quote": "Two fields, two audiences."
+    },
+    {
+      "id": "dev-database-before-27",
+      "draft": "dev-database-before.html",
+      "line": 485,
+      "habit": "dramatic-beat",
+      "severity": "high",
+      "quote": "eats the entire context window. Fine."
+    },
+    {
+      "id": "dev-database-before-28",
+      "draft": "dev-database-before.html",
+      "line": 503,
+      "habit": "cliche-emphasis",
+      "severity": "medium",
+      "quote": "Honest answer, for the case you are probably imagining"
+    },
+    {
+      "id": "dev-database-before-29",
+      "draft": "dev-database-before.html",
+      "line": 504,
+      "habit": "emphasis-word",
+      "severity": "low",
+      "quote": "A server there is pure overhead"
+    },
+    {
+      "id": "dev-database-before-30",
+      "draft": "dev-database-before.html",
+      "line": 509,
+      "habit": "triad",
+      "severity": "medium",
+      "quote": "It changes when one of three things is true."
+    },
+    {
+      "id": "dev-database-before-31",
+      "draft": "dev-database-before.html",
+      "line": 518,
+      "habit": "reader-instruction",
+      "severity": "high",
+      "quote": "Note that none of those three is about the protocol."
+    },
+    {
+      "id": "dev-database-before-32",
+      "draft": "dev-database-before.html",
+      "line": 519,
+      "habit": "antithesis",
+      "severity": "medium",
+      "quote": "The protocol's contribution is narrower and still real"
+    },
+    {
+      "id": "dev-database-before-33",
+      "draft": "dev-database-before.html",
+      "line": 528,
+      "habit": "antithesis",
+      "severity": "medium",
+      "quote": "Build a server, not a client."
+    },
+    {
+      "id": "dev-database-before-34",
+      "draft": "dev-database-before.html",
+      "line": 530,
+      "habit": "dramatic-beat",
+      "severity": "medium",
+      "quote": "They are the product."
+    },
+    {
+      "id": "dev-protocol-before-01",
+      "draft": "dev-protocol-before.md",
+      "line": 17,
+      "habit": "hedge",
+      "severity": "medium",
+      "quote": "Plenty of older clients and servers are still around"
+    },
+    {
+      "id": "dev-protocol-before-02",
+      "draft": "dev-protocol-before.md",
+      "line": 23,
+      "habit": "generic-detail",
+      "severity": "high",
+      "quote": "which turned out to be harder to ask than I expected"
+    },
+    {
+      "id": "dev-protocol-before-03",
+      "draft": "dev-protocol-before.md",
+      "line": 36,
+      "habit": "antithesis",
+      "severity": "high",
+      "quote": "For a client that just needs a session, that's the right design. For working out what a server is, it throws the answer away."
+    },
+    {
+      "id": "dev-protocol-before-04",
+      "draft": "dev-protocol-before.md",
+      "line": 29,
+      "habit": "emphasis-word",
+      "severity": "low",
+      "quote": "does exactly the negotiation you're trying to observe"
+    },
+    {
+      "id": "dev-protocol-before-05",
+      "draft": "dev-protocol-before.md",
+      "line": 40,
+      "habit": "generic-detail",
+      "severity": "medium",
+      "quote": "Separate connections matter more than they look"
+    },
+    {
+      "id": "dev-protocol-before-06",
+      "draft": "dev-protocol-before.md",
+      "line": 45,
+      "habit": "fragment",
+      "severity": "high",
+      "quote": "Each path ends one of three ways. It worked."
+    },
+    {
+      "id": "dev-protocol-before-07",
+      "draft": "dev-protocol-before.md",
+      "line": 46,
+      "habit": "cliche-emphasis",
+      "severity": "high",
+      "quote": "The difference between those last two is the whole point"
+    },
+    {
+      "id": "dev-protocol-before-08",
+      "draft": "dev-protocol-before.md",
+      "line": 53,
+      "habit": "emphasis-word",
+      "severity": "low",
+      "quote": "companies whose tools people actually run"
+    },
+    {
+      "id": "dev-protocol-before-09",
+      "draft": "dev-protocol-before.md",
+      "line": 53,
+      "habit": "fragment",
+      "severity": "medium",
+      "quote": "All at their latest versions, all started locally with npx or uvx, no credentials"
+    },
+    {
+      "id": "dev-protocol-before-10",
+      "draft": "dev-protocol-before.md",
+      "line": 56,
+      "habit": "emphasis-word",
+      "severity": "low",
+      "quote": "checks that the listings actually work"
+    },
+    {
+      "id": "dev-protocol-before-11",
+      "draft": "dev-protocol-before.md",
+      "line": 91,
+      "habit": "fragment",
+      "severity": "high",
+      "quote": "Both npm packages, both reasonably recent, opposite answers."
+    },
+    {
+      "id": "dev-protocol-before-12",
+      "draft": "dev-protocol-before.md",
+      "line": 110,
+      "habit": "closer",
+      "severity": "high",
+      "quote": "Which protocol a server speaks, on this sample, is a dependency decision nobody on the project necessarily made on purpose."
+    },
+    {
+      "id": "dev-protocol-before-13",
+      "draft": "dev-protocol-before.md",
+      "line": 114,
+      "habit": "restatement",
+      "severity": "high",
+      "quote": "Every server that listed a capability could back it up. Nothing advertised tools and then failed to list them."
+    },
+    {
+      "id": "dev-protocol-before-14",
+      "draft": "dev-protocol-before.md",
+      "line": 117,
+      "habit": "dramatic-beat",
+      "severity": "high",
+      "quote": "The reference servers stand out."
+    },
+    {
+      "id": "dev-protocol-before-15",
+      "draft": "dev-protocol-before.md",
+      "line": 123,
+      "habit": "dramatic-beat",
+      "severity": "high",
+      "quote": "This part I got wrong first."
+    },
+    {
+      "id": "dev-protocol-before-16",
+      "draft": "dev-protocol-before.md",
+      "line": 126,
+      "habit": "generic-detail",
+      "severity": "medium",
+      "quote": "The evidence looked solid."
+    },
+    {
+      "id": "dev-protocol-before-17",
+      "draft": "dev-protocol-before.md",
+      "line": 133,
+      "habit": "antithesis",
+      "severity": "high",
+      "quote": "wasn't released as a new major of the package everyone already had. It went out on 27 July as separate packages"
+    },
+    {
+      "id": "dev-protocol-before-18",
+      "draft": "dev-protocol-before.md",
+      "line": 137,
+      "habit": "dramatic-beat",
+      "severity": "medium",
+      "quote": "That's a trap for anyone maintaining a TypeScript server."
+    },
+    {
+      "id": "dev-protocol-before-19",
+      "draft": "dev-protocol-before.md",
+      "line": 137,
+      "habit": "emphasis-word",
+      "severity": "low",
+      "quote": "Dependabot will happily keep bumping"
+    },
+    {
+      "id": "dev-protocol-before-20",
+      "draft": "dev-protocol-before.md",
+      "line": 141,
+      "habit": "closer",
+      "severity": "high",
+      "quote": "It just requires someone to take the major bump."
+    },
+    {
+      "id": "dev-protocol-before-21",
+      "draft": "dev-protocol-before.md",
+      "line": 174,
+      "habit": "closer",
+      "severity": "medium",
+      "quote": "which looks a lot more reasonable with this table in front of you."
+    },
+    {
+      "id": "dev-protocol-before-22",
+      "draft": "dev-protocol-before.md",
+      "line": 178,
+      "habit": "dramatic-beat",
+      "severity": "high",
+      "quote": "It had bugs I'd never have found against test servers."
+    },
+    {
+      "id": "dev-protocol-before-23",
+      "draft": "dev-protocol-before.md",
+      "line": 181,
+      "habit": "dramatic-beat",
+      "severity": "high",
+      "quote": "It hadn't answered anything."
+    },
+    {
+      "id": "dev-protocol-before-24",
+      "draft": "dev-protocol-before.md",
+      "line": 190,
+      "habit": "emphasis-word",
+      "severity": "medium",
+      "quote": "which is precisely where that one explanatory line went"
+    },
+    {
+      "id": "dev-protocol-before-25",
+      "draft": "dev-protocol-before.md",
+      "line": 200,
+      "habit": "emphasis-word",
+      "severity": "low",
+      "quote": "A server that genuinely never answers times out twice."
+    },
+    {
+      "id": "dev-protocol-before-26",
+      "draft": "dev-protocol-before.md",
+      "line": 202,
+      "habit": "fragment",
+      "severity": "medium",
+      "quote": "And one mistake that wasn't in the probe at all."
+    },
+    {
+      "id": "dev-protocol-before-27",
+      "draft": "dev-protocol-before.md",
+      "line": 205,
+      "habit": "emphasis-word",
+      "severity": "low",
+      "quote": "which matches the code exactly"
+    },
+    {
+      "id": "dev-protocol-before-28",
+      "draft": "dev-protocol-before.md",
+      "line": 219,
+      "habit": "antithesis",
+      "severity": "high",
+      "quote": "since that's a fact about the server rather than a lie it told"
+    },
+    {
+      "id": "dev-protocol-before-29",
+      "draft": "dev-protocol-before.md",
+      "line": 223,
+      "habit": "hedge",
+      "severity": "medium",
+      "quote": "plenty of hosted servers only offer HTTP"
+    },
+    {
+      "id": "dev-protocol-before-30",
+      "draft": "dev-protocol-before.md",
+      "line": 225,
+      "habit": "antithesis",
+      "severity": "high",
+      "quote": "That's a decision about sending requests to other people's endpoints, not a technical gap"
+    },
+    {
+      "id": "dev-protocol-before-31",
+      "draft": "dev-protocol-before.md",
+      "line": 232,
+      "habit": "closer",
+      "severity": "high",
+      "quote": "So the SDK settled which protocols a server speaks, and what each server claims within them came down to how it was written."
+    },
+    {
+      "id": "dev-protocol-before-32",
+      "draft": "dev-protocol-before.md",
+      "line": 236,
+      "habit": "cliche-emphasis",
+      "severity": "high",
+      "quote": "These numbers have a short shelf life."
+    },
+    {
+      "id": "clean-database-after-01",
+      "draft": "clean-database-after.html",
+      "line": 288,
+      "habit": "dramatic-beat",
+      "severity": "medium",
+      "quote": "I assumed the time would go on the protocol. It didn't."
+    },
+    {
+      "id": "clean-database-after-02",
+      "draft": "clean-database-after.html",
+      "line": 289,
+      "habit": "generic-detail",
+      "severity": "medium",
+      "quote": "one question that turned out to be harder than it looks"
+    },
+    {
+      "id": "clean-database-after-03",
+      "draft": "clean-database-after.html",
+      "line": 327,
+      "habit": "cliche-emphasis",
+      "severity": "low",
+      "quote": "and that's sort of the problem"
+    },
+    {
+      "id": "clean-database-after-04",
+      "draft": "clean-database-after.html",
+      "line": 343,
+      "habit": "antithesis",
+      "severity": "medium",
+      "quote": "Not a flag your code consults later"
+    },
+    {
+      "id": "clean-database-after-05",
+      "draft": "clean-database-after.html",
+      "line": 396,
+      "habit": "fragment",
+      "severity": "low",
+      "quote": "All four, and I didn't reason about any of them."
+    },
+    {
+      "id": "clean-database-after-06",
+      "draft": "clean-database-after.html",
+      "line": 397,
+      "habit": "closer",
+      "severity": "medium",
+      "quote": "it can be wrong, but only by refusing something it should have allowed"
+    },
+    {
+      "id": "clean-database-after-07",
+      "draft": "clean-database-after.html",
+      "line": 406,
+      "habit": "fragment",
+      "severity": "high",
+      "quote": "Same idea, different engine."
+    },
+    {
+      "id": "clean-database-after-08",
+      "draft": "clean-database-after.html",
+      "line": 440,
+      "habit": "closer",
+      "severity": "medium",
+      "quote": "which is the cheapest place for it to break"
+    },
+    {
+      "id": "clean-database-after-09",
+      "draft": "clean-database-after.html",
+      "line": 449,
+      "habit": "emphasis-word",
+      "severity": "low",
+      "quote": "the protocol has a perfectly good error channel"
+    },
+    {
+      "id": "clean-database-after-10",
+      "draft": "clean-database-after.html",
+      "line": 455,
+      "habit": "dramatic-beat",
+      "severity": "medium",
+      "quote": "to try again. But nothing broke."
+    },
+    {
+      "id": "clean-database-after-11",
+      "draft": "clean-database-after.html",
+      "line": 456,
+      "habit": "emphasis-word",
+      "severity": "low",
+      "quote": "The server did exactly what it was built to do."
+    },
+    {
+      "id": "clean-database-after-12",
+      "draft": "clean-database-after.html",
+      "line": 456,
+      "habit": "antithesis",
+      "severity": "medium",
+      "quote": "The model doesn't need to know that the call failed; it needs to know what to do differently."
+    },
+    {
+      "id": "clean-database-after-13",
+      "draft": "clean-database-after.html",
+      "line": 494,
+      "habit": "antithesis",
+      "severity": "medium",
+      "quote": "The cap isn't the interesting bit. What matters is"
+    },
+    {
+      "id": "clean-database-after-14",
+      "draft": "clean-database-after.html",
+      "line": 505,
+      "habit": "antithesis",
+      "severity": "low",
+      "quote": "On SQLite that's a rounding error and the field is nearly pointless. On Snowflake it's the whole bill"
+    },
+    {
+      "id": "clean-database-after-15",
+      "draft": "clean-database-after.html",
+      "line": 507,
+      "habit": "generic-detail",
+      "severity": "medium",
+      "quote": "by more than people expect"
+    },
+    {
+      "id": "clean-database-after-16",
+      "draft": "clean-database-after.html",
+      "line": 529,
+      "habit": "antithesis",
+      "severity": "medium",
+      "quote": "None of those is really about MCP. They're about who's asking and how often."
+    },
+    {
+      "id": "clean-database-after-17",
+      "draft": "clean-database-after.html",
+      "line": 531,
+      "habit": "emphasis-word",
+      "severity": "medium",
+      "quote": "which is genuinely the problem it exists to solve"
+    },
+    {
+      "id": "clean-database-after-18",
+      "draft": "clean-database-after.html",
+      "line": 538,
+      "habit": "fragment",
+      "severity": "low",
+      "quote": "Two things I'd tell someone doing this next."
+    },
+    {
+      "id": "clean-database-after-19",
+      "draft": "clean-database-after.html",
+      "line": 540,
+      "habit": "antithesis",
+      "severity": "low",
+      "quote": "a database qualifies, a folder of text files doesn't"
+    },
+    {
+      "id": "clean-database-after-20",
+      "draft": "clean-database-after.html",
+      "line": 549,
+      "habit": "fragment",
+      "severity": "low",
+      "quote": "Nothing errors, nothing warns"
+    },
+    {
+      "id": "clean-database-after-21",
+      "draft": "clean-database-after.html",
+      "line": 559,
+      "habit": "closer",
+      "severity": "medium",
+      "quote": "There's a lab in the backlog to measure it. I haven't run it."
+    },
+    {
+      "id": "clean-protocol-after-01",
+      "draft": "clean-protocol-after.md",
+      "line": 27,
+      "habit": "emphasis-word",
+      "severity": "low",
+      "quote": "does exactly the negotiation you're trying to observe"
+    },
+    {
+      "id": "clean-protocol-after-02",
+      "draft": "clean-protocol-after.md",
+      "line": 48,
+      "habit": "emphasis-word",
+      "severity": "low",
+      "quote": "companies whose tools people actually run"
+    },
+    {
+      "id": "heldout-double-entry-01",
+      "draft": "heldout-double-entry.html",
+      "line": 316,
+      "habit": "triad",
+      "severity": "high",
+      "quote": "Nothing crashes, nothing warns you, and the answers keep coming."
+    },
+    {
+      "id": "heldout-double-entry-02",
+      "draft": "heldout-double-entry.html",
+      "line": 344,
+      "habit": "cliche-emphasis",
+      "severity": "high",
+      "quote": "That difference is the entire idea."
+    },
+    {
+      "id": "heldout-double-entry-03",
+      "draft": "heldout-double-entry.html",
+      "line": 344,
+      "habit": "antithesis",
+      "severity": "high",
+      "quote": "One number can only ever be a system grading its own homework. Two numbers, counted independently, can disagree."
+    },
+    {
+      "id": "heldout-double-entry-04",
+      "draft": "heldout-double-entry.html",
+      "line": 354,
+      "habit": "dramatic-beat",
+      "severity": "medium",
+      "quote": "Your files go in. Some of them don't arrive."
+    },
+    {
+      "id": "heldout-double-entry-05",
+      "draft": "heldout-double-entry.html",
+      "line": 357,
+      "habit": "dramatic-beat",
+      "severity": "low",
+      "quote": "Start from nothing."
+    },
+    {
+      "id": "heldout-double-entry-06",
+      "draft": "heldout-double-entry.html",
+      "line": 382,
+      "habit": "dramatic-beat",
+      "severity": "low",
+      "quote": "This is a good design."
+    },
+    {
+      "id": "heldout-double-entry-07",
+      "draft": "heldout-double-entry.html",
+      "line": 384,
+      "habit": "hedge",
+      "severity": "medium",
+      "quote": "product works roughly this way."
+    },
+    {
+      "id": "heldout-double-entry-08",
+      "draft": "heldout-double-entry.html",
+      "line": 388,
+      "habit": "dramatic-beat",
+      "severity": "high",
+      "quote": "The trouble is entirely in step one, and it is invisible from step four."
+    },
+    {
+      "id": "heldout-double-entry-09",
+      "draft": "heldout-double-entry.html",
+      "line": 397,
+      "habit": "antithesis",
+      "severity": "high",
+      "quote": "Not an error - an empty string."
+    },
+    {
+      "id": "heldout-double-entry-10",
+      "draft": "heldout-double-entry.html",
+      "line": 402,
+      "habit": "hedge",
+      "severity": "medium",
+      "quote": "A great deal of extraction code opens a"
+    },
+    {
+      "id": "heldout-double-entry-11",
+      "draft": "heldout-double-entry.html",
+      "line": 410,
+      "habit": "generic-detail",
+      "severity": "medium",
+      "quote": "The most popular way to read one walks the body and stops."
+    },
+    {
+      "id": "heldout-double-entry-12",
+      "draft": "heldout-double-entry.html",
+      "line": 411,
+      "habit": "hedge",
+      "severity": "low",
+      "quote": "frequently the sentence that changes the meaning"
+    },
+    {
+      "id": "heldout-double-entry-13",
+      "draft": "heldout-double-entry.html",
+      "line": 422,
+      "habit": "emphasis-word",
+      "severity": "low",
+      "quote": "is simply not in the corpus"
+    },
+    {
+      "id": "heldout-double-entry-14",
+      "draft": "heldout-double-entry.html",
+      "line": 427,
+      "habit": "antithesis",
+      "severity": "high",
+      "quote": "This is not hallucination."
+    },
+    {
+      "id": "heldout-double-entry-15",
+      "draft": "heldout-double-entry.html",
+      "line": 430,
+      "habit": "closer",
+      "severity": "high",
+      "quote": "It is the missing passages that lie."
+    },
+    {
+      "id": "heldout-double-entry-16",
+      "draft": "heldout-double-entry.html",
+      "line": 437,
+      "habit": "fragment",
+      "severity": "low",
+      "quote": "Because none of these raise an exception."
+    },
+    {
+      "id": "heldout-double-entry-17",
+      "draft": "heldout-double-entry.html",
+      "line": 446,
+      "habit": "antithesis",
+      "severity": "high",
+      "quote": "What's needed is not a confession. It's a checksum."
+    },
+    {
+      "id": "heldout-double-entry-18",
+      "draft": "heldout-double-entry.html",
+      "line": 456,
+      "habit": "triad",
+      "severity": "low",
+      "quote": "Count it twice, on purpose, by different routes"
+    },
+    {
+      "id": "heldout-double-entry-19",
+      "draft": "heldout-double-entry.html",
+      "line": 460,
+      "habit": "triad",
+      "severity": "medium",
+      "quote": "records every transaction twice, in two places, by two routes that must agree"
+    },
+    {
+      "id": "heldout-double-entry-20",
+      "draft": "heldout-double-entry.html",
+      "line": 461,
+      "habit": "antithesis",
+      "severity": "high",
+      "quote": "Not because the second entry is more accurate - because a single entry has nothing to be checked against."
+    },
+    {
+      "id": "heldout-double-entry-21",
+      "draft": "heldout-double-entry.html",
+      "line": 462,
+      "habit": "closer",
+      "severity": "high",
+      "quote": "An error in one column is invisible; the same error in one of two columns is a mismatch."
+    },
+    {
+      "id": "heldout-double-entry-22",
+      "draft": "heldout-double-entry.html",
+      "line": 515,
+      "habit": "cliche-emphasis",
+      "severity": "low",
+      "quote": "and more importantly it is"
+    },
+    {
+      "id": "heldout-double-entry-23",
+      "draft": "heldout-double-entry.html",
+      "line": 522,
+      "habit": "cliche-emphasis",
+      "severity": "high",
+      "quote": "The independence is the whole mechanism."
+    },
+    {
+      "id": "heldout-double-entry-24",
+      "draft": "heldout-double-entry.html",
+      "line": 550,
+      "habit": "fragment",
+      "severity": "high",
+      "quote": "A detail that matters more than it looks."
+    },
+    {
+      "id": "heldout-double-entry-25",
+      "draft": "heldout-double-entry.html",
+      "line": 564,
+      "habit": "emphasis-word",
+      "severity": "medium",
+      "quote": "because they genuinely are a sequence"
+    },
+    {
+      "id": "heldout-double-entry-26",
+      "draft": "heldout-double-entry.html",
+      "line": 586,
+      "habit": "antithesis",
+      "severity": "high",
+      "quote": "This is not for speed. It is so that a parse killed"
+    },
+    {
+      "id": "heldout-double-entry-27",
+      "draft": "heldout-double-entry.html",
+      "line": 630,
+      "habit": "dramatic-beat",
+      "severity": "medium",
+      "quote": "Here is the trap that ordinary retrieval falls into."
+    },
+    {
+      "id": "heldout-double-entry-28",
+      "draft": "heldout-double-entry.html",
+      "line": 632,
+      "habit": "emphasis-word",
+      "severity": "medium",
+      "quote": "there is literally nothing to rank"
+    },
+    {
+      "id": "heldout-double-entry-29",
+      "draft": "heldout-double-entry.html",
+      "line": 632,
+      "habit": "antithesis",
+      "severity": "high",
+      "quote": "The system doesn't ignore it; it never knew it existed."
+    },
+    {
+      "id": "heldout-double-entry-30",
+      "draft": "heldout-double-entry.html",
+      "line": 636,
+      "habit": "triad",
+      "severity": "high",
+      "quote": "You still have its name. You have the tab that came back empty, and that tab has a name. You have the error."
+    },
+    {
+      "id": "heldout-double-entry-31",
+      "draft": "heldout-double-entry.html",
+      "line": 638,
+      "habit": "emphasis-word",
+      "severity": "medium",
+      "quote": "startlingly often the exact vocabulary"
+    },
+    {
+      "id": "heldout-double-entry-32",
+      "draft": "heldout-double-entry.html",
+      "line": 685,
+      "habit": "closer",
+      "severity": "medium",
+      "quote": "Pages and nodes are not interchangeable quantities."
+    },
+    {
+      "id": "heldout-double-entry-33",
+      "draft": "heldout-double-entry.html",
+      "line": 706,
+      "habit": "reader-instruction",
+      "severity": "high",
+      "quote": "Note that it says ok on all"
+    },
+    {
+      "id": "heldout-double-entry-34",
+      "draft": "heldout-double-entry.html",
+      "line": 708,
+      "habit": "closer",
+      "severity": "high",
+      "quote": "That is the whole problem, rendered as a column."
+    },
+    {
+      "id": "heldout-double-entry-35",
+      "draft": "heldout-double-entry.html",
+      "line": 729,
+      "habit": "fragment",
+      "severity": "high",
+      "quote": "Same corpus, same index, two questions."
+    },
+    {
+      "id": "heldout-double-entry-36",
+      "draft": "heldout-double-entry.html",
+      "line": 756,
+      "habit": "dramatic-beat",
+      "severity": "medium",
+      "quote": "coverage 1.00. That is correct."
+    },
+    {
+      "id": "heldout-double-entry-37",
+      "draft": "heldout-double-entry.html",
+      "line": 762,
+      "habit": "emphasis-word",
+      "severity": "low",
+      "quote": "which is exactly the hole an index would inherit"
+    },
+    {
+      "id": "heldout-double-entry-38",
+      "draft": "heldout-double-entry.html",
+      "line": 762,
+      "habit": "fragment",
+      "severity": "high",
+      "quote": "Two different questions, both worth asking."
+    },
+    {
+      "id": "heldout-double-entry-39",
+      "draft": "heldout-double-entry.html",
+      "line": 776,
+      "habit": "closer",
+      "severity": "medium",
+      "quote": "Stated plainly, because a tool about honest reporting that oversold itself would be a poor joke."
+    },
+    {
+      "id": "heldout-double-entry-40",
+      "draft": "heldout-double-entry.html",
+      "line": 804,
+      "habit": "antithesis",
+      "severity": "medium",
+      "quote": "This catches wholesale loss, not quality degradation."
+    },
+    {
+      "id": "heldout-double-entry-41",
+      "draft": "heldout-double-entry.html",
+      "line": 822,
+      "habit": "antithesis",
+      "severity": "high",
+      "quote": "an honest gap rather than a silent one - but a gap all the same"
+    },
+    {
+      "id": "heldout-double-entry-42",
+      "draft": "heldout-double-entry.html",
+      "line": 839,
+      "habit": "closer",
+      "severity": "low",
+      "quote": "This is the most valuable next thing."
+    },
+    {
+      "id": "heldout-double-entry-43",
+      "draft": "heldout-double-entry.html",
+      "line": 869,
+      "habit": "restatement",
+      "severity": "medium",
+      "quote": "The point, restated"
+    },
+    {
+      "id": "heldout-double-entry-44",
+      "draft": "heldout-double-entry.html",
+      "line": 872,
+      "habit": "hedge",
+      "severity": "medium",
+      "quote": "Almost nothing checks that promise"
+    },
+    {
+      "id": "heldout-double-entry-45",
+      "draft": "heldout-double-entry.html",
+      "line": 873,
+      "habit": "triad",
+      "severity": "medium",
+      "quote": "no crash, no warning, plausible output"
+    },
+    {
+      "id": "heldout-double-entry-46",
+      "draft": "heldout-double-entry.html",
+      "line": 875,
+      "habit": "closer",
+      "severity": "high",
+      "quote": "one number cannot be wrong, it can only be the number"
+    },
+    {
+      "id": "heldout-double-entry-47",
+      "draft": "heldout-double-entry.html",
+      "line": 885,
+      "habit": "fragment",
+      "severity": "high",
+      "quote": "MIT-adjacent in spirit, deterministic in the core, model-free where it counts."
+    },
+    {
+      "id": "heldout-where-the-cut-falls-01",
+      "draft": "heldout-where-the-cut-falls.html",
+      "line": 274,
+      "habit": "hedge",
+      "severity": "medium",
+      "quote": "Most systems default to something arbitrary"
+    },
+    {
+      "id": "heldout-where-the-cut-falls-02",
+      "draft": "heldout-where-the-cut-falls.html",
+      "line": 275,
+      "habit": "closer",
+      "severity": "medium",
+      "quote": "And that works fine, right up until a cut lands in the middle of the sentence that holds the answer."
+    },
+    {
+      "id": "heldout-where-the-cut-falls-03",
+      "draft": "heldout-where-the-cut-falls.html",
+      "line": 291,
+      "habit": "cliche-emphasis",
+      "severity": "high",
+      "quote": "That third cut is the whole problem."
+    },
+    {
+      "id": "heldout-where-the-cut-falls-04",
+      "draft": "heldout-where-the-cut-falls.html",
+      "line": 293,
+      "habit": "cliche-emphasis",
+      "severity": "high",
+      "quote": "which is worse than useless, because it looks like an answer"
+    },
+    {
+      "id": "heldout-where-the-cut-falls-05",
+      "draft": "heldout-where-the-cut-falls.html",
+      "line": 387,
+      "habit": "antithesis",
+      "severity": "high",
+      "quote": "Counting characters is free. Asking a language model to read the document and decide is not."
+    },
+    {
+      "id": "heldout-where-the-cut-falls-06",
+      "draft": "heldout-where-the-cut-falls.html",
+      "line": 406,
+      "habit": "hedge",
+      "severity": "medium",
+      "quote": "That last row is the one most write-ups get wrong"
+    },
+    {
+      "id": "heldout-where-the-cut-falls-07",
+      "draft": "heldout-where-the-cut-falls.html",
+      "line": 407,
+      "habit": "dramatic-beat",
+      "severity": "high",
+      "quote": "as though it were another way to cut. It is not."
+    },
+    {
+      "id": "heldout-where-the-cut-falls-08",
+      "draft": "heldout-where-the-cut-falls.html",
+      "line": 453,
+      "habit": "fragment",
+      "severity": "medium",
+      "quote": "Which means any honest score has to say which of the two it measured."
+    },
+    {
+      "id": "heldout-where-the-cut-falls-09",
+      "draft": "heldout-where-the-cut-falls.html",
+      "line": 620,
+      "habit": "antithesis",
+      "severity": "low",
+      "quote": "treating as one problem and which is really two"
+    },
+    {
+      "id": "heldout-where-the-cut-falls-10",
+      "draft": "heldout-where-the-cut-falls.html",
+      "line": 671,
+      "habit": "antithesis",
+      "severity": "medium",
+      "quote": "treated as the fixture having drifted, not as an improvement"
+    },
+    {
+      "id": "heldout-where-the-cut-falls-11",
+      "draft": "heldout-where-the-cut-falls.html",
+      "line": 752,
+      "habit": "triad",
+      "severity": "medium",
+      "quote": "no questions, no marked answers and no model at all"
+    },
+    {
+      "id": "heldout-where-the-cut-falls-12",
+      "draft": "heldout-where-the-cut-falls.html",
+      "line": 767,
+      "habit": "fragment",
+      "severity": "high",
+      "quote": "The limit worth stating."
+    },
+    {
+      "id": "heldout-where-the-cut-falls-13",
+      "draft": "heldout-where-the-cut-falls.html",
+      "line": 767,
+      "habit": "antithesis",
+      "severity": "high",
+      "quote": "These can tell you a configuration is broken. They cannot tell you which of two reasonable configurations is better"
+    },
+    {
+      "id": "heldout-where-the-cut-falls-14",
+      "draft": "heldout-where-the-cut-falls.html",
+      "line": 770,
+      "habit": "closer",
+      "severity": "medium",
+      "quote": "Anything claiming a universal chunk-quality score without queries is overselling."
+    },
+    {
+      "id": "heldout-where-the-cut-falls-15",
+      "draft": "heldout-where-the-cut-falls.html",
+      "line": 773,
+      "habit": "dramatic-beat",
+      "severity": "high",
+      "quote": "but not for the reason we expected. Next section."
+    },
+    {
+      "id": "heldout-where-the-cut-falls-16",
+      "draft": "heldout-where-the-cut-falls.html",
+      "line": 1073,
+      "habit": "fragment",
+      "severity": "high",
+      "quote": "Fair challenge."
+    },
+    {
+      "id": "heldout-where-the-cut-falls-17",
+      "draft": "heldout-where-the-cut-falls.html",
+      "line": 1075,
+      "habit": "cliche-emphasis",
+      "severity": "low",
+      "quote": "this whole piece is advice about the wrong knob"
+    },
+    {
+      "id": "heldout-where-the-cut-falls-18",
+      "draft": "heldout-where-the-cut-falls.html",
+      "line": 1077,
+      "habit": "dramatic-beat",
+      "severity": "medium",
+      "quote": "So we measured both."
+    },
+    {
+      "id": "heldout-where-the-cut-falls-19",
+      "draft": "heldout-where-the-cut-falls.html",
+      "line": 1079,
+      "habit": "antithesis",
+      "severity": "medium",
+      "quote": "Never both at once - that measures neither."
+    },
+    {
+      "id": "heldout-where-the-cut-falls-20",
+      "draft": "heldout-where-the-cut-falls.html",
+      "line": 1095,
+      "habit": "antithesis",
+      "severity": "high",
+      "quote": "Read the middle column and the answer is \"chunking, obviously.\" Read the last two together and it changes."
+    },
+    {
+      "id": "heldout-where-the-cut-falls-21",
+      "draft": "heldout-where-the-cut-falls.html",
+      "line": 1097,
+      "habit": "dramatic-beat",
+      "severity": "medium",
+      "quote": "What differs is how often."
+    },
+    {
+      "id": "heldout-where-the-cut-falls-22",
+      "draft": "heldout-where-the-cut-falls.html",
+      "line": 1146,
+      "habit": "antithesis",
+      "severity": "high",
+      "quote": "The two are not big and small. They are frequent and rare."
+    },
+    {
+      "id": "heldout-where-the-cut-falls-23",
+      "draft": "heldout-where-the-cut-falls.html",
+      "line": 1154,
+      "habit": "fragment",
+      "severity": "low",
+      "quote": "Which is a more useful thing to know than \"chunking matters more\""
+    },
+    {
+      "id": "heldout-where-the-cut-falls-24",
+      "draft": "heldout-where-the-cut-falls.html",
+      "line": 1157,
+      "habit": "closer",
+      "severity": "medium",
+      "quote": "when it goes wrong it doesn't go slightly wrong"
+    },
+    {
+      "id": "heldout-where-the-cut-falls-25",
+      "draft": "heldout-where-the-cut-falls.html",
+      "line": 1160,
+      "habit": "emphasis-word",
+      "severity": "low",
+      "quote": "simply lost the answer"
+    },
+    {
+      "id": "heldout-where-the-cut-falls-26",
+      "draft": "heldout-where-the-cut-falls.html",
+      "line": 1161,
+      "habit": "antithesis",
+      "severity": "high",
+      "quote": "It didn't degrade. It collapsed."
+    },
+    {
+      "id": "heldout-where-the-cut-falls-27",
+      "draft": "heldout-where-the-cut-falls.html",
+      "line": 1163,
+      "habit": "fragment",
+      "severity": "medium",
+      "quote": "One tempting explanation that turned out to be wrong."
+    },
+    {
+      "id": "heldout-where-the-cut-falls-28",
+      "draft": "heldout-where-the-cut-falls.html",
+      "line": 1166,
+      "habit": "triad",
+      "severity": "medium",
+      "quote": "It reads well, it fits the two worst cases, and it is not true"
+    },
+    {
+      "id": "heldout-where-the-cut-falls-29",
+      "draft": "heldout-where-the-cut-falls.html",
+      "line": 1168,
+      "habit": "closer",
+      "severity": "medium",
+      "quote": "Worth saying out loud, because that paragraph very nearly got written the other way."
+    }
+  ]
+}

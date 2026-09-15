@@ -1,0 +1,21 @@
+[project]
+name = "data-tools-ai-sniffer"
+version = "0.1.0"
+description = "Find the habits that make prose read as machine-written, quote each one, and never guess who wrote it."
+requires-python = ">=3.13"
+# The linter is standard library only, so a global `uv tool install` needs nothing.
+dependencies = []
+
+[project.optional-dependencies]
+# `ai-sniffer review` sends the reviewer prompt through the shared model layer.
+llm = ["data-tools-core[llm]"]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/ai_sniffer"]
+
+[tool.uv.sources]
+data-tools-core = { workspace = true }

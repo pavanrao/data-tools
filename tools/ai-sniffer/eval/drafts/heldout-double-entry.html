@@ -1,0 +1,899 @@
+<title>Double-Entry for Documents</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;0,6..72,700;1,6..72,400&family=Source+Sans+3:ital,wght@0,400;0,600;1,400&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+
+<style>
+  /* ---- tokens: complete light palette on bare :root ------------------- */
+  :root {
+    --paper:        #EDF1F0;
+    --surface:      #FDFEFE;
+    --sunken:       #E2E9E7;
+    --ink:          #14201E;
+    --ink-muted:    #566663;
+    --rule:         #C9D5D2;
+    --rule-strong:  #A8B8B4;
+    --accent:       #0F5061;
+    --accent-ink:   #0B3C49;
+    --accent-wash:  #DBE8EB;
+    --ok:           #2C6A51;
+    --warn:         #935512;
+    --warn-wash:    #F2E6D2;
+    --bad:          #8A2E26;
+    --shadow:       0 1px 2px rgba(20,32,30,.06), 0 8px 24px -16px rgba(20,32,30,.28);
+
+    --measure: 66ch;
+    --step--1: .875rem;
+    --step-0:  1.0625rem;
+    --step-1:  1.1875rem;
+    --step-2:  1.375rem;
+    --step-3:  clamp(1.55rem, 1.1rem + 1.6vw, 2.1rem);
+    --step-4:  clamp(2.1rem, 1.3rem + 3.4vw, 3.4rem);
+
+    --font-display: "Newsreader", "Iowan Old Style", Georgia, serif;
+    --font-body: "Source Sans 3", "Helvetica Neue", Arial, sans-serif;
+    --font-mono: "IBM Plex Mono", "SFMono-Regular", Consolas, monospace;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --paper:       #0E1614;
+      --surface:     #16201E;
+      --sunken:      #121B19;
+      --ink:         #DEE7E4;
+      --ink-muted:   #94A6A2;
+      --rule:        #293835;
+      --rule-strong: #3D504C;
+      --accent:      #6FBCCB;
+      --accent-ink:  #A5D8E2;
+      --accent-wash: #14302F;
+      --ok:          #6BBE95;
+      --warn:        #D6A362;
+      --warn-wash:   #2C2417;
+      --bad:         #DB8175;
+      --shadow:      0 1px 2px rgba(0,0,0,.4), 0 10px 28px -18px rgba(0,0,0,.9);
+    }
+  }
+  :root[data-theme="dark"] {
+    --paper:       #0E1614;
+    --surface:     #16201E;
+    --sunken:      #121B19;
+    --ink:         #DEE7E4;
+    --ink-muted:   #94A6A2;
+    --rule:        #293835;
+    --rule-strong: #3D504C;
+    --accent:      #6FBCCB;
+    --accent-ink:  #A5D8E2;
+    --accent-wash: #14302F;
+    --ok:          #6BBE95;
+    --warn:        #D6A362;
+    --warn-wash:   #2C2417;
+    --bad:         #DB8175;
+    --shadow:      0 1px 2px rgba(0,0,0,.4), 0 10px 28px -18px rgba(0,0,0,.9);
+  }
+
+  /* ---- base ----------------------------------------------------------- */
+  *, *::before, *::after { box-sizing: border-box; }
+
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--font-body);
+    font-size: var(--step-0);
+    line-height: 1.68;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .page { display: flex; flex-direction: column; gap: 0; }
+
+  .wrap { width: min(100% - 2.5rem, var(--measure)); margin-inline: auto; }
+  .wide { width: min(100% - 2.5rem, 62rem); margin-inline: auto; }
+
+  h1, h2, h3, h4 { font-family: var(--font-display); text-wrap: balance; margin: 0; }
+  p, ul, ol, dl, figure, pre, table { margin: 0; }
+
+  a { color: var(--accent-ink); text-underline-offset: .18em; text-decoration-thickness: .06em; }
+  a:focus-visible, button:focus-visible {
+    outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 2px;
+  }
+
+  /* ---- masthead ------------------------------------------------------- */
+  .masthead { padding: clamp(3rem, 8vw, 6rem) 0 2.5rem; }
+
+  .eyebrow {
+    font-family: var(--font-mono); font-size: .72rem; font-weight: 500;
+    letter-spacing: .16em; text-transform: uppercase; color: var(--ink-muted);
+  }
+
+  .masthead h1 {
+    font-size: var(--step-4); font-weight: 700; line-height: 1.02;
+    letter-spacing: -.02em; margin-top: .9rem;
+  }
+  .masthead .standfirst {
+    font-family: var(--font-display); font-size: var(--step-2);
+    line-height: 1.45; color: var(--ink-muted); margin-top: 1.1rem;
+    max-width: 54ch;
+  }
+  .byline {
+    display: flex; flex-wrap: wrap; gap: .5rem 1.25rem; align-items: baseline;
+    margin-top: 1.9rem; padding-top: 1.1rem; border-top: 1px solid var(--rule);
+    font-size: var(--step--1); color: var(--ink-muted);
+  }
+  .byline code { font-family: var(--font-mono); color: var(--ink); }
+
+  /* ---- the thesis strip: two counts that disagree --------------------- */
+  .thesis {
+    margin-top: clamp(2.5rem, 6vw, 4rem);
+    background: var(--surface); border: 1px solid var(--rule);
+    border-radius: 3px; box-shadow: var(--shadow); overflow: hidden;
+  }
+  .thesis-head {
+    display: flex; justify-content: space-between; align-items: baseline;
+    gap: 1rem; padding: .85rem 1.25rem; border-bottom: 1px solid var(--rule);
+    background: var(--sunken);
+    font-family: var(--font-mono); font-size: .74rem; letter-spacing: .1em;
+    text-transform: uppercase; color: var(--ink-muted);
+  }
+  .thesis-body { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; }
+  @media (max-width: 34rem) { .thesis-body { grid-template-columns: 1fr; } }
+
+  .count { padding: 1.6rem 1.25rem; }
+  .count-label {
+    font-family: var(--font-mono); font-size: .72rem; letter-spacing: .12em;
+    text-transform: uppercase; color: var(--ink-muted);
+  }
+  .count-value {
+    font-family: var(--font-display); font-variant-numeric: tabular-nums;
+    font-size: clamp(2.4rem, 7vw, 3.6rem); font-weight: 700; line-height: 1;
+    margin-top: .35rem; letter-spacing: -.03em;
+  }
+  .count-note { font-size: var(--step--1); color: var(--ink-muted); margin-top: .5rem; }
+  .count.read .count-value { color: var(--warn); }
+
+  .thesis-divider { align-self: stretch; width: 1px; background: var(--rule); }
+  @media (max-width: 34rem) { .thesis-divider { width: auto; height: 1px; } }
+
+  .thesis-foot {
+    padding: .9rem 1.25rem; border-top: 1px solid var(--rule);
+    background: var(--warn-wash); color: var(--ink);
+    font-size: var(--step--1);
+  }
+  .thesis-foot strong { font-weight: 600; }
+
+  /* ---- prose ---------------------------------------------------------- */
+  .prose { display: flex; flex-direction: column; gap: 1.35rem; }
+  .prose > h2 {
+    font-size: var(--step-3); font-weight: 600; letter-spacing: -.015em;
+    line-height: 1.15; margin-top: 2.4rem;
+  }
+  .prose > h3 {
+    font-size: var(--step-1); font-weight: 600; margin-top: 1.2rem;
+    font-family: var(--font-body); letter-spacing: -.005em;
+  }
+  .prose ul, .prose ol { padding-left: 1.3rem; display: flex; flex-direction: column; gap: .6rem; }
+  .prose li::marker { color: var(--ink-muted); }
+  .lead { font-size: var(--step-1); }
+
+  section { padding-block: clamp(2rem, 5vw, 3.25rem); }
+  section + section { border-top: 1px solid var(--rule); }
+
+  .section-tag {
+    font-family: var(--font-mono); font-size: .72rem; letter-spacing: .16em;
+    text-transform: uppercase; color: var(--accent); margin-bottom: .5rem;
+  }
+
+  /* first-use jargon */
+  dfn {
+    font-style: normal; font-weight: 600;
+    border-bottom: 1px dotted var(--rule-strong);
+  }
+  .aside {
+    border-left: 3px solid var(--accent); background: var(--accent-wash);
+    padding: .95rem 1.15rem; border-radius: 0 3px 3px 0;
+    font-size: var(--step--1); line-height: 1.6;
+  }
+  .aside b { font-family: var(--font-body); font-weight: 600; }
+
+  /* ---- ledger extracts (terminal output as document, not console) ----- */
+  figure.extract { display: flex; flex-direction: column; gap: .55rem; }
+  .extract pre {
+    font-family: var(--font-mono); font-size: .78rem; line-height: 1.75;
+    background: var(--sunken); border: 1px solid var(--rule);
+    border-left: 3px solid var(--rule-strong);
+    border-radius: 0 3px 3px 0; padding: 1rem 1.15rem;
+    overflow-x: auto; font-variant-numeric: tabular-nums;
+    color: var(--ink);
+  }
+  .extract figcaption { font-size: var(--step--1); color: var(--ink-muted); }
+  .extract .cmd { color: var(--accent-ink); font-weight: 500; }
+  .s-ok   { color: var(--ok); font-weight: 600; }
+  .s-warn { color: var(--warn); font-weight: 600; }
+  .s-bad  { color: var(--bad); font-weight: 600; }
+  .dim    { color: var(--ink-muted); }
+
+  code:not(pre code) {
+    font-family: var(--font-mono); font-size: .86em;
+    background: var(--sunken); border: 1px solid var(--rule);
+    padding: .08em .34em; border-radius: 3px;
+  }
+
+  /* ---- the pipeline: a real sequence, so it is numbered ---------------- */
+  ol.stages { list-style: none; padding: 0; counter-reset: stage; gap: 0; }
+  ol.stages > li {
+    counter-increment: stage; display: grid;
+    grid-template-columns: 3.25rem 1fr; gap: 0 1.15rem;
+    padding: 1.35rem 0; border-top: 1px solid var(--rule);
+  }
+  ol.stages > li:last-child { border-bottom: 1px solid var(--rule); }
+  ol.stages > li::before {
+    content: counter(stage, decimal-leading-zero);
+    font-family: var(--font-mono); font-size: .8rem; font-weight: 600;
+    color: var(--accent); padding-top: .3rem; letter-spacing: .04em;
+  }
+  .stage-name { font-family: var(--font-body); font-weight: 600; font-size: var(--step-1); }
+  .stage-body { color: var(--ink-muted); margin-top: .35rem; }
+  .stage-body strong { color: var(--ink); font-weight: 600; }
+
+  /* ---- diagram -------------------------------------------------------- */
+  .figure-frame {
+    background: var(--surface); border: 1px solid var(--rule);
+    border-radius: 3px; padding: 1.5rem 1.25rem 1.1rem; overflow-x: auto;
+  }
+  .figure-frame svg { display: block; width: 100%; height: auto; min-width: 30rem; }
+
+  /* SVG colours come from CSS rules, not presentation attributes: browsers do
+     not resolve var() inside fill="" / stroke="", which would render the
+     diagram in default black on both themes. */
+  .dg-src   { fill: var(--sunken);    stroke: var(--rule-strong); }
+  .dg-box   { fill: var(--surface);   stroke: var(--rule-strong); }
+  .dg-box-a { fill: var(--surface);   stroke: var(--accent); }
+  .dg-box-w { fill: var(--warn-wash); stroke: var(--warn); }
+  .dg-line  { fill: none; stroke: var(--rule-strong); stroke-width: 1.5; }
+  .dg-arrow { fill: var(--rule-strong); }
+  .dg-t     { fill: var(--ink);        font-family: var(--font-body); font-size: 13px; }
+  .dg-t.b   { font-weight: 600; }
+  .dg-m     { fill: var(--ink-muted);  font-family: var(--font-body); font-size: 12px; }
+  .dg-m.sm  { font-size: 11px; }
+  .dg-code  { fill: var(--ink);        font-family: var(--font-mono); font-size: 13px; }
+  .dg-num   { font-family: var(--font-mono); font-size: 20px; font-weight: 600; }
+  .dg-num.a { fill: var(--accent); }
+  .dg-num.w { fill: var(--warn); }
+  .dg-verdict { fill: var(--warn); font-family: var(--font-mono); font-size: 13px; font-weight: 600; }
+
+  /* ---- comparison table ----------------------------------------------- */
+  .table-frame { overflow-x: auto; border: 1px solid var(--rule); border-radius: 3px; background: var(--surface); }
+  table { border-collapse: collapse; width: 100%; font-size: var(--step--1); }
+  th, td { text-align: left; padding: .6rem .9rem; border-bottom: 1px solid var(--rule); }
+  thead th {
+    font-family: var(--font-mono); font-size: .7rem; letter-spacing: .1em;
+    text-transform: uppercase; color: var(--ink-muted); background: var(--sunken);
+    white-space: nowrap;
+  }
+  tbody tr:last-child td { border-bottom: 0; }
+  td.file { font-family: var(--font-mono); font-size: .78rem; white-space: nowrap; }
+  tr.flagged td { background: var(--warn-wash); }
+
+  /* ---- limitations / future: hairline list, not a card grid ----------- */
+  dl.rows { display: flex; flex-direction: column; }
+  dl.rows > div {
+    display: grid; grid-template-columns: minmax(11rem, 15rem) 1fr; gap: .3rem 1.5rem;
+    padding: 1.1rem 0; border-top: 1px solid var(--rule);
+  }
+  dl.rows > div:last-child { border-bottom: 1px solid var(--rule); }
+  @media (max-width: 40rem) { dl.rows > div { grid-template-columns: 1fr; } }
+  dl.rows dt { font-weight: 600; }
+  dl.rows dd { margin: 0; color: var(--ink-muted); }
+
+  .pill {
+    display: inline-block; font-family: var(--font-mono); font-size: .68rem;
+    letter-spacing: .08em; text-transform: uppercase; padding: .16em .5em;
+    border-radius: 2px; border: 1px solid currentColor; vertical-align: .12em;
+  }
+  .pill.ok { color: var(--ok); }
+  .pill.warn { color: var(--warn); }
+  .pill.bad { color: var(--bad); }
+
+  /* ---- closing -------------------------------------------------------- */
+  .colophon {
+    margin-top: 1rem; padding: clamp(2rem,5vw,3rem) 0 4rem;
+    border-top: 2px solid var(--ink); font-size: var(--step--1); color: var(--ink-muted);
+    display: flex; flex-direction: column; gap: .7rem;
+  }
+  .colophon a { color: var(--accent-ink); }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { animation-duration: .01ms !important; transition-duration: .01ms !important; }
+  }
+</style>
+
+<div class="page">
+
+  <header class="masthead wrap">
+    <div class="eyebrow">data-tools &middot; ingest-ledger</div>
+    <h1>Double-Entry for Documents</h1>
+    <p class="standfirst">
+      When an AI system reads a folder of files, some of them don't make it.
+      Nothing crashes, nothing warns you, and the answers keep coming.
+      Here is a way to find out what was missed.
+    </p>
+    <div class="byline">
+      <span>A build note on <code>ingest-ledger</code></span>
+      <span>~15 minute read</span>
+      <span>No prior knowledge assumed</span>
+    </div>
+
+    <figure class="thesis">
+      <div class="thesis-head">
+        <span>pricing.xlsx &mdash; reconciliation</span>
+        <span>sheet-level</span>
+      </div>
+      <div class="thesis-body">
+        <div class="count">
+          <div class="count-label">Declared</div>
+          <div class="count-value">4</div>
+          <div class="count-note">tabs, counted from the file's own structure</div>
+        </div>
+        <div class="thesis-divider"></div>
+        <div class="count read">
+          <div class="count-label">Actually read</div>
+          <div class="count-value">3</div>
+          <div class="count-note">one tab came back empty and said nothing</div>
+        </div>
+      </div>
+      <figcaption class="thesis-foot">
+        <strong>That difference is the entire idea.</strong> One number can only ever be
+        a system grading its own homework. Two numbers, counted independently, can disagree.
+      </figcaption>
+    </figure>
+  </header>
+
+  <!-- ============================ PROBLEM ============================ -->
+  <section class="wrap">
+    <div class="prose">
+      <div class="section-tag">The problem</div>
+      <h2>Your files go in. Some of them don't arrive.</h2>
+
+      <p class="lead">
+        Start from nothing. Suppose you have a folder of business documents &mdash;
+        contracts, spreadsheets, scanned forms, a zip file somebody emailed you &mdash;
+        and you want to ask questions about them in plain English.
+      </p>
+
+      <p>
+        The standard way to build that is called
+        <dfn>RAG</dfn>, short for retrieval-augmented generation. The name is worse than
+        the idea. It works in four steps:
+      </p>
+
+      <ol>
+        <li><strong>Extract.</strong> Open each file and pull the text out of it. A PDF
+          becomes a string of words; a spreadsheet becomes rows.</li>
+        <li><strong>Chunk.</strong> Cut that text into passages a few hundred words long,
+          because whole documents are too big to work with at once.</li>
+        <li><strong>Index.</strong> Convert each passage into a list of numbers &mdash; an
+          <dfn>embedding</dfn> &mdash; that captures roughly what it is about, so that
+          passages about similar topics end up with similar numbers.</li>
+        <li><strong>Retrieve and answer.</strong> When you ask a question, turn the question
+          into numbers the same way, find the passages whose numbers are closest, and hand
+          those passages to a language model to write an answer from.</li>
+      </ol>
+
+      <p>
+        This is a good design. The model answers from your documents rather than from
+        memory, and it can cite which passage it used. Nearly every "chat with your
+        documents" product works roughly this way.
+      </p>
+
+      <p>
+        The trouble is entirely in step one, and it is invisible from step four.
+      </p>
+
+      <h3>Five ways extraction fails without telling you</h3>
+
+      <ul>
+        <li>
+          <strong>The scanned page.</strong> A PDF made by a photocopier contains pictures
+          of text, not text. Ask a library for its words and you get an empty string back.
+          Not an error &mdash; an empty string. To the next stage of the pipeline, a
+          three-page document that yielded nothing looks exactly like a three-page document
+          that was blank to begin with.
+        </li>
+        <li>
+          <strong>The other tabs.</strong> A great deal of extraction code opens a
+          spreadsheet and reads the <em>active</em> sheet &mdash; whichever tab happened to
+          be selected when the file was last saved. A workbook with pricing on tab four
+          gives up its cover page and nothing else.
+        </li>
+        <li>
+          <strong>The footnotes.</strong> A Word file is a zip archive of parts.
+          The main body is one part; footnotes, headers, and the contents of text boxes are
+          others. The most popular way to read one walks the body and stops. The caveat
+          in the footnote &mdash; frequently the sentence that changes the meaning &mdash;
+          is never seen.
+        </li>
+        <li>
+          <strong>The file that was too big.</strong> Parsing a large XML document can
+          consume more memory than the machine will give it. The operating system kills
+          the process. If the surrounding code catches that and carries on with whatever
+          it had, you get a fragment presented as a whole.
+        </li>
+        <li>
+          <strong>The zip inside the zip.</strong> Archives get unpacked one level.
+          Whatever was nested deeper is simply not in the corpus.
+        </li>
+      </ul>
+
+      <div class="aside">
+        <b>This is not hallucination.</b> A hallucinating model invents a fact that
+        was never in front of it. Here the model behaves impeccably &mdash; it reports
+        exactly what it was given. The failure happened upstream, in plumbing nobody was
+        watching, and the citations all point at real passages. It is the
+        <em>missing</em> passages that lie.
+      </div>
+
+      <h3>Why nobody catches it</h3>
+
+      <p>
+        Because none of these raise an exception. Extraction "succeeds" and returns
+        something. Every downstream stage assumes the stage above it did its job, and
+        nothing in the pipeline is responsible for asking whether the input arrived whole.
+      </p>
+
+      <p>
+        The remedy usually suggested is to ask the AI what it processed &mdash;
+        <em>"summarise which files you read"</em>. That's a confession from the
+        system that already failed to notice. A pipeline that silently dropped a file
+        can just as silently fail to mention dropping it. What's needed is not a
+        confession. It's a checksum.
+      </p>
+    </div>
+  </section>
+
+  <!-- ============================ SOLUTION ============================ -->
+  <section class="wrap">
+    <div class="prose">
+      <div class="section-tag">The solution</div>
+      <h2>Count it twice, on purpose, by different routes</h2>
+
+      <p>
+        Accountants solved a version of this problem in the fifteenth century.
+        <dfn>Double-entry bookkeeping</dfn> records every transaction twice, in two places,
+        by two routes that must agree. Not because the second entry is more accurate &mdash;
+        because a single entry has nothing to be checked against. An error in one column
+        is invisible; the same error in one of two columns is a mismatch.
+      </p>
+
+      <p>
+        <code>ingest-ledger</code> applies that to documents. Every file is counted twice:
+      </p>
+
+      <div class="figure-frame">
+        <svg viewBox="0 0 720 260" role="img" aria-label="A file is measured by two independent paths. The upper path counts declared units from the file's structure without reading content. The lower path extracts content and counts what came back. The two counts are compared, producing a coverage figure and a status of partial at seventy-five percent.">
+          <defs>
+            <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+              <path d="M0,0 L10,5 L0,10 z" class="dg-arrow"></path>
+            </marker>
+          </defs>
+
+          <rect x="8" y="102" width="118" height="56" rx="3" class="dg-src"></rect>
+          <text x="67" y="126" text-anchor="middle" class="dg-code">pricing.xlsx</text>
+          <text x="67" y="145" text-anchor="middle" class="dg-m">one input file</text>
+
+          <path d="M126 130 L168 130 L168 58 L212 58" class="dg-line" marker-end="url(#ar)"></path>
+          <path d="M126 130 L168 130 L168 202 L212 202" class="dg-line" marker-end="url(#ar)"></path>
+
+          <rect x="218" y="30" width="200" height="58" rx="3" class="dg-box-a"></rect>
+          <text x="318" y="53" text-anchor="middle" class="dg-t b">Read the structure</text>
+          <text x="318" y="72" text-anchor="middle" class="dg-m">tab names only, never content</text>
+
+          <rect x="218" y="174" width="200" height="58" rx="3" class="dg-box"></rect>
+          <text x="318" y="197" text-anchor="middle" class="dg-t b">Extract the content</text>
+          <text x="318" y="216" text-anchor="middle" class="dg-m">in a supervised subprocess</text>
+
+          <path d="M418 58 L446 58" class="dg-line" marker-end="url(#ar)"></path>
+          <path d="M418 202 L446 202" class="dg-line" marker-end="url(#ar)"></path>
+
+          <text x="462" y="53" class="dg-num a">4</text>
+          <text x="480" y="53" class="dg-m sm">declared</text>
+          <text x="462" y="197" class="dg-num w">3</text>
+          <text x="480" y="197" class="dg-m sm">read</text>
+
+          <path d="M462 68 L462 112 L534 112" class="dg-line"></path>
+          <path d="M462 212 L462 148 L534 148" class="dg-line"></path>
+          <path d="M534 112 L534 130 L556 130" class="dg-line" marker-end="url(#ar)"></path>
+
+          <rect x="562" y="96" width="150" height="68" rx="3" class="dg-box-w"></rect>
+          <text x="637" y="121" text-anchor="middle" class="dg-verdict">PARTIAL 75%</text>
+          <text x="637" y="140" text-anchor="middle" class="dg-t">quarantined,</text>
+          <text x="637" y="156" text-anchor="middle" class="dg-t">not indexed</text>
+        </svg>
+      </div>
+
+      <p>
+        The upper path never reads content. It opens the file and looks only at its
+        skeleton: how many pages the page tree declares, what the tabs are named, how many
+        entries the archive lists. This is cheap, and more importantly it is
+        <em>structurally different work</em> from extraction. When the lower path dies of
+        a memory limit, the upper path's answer is still standing.
+      </p>
+
+      <p>
+        If both numbers came from the same code, their agreement would prove nothing.
+        The independence is the whole mechanism. Everything else in the tool exists to
+        preserve it.
+      </p>
+
+      <h3>What gets counted</h3>
+
+      <p>
+        A "unit" is whatever subdivision of a file can be counted from structure alone.
+        It differs per format, deliberately:
+      </p>
+
+      <div class="table-frame">
+        <table>
+          <thead>
+            <tr><th>Format</th><th>Unit</th><th>Counted from</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="file">.pdf</td><td>page</td><td>the document catalog's page tree</td></tr>
+            <tr><td class="file">.xlsx</td><td>sheet</td><td>the workbook's tab list, hidden tabs included</td></tr>
+            <tr><td class="file">.docx</td><td>block</td><td>paragraphs across body, footnotes, headers and text boxes</td></tr>
+            <tr><td class="file">.xml</td><td>node</td><td>top-level children, counted by streaming</td></tr>
+            <tr><td class="file">.csv .txt .md</td><td>row / line</td><td>non-blank lines, counted on raw bytes</td></tr>
+            <tr><td class="file">.zip</td><td>member</td><td>the archive index, recursively</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="aside">
+        <b>A detail that matters more than it looks.</b> Line counting happens on raw
+        bytes, before anything is decoded into text. A file with an unusual character
+        encoding can fail to decode and lose rows &mdash; so the count that decides whether
+        rows went missing must not itself depend on decoding succeeding.
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================ HOW IT WORKS ============================ -->
+  <section class="wrap">
+    <div class="prose">
+      <div class="section-tag">How it works</div>
+      <h2>Five stages, in order</h2>
+      <p>
+        These are numbered because they genuinely are a sequence &mdash; each one consumes
+        what the last produced.
+      </p>
+    </div>
+
+    <ol class="stages">
+      <li>
+        <div>
+          <div class="stage-name">Manifest</div>
+          <div class="stage-body">
+            Walk the input, descending into archives up to four levels deep. For each file:
+            a SHA-256 hash, the true format sniffed from its leading bytes, and a
+            <strong>declared unit count</strong> read from structure. Nothing is extracted
+            here, which makes this stage safe to run on anything.
+          </div>
+        </div>
+      </li>
+      <li>
+        <div>
+          <div class="stage-name">Extract, under supervision</div>
+          <div class="stage-body">
+            Each file is extracted in <strong>its own subprocess</strong>, with a memory
+            cap and a timeout. This is not for speed. It is so that a parse killed for
+            using too much memory produces an exit code the parent can see, rather than a
+            half-filled variable inside a <code>try</code> block.
+          </div>
+        </div>
+      </li>
+      <li>
+        <div>
+          <div class="stage-name">Reconcile</div>
+          <div class="stage-body">
+            Join the two counts. Assign each file <span class="pill ok">complete</span>
+            <span class="pill warn">partial</span> <span class="pill bad">failed</span>
+            <span class="pill">unsupported</span> or <span class="pill">empty</span>, with
+            a coverage percentage. Anything below the threshold is
+            <strong>quarantined</strong> &mdash; held back rather than fed onward.
+          </div>
+        </div>
+      </li>
+      <li>
+        <div>
+          <div class="stage-name">Index &mdash; including the gaps</div>
+          <div class="stage-body">
+            Only reconciled content gets chunked and indexed. But a second index is built
+            alongside it, of everything still known about the files that <em>failed</em>:
+            filename, the archive it came from, its tab names, the error. This second index
+            is what makes the last stage possible.
+          </div>
+        </div>
+      </li>
+      <li>
+        <div>
+          <div class="stage-name">Ask &mdash; and sometimes refuse</div>
+          <div class="stage-body">
+            Every question is scored twice: against what was read, and against the
+            descriptions of what wasn't. When the best match is something the pipeline
+            failed to read, the honest answer is <strong>to refuse</strong>.
+          </div>
+        </div>
+      </li>
+    </ol>
+
+    <div class="prose">
+      <h3>Why the second index is the interesting part</h3>
+      <p>
+        Here is the trap that ordinary retrieval falls into. A file that failed to extract
+        contributes <em>no passages</em>. It is therefore invisible to similarity search &mdash;
+        there is literally nothing to rank. The system doesn't ignore it; it never knew it
+        existed. So it answers from whatever else it has, at full confidence.
+      </p>
+      <p>
+        But you are never <em>fully</em> blind to a file you couldn't read. You still have
+        its name. You have the tab that came back empty, and that tab has a name. You have
+        the error. In practice that residue is startlingly often the exact vocabulary a
+        question uses &mdash; somebody asking about payment milestones and a spreadsheet tab
+        called <code>Payment Schedule</code> share their most important words.
+      </p>
+      <p>
+        So the gaps get embedded too, and ranked against the question alongside the real
+        passages. If a gap wins, the tool refuses.
+      </p>
+    </div>
+  </section>
+
+  <!-- ============================ EXAMPLES ============================ -->
+  <section class="wide">
+    <div class="prose" style="width: min(100%, var(--measure)); margin-inline: auto;">
+      <div class="section-tag">Examples</div>
+      <h2>What it actually prints</h2>
+      <p>
+        All output below is real, produced by <code>make demo</code> against a corpus of
+        deliberately broken files the repository generates for the purpose.
+      </p>
+    </div>
+
+    <div style="display:flex; flex-direction:column; gap:2.25rem; margin-top:1.75rem;">
+
+      <figure class="extract">
+        <pre><span class="cmd">$ ingest-ledger report /tmp/demo</span>
+
+file                                declared     read    cov  status
+---------------------------------------------------------------------
+bom_mixed.csv                         4 rows        4  100%  <span class="s-ok">COMPLETE</span>
+liar.pdf                                   -        -    0%  <span class="s-bad">UNSUPPORTED</span>
+                                <span class="dim">-&gt; extension claims pdf, content is html - content not indexed</span>
+multi_sheet.xlsx                    4 sheets        3   75%  <span class="s-warn">PARTIAL</span>
+                                <span class="dim">-&gt; missing sheets: Notes</span>
+nested.zip!inner.zip!terms.txt      30 lines       30  100%  <span class="s-ok">COMPLETE</span>
+oversized.xml                   240000 nodes   240000  100%  <span class="s-ok">COMPLETE</span>
+scanned.pdf                          3 pages        0    0%  <span class="s-warn">PARTIAL</span>
+                                <span class="dim">-&gt; missing pages: 1, 2, 3</span>
+textbox_footnote.docx              11 blocks       11  100%  <span class="s-ok">COMPLETE</span>
+
+files: 6 of 9 complete, 3 quarantined
+  pages       25.0%   &lt;-- gap
+  sheets      75.0%   &lt;-- gap</pre>
+        <figcaption>
+          Coverage is reported <em>per unit kind and never summed across kinds</em>. An
+          early version averaged everything into one figure, and 240,000 XML nodes drowned
+          out three lost PDF pages &mdash; the headline read 100% directly above a list of
+          quarantined files. Pages and nodes are not interchangeable quantities.
+        </figcaption>
+      </figure>
+
+      <figure class="extract">
+        <pre><span class="cmd">$ ingest-ledger compare /tmp/demo</span>
+
+input                  naive extractor           ingest-ledger
+-----------------------------------------------------------------------------
+bom_mixed.csv          ok, 53 chars              <span class="s-ok">COMPLETE (100%)</span>
+liar.pdf               ok, 26 chars              <span class="s-bad">UNSUPPORTED (0%)</span>            &lt;--
+multi_sheet.xlsx       ok, 34 chars              <span class="s-warn">PARTIAL (75%)</span>               &lt;--
+nested.zip             ok, 21 chars              2 members, 311 chars        &lt;--
+oversized.xml          ok, 29378855 chars        <span class="s-ok">COMPLETE (100%)</span>
+scanned.pdf            ok, 0 chars               <span class="s-warn">PARTIAL (0%)</span>                &lt;--
+textbox_footnote.docx  ok, 135 chars             <span class="s-ok">COMPLETE (100%)</span>             &lt;--
+whitebox.pdf           ok, 76 chars              <span class="s-ok">COMPLETE (100%)</span>
+
+5 of 8 inputs would enter the index silently damaged under the naive extractor.</pre>
+        <figcaption>
+          The left column is a deliberately ordinary extractor &mdash; every shortcut in it
+          is one you can find in shipped code. Note that it says <code>ok</code> on all
+          eight, including <code>ok, 0 chars</code> for a three-page scanned document.
+          It never throws. That is the whole problem, rendered as a column.
+        </figcaption>
+      </figure>
+
+      <figure class="extract">
+        <pre><span class="cmd">$ ingest-ledger ask "who owns the intellectual property?"</span>
+
+[<span class="s-ok">ANSWERED</span>] Answered from 2 indexed passages; 1 unread file(s) in this
+corpus do not bear on it.
+
+  0.346  general_terms.md@0
+         Intellectual property created under this agreement vests in the State...
+
+<span class="cmd">$ ingest-ledger ask "what are the payment schedule milestones?"</span>
+
+[<span class="s-warn">ABSTAINED</span>] Refused: the most relevant material for this question was not
+successfully read. pricing.xlsx (missing sheets: Payment Schedule).
+Re-run ingestion for these files before trusting an answer.
+
+  GAP 0.258  pricing.xlsx - missing sheets: Payment Schedule</pre>
+        <figcaption>
+          Same corpus, same index, two questions. The first is answerable from files that
+          were read completely. The second is not, and the tool says so instead of
+          answering from the remainder. It exits with code <code>3</code> on a refusal,
+          so a script can branch on it.
+        </figcaption>
+      </figure>
+    </div>
+
+    <div class="prose" style="width: min(100%, var(--measure)); margin-inline: auto; margin-top: 2.5rem;">
+      <h3>Two things found by building it</h3>
+
+      <p>
+        <strong>The test corpus caught a bug in the tool itself, on its first run.</strong>
+        One fixture is an HTML page saved with a <code>.pdf</code> extension. The PDF
+        library opened it without complaint, returned plausible-looking text, and the file
+        reconciled as <span class="pill ok">complete</span>. A forgiving parser handed
+        wrong content to a checker that had no way to know it was wrong. That is now a
+        separate stage: every file's leading bytes are checked against its extension, and
+        a mismatch is never handed to a parser at all.
+      </p>
+
+      <p>
+        <strong>A well-regarded existing tool answers a different question than expected.</strong>
+        PDF page-level checking is delegated to
+        <a href="https://github.com/NameetP/pdfmux">pdfmux</a>, which is good at finding
+        pages where text existed in the source but the extractor returned nothing. Run
+        against the three-page scanned fixture, it returns <code>PASS</code> at
+        <code>coverage 1.00</code>.
+      </p>
+      <p>
+        That is <em>correct</em>. pdfmux measures <em>fidelity</em>: did the extractor drop
+        text that was there? A scanned page has no text layer, so nothing was dropped.
+        But measured against the declared page count, that same file yielded nothing at
+        all &mdash; which is exactly the hole an index would inherit. Two different
+        questions, both worth asking. So pdfmux's verdict is recorded as
+        <em>evidence</em> in the ledger, never as the status, and a page counts as missing
+        if either signal says so.
+      </p>
+    </div>
+  </section>
+
+  <!-- ============================ LIMITATIONS ============================ -->
+  <section class="wrap">
+    <div class="prose">
+      <div class="section-tag">Limitations</div>
+      <h2>What this does not do</h2>
+      <p>
+        Stated plainly, because a tool about honest reporting that oversold itself would
+        be a poor joke.
+      </p>
+    </div>
+
+    <dl class="rows" style="margin-top:1.5rem;">
+      <div>
+        <dt>Gap matching is lexical</dt>
+        <dd>
+          The default embedding is a dependency-free hashing function, chosen so the
+          refusal logic can be tested offline on any machine with no model and no API key.
+          It matches on shared vocabulary. A question phrased entirely in synonyms of a
+          gap's description will not trigger a refusal. Swapping in a trained encoder is a
+          one-line change and would improve this materially.
+        </dd>
+      </div>
+      <div>
+        <dt>The thresholds are guesses</dt>
+        <dd>
+          The constants deciding "related enough to disclose" and "relevant enough to
+          refuse" were tuned against the demo corpus, not derived from evaluation data.
+          They are policy, and they deserve a proper eval set before anyone trusts them
+          on real documents.
+        </dd>
+      </div>
+      <div>
+        <dt>Counting units is not reading them</dt>
+        <dd>
+          A page that extracts to one garbled line still counts as a page recovered. This
+          catches wholesale loss, not quality degradation. Scrambled reading order,
+          mangled tables and OCR errors are real problems and this measures none of them.
+        </dd>
+      </div>
+      <div>
+        <dt>There is no answer generation</dt>
+        <dd>
+          <code>ask</code> returns ranked passages and a verdict. Wiring a language model
+          to write prose from them is deliberately left to the caller, so that the
+          deterministic core stays model-free and fully testable.
+        </dd>
+      </div>
+      <div>
+        <dt>Format coverage is narrow</dt>
+        <dd>
+          PDF, XLSX, DOCX, XML, CSV, TSV, text, Markdown and zip. No PowerPoint, no email
+          archives, no images, no HTML. Unknown formats are marked
+          <span class="pill">unsupported</span> rather than skipped quietly &mdash; an
+          honest gap rather than a silent one &mdash; but a gap all the same.
+        </dd>
+      </div>
+    </dl>
+  </section>
+
+  <!-- ============================ FUTURE ============================ -->
+  <section class="wrap">
+    <div class="prose">
+      <div class="section-tag">Future work</div>
+      <h2>Where this goes next</h2>
+
+      <ul>
+        <li>
+          <strong>An evaluation set for the thresholds.</strong> Questions paired with
+          known-correct refuse-or-answer decisions, so the constants above stop being
+          guesses and start being measured. This is the most valuable next thing.
+        </li>
+        <li>
+          <strong>A pluggable real encoder.</strong> The interface exists; a local
+          sentence-transformer behind it would test how much of the refusal behaviour
+          survives paraphrase.
+        </li>
+        <li>
+          <strong>Sub-unit reconciliation.</strong> Today a spreadsheet is counted in
+          tabs. Counting used rows within each tab would catch a sheet that opened but
+          returned only its header.
+        </li>
+        <li>
+          <strong>Quality signals alongside completeness.</strong> Reading order,
+          table structure and OCR confidence are a different axis from
+          "did it arrive", and existing tools already measure some of them well.
+        </li>
+        <li>
+          <strong>Exposure over MCP.</strong> The repository's wider goal is a set of
+          composable tools; publishing reconcile-and-ask as a
+          <dfn>Model Context Protocol</dfn> server would let any AI assistant check
+          document coverage before answering from a corpus.
+        </li>
+        <li>
+          <strong>Incremental runs.</strong> Every file is already content-hashed, so
+          re-reconciling only what changed &mdash; and distinguishing "this file changed"
+          from "this file finally extracted" &mdash; is mostly bookkeeping.
+        </li>
+      </ul>
+
+      <h3>The point, restated</h3>
+      <p>
+        A system that answers questions from your documents makes an implicit promise:
+        that it read them. Almost nothing checks that promise, and the failures are
+        specifically the quiet kind &mdash; no crash, no warning, plausible output. Counting
+        twice by two routes is an old, unglamorous answer, and it works here for the same
+        reason it worked for bookkeepers: one number cannot be wrong, it can only be
+        the number.
+      </p>
+    </div>
+  </section>
+
+  <footer class="colophon wrap">
+    <div>
+      <strong style="color:var(--ink);">ingest-ledger</strong> is the first tool in
+      <a href="https://github.com/pavanrao/data-tools">data-tools</a>, a collection of
+      small, independent data-pipeline tools. MIT-adjacent in spirit, deterministic in
+      the core, model-free where it counts.
+    </div>
+    <div>
+      Run the whole story yourself: <code>make sync &amp;&amp; make demo</code>.
+      The five-minute walkthrough is in <code>tools/ingest-ledger/GETTING-STARTED.md</code>;
+      the reference is the tool's <code>README.md</code>.
+    </div>
+    <div>
+      Prompted by the Real Python Podcast, episode 308 &mdash;
+      <em>Navigating Silent Failures in AI</em>, with Calvin Hendryx-Parker.
+    </div>
+  </footer>
+
+</div>
