@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import importlib.util
+import sys
 from pathlib import Path
 
 import pytest
@@ -17,6 +18,8 @@ def eval_script():
             f"ai_sniffer_eval_{name.replace('/', '_')}", EVAL / f"{name}.py"
         )
         module = importlib.util.module_from_spec(spec)
+        # Dataclasses look their module up in sys.modules while the class is built.
+        sys.modules[spec.name] = module
         spec.loader.exec_module(module)
         return module
 
