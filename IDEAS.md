@@ -1038,7 +1038,7 @@ is a result either way.
 - **Cost note:** the metrics are cheap; the evaluation is #25's, which is free.
 - **Covers:** §2 Chunking · §5 Retrieval metrics · the reproduction habit itself.
 
-### 218. `ai-sniffer` — the tells in your own draft ⭐⭐ 💻 🔌
+### 218. `ai-sniffer` — the tells in your own draft ✅ ⭐⭐ 💻 🔌
 Counts the habits that make prose read as machine-written, and refuses to say
 whether it was. Sentence-length variance; contraction rate; the recurring
 "not X, but Y" pivot; paragraphs that keep landing on a short sentence; hedge
@@ -1073,6 +1073,12 @@ repository's own documentation.
   measurable on their own.
 - **Covers:** §4 What alignment does to style · §5 Task metrics vs. vibes ·
   §5 Calibrated confidence & honest uncertainty.
+- **Built:** [`tools/ai-sniffer/`](./tools/ai-sniffer/), as a stdlib linter and a
+  review-only prompt that is also a Claude Code agent. The corpus-overlap and
+  surprisal parts above weren't built. The eval on 2026-09-15 used 165 hand labels on
+  six drafts and 72 model runs. Scored before the labels were reviewed, Sonnet caught
+  36 to 43 of 63 held-out habits, Haiku 7 to 10, and the linter alone 10. Design and
+  results: [`docs/012`](docs/012_ai-sniffer.md).
 
 ## G. Concept notes (markdown, not code)
 

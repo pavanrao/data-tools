@@ -1,6 +1,6 @@
 # 012 — `ai-sniffer` (#218): the habits in agent-written prose
 
-**Status:** plan · **Date:** 2026-09-14
+**Status:** built; eval scored against unreviewed labels · **Date:** 2026-09-14, results 2026-09-15
 
 ## Purpose
 
@@ -180,6 +180,73 @@ held-out recall on word-level habits is still likely to be optimistic.
 **A side effect worth having.** The two held-out posts are the ones due for a rewrite.
 Their findings drive that rewrite, and the rewritten versions become clean drafts for
 the next run of this eval.
+
+## 4a · Results (2026-09-15, provisional)
+
+**Provisional.** Scored against the labels at `7562e47`, before Pavan's review. Every
+unmarked label counts as keep. These numbers get rescored from the saved runs once the
+review is done, and both versions will be reported.
+
+**What ran.** Prompt `5e3bb93`, labels `7562e47`, scoring `6123579`. Four model setups
+ran three times each on six drafts as Claude Code subagents: 72 runs, with Haiku and
+Sonnet requested by alias (see `eval/runs/manifest.json` for the caveat on exact
+versions). All 72 replies parsed. Each run read neutral copies named `draft-1` to
+`draft-6`. An audit of all 72 transcripts found 281 tool calls, every one a Read or
+Write on that run's own listed files. The linter-alone setup is deterministic and ran
+once.
+
+**Recall and false alarms**, as the lowest and highest of three runs:
+
+| Setup | Held-out, of 63 | Development, of 57 | Clean residuals, of 13 | False alarms on clean drafts |
+| --- | --- | --- | --- | --- |
+| Linter alone | 10 | 10 | 1 | 15 |
+| Haiku | 7–10 | 19–23 | 3–6 | 5–8 |
+| Haiku + linter report | 7–12 | 14–20 | 4–5 | 6–14 |
+| Sonnet | 36–43 | 37–39 | 10–13 | 15–22 |
+| Sonnet + linter report | 33–41 | 35–39 | 9–11 | 12–16 |
+
+**Per held-out draft**, caught in each of the three runs:
+
+| Setup | *Double-Entry*, of 38 | *Where the Cut Falls*, five sections, of 25 |
+| --- | --- | --- |
+| Linter alone | 8 | 2 |
+| Haiku | 7, 7, 8 | 2, 0, 2 |
+| Haiku + linter report | 6, 10, 9 | 1, 2, 1 |
+| Sonnet | 26, 25, 31 | 15, 11, 12 |
+| Sonnet + linter report | 30, 24, 32 | 8, 9, 9 |
+
+**What the runs show.**
+
+- Haiku reported few findings, 2 to 24 per draft. On held-out text it caught 7 to 10
+  without the linter's report and 7 to 12 with it, against 10 for the linter alone. On *Where the Cut Falls* most of its findings fell outside
+  the five scored sections (20, 18 and 6 set aside), so it caught 0 to 2 of the 25
+  labelled habits there. The Haiku default in the agent file isn't supported by these
+  runs.
+- Sonnet caught 36 to 43 of the 63 held-out habits. Its development recall, 37 to 39
+  of 57, is close to that, so the examples quoted from development drafts don't show
+  up as a visible advantage.
+- Giving Sonnet the linter's report didn't help. It caught fewer on *Where the Cut
+  Falls* with the report (8 or 9) than without (11 to 15), and about the same on
+  *Double-Entry*.
+- Sonnet's false alarms, 15 to 22 across the two clean drafts, need reading before
+  they're believed. *Which Protocol*'s rewrite has no counted labels, so every finding
+  there is a false alarm by construction, and some will be habits the labels missed.
+  They're on the review page as candidates.
+- Model quotes were nearly always exact: 9 quotes across all 72 runs couldn't be found
+  in their draft. The linter's "not in draft" counts come from its `CODE` placeholder
+  for inline code, not from misquoting.
+- Habit names agreed with the label on most catches (for Sonnet on *Double-Entry*, 20
+  to 25 of 25 to 31 caught), which suggests the catalogue's names mean the same thing
+  to the model and the labeller more often than not.
+
+**Candidates.** 115 groups of unmatched findings from the model runs, including clean-
+draft false alarms: 25 on *Double-Entry*, 6 on *Where the Cut Falls*, 27 on the
+development drafts and 57 on the clean drafts. Accepted ones become labels with
+`source: model`, and recall is reported with and without them.
+
+**Not yet shown.** Whether a different prompt would lift Haiku, since only one prompt
+was tested. Whether any of this holds for writers other than the two posts' author and
+the model that helped draft them.
 
 ## 5 · Keeping the labels current
 
