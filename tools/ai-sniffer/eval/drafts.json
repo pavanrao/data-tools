@@ -1,0 +1,48 @@
+{
+  "dev-database-before.html": {
+    "role": "development",
+    "source": "data-tools 372bb84"
+  },
+  "dev-protocol-before.md": {
+    "role": "development",
+    "source": "pavanrao.github.io cfa59de"
+  },
+  "heldout-double-entry.html": {
+    "role": "held-out",
+    "source": "data-tools b265882"
+  },
+  "heldout-where-the-cut-falls.html": {
+    "role": "held-out",
+    "source": "data-tools b265882",
+    "scored_line_ranges": [
+      [
+        268,
+        301
+      ],
+      [
+        384,
+        461
+      ],
+      [
+        617,
+        677
+      ],
+      [
+        751,
+        781
+      ],
+      [
+        1072,
+        1177
+      ]
+    ]
+  },
+  "clean-database-after.html": {
+    "role": "clean",
+    "source": "data-tools 138a26c"
+  },
+  "clean-protocol-after.md": {
+    "role": "clean",
+    "source": "pavanrao.github.io 2e91d3d"
+  }
+}

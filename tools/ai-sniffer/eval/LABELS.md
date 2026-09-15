@@ -1,6 +1,6 @@
 # ai-sniffer eval labels
 
-Generated from `labels.json` by `render_labels.py`; edit `build_labels.py`, not this file.
+Generated from `labels.json` by `render_labels.py`; edit `labels.jsonl`, not this file.
 
 **How severity is scored.** `high` and `medium` count toward recall, so a reviewer that misses one loses a point. `low` is neutral: a defensible use either way, so flagging it neither earns nor costs anything.
 

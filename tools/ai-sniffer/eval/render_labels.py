@@ -20,25 +20,18 @@ ROLE_NOTE = {
         "Flags on anything *not* labelled here are false alarms."
     ),
 }
-ORDER = [
-    "heldout-double-entry.html",
-    "heldout-where-the-cut-falls.html",
-    "dev-database-before.html",
-    "dev-protocol-before.md",
-    "clean-database-after.html",
-    "clean-protocol-after.md",
-]
 SEVERITY_RANK = {"high": 0, "medium": 1, "low": 2}
 
 
 def main() -> None:
     data = json.loads((HERE / "labels.json").read_text())
     labels = data["labels"]
+    roles = ["held-out", "development", "clean"]
+    ORDER = sorted(data["drafts"], key=lambda name: roles.index(data["drafts"][name]["role"]))
     out = [
         "# ai-sniffer eval labels",
         "",
-        "Generated from `labels.json` by `render_labels.py`; "
-        "edit `build_labels.py`, not this file.",
+        "Generated from `labels.json` by `render_labels.py`; edit `labels.jsonl`, not this file.",
         "",
         "**How severity is scored.** `high` and `medium` count toward recall, so a reviewer that "
         "misses one loses a point. `low` is neutral: a defensible use either way, so flagging it "
