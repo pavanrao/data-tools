@@ -114,5 +114,9 @@ def test_wsc_categories_name_their_text_differently_and_long_sentences_are_slice
 def test_sloplint_uses_each_note_excerpt(compare):
     found = compare.ADAPTERS["sloplint"](text("sloplint.json"), text("sample.md"))
 
-    assert quotes(found) == [(3, "this is not a bug, but a feature"), (3, "—"), (3, "rich tapestry")]
+    assert quotes(found) == [
+        (3, "this is not a bug, but a feature"),
+        (3, "—"),
+        (3, "rich tapestry"),
+    ]
     assert [f["rule"] for f in found] == ["not-x-but-y", "em-dash", "rich-tapestry"]

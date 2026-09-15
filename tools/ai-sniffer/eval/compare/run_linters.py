@@ -182,9 +182,17 @@ def commands(tools: Path, file: Path) -> dict[str, list[str]]:
             str(tools / "node_modules" / "slop-lint" / "slop-lint.mjs"),
             str(file),
         ],
-        "sloplint": ["env", f"GEM_HOME={tools / 'gems'}", "/opt/homebrew/opt/ruby/bin/ruby",
-                     str(tools / "gems" / "bin" / "sloplint"), "-o", "json", "check",
-                     "--markdown", str(file)],  # fmt: skip
+        "sloplint": [
+            "env",
+            f"GEM_HOME={tools / 'gems'}",
+            "/opt/homebrew/opt/ruby/bin/ruby",
+            str(tools / "gems" / "bin" / "sloplint"),
+            "-o",
+            "json",
+            "check",
+            "--markdown",
+            str(file),
+        ],  # fmt: skip
     }
 
 
