@@ -1106,6 +1106,11 @@ repository's own documentation.
        only if the eval shows a clear gain over the two cheaper steps: in the 72
        subagent runs, the tool loop re-sent the prompt and draft every turn and cost
        more than a single request would.
+     - *Whether to keep our own linter rules at all.* vale-ai-tells caught 18 of 63
+       held-out habits to `ai-sniffer check`'s 10, mostly with structural rules. Our
+       linter is more precise per finding (13.5 catches per 100 findings against 8.4)
+       and it feeds the reviewer, but wrapping Vale's rules, or adopting its structural
+       ones, may beat growing our own. Decide this on the post 3 numbers.
      - *Running the agent headless.* Claude Code's print mode (`claude -p`) should
        run the ai-sniffer agent from a script on the Claude Code sign-in, with no API
        key; confirm the flags for choosing an agent before relying on it.
