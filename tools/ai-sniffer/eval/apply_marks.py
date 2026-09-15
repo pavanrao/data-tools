@@ -35,12 +35,20 @@ import render_labels  # noqa: E402
 class Result:
     labels: list[dict]
     summary: dict[str, int] = field(
-        default_factory=lambda: {"keep": 0, "change": 0, "drop": 0, "note": 0, "added": 0}
+        default_factory=lambda: {
+            "keep": 0,
+            "change": 0,
+            "drop": 0,
+            "note": 0,
+            "added": 0,
+            "accepted": 0,
+            "rejected": 0,
+        }
     )
     skipped: list[str] = field(default_factory=list)
 
 
-def read_marks(directory: Path) -> tuple[dict[str, dict], dict[str, dict]]:
+def read_marks(directory: Path) -> tuple[dict[str, dict], dict[str, dict], dict[str, dict]]:
     def collection(name: str) -> dict[str, dict]:
         folder = directory / name
         if not folder.is_dir():
@@ -48,7 +56,7 @@ def read_marks(directory: Path) -> tuple[dict[str, dict], dict[str, dict]]:
         files = sorted(folder.glob("*.json"))
         return {f.stem: json.loads(f.read_text(encoding="utf-8")) for f in files}
 
-    return collection("decisions"), collection("missed")
+    return collection("decisions"), collection("missed"), collection("candidates")
 
 
 def _review(verdict: str, at: str, note: str) -> dict:
@@ -64,6 +72,7 @@ def apply(
     missed: dict[str, dict],
     meta: dict,
     drafts_dir: Path,
+    candidates: dict[str, dict] | None = None,
 ) -> Result:
     result = Result(copy.deepcopy(labels))
     index = {x["id"]: x for x in result.labels}
@@ -134,6 +143,44 @@ def apply(
         result.labels.append(new)
         result.summary["added"] += 1
 
+    by_candidate = {x["candidate_id"]: x for x in result.labels if "candidate_id" in x}
+    for cid, mark in sorted((candidates or {}).items()):
+        verdict, at, note = mark.get("verdict"), mark.get("updatedAt", ""), mark.get("note", "")
+        existing = by_candidate.get(cid)
+        if verdict == "reject":
+            if existing is not None:
+                existing["status"] = "dropped"
+                existing["review"] = _review("rejected", at, note)
+            result.summary["rejected"] += 1
+            continue
+        if verdict != "accept":
+            continue
+        if mark.get("habit") not in build_labels.HABITS:
+            result.skipped.append(
+                f"candidate {cid}: habit {mark.get('habit')!r} isn't a catalogue name"
+            )
+            continue
+        if existing is None:
+            hits = build_labels.locate(lines[mark["draft"]], mark["quote"])
+            if len(hits) != 1:
+                result.skipped.append(f"candidate {cid}: {len(hits)} matches in {mark['draft']}")
+                continue
+            existing = {
+                "id": build_labels.next_id(result.labels, mark["draft"]),
+                "draft": mark["draft"],
+                "habit": mark["habit"],
+                "severity": mark["severity"],
+                "quote": mark["quote"],
+                "source": "model",
+                "candidate_id": cid,
+            }
+            result.labels.append(existing)
+            by_candidate[cid] = existing
+        existing.pop("status", None)
+        existing["habit"], existing["severity"] = mark["habit"], mark["severity"]
+        existing["review"] = _review("accepted", at, note)
+        result.summary["accepted"] += 1
+
     for doc_id, label in from_missed.items():
         if doc_id not in missed:
             result.skipped.append(
@@ -150,20 +197,22 @@ def main(argv: list[str] | None = None) -> int:
     args = parser.parse_args(argv)
 
     meta = build_labels.load_meta()
-    decisions, missed = read_marks(args.marks)
+    decisions, missed, candidates = read_marks(args.marks)
     result = apply(
         build_labels.load_labels(build_labels.LABELS_FILE),
         decisions,
         missed,
         meta,
         build_labels.DRAFTS,
+        candidates,
     )
     build_labels.build(meta, result.labels, build_labels.DRAFTS)  # refuses to write a broken file
 
     s = result.summary
     print(
         f"{len(decisions)} marks, {len(missed)} missed habits: keep {s['keep']}, "
-        f"change {s['change']}, drop {s['drop']}, note only {s['note']}, added {s['added']}"
+        f"change {s['change']}, drop {s['drop']}, note only {s['note']}, added {s['added']}, "
+        f"candidates accepted {s['accepted']}, rejected {s['rejected']}"
     )
     for line in result.skipped:
         print(f"  skipped: {line}")

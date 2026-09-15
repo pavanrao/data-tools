@@ -157,7 +157,9 @@ def test_the_summary_says_what_happened(apply):
 
     summary = apply(labels(), decisions).summary
 
-    assert summary == {"keep": 1, "change": 1, "drop": 1, "note": 0, "added": 0}
+    assert summary == {
+        "keep": 1, "change": 1, "drop": 1, "note": 0, "added": 0, "accepted": 0, "rejected": 0
+    }  # fmt: skip
 
 
 def test_marks_are_read_from_a_database_export(eval_script, tmp_path):
@@ -165,7 +167,66 @@ def test_marks_are_read_from_a_database_export(eval_script, tmp_path):
     (tmp_path / "decisions").mkdir()
     (tmp_path / "decisions" / "heldout-a-01.json").write_text(json.dumps(mark("keep")))
 
-    decisions, missed = read_marks(tmp_path)
+    decisions, missed, candidates = read_marks(tmp_path)
 
     assert decisions == {"heldout-a-01": mark("keep")}
-    assert missed == {}
+    assert missed == {} and candidates == {}
+
+
+# ---- candidates from model runs -----------------------------------------------------------
+
+CANDIDATE = {
+    "verdict": "accept",
+    "draft": "dev-b.html",
+    "quote": "Sit with that.",
+    "habit": "reader-instruction",
+    "severity": "high",
+    "note": "",
+    "updatedAt": AT,
+}
+
+
+def test_an_accepted_candidate_becomes_a_model_sourced_label(eval_script, workspace):
+    script = eval_script("apply_marks")
+
+    result = script.apply(
+        labels(), {}, {}, META, workspace / "drafts", candidates={"dev-b-c1a2b3": CANDIDATE}
+    )
+
+    new = by_id(result)["dev-b-02"]
+    assert new["source"] == "model"
+    assert new["candidate_id"] == "dev-b-c1a2b3"
+    assert new["review"] == {"verdict": "accepted", "at": AT}
+    assert result.summary["accepted"] == 1
+
+
+def test_rejecting_a_candidate_adds_nothing_and_accepting_twice_adds_once(eval_script, workspace):
+    script = eval_script("apply_marks")
+
+    def run(existing, marks):
+        return script.apply(existing, {}, {}, META, workspace / "drafts", candidates=marks)
+
+    rejected = run(labels(), {"dev-b-c1a2b3": {**CANDIDATE, "verdict": "reject"}})
+    once = run(labels(), {"dev-b-c1a2b3": CANDIDATE}).labels
+    twice = run(once, {"dev-b-c1a2b3": CANDIDATE}).labels
+
+    assert len(rejected.labels) == 3 and rejected.summary["rejected"] == 1
+    assert twice == once
+
+
+def test_rejecting_a_candidate_that_was_accepted_earlier_drops_its_label(eval_script, workspace):
+    script = eval_script("apply_marks")
+    accepted = script.apply(
+        labels(), {}, {}, META, workspace / "drafts", candidates={"dev-b-c1a2b3": CANDIDATE}
+    ).labels
+
+    result = script.apply(
+        accepted,
+        {},
+        {},
+        META,
+        workspace / "drafts",
+        candidates={"dev-b-c1a2b3": {**CANDIDATE, "verdict": "reject"}},
+    )
+
+    assert by_id(result)["dev-b-02"]["status"] == "dropped"

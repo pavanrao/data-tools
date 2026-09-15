@@ -98,3 +98,32 @@ def test_the_committed_template_has_both_placeholders(page_script):
 
     assert "__DATA__" in template and "__COMMIT__" in template
     assert template.lstrip().startswith("<title>")
+
+
+def test_candidates_are_shown_in_their_paragraph_and_unplaceable_ones_are_left_out(
+    page_script, workspace
+):
+    candidates = [
+        {"id": "heldout-a-cabc123", "draft": "heldout-a.md", "line": 7, "quote": "Note that",
+         "habits": {"reader-instruction": 3}, "severities": {"high": 3},
+         "raised_by": {"haiku": 1, "sonnet": 2}, "runs": 3},
+        {"id": "heldout-a-cdef456", "draft": "heldout-a.md", "line": 5, "quote": "Not in there.",
+         "habits": {"fragment": 1}, "severities": {"low": 1}, "raised_by": {"haiku": 1}, "runs": 1},
+    ]  # fmt: skip
+    payload = page_script.with_context(
+        data([label("heldout-a-01", "heldout-a.md", "It collapsed.", 5)]),
+        workspace / "drafts",
+        candidates=candidates,
+    )
+
+    (shown,) = payload["candidates"]
+    assert shown["id"] == "heldout-a-cabc123"
+    assert (shown["match"], shown["after"]) == ("Note that", " this matters.")
+    assert payload["unplaceable_candidates"] == ["heldout-a-cdef456"]
+
+
+def test_the_template_renders_candidates(page_script):
+    template = page_script.TEMPLATE.read_text(encoding="utf-8")
+
+    assert 'id="candidates"' in template
+    assert 'collection("candidates")' in template

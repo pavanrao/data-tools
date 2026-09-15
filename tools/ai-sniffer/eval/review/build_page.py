@@ -154,9 +154,10 @@ def _title(raw: str, name: str) -> str:
     return html.unescape(m.group(1).strip()) if m else name
 
 
-def with_context(data: dict, drafts_dir: Path) -> dict:
-    """The page payload: drafts with titles, and labels with heading, before, match and after."""
+def with_context(data: dict, drafts_dir: Path, candidates: list[dict] | None = None) -> dict:
+    """The page payload: drafts with titles, and labels and candidates in their paragraphs."""
     drafts, labels, misses = {}, [], []
+    shown, unplaceable = [], []
     for name, meta in data["drafts"].items():
         raw = (drafts_dir / name).read_text(encoding="utf-8")
         blocks = _blocks_html(raw) if name.endswith((".html", ".htm")) else _blocks_md(raw)
@@ -174,9 +175,28 @@ def with_context(data: dict, drafts_dir: Path) -> dict:
             labels.append(
                 {**x, "heading": heading, "before": text[:a], "match": text[a:b], "after": text[b:]}
             )
+        for c in (c for c in candidates or [] if c["draft"] == name):
+            found = _locate(raw, blocks, c["line"], c["quote"])
+            if found is None:
+                unplaceable.append(c["id"])
+                continue
+            text, (a, b) = found
+            heading = next(
+                (h["text"] for h in reversed(blocks) if h["heading"] and h["start"] <= c["line"]),
+                "",
+            )
+            shown.append(
+                {**c, "heading": heading, "before": text[:a], "match": text[a:b], "after": text[b:]}
+            )
     if misses:
         raise SystemExit("couldn't highlight these quotes in their drafts: " + ", ".join(misses))
-    return {"drafts": drafts, "habits": sorted(HABITS), "labels": labels}
+    return {
+        "drafts": drafts,
+        "habits": sorted(HABITS),
+        "labels": labels,
+        "candidates": shown,
+        "unplaceable_candidates": unplaceable,
+    }
 
 
 def render(template: str, payload: dict, commit: str) -> str:
@@ -199,13 +219,20 @@ def labels_commit() -> str:
 
 def main() -> None:
     data = json.loads((EVAL / "labels.json").read_text(encoding="utf-8"))
-    payload = with_context(data, EVAL / "drafts")
+    candidates_file = EVAL / "candidates.json"
+    candidates = (
+        json.loads(candidates_file.read_text(encoding="utf-8")) if candidates_file.exists() else []
+    )
+    payload = with_context(data, EVAL / "drafts", candidates)
     OUTPUT.write_text(
         render(TEMPLATE.read_text(encoding="utf-8"), payload, labels_commit()), encoding="utf-8"
     )
     print(
-        f"wrote {OUTPUT} with {len(payload['labels'])} labels from {len(payload['drafts'])} drafts"
+        f"wrote {OUTPUT} with {len(payload['labels'])} labels and "
+        f"{len(payload['candidates'])} candidates from {len(payload['drafts'])} drafts"
     )
+    if payload["unplaceable_candidates"]:
+        print("  left out, quote not placeable: " + ", ".join(payload["unplaceable_candidates"]))
 
 
 if __name__ == "__main__":
