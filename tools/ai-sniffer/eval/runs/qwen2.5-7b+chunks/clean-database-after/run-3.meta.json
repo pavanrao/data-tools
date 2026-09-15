@@ -1,0 +1,22 @@
+{
+  "model": "qwen2.5:7b",
+  "parameters": "7.6B",
+  "quantization": "Q4_K_M",
+  "digest": null,
+  "num_ctx": 32768,
+  "prompt_tokens": 8867,
+  "output_tokens": 865,
+  "seconds": {
+    "prompt": 10.4,
+    "output": 36.5,
+    "total": 47.7
+  },
+  "truncated": false,
+  "chunks": 3,
+  "unparseable_chunks": 0,
+  "setup": "qwen2.5-7b+chunks",
+  "draft": "clean-database-after.html",
+  "neutral_name": "draft-4.html",
+  "run": 3,
+  "linter": false
+}

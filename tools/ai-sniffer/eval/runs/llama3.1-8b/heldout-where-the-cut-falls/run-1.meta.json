@@ -1,0 +1,20 @@
+{
+  "model": "llama3.1:latest",
+  "parameters": "8.0B",
+  "quantization": "Q4_K_M",
+  "digest": null,
+  "num_ctx": 32768,
+  "prompt_tokens": 29266,
+  "output_tokens": 829,
+  "seconds": {
+    "prompt": 267.5,
+    "output": 59.6,
+    "total": 332.9
+  },
+  "truncated": false,
+  "setup": "llama3.1-8b",
+  "draft": "heldout-where-the-cut-falls.html",
+  "neutral_name": "draft-1.html",
+  "run": 1,
+  "linter": false
+}

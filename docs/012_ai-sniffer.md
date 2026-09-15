@@ -248,6 +248,44 @@ development drafts and 57 on the clean drafts. Accepted ones become labels with
 was tested. Whether any of this holds for writers other than the two posts' author and
 the model that helped draft them.
 
+## 4b · Local models (2026-09-15, provisional)
+
+Same prompt, labels and scoring as §4a, run through Ollama on an M1 Pro with 16 GB, with
+`eval/run_local.py`. Both models are 4-bit (Q4_K_M), with a 32,768-token window. Each
+setup ran three times on all six drafts. Chunked runs send one request per section
+(`--chunk`, sections under 400 words merged into the next). Neither model saw the
+linter report in the chunked setups.
+
+| Setup | Held-out, of 63 | Development, of 57 | Clean residuals, of 13 | False alarms on clean drafts | Runs with no usable JSON | Minutes per 1,000 words |
+| --- | --- | --- | --- | --- | --- | --- |
+| qwen2.5:7b | 0–1 | 5–8 | 0–2 | 3–7 | 5 of 18 | 0.35 |
+| qwen2.5:7b + linter report | 3–4 | 6–8 | 0–5 | 4–9 | 3 of 18 | 0.32 |
+| qwen2.5:7b, chunked | 11–13 | 8–9 | 1–3 | 10–13 | 1 of 63 chunks | 0.68 |
+| llama3.1:8b | 0–2 | 4–14 | 0 | 11–90 | 9 of 18 | 1.17 |
+| llama3.1:8b + linter report | 0 | 0–8 | 0–2 | 9–14 | 10 of 18 | 1.12 |
+| llama3.1:8b, chunked | 9–15 | 4–13 | 0–1 | 11–26 | 18 of 63 chunks | 1.64 |
+
+**Truncation.** *Where the Cut Falls* didn't fit in one request for most unchunked runs.
+Ollama cut an over-long prompt to half the window and kept only its first 4 tokens, so
+the model never saw its instructions. That happened to 9 runs: all three qwen runs in
+both unchunked setups, and all three llama runs with the linter report. Ollama's server
+log records exactly those 9, none during the chunked runs. An early check missed them
+(docs: commit `06d0509`).
+
+**What the local runs show.**
+
+- Chunking made the difference. Held-out catches went from 0–1 to 11–13 for qwen and
+  from 0–2 to 9–15 for llama, and replies without usable JSON fell from whole runs to
+  single chunks. Part of the unchunked loss is truncation on the long post, and part is
+  replies the scorer couldn't read.
+- Chunked, both 7–8B models caught more held-out habits than Haiku did through Claude
+  Code unchunked (7–10, §4a), at no API cost. Sonnet's 36–43 is still far ahead.
+- llama3.1:8b is less reliable than qwen2.5:7b here: 18 of its 63 chunk replies had no
+  usable JSON, and one unchunked run produced 90 false alarms on a clean draft.
+- Times are wall-clock model time on one laptop, part of it under memory pressure with
+  over 4 GB of swap in use, so they're an upper bound for this machine rather than a
+  benchmark.
+
 ## 5 · Keeping the labels current
 
 *Added 2026-09-15.* The labels will change after the first eval: Pavan's marks from the

@@ -1,0 +1,22 @@
+{
+  "model": "llama3.1:latest",
+  "parameters": "8.0B",
+  "quantization": "Q4_K_M",
+  "digest": null,
+  "num_ctx": 32768,
+  "prompt_tokens": 6131,
+  "output_tokens": 2445,
+  "seconds": {
+    "prompt": 18.6,
+    "output": 111.5,
+    "total": 132.8
+  },
+  "truncated": false,
+  "chunks": 2,
+  "unparseable_chunks": 0,
+  "setup": "llama3.1-8b+chunks",
+  "draft": "clean-protocol-after.md",
+  "neutral_name": "draft-2.md",
+  "run": 2,
+  "linter": false
+}

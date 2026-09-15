@@ -7,6 +7,7 @@
     "vale": "vale 3.21.0 with vale-ai-tells v1.37.0",
     "slopscore": "pip slopscore-lint==0.14.0 (lean core)",
     "slop-lint": "npm slop-lint@0.8.0",
+    "sloplint": "gem sloplint 0.7.0 on Homebrew Ruby 4.0.7",
     "ai-sniffer-check-md": "this repo, on the same Markdown views"
   }
 }

@@ -21,11 +21,11 @@ false alarms?
 | [vale-ai-tells](https://github.com/tbhb/vale-ai-tells) | v1.37.0 on Vale 3.21.0 | JSON, matched text |
 | [slopscore](https://github.com/jman4162/slopscore) | pip `slopscore-lint` 0.14.0, rule-based core only | JSON evidence spans |
 | [slop-lint](https://github.com/eric-sabe/slop-lint) | npm 0.8.0 | text, one line per finding |
+| [sloplint](https://github.com/benjaminjackson/sloplint) | gem 0.7.0 on Homebrew Ruby 4.0.7 | JSON notes, matched excerpt |
 | `ai-sniffer check` | this repo | its own JSON |
 
-[sloplint](https://github.com/benjaminjackson/sloplint) wasn't run. It needs Ruby 3.3,
-and this machine has the system Ruby 2.6; installing a newer one wasn't done without
-asking.
+sloplint needs Ruby 3.3 or later, which macOS doesn't ship, so it ran later the same day
+on Homebrew's Ruby, installed with Pavan's go-ahead.
 
 **Input.** Markdown drafts as they are. HTML drafts as a Markdown view: each prose block
 on the line it starts on in the source, headings as `##`, inline code kept as text, and
@@ -54,6 +54,7 @@ each tool is deterministic and ran once.
 | `ai-sniffer check` | 10 | 10 | 1 | 15 | 129 |
 | slopless | 8 | 6 | 0 | 2 | 76 |
 | slopscore | 2 | 4 | 1 | 7 | 44 |
+| sloplint | 6 | 2 | 0 | 14 | 135 |
 | slop-lint | 0 | 0 | 0 | 19 | 137 |
 | *Sonnet reviewer, for reference* | *36–43* | *37–39* | *10–13* | *15–22* | |
 
@@ -74,6 +75,8 @@ each tool is deterministic and ran once.
   across both clean drafts, the fewest of any tool.
 - **slopscore:** "generic sentence" evidence (6) and "X, not Y" (2). It abstains from
   scoring texts under about 300 words, and flags every sentence with no name or number.
+- **sloplint:** structural rules only. "Is the whole X" (3), "no X, no Y" (2), "isn't X,
+  it's Y" (2) and "sit with that" (1).
 - **slop-lint:** 95 of its 137 findings are em dashes. The rest are double hyphens, curly
   quotes, "ecosystem" and "showcase". None of those are habits in our labels.
 

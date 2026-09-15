@@ -40,6 +40,7 @@ VERSIONS = {
     "vale": "vale 3.21.0 with vale-ai-tells v1.37.0",
     "slopscore": "pip slopscore-lint==0.14.0 (lean core)",
     "slop-lint": "npm slop-lint@0.8.0",
+    "sloplint": "gem sloplint 0.7.0 on Homebrew Ruby 4.0.7",
 }
 
 
@@ -135,6 +136,13 @@ def _slop_lint(output: str, source: str) -> list[dict]:
     return found
 
 
+def _sloplint(output: str, source: str) -> list[dict]:
+    notes = json.loads(output or "[]")
+    if isinstance(notes, dict):  # an object keyed by path when several files are scanned
+        notes = [n for per_path in notes.values() for n in per_path]
+    return [{"line": n["line"], "quote": n["excerpt"], "rule": n["rule"]} for n in notes]
+
+
 ADAPTERS = {
     "slopless": _slopless,
     "wsc": _wsc,
@@ -142,6 +150,7 @@ ADAPTERS = {
     "vale": _vale,
     "slopscore": _slopscore,
     "slop-lint": _slop_lint,
+    "sloplint": _sloplint,
 }
 
 
@@ -173,6 +182,9 @@ def commands(tools: Path, file: Path) -> dict[str, list[str]]:
             str(tools / "node_modules" / "slop-lint" / "slop-lint.mjs"),
             str(file),
         ],
+        "sloplint": ["env", f"GEM_HOME={tools / 'gems'}", "/opt/homebrew/opt/ruby/bin/ruby",
+                     str(tools / "gems" / "bin" / "sloplint"), "-o", "json", "check",
+                     "--markdown", str(file)],  # fmt: skip
     }
 
 

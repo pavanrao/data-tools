@@ -1,0 +1,22 @@
+{
+  "model": "llama3.1:latest",
+  "parameters": "8.0B",
+  "quantization": "Q4_K_M",
+  "digest": null,
+  "num_ctx": 32768,
+  "prompt_tokens": 13743,
+  "output_tokens": 3283,
+  "seconds": {
+    "prompt": 45.0,
+    "output": 150.2,
+    "total": 202.6
+  },
+  "truncated": false,
+  "chunks": 4,
+  "unparseable_chunks": 2,
+  "setup": "llama3.1-8b+chunks",
+  "draft": "heldout-double-entry.html",
+  "neutral_name": "draft-6.html",
+  "run": 2,
+  "linter": false
+}

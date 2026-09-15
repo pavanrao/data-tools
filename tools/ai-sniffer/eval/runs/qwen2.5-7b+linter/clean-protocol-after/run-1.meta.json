@@ -1,0 +1,20 @@
+{
+  "model": "qwen2.5:7b",
+  "parameters": "7.6B",
+  "quantization": "Q4_K_M",
+  "digest": null,
+  "num_ctx": 32768,
+  "prompt_tokens": 6320,
+  "output_tokens": 440,
+  "seconds": {
+    "prompt": 31.1,
+    "output": 19.6,
+    "total": 51.1
+  },
+  "truncated": false,
+  "setup": "qwen2.5-7b+linter",
+  "draft": "clean-protocol-after.md",
+  "neutral_name": "draft-2.md",
+  "run": 1,
+  "linter": true
+}

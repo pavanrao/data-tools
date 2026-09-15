@@ -1,0 +1,21 @@
+{
+  "model": "llama3.1:latest",
+  "parameters": "8.0B",
+  "quantization": "Q4_K_M",
+  "digest": null,
+  "num_ctx": 32768,
+  "prompt_tokens": 16386,
+  "output_tokens": 580,
+  "seconds": {
+    "prompt": 153.0,
+    "output": 138.4,
+    "total": 291.9
+  },
+  "truncated": true,
+  "setup": "llama3.1-8b+linter",
+  "draft": "heldout-where-the-cut-falls.html",
+  "neutral_name": "draft-1.html",
+  "run": 1,
+  "linter": true,
+  "truncated_note": "re-flagged 2026-09-15: Ollama halved the prompt (server log: truncating input prompt limit=16386)"
+}

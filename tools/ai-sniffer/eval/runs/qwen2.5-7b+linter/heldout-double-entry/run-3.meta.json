@@ -1,0 +1,20 @@
+{
+  "model": "qwen2.5:7b",
+  "parameters": "7.6B",
+  "quantization": "Q4_K_M",
+  "digest": null,
+  "num_ctx": 32768,
+  "prompt_tokens": 18612,
+  "output_tokens": 553,
+  "seconds": {
+    "prompt": 0.1,
+    "output": 30.2,
+    "total": 31.7
+  },
+  "truncated": false,
+  "setup": "qwen2.5-7b+linter",
+  "draft": "heldout-double-entry.html",
+  "neutral_name": "draft-6.html",
+  "run": 3,
+  "linter": true
+}

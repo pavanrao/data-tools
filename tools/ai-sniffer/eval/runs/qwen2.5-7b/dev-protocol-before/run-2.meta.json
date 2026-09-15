@@ -1,0 +1,20 @@
+{
+  "model": "qwen2.5:7b",
+  "parameters": "7.6B",
+  "quantization": "Q4_K_M",
+  "digest": null,
+  "num_ctx": 32768,
+  "prompt_tokens": 5562,
+  "output_tokens": 568,
+  "seconds": {
+    "prompt": 0.1,
+    "output": 25.1,
+    "total": 25.4
+  },
+  "truncated": false,
+  "setup": "qwen2.5-7b",
+  "draft": "dev-protocol-before.md",
+  "neutral_name": "draft-5.md",
+  "run": 2,
+  "linter": false
+}
