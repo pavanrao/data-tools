@@ -62,7 +62,9 @@ when there's any finding, for CI; `2` when the input can't be read.
 ## 2 · The reviewer
 
 One file, `tools/ai-sniffer/agent/ai-sniffer.md`. YAML frontmatter makes it a Claude
-Code agent (`model: haiku`, tools `Read`, `Grep`, `Bash`); the body is the prompt.
+Code agent (~~`model: haiku`~~ `model: sonnet`, tools `Read`, `Grep`, `Bash`); the body
+is the prompt. *(Changed 2026-09-15: §4a measured Haiku at 7–12 of 63 held-out habits
+against Sonnet's 33–43.)*
 
 The prompt carries the purpose statement, then a **catalogue of habits**. Each entry
 has a definition and a real example quoted from one of our own drafts. For the
@@ -350,11 +352,16 @@ that came from a model's finding flatters that model.
 **In the repo:** `tools/ai-sniffer/` (linter, reviewer file, `review` command, eval),
 this record, #218 marked built.
 
-**At account level:** `uv tool install --editable tools/ai-sniffer`, so the command
-works from any project and tracks the checkout; a symlink from `~/.claude/agents/`
-to the reviewer file. Two things to verify first: that an editable tool install works
-from inside the workspace, and that Claude Code loads an agent through a symlink. Both
-change the machine's setup, so they happen only after a yes at that point.
+**At account level** *(installed 2026-09-15, with Pavan's go-ahead; commands in the
+[README](../tools/ai-sniffer/README.md)).* `uv tool install --editable
+tools/ai-sniffer` installs the linter with no dependencies. Adding the model layer
+needs the shared library named by path, `--with "data-tools-core[llm] @ file://.../
+shared/data-tools-core"`, because a tool install can't follow `[tool.uv.sources]`:
+without it, uv fails with "URL dependencies must be expressed as direct requirements".
+`ai-sniffer review --model ollama/qwen2.5:7b` then worked from a directory outside the
+repo, with no API key. The agent is a symlink from `~/.claude/agents/ai-sniffer.md`
+into this worktree; it needs repointing when the branch merges, and whether Claude Code
+loads an agent through a symlink is still unverified.
 
 **In other AI tools** *(noted 2026-09-15, not built)*. The body of
 `agent/ai-sniffer.md` is a plain prompt, so other agent tools can use it. Three parts

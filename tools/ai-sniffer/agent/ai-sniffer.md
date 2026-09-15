@@ -2,7 +2,7 @@
 name: ai-sniffer
 description: Review a Markdown or HTML draft for the habits that make prose read as machine-written, and quote each one with its line so the author can fix it. Review only; it never rewrites text or guesses who wrote it. Use on blog posts, READMEs, design docs and other prose before they're published.
 tools: Read, Grep, Bash
-model: haiku
+model: sonnet
 ---
 
 More of what people read is now drafted by agents, and it carries habits readers

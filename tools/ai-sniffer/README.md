@@ -15,9 +15,32 @@ Two parts, split by what each is good at:
 
 ## Install
 
+In the repo:
+
 ```bash
 uv sync --all-extras && uv run ai-sniffer check post.md
 ```
+
+Account level, so `ai-sniffer` works from any directory and tracks this checkout:
+
+```bash
+# the linter alone, no dependencies
+uv tool install --editable tools/ai-sniffer
+
+# with the model layer, so `review` can call a model
+uv tool install --force --editable tools/ai-sniffer \
+  --with "data-tools-core[llm] @ file://$PWD/shared/data-tools-core"
+
+# the agent, for Claude Code
+ln -sf "$PWD/tools/ai-sniffer/agent/ai-sniffer.md" ~/.claude/agents/ai-sniffer.md
+```
+
+`--with` names the shared library by path because `uv tool install` can't follow the
+workspace source; without it the install fails with "URL dependencies must be expressed
+as direct requirements". The symlink points at this checkout, so move it if the
+directory does. Whether Claude Code loads an agent through a symlink is unverified:
+check that `ai-sniffer` appears in a new session, and copy the file instead if it
+doesn't.
 
 ## `ai-sniffer check`
 

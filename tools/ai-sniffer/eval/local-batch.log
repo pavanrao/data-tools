@@ -1,0 +1,97 @@
+qwen2.5-7b run 1 heldout-where-the-cut-falls.html: 16386 + 586 tokens, 149.0s
+qwen2.5-7b run 1 clean-protocol-after.md: 5306 + 297 tokens, 24.8s
+qwen2.5-7b run 1 dev-database-before.html: 9533 + 324 tokens, 108.7s
+qwen2.5-7b run 1 clean-database-after.html: 9924 + 443 tokens, 80.2s
+qwen2.5-7b run 1 dev-protocol-before.md: 5562 + 456 tokens, 41.3s
+qwen2.5-7b run 1 heldout-double-entry.html: 16682 + 274 tokens, 106.3s
+qwen2.5-7b run 2 heldout-where-the-cut-falls.html: 16386 + 625 tokens, 33.3s
+qwen2.5-7b run 2 clean-protocol-after.md: 5306 + 280 tokens, 12.9s
+qwen2.5-7b run 2 dev-database-before.html: 9533 + 425 tokens, 20.2s
+qwen2.5-7b run 2 clean-database-after.html: 9924 + 441 tokens, 21.4s
+qwen2.5-7b run 2 dev-protocol-before.md: 5562 + 568 tokens, 25.4s
+qwen2.5-7b run 2 heldout-double-entry.html: 16682 + 216 tokens, 11.7s
+qwen2.5-7b run 3 heldout-where-the-cut-falls.html: 16386 + 633 tokens, 33.8s
+qwen2.5-7b run 3 clean-protocol-after.md: 5306 + 413 tokens, 18.8s
+qwen2.5-7b run 3 dev-database-before.html: 9533 + 627 tokens, 29.7s
+qwen2.5-7b run 3 clean-database-after.html: 9924 + 334 tokens, 16.3s
+qwen2.5-7b run 3 dev-protocol-before.md: 5562 + 817 tokens, 38.2s
+qwen2.5-7b run 3 heldout-double-entry.html: 16682 + 428 tokens, 23.0s
+18 runs written for qwen2.5-7b
+qwen2.5-7b+linter run 1 heldout-where-the-cut-falls.html: 16386 + 634 tokens, 33.8s
+qwen2.5-7b+linter run 1 clean-protocol-after.md: 6320 + 440 tokens, 51.1s
+qwen2.5-7b+linter run 1 dev-database-before.html: 11052 + 484 tokens, 76.4s
+qwen2.5-7b+linter run 1 clean-database-after.html: 11544 + 530 tokens, 82.5s
+qwen2.5-7b+linter run 1 dev-protocol-before.md: 7016 + 427 tokens, 48.6s
+qwen2.5-7b+linter run 1 heldout-double-entry.html: 18612 + 618 tokens, 139.8s
+qwen2.5-7b+linter run 2 heldout-where-the-cut-falls.html: 16386 + 494 tokens, 28.5s
+qwen2.5-7b+linter run 2 clean-protocol-after.md: 6320 + 350 tokens, 16.7s
+qwen2.5-7b+linter run 2 dev-database-before.html: 11052 + 378 tokens, 19.6s
+qwen2.5-7b+linter run 2 clean-database-after.html: 11544 + 637 tokens, 31.4s
+qwen2.5-7b+linter run 2 dev-protocol-before.md: 7016 + 590 tokens, 27.3s
+qwen2.5-7b+linter run 2 heldout-double-entry.html: 18612 + 394 tokens, 21.8s
+qwen2.5-7b+linter run 3 heldout-where-the-cut-falls.html: 16386 + 652 tokens, 35.4s
+qwen2.5-7b+linter run 3 clean-protocol-after.md: 6320 + 251 tokens, 12.9s
+qwen2.5-7b+linter run 3 dev-database-before.html: 11052 + 495 tokens, 25.2s
+qwen2.5-7b+linter run 3 clean-database-after.html: 11544 + 439 tokens, 24.3s
+qwen2.5-7b+linter run 3 dev-protocol-before.md: 7016 + 645 tokens, 30.5s
+qwen2.5-7b+linter run 3 heldout-double-entry.html: 18612 + 553 tokens, 31.7s
+18 runs written for qwen2.5-7b+linter
+llama3.1-8b run 1 heldout-where-the-cut-falls.html: 29266 + 829 tokens, 332.9s
+llama3.1-8b run 1 clean-protocol-after.md: 4850 + 1596 tokens, 99.8s
+llama3.1-8b run 1 dev-database-before.html: 8338 + 790 tokens, 80.4s
+llama3.1-8b run 1 clean-database-after.html: 8671 + 1437 tokens, 116.3s
+llama3.1-8b run 1 dev-protocol-before.md: 5072 + 1348 tokens, 85.3s
+llama3.1-8b run 1 heldout-double-entry.html: 14519 + 532 tokens, 116.1s
+llama3.1-8b run 2 heldout-where-the-cut-falls.html: 29266 + 738 tokens, 294.3s
+llama3.1-8b run 2 clean-protocol-after.md: 4850 + 1493 tokens, 93.2s
+llama3.1-8b run 2 dev-database-before.html: 8338 + 1382 tokens, 114.2s
+llama3.1-8b run 2 clean-database-after.html: 8671 + 1117 tokens, 99.8s
+llama3.1-8b run 2 dev-protocol-before.md: 5072 + 1310 tokens, 83.2s
+llama3.1-8b run 2 heldout-double-entry.html: 14519 + 1388 tokens, 169.2s
+llama3.1-8b run 3 heldout-where-the-cut-falls.html: 29266 + 1303 tokens, 339.0s
+llama3.1-8b run 3 clean-protocol-after.md: 4850 + 5333 tokens, 287.4s
+llama3.1-8b run 3 dev-database-before.html: 8338 + 935 tokens, 88.6s
+llama3.1-8b run 3 clean-database-after.html: 8671 + 1048 tokens, 98.5s
+llama3.1-8b run 3 dev-protocol-before.md: 5072 + 1081 tokens, 72.8s
+llama3.1-8b run 3 heldout-double-entry.html: 14519 + 626 tokens, 121.9s
+18 runs written for llama3.1-8b
+llama3.1-8b+linter run 1 heldout-where-the-cut-falls.html: 16386 + 580 tokens, 291.9s
+llama3.1-8b+linter run 1 clean-protocol-after.md: 5823 + 1514 tokens, 315.5s
+llama3.1-8b+linter run 1 dev-database-before.html: 9790 + 1517 tokens, 133.3s
+llama3.1-8b+linter run 1 clean-database-after.html: 10227 + 473 tokens, 78.1s
+llama3.1-8b+linter run 1 dev-protocol-before.md: 6472 + 596 tokens, 57.8s
+llama3.1-8b+linter run 1 heldout-double-entry.html: 16373 + 668 tokens, 140.4s
+llama3.1-8b+linter run 2 heldout-where-the-cut-falls.html: 16386 + 465 tokens, 137.0s
+llama3.1-8b+linter run 2 clean-protocol-after.md: 5823 + 688 tokens, 66.7s
+llama3.1-8b+linter run 2 dev-database-before.html: 9790 + 1370 tokens, 161.3s
+llama3.1-8b+linter run 2 clean-database-after.html: 10227 + 1571 tokens, 166.5s
+llama3.1-8b+linter run 2 dev-protocol-before.md: 6472 + 548 tokens, 146.0s
+llama3.1-8b+linter run 2 heldout-double-entry.html: 16373 + 556 tokens, 144.0s
+llama3.1-8b+linter run 3 heldout-where-the-cut-falls.html: 16386 + 497 tokens, 137.1s
+llama3.1-8b+linter run 3 clean-protocol-after.md: 5823 + 1555 tokens, 108.4s
+llama3.1-8b+linter run 3 dev-database-before.html: 9790 + 1628 tokens, 139.7s
+llama3.1-8b+linter run 3 clean-database-after.html: 10227 + 1048 tokens, 117.8s
+llama3.1-8b+linter run 3 dev-protocol-before.md: 6472 + 670 tokens, 62.5s
+llama3.1-8b+linter run 3 heldout-double-entry.html: 16373 + 1080 tokens, 167.4s
+18 runs written for llama3.1-8b+linter
+all-labels
+  haiku          held-out 7–10/63 false alarms 0–0 | development 19–23/57 false alarms 0–0 | clean 3–6/13 false alarms 5–8
+  haiku+linter   held-out 7–12/63 false alarms 0–0 | development 14–20/57 false alarms 0–0 | clean 4–5/13 false alarms 6–14
+  linter         held-out 10–10/63 false alarms 0–0 | development 10–10/57 false alarms 0–0 | clean 1–1/13 false alarms 15–15
+  llama3.1-8b    held-out 0–2/63 false alarms 0–0 | development 4–14/57 false alarms 0–0 | clean 0–0/13 false alarms 11–90  unreadable 9
+  llama3.1-8b+linter held-out 0–0/63 false alarms 0–0 | development 0–8/57 false alarms 0–0 | clean 0–2/13 false alarms 9–14  unreadable 10  truncated 1
+  qwen2.5-7b     held-out 0–1/63 false alarms 0–0 | development 5–8/57 false alarms 0–0 | clean 0–2/13 false alarms 3–7  unreadable 5  truncated 3
+  qwen2.5-7b+linter held-out 3–4/63 false alarms 0–0 | development 6–8/57 false alarms 0–0 | clean 0–5/13 false alarms 4–9  unreadable 3  truncated 3
+  sonnet         held-out 36–43/63 false alarms 0–0 | development 37–39/57 false alarms 0–0 | clean 10–13/13 false alarms 15–22
+  sonnet+linter  held-out 33–41/63 false alarms 0–0 | development 35–39/57 false alarms 0–0 | clean 9–11/13 false alarms 12–16
+hand-labels
+  haiku          held-out 7–10/63 false alarms 0–0 | development 19–23/57 false alarms 0–0 | clean 3–6/13 false alarms 5–8
+  haiku+linter   held-out 7–12/63 false alarms 0–0 | development 14–20/57 false alarms 0–0 | clean 4–5/13 false alarms 6–14
+  linter         held-out 10–10/63 false alarms 0–0 | development 10–10/57 false alarms 0–0 | clean 1–1/13 false alarms 15–15
+  llama3.1-8b    held-out 0–2/63 false alarms 0–0 | development 4–14/57 false alarms 0–0 | clean 0–0/13 false alarms 11–90  unreadable 9
+  llama3.1-8b+linter held-out 0–0/63 false alarms 0–0 | development 0–8/57 false alarms 0–0 | clean 0–2/13 false alarms 9–14  unreadable 10  truncated 1
+  qwen2.5-7b     held-out 0–1/63 false alarms 0–0 | development 5–8/57 false alarms 0–0 | clean 0–2/13 false alarms 3–7  unreadable 5  truncated 3
+  qwen2.5-7b+linter held-out 3–4/63 false alarms 0–0 | development 6–8/57 false alarms 0–0 | clean 0–5/13 false alarms 4–9  unreadable 3  truncated 3
+  sonnet         held-out 36–43/63 false alarms 0–0 | development 37–39/57 false alarms 0–0 | clean 10–13/13 false alarms 15–22
+  sonnet+linter  held-out 33–41/63 false alarms 0–0 | development 35–39/57 false alarms 0–0 | clean 9–11/13 false alarms 12–16
+batch finished Tue Sep 15 15:59:11 EDT 2026

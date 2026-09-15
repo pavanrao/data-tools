@@ -15,6 +15,9 @@ This file holds only what those two don't.
   `conftest.py` fixture; `from test_foo import bar` will not resolve.
 - The MCP Python SDK uses snake_case attributes (`structured_content`,
   `input_schema`, `is_error`), not the camelCase names in the specification.
+- `uv tool install --editable tools/<name>` fails for a workspace member that depends
+  on `data-tools-core` ("URL dependencies must be expressed as direct requirements").
+  Pass it by path: `--with "data-tools-core[llm] @ file://$PWD/shared/data-tools-core"`.
 - PRs are merged with a merge commit, not squashed. Docs land in the same PR
   as the code they describe.
 
