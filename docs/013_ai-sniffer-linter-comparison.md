@@ -82,7 +82,8 @@ each tool is deterministic and ran once.
 - **No deterministic tool came close to the Sonnet reviewer.** The best, vale-ai-tells,
   caught 18 of 63 held-out habits.
 - **Recall and false alarms trade off.** The two tools with the most catches also have
-  the most false alarms (vale 52, wsc 66), and slopless has the fewest of both.
+  the most false alarms (vale 52, wsc 66). slopless has the fewest false alarms, 2, for 8
+  held-out catches.
 - **Our labels are our home ground.** One labeller wrote them in ai-sniffer's categories,
   on drafts written by one author with Claude. Tools that flag em dashes, curly quotes or
   passive voice score zero for things we never labelled, whether or not readers would
