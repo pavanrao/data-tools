@@ -1,0 +1,12 @@
+{
+  "date": "2026-09-15",
+  "tools": {
+    "slopless": "npm slopless@0.2.38",
+    "wsc": "npm wsc-lint@1.3.0",
+    "slop": "github bheijden/slop@9a6864e0d061",
+    "vale": "vale 3.21.0 with vale-ai-tells v1.37.0",
+    "slopscore": "pip slopscore-lint==0.14.0 (lean core)",
+    "slop-lint": "npm slop-lint@0.8.0",
+    "ai-sniffer-check-md": "this repo, on the same Markdown views"
+  }
+}

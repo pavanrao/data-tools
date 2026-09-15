@@ -41,6 +41,8 @@ def finding(quote, habit="antithesis", line=5, severity="high"):
         ("Note that", "Keep in mind the protocol.", False),
         ("Note that", "Note this down instead.", False),
         ("It’s  exactly — here", "it's exactly - here", True),  # normalised before comparing
+        ("—", "It didn't degrade — it collapsed.", False),  # a lone dash is too short to count
+        ("Note", "Note that none of those three is about the protocol.", True),
     ],
 )
 def test_quotes_match_on_a_twenty_character_run_or_containment(score, a, b, matches):

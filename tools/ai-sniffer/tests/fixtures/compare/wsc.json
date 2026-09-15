@@ -1,0 +1,73 @@
+[
+ {
+  "file": "sample.md",
+  "issues": {
+   "weaselWords": [],
+   "passiveVoice": [],
+   "duplicateWords": [],
+   "longSentences": [],
+   "nominalizations": [],
+   "hedging": [],
+   "adverbs": [],
+   "aiTells": [
+    {
+     "text": "delves",
+     "index": 95,
+     "length": 6,
+     "reason": "\"delve\" is the canonical AI verb \u2014 massively overrepresented in LLM text (Kobak 2025; Juzek & Ward 2025)"
+    },
+    {
+     "text": "rich tapestry",
+     "index": 111,
+     "length": 13,
+     "reason": "AI ornamental metaphor"
+    }
+   ]
+  },
+  "summary": {
+   "total": 2,
+   "weaselWords": 0,
+   "passiveVoice": 0,
+   "duplicateWords": 0,
+   "longSentences": 0,
+   "nominalizations": 0,
+   "hedging": 0,
+   "adverbs": 0,
+   "aiTells": 2
+  },
+  "meta": {
+   "characterCount": 164,
+   "wordCount": 29,
+   "sentenceCount": 4
+  },
+  "config": {
+   "detectors": {
+    "weaselWords": {
+     "enabled": true
+    },
+    "passiveVoice": {
+     "enabled": true
+    },
+    "duplicateWords": {
+     "enabled": true
+    },
+    "longSentences": {
+     "enabled": true,
+     "maxWords": 30
+    },
+    "nominalizations": {
+     "enabled": true
+    },
+    "hedging": {
+     "enabled": true
+    },
+    "adverbs": {
+     "enabled": true
+    },
+    "aiTells": {
+     "enabled": true
+    }
+   }
+  }
+ }
+]

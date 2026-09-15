@@ -65,3 +65,19 @@ a model.
 - Changing the prompt means new model runs. Changing labels means rescoring.
 - A label accepted from a model's finding has `"source": "model"`, and recall is
   reported with and without those labels.
+
+## Other linters (docs/013)
+
+Installed outside the repo, in a directory passed as `--tools-dir`:
+
+```bash
+npm init -y
+npm install --ignore-scripts slopless@0.2.38 wsc-lint@1.3.0 slop-lint@0.8.0 "github:bheijden/slop#9a6864e0d061"
+mkdir bin && curl -sSL https://github.com/vale-cli/vale/releases/download/v3.21.0/vale_3.21.0_macOS_arm64.tar.gz | tar -xz -C bin vale
+printf 'StylesPath = styles\nMinAlertLevel = suggestion\nPackages = ai-tells\n\n[*.md]\nBasedOnStyles = ai-tells\n' > .vale.ini
+bin/vale sync
+```
+
+slopscore runs through `uvx --from slopscore-lint==0.14.0`, so it needs no install step.
+Then `uv run python tools/ai-sniffer/eval/compare/run_linters.py --tools-dir DIR` and
+`score.py`.

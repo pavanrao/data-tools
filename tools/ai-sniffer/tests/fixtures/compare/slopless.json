@@ -1,0 +1,30 @@
+[
+ {
+  "messages": [
+   {
+    "type": "lint",
+    "ruleId": "slopless/prohibited-words",
+    "message": "Prohibited word found: \"tapestry\". Rewrite without this term.",
+    "index": 116,
+    "line": 3,
+    "column": 107,
+    "range": [
+     116,
+     124
+    ],
+    "loc": {
+     "start": {
+      "line": 3,
+      "column": 107
+     },
+     "end": {
+      "line": 3,
+      "column": 115
+     }
+    },
+    "severity": 2
+   }
+  ],
+  "filePath": "sample.md"
+ }
+]

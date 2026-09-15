@@ -27,6 +27,8 @@ sys.path.insert(0, str(HERE))
 import build_labels  # noqa: E402
 
 MIN_SHARED = 20
+# A contained quote needs this many characters, or a lone dash or "a" would match any label.
+MIN_CONTAINED = 4
 COUNTED = frozenset({"high", "medium"})
 ROLES = ("held-out", "development", "clean")
 # What each linter signal claims to be, where it names a catalogue habit at all.
@@ -44,7 +46,7 @@ def quotes_match(a: str, b: str) -> bool:
     if not shorter:
         return False
     if len(shorter) < MIN_SHARED:
-        return shorter in longer
+        return len(shorter.replace(" ", "")) >= MIN_CONTAINED and shorter in longer
     m = SequenceMatcher(None, na, nb, autojunk=False).find_longest_match(0, len(na), 0, len(nb))
     return m.size >= MIN_SHARED
 
