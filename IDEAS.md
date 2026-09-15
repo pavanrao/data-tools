@@ -1079,6 +1079,22 @@ repository's own documentation.
   six drafts and 72 model runs. Scored before the labels were reviewed, Sonnet caught
   36 to 43 of 63 held-out habits, Haiku 7 to 10, and the linter alone 10. Design and
   results: [`docs/012`](docs/012_ai-sniffer.md).
+- **Series, after the build** (planned 2026-09-15). Four posts, each resting on
+  something measured:
+  1. *The linter.* What `ai-sniffer check` counts, set against the open-source
+     prose linters found on 2026-09-15 (slopless, SlopScore, wsc, sloplint, slop,
+     slop-lint, vale-ai-tells) and the Antislop paper. The landscape goes here as
+     background, not as a post of its own.
+  2. *The reviewer.* The catalogue prompt, why it only quotes, and the eval:
+     Haiku, Sonnet and local models (qwen2.5:7b, llama3.1:8b) on recall, false
+     alarms, dollars and time per 1,000 words, chunked and unchunked.
+  3. *Against the market.* Both tools and the open-source ones on one set of
+     drafts. Before this runs, add drafts by other writers and labels from someone
+     other than the original labeller, and report each tool on its own categories
+     as well as on ours, so the comparison isn't scored on our home ground.
+  4. *The revised tool.* Write down what changes and why from posts 2 and 3 before
+     rerunning, then run once on fresh held-out drafts, so the improvement isn't
+     tuned to the text it's measured on.
 
 ## G. Concept notes (markdown, not code)
 
