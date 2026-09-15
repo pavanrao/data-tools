@@ -100,3 +100,18 @@ is itself a test fixture.
 **Not in scope when found.** The MCP SDK upgrade touched neither `ingest-ledger`
 nor its extras. Fixing it there would have mixed an unrelated change into a
 dependency bump.
+
+## B2 — the sentence splitter needs a capital letter
+
+`ai_sniffer.document.split_sentences` only breaks at `.`, `!` or `?` when the next
+word starts with a capital or a digit. A sentence opening with a lowercase name, which
+happens whenever a tool or command starts one (`wsc's long-sentence rule matches…`,
+`slopless was the most precise…`), is joined to the sentence before it. The paragraph
+then looks like one sentence, so `one-sentence-paragraph` fires on a paragraph of two,
+and sentence-length figures are wrong for that paragraph.
+
+Found on 2026-09-15 while checking the ai-sniffer post, which names tools at the start
+of sentences throughout. A fix has to avoid splitting on abbreviations and version
+numbers; a list of known lowercase openers, or a check that the previous word isn't an
+abbreviation and the next word is followed by a verb, are both worth trying against
+`tools/ai-sniffer/tests/test_document.py`.
