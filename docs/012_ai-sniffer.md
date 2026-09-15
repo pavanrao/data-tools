@@ -103,43 +103,59 @@ Tests inject a fake `ChatProvider`; nothing touches a network.
 
 ## 4 · The eval
 
-**Drafts.** Two before-and-after pairs where the only change between commits is the
-tone rewrite:
+**Three roles, kept apart.** The catalogue quotes real habits from our own drafts, so
+scoring the reviewer only on those drafts would let it succeed by recognising the
+quotes. The drafts are therefore split by what each is allowed to measure.
 
-| Post | Before | After |
-| --- | --- | --- |
-| *Let the Database Say No* (HTML, data-tools) | `372bb84` | `138a26c` |
-| *Which Protocol Is Your MCP Server Speaking?* (markdown, site) | `cfa59de` | `2e91d3d` |
+| Role | Draft | Commit | Used for |
+| --- | --- | --- | --- |
+| Development | *Let the Database Say No*, before rewrite | data-tools `372bb84` | catalogue examples; optimistic recall |
+| Development | *Which Protocol Is Your MCP Server Speaking?*, before rewrite | site `cfa59de` | catalogue examples; optimistic recall |
+| Held out | *Double-Entry for Documents* | data-tools `b265882` | honest recall; never quoted in the prompt |
+| Held out | *Where the Cut Falls* | data-tools `b265882` | honest recall; the length test |
+| Clean | *Let the Database Say No*, after rewrite | data-tools `138a26c` | false alarms |
+| Clean | *Which Protocol Is Your MCP Server Speaking?*, after rewrite | site `2e91d3d` | false alarms |
 
 The protocol post's later commit `901cbc9` is excluded, since it also removed a
-section.
+section. Development and held-out recall are reported separately, and only the
+held-out number is quoted as the result.
 
-**Labels.** Every habit in both *before* drafts, labelled by line, habit and quote in
-`tools/ai-sniffer/eval/labels.json`. **Reviewed by Pavan before anything is scored**;
-until then they're one reader's judgement.
+**Labels.** Every habit in both development drafts and in *Double-Entry for
+Documents*, by line, habit and quote, in `tools/ai-sniffer/eval/labels.json`. *Where
+the Cut Falls* runs to about 5,600 words and sixteen sections, so the models get the
+whole post, which is what makes it a length test, but only sections 1, 4, 7, 10 and 13
+are labelled and scored. Those were chosen here, before any run, and spread through
+the post rather than taken from the start, where habits may cluster. Held-out labels
+are written before any model sees either post. **Pavan reviews all labels before
+anything is scored**; until then they're one reader's judgement.
 
 **Setups.** The linter alone; Haiku without the linter's report; Haiku with it; Sonnet
 without; Sonnet with. Model setups run as subagents from a Claude Code session with the
 model set per run, reading the prompt and draft from disk so the text never passes
 through the orchestrating context. This measures the prompt, not whether Claude Code
 loads the agent file; that's checked separately at install. Each model setup runs
-**three times per draft**, since output varies between runs: four model setups, four
-drafts, three runs, 48 in total.
+**three times per draft**, since output varies between runs: four model setups, six
+drafts, three runs, 72 in total.
 
 **Scoring.** A deterministic script. A finding matches a label when both are in the
 same draft and, after whitespace and case are normalised, their quotes share a run of
 at least 20 characters — or one contains the other, when a quote is shorter than that.
-The habit name is compared separately, since categories blur. Unmatched findings on an *after* draft
-count as false alarms. Unmatched findings on a *before* draft are listed for review,
-because some will be real habits the labels missed.
+The habit name is compared separately, since categories blur. Unmatched findings on a
+clean draft count as false alarms. Unmatched findings elsewhere are listed for review,
+because some will be real habits the labels missed. On *Where the Cut Falls*, findings
+outside the five labelled sections are set aside, not scored.
 
 **Reported as counts**, per LEARNINGS 8b: labelled habits caught out of the total, and
-false alarms, as the lowest and highest across three runs. The result goes in
-`evidence/ai-sniffer.jsonl`.
+false alarms, as the lowest and highest across three runs, for each role. The result
+goes in `evidence/ai-sniffer.jsonl`.
 
-**Limits, stated in the write-up.** Two posts. One labeller, who also did the
-rewrites. A reviewer from the same model family as the writer, which is the open
-question the eval exists to answer.
+**Limits, stated in the write-up.** Four posts, two of them development text. One
+labeller, who also did the two rewrites. A reviewer from the same model family as the
+writer, which is the open question the eval exists to answer.
+
+**A side effect worth having.** The two held-out posts are the ones due for a rewrite.
+Their findings drive that rewrite, and the rewritten versions become clean drafts for
+the next run of this eval.
 
 ## 5 · Where it lives
 
