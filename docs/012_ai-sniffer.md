@@ -167,13 +167,70 @@ goes in `evidence/ai-sniffer.jsonl`.
 
 **Limits, stated in the write-up.** Four posts, two of them development text. One
 labeller, who also did the two rewrites. A reviewer from the same model family as the
-writer, which is the open question the eval exists to answer.
+writer, which is the open question the eval exists to answer. The linter's word lists
+were written after the held-out labels existed, by the same person who wrote the
+labels; each list is built by category (quantifier hedges, generic plurals,
+sentence-initial imperatives) rather than from remembered phrases, but the linter's
+held-out recall on word-level habits is still likely to be optimistic.
 
 **A side effect worth having.** The two held-out posts are the ones due for a rewrite.
 Their findings drive that rewrite, and the rewritten versions become clean drafts for
 the next run of this eval.
 
-## 5 · Where it lives
+## 5 · Keeping the labels current
+
+*Added 2026-09-15.* The labels will change after the first eval: Pavan's marks from the
+review page, drafts added later, and habits a model finds that nobody labelled. Each
+of those needs a way back into the labels that can't quietly damage the eval. Each is
+one script under `tools/ai-sniffer/eval/`, with no framework around them.
+
+**Stable ids.** A label's id is stored with it and never computed from its position. A
+new label takes the next unused number for its draft, so a label added at line 40
+can be `heldout-double-entry-48`. A dropped label's id is retired, never reused. The
+page stores marks by id, so this is what keeps a mark on the quote it was made on.
+The label table moves from Python tuples in `build_labels.py` to
+`eval/labels.jsonl`, one label per line, so a script can edit it. The 165 existing ids
+don't change, so marks already made stay attached.
+
+**The review page lives in the repo.** `eval/review/build_page.py` renders the page from
+`labels.json` and the pinned drafts, and it's republished to the same URL. Marks made
+on earlier versions carry over, because they're keyed by id.
+
+**Applying marks.** Claude saves the page's database as JSON (`read_db` with an output
+directory) and `eval/apply_marks.py` applies it to `labels.jsonl`:
+
+| Mark | What happens to the label |
+| --- | --- |
+| keep | marked reviewed |
+| change | new habit or severity; the old values stay on the label under `was` |
+| drop | stays in the file as `dropped`, excluded from scoring |
+| no mark | left as it is, and counts as keep |
+| missed habit | becomes a new label with the next id, once its quote is found exactly once |
+
+Notes are kept on the label. A quote a note says is too long or too short is fixed by
+hand, keeping the id. Then `labels.json` is rebuilt and scores are recomputed from the
+saved findings, with no new model runs.
+
+**Adding a draft.** Copy it into `eval/drafts/` with its role as the filename prefix,
+and add it to `eval/drafts.json` with the commit it came from. A held-out draft is
+labelled before any model sees it. The build fails for a draft with no role, and for a
+label outside a draft's scored sections. Then the page is rebuilt and republished.
+
+**Refreshing the prompt.** Only development drafts can change the reviewer prompt. A
+check fails the build if any example quoted in the prompt appears in a held-out or
+clean draft. Label changes on held-out drafts never reach the prompt; a held-out draft
+that's wanted as prompt material moves to development, and a new held-out draft is
+labelled to replace it. A prompt change means new model runs. A label change only
+means rescoring.
+
+**Candidate labels.** Scoring already lists findings on development and held-out drafts
+that match no label. `eval/candidates.py` puts them on the review page as candidates,
+with the setups that raised them, for Pavan to accept or reject. An accepted candidate
+becomes a label with `source` set to `model`, and a hand-written one has `source` set
+to `hand`. Recall is reported with and without model-sourced labels, since a label
+that came from a model's finding flatters that model.
+
+## 6 · Where it lives
 
 **In the repo:** `tools/ai-sniffer/` (linter, reviewer file, `review` command, eval),
 this record, #218 marked built.
@@ -196,15 +253,21 @@ it's published.
 1. Labels, ~~then **stop for Pavan's review**~~. *(Moved first on 2026-09-14, was step 4:
    labelling the held-out posts before writing the prompt keeps the prompt from being
    shaped around them. The stop was lifted on 2026-09-15; the review runs alongside
-   steps 2–5, see Labels above.)*
-2. Linter, test-first.
-3. Reviewer prompt, with examples quoted from the development drafts only.
-4. `review` command, test-first against a fake provider.
-5. Eval runs and scoring.
-6. Design record, evidence card, #218 built.
-7. The two `CLAUDE.md` changes.
-8. Account-level install, **after a yes**.
-9. The post.
+   the rest, see Labels above.)*
+2. Stable ids, and the label table moved to `labels.jsonl`. *(Steps 2–4 added
+   2026-09-15.)*
+3. The review page builder, in the repo.
+4. `apply_marks.py`, and the procedure for adding a draft.
+5. Linter, test-first.
+6. Reviewer prompt, with examples quoted from the development drafts only, and the
+   check that enforces it.
+7. `review` command, test-first against a fake provider.
+8. Eval runs and scoring, then candidate labels.
+9. Design record, evidence card, #218 built.
+10. The two `CLAUDE.md` changes.
+11. Account-level install, **after a yes**.
+12. The post. If data-tools is still private when it's ready, ai-sniffer moves to its
+    own public repository first, so the post can link to its code.
 
 The branch stacks on `worktree-discover-probe` (PR #25), since it continues that
 branch's doc and iteration numbering. It rebases onto `main` once #25 merges.
