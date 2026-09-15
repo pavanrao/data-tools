@@ -1095,6 +1095,20 @@ repository's own documentation.
   4. *The revised tool.* Write down what changes and why from posts 2 and 3 before
      rerunning, then run once on fresh held-out drafts, so the improvement isn't
      tuned to the text it's measured on.
+     Candidates to test, cheapest first:
+     - *Quote checks in code.* Drop any finding whose quote isn't in the draft before
+       it's reported; the scorer already locates quotes, so this is a few lines.
+     - *A whole-draft pass.* After the section-by-section review, one more request
+       over the whole draft only for habits that span sections (closers repeated
+       across sections, triads used everywhere), which chunking can't see.
+     - *An agentic review.* A tool loop where the model reads sections, runs
+       `ai-sniffer check`, and re-checks its own findings against the file. Build it
+       only if the eval shows a clear gain over the two cheaper steps: in the 72
+       subagent runs, the tool loop re-sent the prompt and draft every turn and cost
+       more than a single request would.
+     - *Running the agent headless.* Claude Code's print mode (`claude -p`) should
+       run the ai-sniffer agent from a script on the Claude Code sign-in, with no API
+       key; confirm the flags for choosing an agent before relying on it.
 
 ## G. Concept notes (markdown, not code)
 
