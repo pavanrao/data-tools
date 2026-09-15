@@ -27,25 +27,18 @@ Have these three before adding one: what was actually run, with the command or
 config; the number or the exact error text, copied rather than recalled; and
 what was expected instead.
 
-Then check the draft for these, which are what make prose read as
-machine-written:
+Then review the draft for the habits that make prose read as machine-written.
+The single definition of those habits is the catalogue in
+[tools/ai-sniffer/agent/ai-sniffer.md](tools/ai-sniffer/agent/ai-sniffer.md). Run
+`uv run ai-sniffer check FILE` for the countable ones, and the ai-sniffer agent or
+`ai-sniffer review FILE` for the structural ones. In the eval on 2026-09-15, Sonnet
+caught far more held-out habits than Haiku (36 to 43 of 63, against 7 to 10), so
+review with Sonnet ([docs/012](docs/012_ai-sniffer.md) §4a). The reviewer only
+quotes what it finds, so you make the fixes.
 
-| Habit | Fix |
-|---|---|
-| No contractions anywhere | Use them. This alone does most of the work. |
-| Every paragraph pivoting on "not X, but Y" | One per entry at most. |
-| A short aphorism closing each section | Cut it. Let the entry stop when the content stops. |
-| Telling the reader how to react: "note that", "consider", "sit with that" | Delete. |
-| Triads: three examples, three clauses, everywhere | Use two, or four. |
-| Hedged universals: "almost every", "most people" | Name who, or drop the claim. |
-| Uniform sentence length | Vary it. A long sentence carrying a subordinate clause is fine. |
-| Generic detail standing in for real detail: "I was surprised" | Say what you assumed, and for how long. |
-
-The last row matters most. Absence of contingency is the deepest tell, and one
-real specific does more than cutting ten adjectives.
+Of those habits, generic detail standing in for a real one matters most. One real
+specific, like what you assumed and for how long, does more than cutting ten
+adjectives.
 
 Corrections stay visible: when a number changes, correct in place and leave the
 superseded value with a note.
-
-#218 `ai-sniffer` in [IDEAS.md](IDEAS.md) is the tool that would check this
-automatically. Until it exists, this table is the manual version.
