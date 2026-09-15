@@ -78,6 +78,8 @@ both ways to get a review.
 
 In Claude Code, the agent file does the same job with no key: copy
 `agent/ai-sniffer.md` into `~/.claude/agents/` and ask for an ai-sniffer review.
+Other agent tools can use the same prompt without its frontmatter; see
+[docs/012](../../docs/012_ai-sniffer.md) §6 for what carries over.
 
 ## Eval
 

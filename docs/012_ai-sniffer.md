@@ -356,6 +356,23 @@ to the reviewer file. Two things to verify first: that an editable tool install 
 from inside the workspace, and that Claude Code loads an agent through a symlink. Both
 change the machine's setup, so they happen only after a yes at that point.
 
+**In other AI tools** *(noted 2026-09-15, not built)*. The body of
+`agent/ai-sniffer.md` is a plain prompt, so other agent tools can use it. Three parts
+are specific to Claude Code: the frontmatter (`name`, `description`, `tools`, `model`),
+which registers the agent, grants its tools and picks its model; the instruction to run
+`ai-sniffer check --json FILE`, which needs shell access (without it, the prompt already
+tells the model to find the word-level habits itself); and where the file goes. Other
+tools have their own conventions: `AGENTS.md` for OpenAI's Codex CLI, `GEMINI.md` for
+Gemini CLI, project rules in Cursor, custom instructions in GitHub Copilot, or the body
+pasted in as a chat tool's instructions. The Agent Skills format (`SKILL.md`) is the
+most portable; several of the tools found on 2026-09-15 say one skill file works in
+Claude Code, Cursor, Copilot and Codex. Those conventions weren't checked against each
+tool's current docs. Two rules if this is built: any other format is generated from
+`agent/ai-sniffer.md` rather than copied, with `check_prompt.py` confirming the copies
+match, so there's still one prompt; and results depend on the model, not the file (the
+same prompt caught 36–43 of 63 held-out habits on Sonnet, 7–10 on Haiku, 11–13 on
+qwen2.5:7b chunked).
+
 **Conventions:** the writing table in `data-tools/CLAUDE.md` is replaced by a pointer
 to the reviewer's catalogue, so there's a single definition. The site repo gets a
 short `CLAUDE.md` saying to run ai-sniffer on posts before publishing.
