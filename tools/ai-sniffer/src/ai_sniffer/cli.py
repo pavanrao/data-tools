@@ -1,7 +1,7 @@
 """Find the habits that make prose read as machine-written, and quote each one.
 
     ai-sniffer check FILE [--json] [--strict]
-    ai-sniffer review FILE [--json] [--model MODEL] [--no-linter]
+    ai-sniffer review FILE [--json] [--model MODEL] [--no-linter] [--chunk]
 
 Exit codes:
 
@@ -96,7 +96,7 @@ def _review(args: argparse.Namespace) -> int:
         return 2
     report = None if args.no_linter else check(doc).to_dict()
     try:
-        result = review.run(args.file, model, report)
+        result = review.run(args.file, model, report, chunk=args.chunk)
     except review.ReplyError as exc:
         start = getattr(exc, "reply", "")[:500]
         print(f"ai-sniffer: {exc}. The reply started:\n{start}", file=sys.stderr)
@@ -128,6 +128,9 @@ def main(argv: Sequence[str] | None = None) -> int:
     review_cmd.add_argument("--model", help="LiteLLM model string; else DATA_TOOLS_CHAT_MODEL")
     review_cmd.add_argument(
         "--no-linter", action="store_true", help="don't send the linter's report to the model"
+    )
+    review_cmd.add_argument(
+        "--chunk", action="store_true", help="review one section at a time and merge the findings"
     )
     review_cmd.set_defaults(run=_review)
 

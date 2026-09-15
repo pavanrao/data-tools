@@ -166,3 +166,59 @@ def test_an_unsupported_file_exits_two_before_any_model_call(tmp_path, fake):
 
     assert main(["review", "--no-linter", "--model", "test/fake-1", str(draft)]) == 2
     assert fake.prompts == []
+
+
+# ---- chunking -----------------------------------------------------------------------------
+
+LONG = "\n\n".join(
+    [
+        "Opening words here. " * 150,
+        "## Short",
+        "Only a few words.",
+        "## Long one",
+        "Plenty of text in this section. " * 80,
+        "## Last",
+        "Closing words here. " * 150,
+    ]
+)
+
+
+def test_sections_are_chunks_and_small_ones_merge_into_the_next(tmp_path):
+    draft = tmp_path / "post.md"
+    draft.write_text(LONG + "\n")
+
+    chunks = review.chunk_ranges(draft, min_words=100)
+
+    # opening (line 1) | "Short" merges forward into "Long one" (3..10) | "Last" (11..)
+    assert [start for start, _ in chunks] == [1, 3, 11]
+    assert chunks[-1][1] == len((LONG + "\n").split("\n"))
+    assert all(a[1] + 1 == b[0] for a, b in zip(chunks, chunks[1:], strict=False))
+
+
+def test_a_chunk_request_keeps_original_line_numbers_and_says_which_part_it_is(tmp_path):
+    draft = tmp_path / "post.md"
+    draft.write_text(LONG + "\n")
+    report = {
+        "findings": [{"line": 1, "signal": "hedge"}, {"line": 11, "signal": "hedge"}],
+        "metrics": {},
+    }
+
+    request = review.build_request(review.load_prompt(), draft, report, lines=(11, 13), part=(3, 3))
+
+    assert "\n11 | ## Last" in request
+    assert "Opening words" not in request
+    assert "part 3 of 3" in request
+    assert '"line": 11' in request and '"line": 1,' not in request
+
+
+def test_review_with_chunks_sends_one_request_per_chunk_and_merges_findings(tmp_path, fake, capsys):
+    draft = tmp_path / "post.md"
+    draft.write_text(LONG + "\n")
+
+    code = main(["review", "--json", "--chunk", "--model", "test/fake-1", str(draft)])
+
+    payload = json.loads(capsys.readouterr().out)
+    assert code == 0
+    assert len(fake.prompts) == len(review.chunk_ranges(draft)) > 1
+    assert payload["chunks"] == len(fake.prompts)
+    assert len(payload["findings"]) == 2 * len(fake.prompts)

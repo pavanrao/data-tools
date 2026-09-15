@@ -102,3 +102,27 @@ def test_the_scorer_ignores_metadata_files(eval_script, tmp_path):
     (tmp_path / "run-1.meta.json").write_text("{}")
 
     assert [p.name for p in score.run_files(tmp_path)] == ["run-1.md"]
+
+
+def test_a_chunked_run_writes_one_merged_reply_and_sums_its_cost(local, eval_script, tmp_path):
+    ollama = FakeOllama(
+        reply='```json\n{"findings": [{"line": 1, "habit": "hedge", "severity": "low", '
+        '"quote": "Plenty of", "why": ""}]}\n```\n\nOne.'
+    )
+    source = tmp_path / "src"
+    source.mkdir()
+    body = "\n\n".join(["Plenty of words. " * 150, "## Two", "Plenty of words. " * 150]) + "\n"
+    (source / "heldout-secret.md").write_text(body)
+    runs = tmp_path / "runs"
+
+    local.run_setup(
+        "qwen7+chunks", "qwen2.5:7b", {"draft-1.md": "heldout-secret.md"}, source, runs, [1],
+        linter=False, num_ctx=4096, post=ollama, chunk=True,
+    )  # fmt: skip
+
+    out = runs / "qwen7+chunks" / "heldout-secret"
+    meta = json.loads((out / "run-1.meta.json").read_text())
+    findings, ok = eval_script("score").read_run(out / "run-1.md")
+    assert meta["chunks"] == 2
+    assert (meta["prompt_tokens"], meta["output_tokens"]) == (1800, 80)
+    assert ok and len(findings) == 2

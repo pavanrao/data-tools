@@ -90,13 +90,56 @@ def neutral_inputs(mapping: dict[str, str], source: Path) -> Iterator[Path]:
         yield inputs
 
 
-def request_for(inputs: Path, neutral: str, linter: bool) -> str:
+def request_for(
+    inputs: Path,
+    neutral: str,
+    linter: bool,
+    lines: tuple[int, int] | None = None,
+    part: tuple[int, int] | None = None,
+) -> str:
     from ai_sniffer.review import build_request, load_prompt
 
     report = None
     if linter:
         report = json.loads((inputs / f"{neutral}.linter.json").read_text(encoding="utf-8"))
-    return build_request(load_prompt(), inputs / neutral, report)
+    return build_request(load_prompt(), inputs / neutral, report, lines=lines, part=part)
+
+
+def run_chunked(
+    model: str, inputs: Path, neutral: str, linter: bool, num_ctx: int, post: Post
+) -> tuple[str, dict]:
+    """One request per section; the replies merged into a single reply the scorer reads."""
+    from ai_sniffer.review import ReplyError, chunk_ranges, parse_reply
+
+    ranges = chunk_ranges(inputs / neutral)
+    findings, summaries, metas, unparseable = [], [], [], 0
+    for k, lines in enumerate(ranges, 1):
+        reply, meta = run_one(
+            model, request_for(inputs, neutral, linter, lines, (k, len(ranges))), num_ctx, post
+        )
+        metas.append(meta)
+        try:
+            f, _, summary = parse_reply(reply)
+        except ReplyError:
+            unparseable += 1
+            continue
+        findings += f
+        summaries.append(f"Lines {lines[0]} to {lines[1]}: {summary}")
+    merged = "```json\n" + json.dumps({"findings": findings}, ensure_ascii=False, indent=1)
+    merged += "\n```\n\n" + "\n\n".join(summaries) + "\n"
+    meta = {
+        **metas[0],
+        "chunks": len(ranges),
+        "unparseable_chunks": unparseable,
+        "prompt_tokens": sum(m["prompt_tokens"] for m in metas),
+        "output_tokens": sum(m["output_tokens"] for m in metas),
+        "seconds": {
+            key: round(sum(m["seconds"][key] for m in metas), 1)
+            for key in ("prompt", "output", "total")
+        },
+        "truncated": any(m["truncated"] for m in metas),
+    }
+    return merged, meta
 
 
 def run_setup(
@@ -109,6 +152,7 @@ def run_setup(
     linter: bool,
     num_ctx: int,
     post: Post = ollama_post,
+    chunk: bool = False,
 ) -> int:
     written = 0
     with neutral_inputs(mapping, source) as inputs:
@@ -117,7 +161,12 @@ def run_setup(
                 out = runs_dir / setup / real.split(".")[0]
                 if (out / f"run-{n}.md").exists():
                     continue
-                reply, meta = run_one(model, request_for(inputs, neutral, linter), num_ctx, post)
+                if chunk:
+                    reply, meta = run_chunked(model, inputs, neutral, linter, num_ctx, post)
+                else:
+                    reply, meta = run_one(
+                        model, request_for(inputs, neutral, linter), num_ctx, post
+                    )
                 out.mkdir(parents=True, exist_ok=True)
                 (out / f"run-{n}.md").write_text(reply, encoding="utf-8")
                 meta |= {
@@ -147,6 +196,7 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--linter", action="store_true", help="send the linter's report")
     parser.add_argument("--runs", type=int, nargs="+", default=[1, 2, 3])
     parser.add_argument("--num-ctx", type=int, default=32768)
+    parser.add_argument("--chunk", action="store_true", help="one request per section")
     args = parser.parse_args(argv)
 
     mapping = json.loads(MANIFEST.read_text(encoding="utf-8"))["neutral_names"]
@@ -159,6 +209,7 @@ def main(argv: list[str] | None = None) -> int:
         args.runs,
         args.linter,
         args.num_ctx,
+        chunk=args.chunk,
     )
     print(f"{written} runs written for {args.setup}")
     return 0
