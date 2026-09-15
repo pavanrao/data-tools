@@ -96,8 +96,10 @@ def prose_lines(path: Path) -> list[tuple[int, str]]:
     """(line number, normalised text) for prose lines, skipping code, style and svg."""
     out: list[tuple[int, str]] = []
     in_block = False
-    front_matter = 0
-    for number, raw in enumerate(path.read_text(encoding="utf-8").split("\n"), 1):
+    source = path.read_text(encoding="utf-8")
+    # Front matter only counts when the file opens with it.
+    front_matter = 0 if source.startswith("---") else 2
+    for number, raw in enumerate(source.split("\n"), 1):
         if path.suffix == ".md":
             if raw.strip() == "---" and front_matter < 2:
                 front_matter += 1

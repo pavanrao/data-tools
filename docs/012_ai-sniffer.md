@@ -216,9 +216,15 @@ and add it to `eval/drafts.json` with the commit it came from. A held-out draft 
 labelled before any model sees it. The build fails for a draft with no role, and for a
 label outside a draft's scored sections. Then the page is rebuilt and republished.
 
-**Refreshing the prompt.** Only development drafts can change the reviewer prompt. A
-check fails the build if any example quoted in the prompt appears in a held-out or
-clean draft. Label changes on held-out drafts never reach the prompt; a held-out draft
+**Refreshing the prompt.** Only development drafts can change the reviewer prompt.
+`eval/check_prompt.py`, run as a test, fails if an example isn't in a development draft,
+if a phrase the prompt quotes appears in a held-out or clean draft, or if the catalogue's
+habit names differ from the labels'. A single quoted word is exempt, since words like
+"exactly" are in every draft and the emphasis-word entry has to name them. The check
+sees whole quoted phrases only. A shorter phrase inside a development example can still
+appear in scored text: the cliche-emphasis example ends in "the whole point", which
+also occurs in *Where the Cut Falls*. On its first run the check caught three phrases
+in habit definitions that occurred in held-out drafts, and they were reworded. Label changes on held-out drafts never reach the prompt; a held-out draft
 that's wanted as prompt material moves to development, and a new held-out draft is
 labelled to replace it. A prompt change means new model runs. A label change only
 means rescoring.

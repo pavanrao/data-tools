@@ -128,3 +128,11 @@ def test_the_committed_labels_build(eval_script):
     out = script.build(script.load_meta(), script.load_labels(script.LABELS_FILE), script.DRAFTS)
 
     assert len(out["labels"]) + len(out["dropped"]) == len(script.load_labels(script.LABELS_FILE))
+
+
+def test_a_markdown_draft_without_front_matter_is_read(eval_script, tmp_path):
+    script = eval_script("build_labels")
+    draft = tmp_path / "dev-c.md"
+    draft.write_text("It wasn't slow. It was stuck.\n")
+
+    assert script.prose_lines(draft) == [(1, "it wasn't slow. it was stuck.")]

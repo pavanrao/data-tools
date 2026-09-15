@@ -9,7 +9,9 @@ Two parts, split by what each is good at:
   library, runs instantly, and gives the same answer every time.
 - **The reviewer**, a prompt run by a model, looks at structure a pattern can't
   see: antithesis split across sentences, verbless fragments, section endings built
-  to land a point. *(Not built yet; see [docs/012](../../docs/012_ai-sniffer.md).)*
+  to land a point. The prompt is [agent/ai-sniffer.md](agent/ai-sniffer.md), which
+  is also a Claude Code agent file. *(The `review` command that runs it through a
+  configured model isn't built yet; see [docs/012](../../docs/012_ai-sniffer.md).)*
 
 ## Install
 
