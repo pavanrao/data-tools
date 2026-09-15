@@ -14,7 +14,7 @@ EVAL = Path(__file__).parents[1] / "eval"
 def eval_script():
     def load(name: str):
         spec = importlib.util.spec_from_file_location(
-            f"ai_sniffer_eval_{name}", EVAL / f"{name}.py"
+            f"ai_sniffer_eval_{name.replace('/', '_')}", EVAL / f"{name}.py"
         )
         module = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(module)
