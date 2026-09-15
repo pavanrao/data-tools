@@ -6,6 +6,12 @@ requires-python = ">=3.13"
 # The linter is standard library only, so a global `uv tool install` needs nothing.
 dependencies = []
 
+[project.scripts]
+ai-sniffer = "ai_sniffer.cli:main"
+
+[project.entry-points."data_tools.tools"]
+ai-sniffer = "ai_sniffer.cli:main"
+
 [project.optional-dependencies]
 # `ai-sniffer review` sends the reviewer prompt through the shared model layer.
 llm = ["data-tools-core[llm]"]
