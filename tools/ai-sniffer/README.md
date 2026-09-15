@@ -10,8 +10,8 @@ Two parts, split by what each is good at:
 - **The reviewer**, a prompt run by a model, looks at structure a pattern can't
   see: antithesis split across sentences, verbless fragments, section endings built
   to land a point. The prompt is [agent/ai-sniffer.md](agent/ai-sniffer.md), which
-  is also a Claude Code agent file. *(The `review` command that runs it through a
-  configured model isn't built yet; see [docs/012](../../docs/012_ai-sniffer.md).)*
+  is also a Claude Code agent file, and `ai-sniffer review` runs the same file through
+  any model you configure.
 
 ## Install
 
@@ -50,6 +50,34 @@ score.
 | `0` | checked |
 | `1` | `--strict`, and there was at least one finding |
 | `2` | the file couldn't be read, or isn't `.md` or `.html` |
+
+## `ai-sniffer review`
+
+```bash
+DATA_TOOLS_CHAT_MODEL=anthropic/claude-haiku-4-5-20251001 DATA_TOOLS_API_KEY=... \
+  ai-sniffer review FILE [--json] [--model MODEL] [--no-linter]
+```
+
+Runs the linter, then sends the reviewer prompt, the linter's report and the numbered
+draft to the model. Needs the `llm` extra (`uv sync --all-extras` in the repo). A local
+model such as `ollama/llama3.1` needs no key. `--no-linter` leaves the report out, and
+the model finds the word-level habits itself.
+
+Output lists each finding with its line, severity, habit and quote, followed by the
+model's short summary. It also records which model ran. It never contains rewritten
+text.
+
+| Exit | Meaning |
+| --- | --- |
+| `0` | reviewed |
+| `2` | no model configured, the `llm` extra missing, the call failed, or the file couldn't be read |
+| `3` | the model's reply had no usable JSON; the start of the reply is printed |
+
+Without a configured model it doesn't fall back to a default: it exits `2` and names
+both ways to get a review.
+
+In Claude Code, the agent file does the same job with no key: link or copy
+`agent/ai-sniffer.md` into `~/.claude/agents/` and ask for an ai-sniffer review.
 
 ## Eval
 

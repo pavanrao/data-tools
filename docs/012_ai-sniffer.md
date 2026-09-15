@@ -96,6 +96,10 @@ provider's own variable, and a local Ollama model needs no key.
 
 Without the extra or a configured model it exits `2` and names both ways to get a
 review — the Claude Code agent, or configuring a model. It never quietly falls back.
+The core's default model, `ollama/llama3.1`, doesn't count as configured, so a machine
+without Ollama gets that message rather than a failed connection. A reply without a
+parseable JSON block exits `3` and prints the start of the reply. The prompt ships
+inside the wheel as well, so an install outside the repo reads the same file.
 Output records which model ran (CONVENTIONS rule 2). The prompt is read from the
 agent file with its frontmatter stripped, so there's one copy.
 

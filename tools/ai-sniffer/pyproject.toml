@@ -23,5 +23,9 @@ build-backend = "hatchling.build"
 [tool.hatch.build.targets.wheel]
 packages = ["src/ai_sniffer"]
 
+# One copy of the reviewer prompt: the agent file, shipped inside the package too.
+[tool.hatch.build.targets.wheel.force-include]
+"agent/ai-sniffer.md" = "ai_sniffer/agent/ai-sniffer.md"
+
 [tool.uv.sources]
 data-tools-core = { workspace = true }
