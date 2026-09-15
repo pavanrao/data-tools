@@ -154,6 +154,11 @@ def read_run(path: Path) -> tuple[list[dict], bool]:
     return findings, True
 
 
+def run_files(draft_dir: Path) -> list[Path]:
+    """A draft's run outputs, leaving out the metadata local runs keep beside them."""
+    return sorted(p for p in draft_dir.glob("run-*.*") if not p.name.endswith(".meta.json"))
+
+
 def score_all(labels: list[dict], meta: dict, hand_only: bool) -> dict:
     stems = {name.split(".")[0]: name for name in meta}
     setups = {}
@@ -162,8 +167,8 @@ def score_all(labels: list[dict], meta: dict, hand_only: bool) -> dict:
         unreadable = []
         for draft_dir in sorted(p for p in setup_dir.iterdir() if p.is_dir()):
             draft = stems[draft_dir.name]
-            for run_file in sorted(draft_dir.glob("run-*.*")):
-                n = int(run_file.stem.split("-")[1])
+            for run_file in run_files(draft_dir):
+                n = int(run_file.name.split(".")[0].split("-")[1])
                 findings, ok = read_run(run_file)
                 if not ok:
                     unreadable.append(str(run_file.relative_to(HERE)))
