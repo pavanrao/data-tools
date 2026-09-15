@@ -1,0 +1,47 @@
+{
+  "date": "2026-09-15",
+  "prompt": {
+    "file": "tools/ai-sniffer/agent/ai-sniffer.md",
+    "commit": "5e3bb93"
+  },
+  "labels": {
+    "file": "tools/ai-sniffer/eval/labels.jsonl",
+    "commit": "7562e47"
+  },
+  "scoring": {
+    "file": "tools/ai-sniffer/eval/score.py",
+    "commit": "6123579"
+  },
+  "instructions": "tools/ai-sniffer/eval/run_instructions.md",
+  "neutral_names": {
+    "draft-1.html": "heldout-where-the-cut-falls.html",
+    "draft-2.md": "clean-protocol-after.md",
+    "draft-3.html": "dev-database-before.html",
+    "draft-4.html": "clean-database-after.html",
+    "draft-5.md": "dev-protocol-before.md",
+    "draft-6.html": "heldout-double-entry.html"
+  },
+  "setups": {
+    "linter": {
+      "how": "ai-sniffer check --json on each draft; deterministic, one run"
+    },
+    "haiku": {
+      "agent_model": "haiku",
+      "linter_report": false
+    },
+    "haiku+linter": {
+      "agent_model": "haiku",
+      "linter_report": true
+    },
+    "sonnet": {
+      "agent_model": "sonnet",
+      "linter_report": false
+    },
+    "sonnet+linter": {
+      "agent_model": "sonnet",
+      "linter_report": true
+    }
+  },
+  "model_note": "Model setups ran as Claude Code subagents with the Agent tool's model set to 'haiku' or 'sonnet'. In this session those aliases were documented as Claude Haiku 4.5 and Claude Sonnet 5; the subagents' exact model versions weren't independently checked.",
+  "runs_per_setup_and_draft": 3
+}

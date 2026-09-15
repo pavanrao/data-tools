@@ -1,0 +1,156 @@
+{
+  "path": "draft-5.md",
+  "format": "markdown",
+  "metrics": {
+    "words": 1527,
+    "sentences": 98,
+    "paragraphs": 31,
+    "contractions": 35,
+    "contractions_per_100_words": 2.3,
+    "sentence_length": {
+      "mean": 15.6,
+      "cv": 0.6
+    },
+    "detail": {
+      "numbers": 6,
+      "dates": 5,
+      "quoted": 3,
+      "code": 33,
+      "per_100_words": 3.1
+    }
+  },
+  "findings": [
+    {
+      "signal": "hedge",
+      "line": 17,
+      "quote": "Plenty of",
+      "sentence": "Plenty of older clients and servers are still around, so both SDKs kept the old path alongside the new one, and a given server might speak either, or both."
+    },
+    {
+      "signal": "emphasis-word",
+      "line": 22,
+      "quote": "actually",
+      "sentence": "That meant finding out what other servers actually speak, which turned out to be harder to ask than I expected."
+    },
+    {
+      "signal": "emphasis-word",
+      "line": 28,
+      "quote": "exactly",
+      "sentence": "The trouble is that the Python SDK's client, left on its default, does exactly the negotiation you're trying to observe."
+    },
+    {
+      "signal": "emphasis-word",
+      "line": 52,
+      "quote": "actually",
+      "sentence": "I probed the six official reference servers from the MCP project, five servers published by companies whose tools people actually run, and my own as a control."
+    },
+    {
+      "signal": "emphasis-word",
+      "line": 55,
+      "quote": "actually",
+      "sentence": "It negotiates, lists what the server says it offers, and checks that the listings actually work."
+    },
+    {
+      "signal": "even-rhythm",
+      "line": 74,
+      "quote": "It doesn't know CODE exists, and says so correctly.",
+      "sentence": "It doesn't know CODE exists, and says so correctly."
+    },
+    {
+      "signal": "emphasis-word",
+      "line": 108,
+      "quote": "entirely",
+      "sentence": "The last column is entirely predicted by the third."
+    },
+    {
+      "signal": "one-sentence-paragraph",
+      "line": 123,
+      "quote": "This part I got wrong first.",
+      "sentence": "This part I got wrong first."
+    },
+    {
+      "signal": "even-rhythm",
+      "line": 130,
+      "quote": "Then Context7, an npm package, answered CODE.",
+      "sentence": "Then Context7, an npm package, answered CODE."
+    },
+    {
+      "signal": "hedge",
+      "line": 173,
+      "quote": "nearly any",
+      "sentence": "The Python v2 SDK's own negotiation falls back on nearly any error, which looks a lot more reasonable with this table in front of you."
+    },
+    {
+      "signal": "one-sentence-paragraph",
+      "line": 178,
+      "quote": "It had bugs I'd never have found against test servers.",
+      "sentence": "It had bugs I'd never have found against test servers."
+    },
+    {
+      "signal": "emphasis-word",
+      "line": 188,
+      "quote": "precisely",
+      "sentence": "The SDK reports a dead server process as an error with the code CODE and the message \"Connection closed\", and my probe treated every SDK error as the server saying no. It had also been sending the server's stderr to CODE, which is precisely where that one explanatory line went."
+    },
+    {
+      "signal": "emphasis-word",
+      "line": 200,
+      "quote": "genuinely",
+      "sentence": "A server that genuinely never answers times out twice."
+    },
+    {
+      "signal": "emphasis-word",
+      "line": 204,
+      "quote": "exactly",
+      "sentence": "The full text was \"Invalid request parameters\", which matches the code exactly."
+    },
+    {
+      "signal": "hedge",
+      "line": 223,
+      "quote": "plenty of",
+      "sentence": "Every server here offers it, but plenty of hosted servers only offer HTTP, and I haven't probed anything running on someone else's infrastructure."
+    }
+  ],
+  "closers": [
+    {
+      "line": 22,
+      "section": "",
+      "text": "That meant finding out what other servers actually speak, which turned out to be harder to ask than I expected."
+    },
+    {
+      "line": 46,
+      "section": "You can't find out by connecting",
+      "text": "The difference between those last two is the whole point, because a server that never answered hasn't told you anything about which protocol it speaks."
+    },
+    {
+      "line": 117,
+      "section": "Twelve servers",
+      "text": "CODE is the MCP project's showcase of every protocol feature, and the version I probed was published on 31 August, five weeks after the revision it doesn't speak."
+    },
+    {
+      "line": 141,
+      "section": "The upgrade that bumping won't get you",
+      "text": "It just requires someone to take the major bump."
+    },
+    {
+      "line": 173,
+      "section": "Two ways to say you don't know a method",
+      "text": "The Python v2 SDK's own negotiation falls back on nearly any error, which looks a lot more reasonable with this table in front of you."
+    },
+    {
+      "line": 204,
+      "section": "What running it on real servers taught me about the probe",
+      "text": "The full text was \"Invalid request parameters\", which matches the code exactly."
+    },
+    {
+      "line": 218,
+      "section": "Run it yourself",
+      "text": "A server that only speaks the old protocol exits CODE, since that's a fact about the server rather than a lie it told."
+    },
+    {
+      "line": 251,
+      "section": "Loose ends",
+      "text": "Written against MCP protocol revision 2026-07-28."
+    }
+  ]
+}

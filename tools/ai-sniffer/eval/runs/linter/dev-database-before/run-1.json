@@ -1,0 +1,179 @@
+{
+  "path": "draft-3.html",
+  "format": "html",
+  "metrics": {
+    "words": 1272,
+    "sentences": 123,
+    "paragraphs": 53,
+    "contractions": 0,
+    "contractions_per_100_words": 0.0,
+    "sentence_length": {
+      "mean": 10.3,
+      "cv": 0.63
+    },
+    "detail": {
+      "numbers": 2,
+      "dates": 2,
+      "quoted": 0,
+      "code": 27,
+      "per_100_words": 2.4
+    }
+  },
+  "findings": [
+    {
+      "signal": "hedge",
+      "line": 276,
+      "quote": "Almost every",
+      "sentence": "Almost every SQL-over-MCP server decides whether a query is safe by reading the query."
+    },
+    {
+      "signal": "reader-instruction",
+      "line": 301,
+      "quote": "Look at",
+      "sentence": "Look at the SQL."
+    },
+    {
+      "signal": "reader-instruction",
+      "line": 309,
+      "quote": "Consider",
+      "sentence": "Consider what it must already handle correctly."
+    },
+    {
+      "signal": "one-sentence-paragraph",
+      "line": 315,
+      "quote": "CODE — starts with CODE, and in several engines that is a write.",
+      "sentence": "CODE — starts with CODE, and in several engines that is a write."
+    },
+    {
+      "signal": "even-rhythm",
+      "line": 315,
+      "quote": "CODE — starts with CODE, and in several engines that is a write.",
+      "sentence": "CODE — starts with CODE, and in several engines that is a write."
+    },
+    {
+      "signal": "one-sentence-paragraph",
+      "line": 319,
+      "quote": "CODE — no forbidden keyword anywhere, and it changes the database.",
+      "sentence": "CODE — no forbidden keyword anywhere, and it changes the database."
+    },
+    {
+      "signal": "one-sentence-paragraph",
+      "line": 323,
+      "quote": "CODE — starts with CODE, if you only check the beginning.",
+      "sentence": "CODE — starts with CODE, if you only check the beginning."
+    },
+    {
+      "signal": "emphasis-word",
+      "line": 327,
+      "quote": "perfectly",
+      "sentence": "CODE — a keyword scan says no to a perfectly ordinary query."
+    },
+    {
+      "signal": "one-sentence-paragraph",
+      "line": 327,
+      "quote": "CODE — a keyword scan says no to a perfectly ordinary query.",
+      "sentence": "CODE — a keyword scan says no to a perfectly ordinary query."
+    },
+    {
+      "signal": "even-rhythm",
+      "line": 342,
+      "quote": "SQLite will answer the question for you.",
+      "sentence": "SQLite will answer the question for you."
+    },
+    {
+      "signal": "one-sentence-paragraph",
+      "line": 390,
+      "quote": "The chained CODE — twice over, since one call carries one statement.",
+      "sentence": "The chained CODE — twice over, since one call carries one statement."
+    },
+    {
+      "signal": "reader-instruction",
+      "line": 430,
+      "quote": "Sit with that",
+      "sentence": "Sit with that for a second."
+    },
+    {
+      "signal": "even-rhythm",
+      "line": 441,
+      "quote": "Having refused something, how do you say so?",
+      "sentence": "Having refused something, how do you say so?"
+    },
+    {
+      "signal": "emphasis-word",
+      "line": 442,
+      "quote": "perfectly",
+      "sentence": "The protocol has a perfectly good error channel."
+    },
+    {
+      "signal": "emphasis-word",
+      "line": 448,
+      "quote": "exactly",
+      "sentence": "The server worked exactly as designed."
+    },
+    {
+      "signal": "one-sentence-paragraph",
+      "line": 509,
+      "quote": "It changes when one of three things is true.",
+      "sentence": "It changes when one of three things is true."
+    },
+    {
+      "signal": "reader-instruction",
+      "line": 518,
+      "quote": "Note that",
+      "sentence": "Note that none of those three is about the protocol."
+    },
+    {
+      "signal": "emphasis-word",
+      "line": 531,
+      "quote": "actually",
+      "sentence": "Listing your tools proves nothing about what a consumer actually reads."
+    }
+  ],
+  "closers": [
+    {
+      "line": 273,
+      "section": "",
+      "text": "data-tools · building #11"
+    },
+    {
+      "line": 294,
+      "section": "Let the Database Say No",
+      "text": "When an agent sends you a statement, how do you decide whether to run it?"
+    },
+    {
+      "line": 334,
+      "section": "The answer everyone reaches for",
+      "text": "Worse, the failure is silent in the direction that matters: nothing tells you when the guard has quietly stopped covering something."
+    },
+    {
+      "line": 408,
+      "section": "The answer that does not have to anticipate",
+      "text": "The lesson survives the change of engine; the regex does not."
+    },
+    {
+      "line": 433,
+      "section": "It failed on my own code first, which is the point",
+      "text": "That is the entire argument for it in one incident."
+    },
+    {
+      "line": 463,
+      "section": "The second thing I got wrong: refusals",
+      "text": "The result is not an error, so nothing downstream treats it as a transient failure to retry."
+    },
+    {
+      "line": 496,
+      "section": "The cap has to admit it is a cap",
+      "text": "On Snowflake it is the whole bill, and the compute dwarfs the tokens by an amount that surprises people."
+    },
+    {
+      "line": 520,
+      "section": "Was the server worth building at all?",
+      "text": "That is the problem it exists to solve, and it is why the specification compares itself to the language server protocol."
+    },
+    {
+      "line": 551,
+      "section": "What I would tell someone starting",
+      "text": "If a tutorial you are reading mentions either, it predates this."
+    }
+  ]
+}
