@@ -1038,7 +1038,7 @@ is a result either way.
 - **Cost note:** the metrics are cheap; the evaluation is #25's, which is free.
 - **Covers:** §2 Chunking · §5 Retrieval metrics · the reproduction habit itself.
 
-### 219. `slopify` — put the tells back in, on purpose ⭐⭐ 💻
+### 219. `slopify` — put the tells back in, on purpose ✅ ⭐⭐ 💻
 Takes a passage a human wrote and injects the habits #218 looks for, at positions it
 records. Deterministic and seeded, so the same input and seed give the same output
 every time, and each injection is written out as a label (line, habit, quote) in the
@@ -1070,6 +1070,18 @@ number or a name with "surprisingly" (generic-detail); insert "exactly" before a
   final, and before post 3 of the series, whose comparison it strengthens.
 - **Covers:** §4 What alignment does to style · §5 Task metrics vs. vibes · building
   ground truth rather than judging it.
+- **Built:** [`tools/slopify/`](./tools/slopify/), eleven injectors, stdlib only.
+  Design record [`docs/014`](./docs/014_slopify.md). The first measurement it made
+  possible: over 280 single-habit injections into three posts written eight months
+  before this tooling existed, `ai-sniffer check` quotes 111. Split by habit, it is
+  at or near perfect on the habits that are a word list — reader-instruction 30/30,
+  emphasis-word 20/20, hedge 17/20 — and at zero on every habit that is a shape:
+  antithesis 0/20, closer 0/30, triad 0/30. That is the argument for shipping a
+  reviewer prompt, with a number per habit attached instead of an assertion.
+  Three counts differ from the plan above: severity is fixed at `high` rather than
+  judged, `--count` is a ceiling because an injector declines where a paragraph
+  offers no site, and there is no sample corpus, because the repository holds no
+  prose that no model touched.
 
 ### 218. `ai-sniffer` — the tells in your own draft ✅ ⭐⭐ 💻 🔌
 Counts the habits that make prose read as machine-written, and refuses to say

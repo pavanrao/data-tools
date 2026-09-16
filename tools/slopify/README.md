@@ -1,0 +1,96 @@
+# slopify — put the tells back in, on purpose
+
+Takes a passage a human wrote and injects the habits
+[`ai-sniffer`](../ai-sniffer/) looks for, at positions it records. Deterministic
+and seeded: the same input and seed give the same output every time, and each
+injection is written out as a label in the format
+`tools/ai-sniffer/eval/labels.jsonl` already uses.
+
+It is the inverse of the reviewer, and it exists because every number in
+ai-sniffer's eval rests on 179 labels one person wrote. Injection gives ground
+truth with no labeller's judgement in it, and so gives **per-habit recall**,
+which the hand labels cannot: they hold 34 antithesis labels and 2 restatement.
+
+```bash
+uv run slopify habits                        # the eleven injectable habits
+uv run slopify inject DRAFT.md --seed 42 --count 12 \
+    --out slopped.md --labels labels.jsonl
+uv run ai-sniffer check slopped.md           # what a detector finds
+```
+
+Standard library only: no model and no network.
+
+## What it does to a paragraph
+
+One injector per habit in ai-sniffer's catalogue. Each returns the rewritten
+paragraph and the exact words a reader would quote as the habit — or nothing,
+when the paragraph offers no site for it.
+
+| habit | what it does |
+| --- | --- |
+| `antithesis` | rewrites a claim into "X isn't a detail. It is Y." |
+| `fragment` | appends a verbless phrase, built from a noun in the paragraph |
+| `triad` | appends a sentence whose only shape is three of something |
+| `dramatic-beat` | breaks the last sentence out as a one-line paragraph |
+| `closer` | appends a line saying what it all meant |
+| `restatement` | says the previous sentence again, adding nothing |
+| `cliche-emphasis` | prefixes a sentence with "The key insight is that" |
+| `generic-detail` | replaces a figure with "a fair number of" |
+| `reader-instruction` | prefixes a sentence with "Note that" |
+| `hedge` | softens a universal: "every" becomes "almost every" |
+| `emphasis-word` | inserts "exactly" after a copula |
+
+Declining is the normal case, not a failure. A paragraph with no copula cannot
+be given an antithesis without inventing a claim, and an invented claim would
+make the ground truth a fiction.
+
+## What it never touches
+
+Front matter, fenced code, tables, HTML blocks, lists, headings and block
+quotes come through byte for byte. Only prose paragraphs are eligible, because a
+habit injected into a code fence is a habit no reader ever sees.
+
+## The labels
+
+One JSONL record per injection, in ai-sniffer's label format plus the seed:
+
+```json
+{"id": "draft-01", "draft": "draft.md", "habit": "hedge", "severity": "high",
+ "quote": "almost every trailing", "source": "injected", "seed": 42, "line": 19}
+```
+
+`line` is read from the **rendered** draft, because injecting into an early
+paragraph moves every line below it. Each quote is verified present in the final
+text before its label is written; a later injection can rewrite the sentence an
+earlier one landed in, and a label nobody can find would score every detector at
+zero.
+
+Every injected label is `high`. A template instance is the strong form of its
+habit by construction, and grading some of them "low" would be a judgement —
+the thing injection exists to avoid.
+
+## Limits, to state wherever its numbers appear
+
+**Injected habits are what a template produces on demand, not what a model
+produces when left alone.** A tool can score well here and badly on real drafts,
+so these numbers are a diagnostic and ai-sniffer's hand-labelled held-out
+numbers stay the headline.
+
+**Source text matters.** Inject into prose no model wrote. Injecting into an
+AI-drafted post measures habits on top of habits, and the labels no longer say
+what is ground truth and what was already there.
+
+**Word-borrowing is approximate.** `fragment` and `triad` take a noun from the
+paragraph by looking for what an article points at, which is right most of the
+time and occasionally picks a compound's modifier — "that finish line" yields
+*finish*. The shape is still the habit; the word is sometimes odd.
+
+## Prior art
+
+Counter-detection work usually goes the other way: paraphrasing generated text
+to defeat a detector. Injecting habits into human text to *build* ground truth
+is the same trick run backwards, and it is what makes per-habit recall available
+without a second labeller.
+
+`slopify` is idea **#219** in [`IDEAS.md`](../../IDEAS.md). Design record:
+[`docs/014_slopify.md`](../../docs/014_slopify.md).
