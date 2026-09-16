@@ -94,10 +94,30 @@ time and occasionally picks a compound's modifier — "that finish line" yields
 
 ## Prior art
 
-Counter-detection work usually goes the other way: paraphrasing generated text
-to defeat a detector. Injecting habits into human text to *build* ground truth
-is the same trick run backwards, and it is what makes per-habit recall available
-without a second labeller.
+Searched after building, which is the wrong order, and recorded that way because
+the ordering is part of what happened. **The method is mutation testing**, pointed at a prose linter instead of a test
+suite: inject known faults, count which ones the rules catch. That is standard for
+evaluating static analysers and is decades old.
+
+**[CheckList](https://aclanthology.org/2020.acl-main.442.pdf)** (Ribeiro et al.,
+ACL 2020) is the closest analogue in NLP and has the same structure. Its
+*Directional Expectation* test perturbs an input and expects the prediction to move
+in a stated direction, and it reports per linguistic capability rather than as one
+accuracy figure. Per-habit recall is that breakdown under another name.
+
+**[APT-Eval](https://arxiv.org/pdf/2502.15666)** builds 14.7K samples by having
+LLMs polish human-written text to varying degrees and measuring what detectors do.
+Same design as this — start from human prose, add AI-ness, test detectors.
+
+**What is different here** is span-level ground truth. Because the injection is a
+deterministic template rather than a model, the label carries the line and the exact
+words, which is what makes per-habit recall computable against a reviewer that
+quotes. APT-Eval's polishing gives a document-level label and cannot say where.
+
+Nothing found goes in this direction as a tool. The ecosystem removes tells —
+[DeSlop](https://github.com/AUAggy/deslop),
+[desloper](https://github.com/yurvon-screamo/desloper),
+[DeleteSlop](https://www.deleteslop.com/) — and none of them injects any.
 
 `slopify` is idea **#219** in [`IDEAS.md`](../../IDEAS.md). Design record:
 [`docs/014_slopify.md`](../../docs/014_slopify.md).

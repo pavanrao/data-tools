@@ -1089,6 +1089,15 @@ number or a name with "surprisingly" (generic-detail); insert "exactly" before a
   (An earlier run used posts from `pavanrao.github.io` as the human baseline; Pavan
   confirmed they were all model-written to his instructions. docs/014 §2 keeps the
   superseded claim and §5b the superseded numbers.)
+- **Prior art, searched after building again.** The method is mutation testing aimed
+  at a linter. [CheckList](https://aclanthology.org/2020.acl-main.442.pdf) (ACL 2020)
+  already does templated perturbation with per-capability reporting, which is what
+  per-habit recall is; [APT-Eval](https://arxiv.org/pdf/2502.15666) already builds
+  detector benchmarks by adding AI-ness to human text, using LLM polishing. What is
+  left as ours is span-level ground truth: a template gives the line and the exact
+  words, so recall can be scored against a reviewer that quotes, which polishing
+  cannot do. Reading those two first would not have stopped the build; it would have
+  made that the stated reason for it on day one.
 
 ### 218. `ai-sniffer` — the tells in your own draft ✅ ⭐⭐ 💻 🔌
 Counts the habits that make prose read as machine-written, and refuses to say
