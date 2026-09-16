@@ -85,10 +85,11 @@ def test_false_alarms_on_clean_drafts_are_candidates_too(candidates, workspace):
     assert only["draft"] == "dev-b.html"
 
 
-def test_the_linter_setup_is_not_a_source_of_candidates(candidates, workspace):
-    data = results(linter=[(1, "heldout-a.md", [stray("Note that this matters.")])])
+def test_pattern_based_tools_are_not_a_source_of_candidates(candidates, workspace):
+    for setup in ("linter", "vale", "wsc", "slopless"):
+        data = results(**{setup: [(1, "heldout-a.md", [stray("Note that this matters.")])]})
 
-    assert candidates.gather(data, META, workspace / "drafts") == []
+        assert candidates.gather(data, META, workspace / "drafts") == [], setup
 
 
 def test_candidates_raised_most_often_come_first(candidates, workspace):
@@ -100,3 +101,12 @@ def test_candidates_raised_most_often_come_first(candidates, workspace):
     found = candidates.gather(data, META, workspace / "drafts")
 
     assert [c["quote"] for c in found] == ["It collapsed.", "Note that this matters."]
+
+
+def test_candidates_already_accepted_as_labels_are_left_out(candidates, workspace):
+    data = results(haiku=[(1, "heldout-a.md", [stray("It didn't degrade. It collapsed.")])])
+
+    still_open = candidates.gather(data, META, workspace / "drafts")
+    accepted = candidates.gather(data, META, workspace / "drafts", exclude={still_open[0]["id"]})
+
+    assert len(still_open) == 1 and accepted == []

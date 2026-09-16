@@ -25,7 +25,21 @@ sys.path.insert(0, str(HERE))
 import build_labels  # noqa: E402
 import score  # noqa: E402
 
-NOT_CANDIDATES = frozenset({"linter"})
+# Only a model's findings become candidates. A pattern-based tool's misses follow from
+# its rules, so they need no review, and its volume would swamp the page.
+NOT_CANDIDATES = frozenset(
+    {
+        "linter",
+        "ai-sniffer-check-md",
+        "vale",
+        "wsc",
+        "slop",
+        "slopless",
+        "sloplint",
+        "slopscore",
+        "slop-lint",
+    }
+)
 
 
 def _id(draft: str, quote: str) -> str:
@@ -33,7 +47,9 @@ def _id(draft: str, quote: str) -> str:
     return f"{build_labels.prefix_of(draft)}-c{digest}"
 
 
-def gather(results: dict, meta: dict, drafts_dir: Path) -> list[dict]:
+def gather(
+    results: dict, meta: dict, drafts_dir: Path, exclude: set[str] | None = None
+) -> list[dict]:
     lines = {name: build_labels.prose_lines(drafts_dir / name) for name in meta}
     groups: list[dict] = []
     for setup, result in results.items():
@@ -81,6 +97,7 @@ def gather(results: dict, meta: dict, drafts_dir: Path) -> list[dict]:
                 "runs": len(g["runs"]),
             }
         )
+    out = [c for c in out if c["id"] not in (exclude or set())]
     out.sort(key=lambda c: (-c["runs"], c["draft"], c["line"]))
     return out
 
@@ -88,7 +105,12 @@ def gather(results: dict, meta: dict, drafts_dir: Path) -> list[dict]:
 def main() -> int:
     results = json.loads((score.RESULTS / "all-labels.json").read_text(encoding="utf-8"))
     meta = build_labels.load_meta()
-    found = gather(results, meta, build_labels.DRAFTS)
+    labelled = {
+        x["candidate_id"]
+        for x in build_labels.load_labels(build_labels.LABELS_FILE)
+        if "candidate_id" in x
+    }
+    found = gather(results, meta, build_labels.DRAFTS, exclude=labelled)
     (HERE / "candidates.json").write_text(
         json.dumps(found, indent=2, ensure_ascii=False) + "\n", encoding="utf-8"
     )

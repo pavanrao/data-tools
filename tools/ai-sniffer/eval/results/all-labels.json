@@ -3,10 +3,10 @@
     "summary": {
       "held-out": {
         "caught": {
-          "min": 10,
-          "max": 10
+          "min": 11,
+          "max": 11
         },
-        "of": 63,
+        "of": 76,
         "false_alarms": {
           "min": 0,
           "max": 0
@@ -391,16 +391,17 @@
         },
         "heldout-double-entry.html": {
           "caught": [
-            "heldout-double-entry-07",
             "heldout-double-entry-08",
             "heldout-double-entry-10",
             "heldout-double-entry-25",
             "heldout-double-entry-28",
             "heldout-double-entry-33",
             "heldout-double-entry-39",
-            "heldout-double-entry-44"
+            "heldout-double-entry-44",
+            "heldout-double-entry-51",
+            "heldout-double-entry-57"
           ],
-          "recall_total": 38,
+          "recall_total": 51,
           "neutral": [
             "heldout-double-entry-12",
             "heldout-double-entry-37"
@@ -418,13 +419,22 @@
               "located_line": 357
             },
             {
+              "line": 373,
+              "habit": null,
+              "severity": "n/a",
+              "quote": "roughly",
+              "rule": "hedge",
+              "why": "",
+              "located_line": 374
+            },
+            {
               "line": 381,
               "habit": null,
               "severity": "n/a",
-              "quote": "Nearly every",
+              "quote": "roughly",
               "rule": "hedge",
               "why": "",
-              "located_line": 383
+              "located_line": 374
             },
             {
               "line": 654,
@@ -434,15 +444,6 @@
               "rule": "one-sentence-paragraph",
               "why": "",
               "located_line": 655
-            },
-            {
-              "line": 728,
-              "habit": null,
-              "severity": "n/a",
-              "quote": "completely",
-              "rule": "emphasis-word",
-              "why": "",
-              "located_line": 730
             }
           ],
           "set_aside": [],
@@ -902,10 +903,10 @@
     "summary": {
       "held-out": {
         "caught": {
-          "min": 7,
+          "min": 8,
           "max": 10
         },
-        "of": 63,
+        "of": 76,
         "false_alarms": {
           "min": 0,
           "max": 0
@@ -1066,7 +1067,7 @@
             "heldout-double-entry-34",
             "heldout-double-entry-46"
           ],
-          "recall_total": 38,
+          "recall_total": 51,
           "neutral": [],
           "habit_agrees": 7,
           "false_alarms": [],
@@ -1406,26 +1407,18 @@
             "heldout-double-entry-25",
             "heldout-double-entry-36",
             "heldout-double-entry-44",
-            "heldout-double-entry-46"
+            "heldout-double-entry-46",
+            "heldout-double-entry-61"
           ],
-          "recall_total": 38,
+          "recall_total": 51,
           "neutral": [
             "heldout-double-entry-05",
             "heldout-double-entry-06",
             "heldout-double-entry-37"
           ],
-          "habit_agrees": 6,
+          "habit_agrees": 7,
           "false_alarms": [],
-          "unlabelled": [
-            {
-              "line": 363,
-              "habit": "dramatic-beat",
-              "severity": "medium",
-              "quote": "The name is worse than the idea.",
-              "why": "A short sentence placed to create emphasis about RAG's name, when the substance could be integrated into the explanation that follows.",
-              "located_line": 364
-            }
-          ],
+          "unlabelled": [],
           "set_aside": [],
           "quotes_not_in_draft": 0,
           "findings": 11
@@ -1727,7 +1720,7 @@
             "heldout-double-entry-28",
             "heldout-double-entry-46"
           ],
-          "recall_total": 38,
+          "recall_total": 51,
           "neutral": [],
           "habit_agrees": 7,
           "false_alarms": [],
@@ -1803,7 +1796,7 @@
           "min": 7,
           "max": 12
         },
-        "of": 63,
+        "of": 76,
         "false_alarms": {
           "min": 0,
           "max": 0
@@ -2057,13 +2050,13 @@
         "heldout-double-entry.html": {
           "caught": [
             "heldout-double-entry-01",
-            "heldout-double-entry-07",
             "heldout-double-entry-10",
             "heldout-double-entry-17",
             "heldout-double-entry-20",
-            "heldout-double-entry-44"
+            "heldout-double-entry-44",
+            "heldout-double-entry-51"
           ],
-          "recall_total": 38,
+          "recall_total": 51,
           "neutral": [
             "heldout-double-entry-12"
           ],
@@ -2372,7 +2365,6 @@
         "heldout-double-entry.html": {
           "caught": [
             "heldout-double-entry-02",
-            "heldout-double-entry-07",
             "heldout-double-entry-08",
             "heldout-double-entry-10",
             "heldout-double-entry-17",
@@ -2380,9 +2372,10 @@
             "heldout-double-entry-28",
             "heldout-double-entry-33",
             "heldout-double-entry-44",
-            "heldout-double-entry-45"
+            "heldout-double-entry-45",
+            "heldout-double-entry-51"
           ],
-          "recall_total": 38,
+          "recall_total": 51,
           "neutral": [
             "heldout-double-entry-12"
           ],
@@ -2724,7 +2717,6 @@
         },
         "heldout-double-entry.html": {
           "caught": [
-            "heldout-double-entry-07",
             "heldout-double-entry-08",
             "heldout-double-entry-10",
             "heldout-double-entry-17",
@@ -2732,9 +2724,10 @@
             "heldout-double-entry-33",
             "heldout-double-entry-39",
             "heldout-double-entry-44",
-            "heldout-double-entry-45"
+            "heldout-double-entry-45",
+            "heldout-double-entry-51"
           ],
-          "recall_total": 38,
+          "recall_total": 51,
           "neutral": [
             "heldout-double-entry-12"
           ],
@@ -2871,10 +2864,10 @@
     "summary": {
       "held-out": {
         "caught": {
-          "min": 10,
-          "max": 10
+          "min": 11,
+          "max": 11
         },
-        "of": 63,
+        "of": 76,
         "false_alarms": {
           "min": 0,
           "max": 0
@@ -3163,29 +3156,25 @@
         },
         "heldout-double-entry.html": {
           "caught": [
-            "heldout-double-entry-07",
             "heldout-double-entry-08",
             "heldout-double-entry-10",
             "heldout-double-entry-25",
             "heldout-double-entry-28",
             "heldout-double-entry-33",
             "heldout-double-entry-39",
-            "heldout-double-entry-44"
+            "heldout-double-entry-44",
+            "heldout-double-entry-51",
+            "heldout-double-entry-57"
           ],
-          "recall_total": 38,
+          "recall_total": 51,
           "neutral": [
             "heldout-double-entry-12",
-            "heldout-double-entry-37"
+            "heldout-double-entry-37",
+            "heldout-double-entry-50"
           ],
           "habit_agrees": 7,
           "false_alarms": [],
           "unlabelled": [
-            {
-              "line": 338,
-              "habit": "emphasis-word",
-              "quote": "Actually",
-              "located_line": 338
-            },
             {
               "line": 357,
               "habit": "reader-instruction",
@@ -3193,22 +3182,22 @@
               "located_line": 357
             },
             {
+              "line": 373,
+              "habit": "hedge",
+              "quote": "roughly",
+              "located_line": 374
+            },
+            {
               "line": 383,
               "habit": "hedge",
-              "quote": "Nearly every",
-              "located_line": 383
+              "quote": "roughly",
+              "located_line": 374
             },
             {
               "line": 655,
               "habit": "dramatic-beat",
               "quote": "All output below is real, produced by CODE against a corpus of deliberately broken files the repository generates for the purpose.",
               "located_line": 655
-            },
-            {
-              "line": 729,
-              "habit": "emphasis-word",
-              "quote": "completely",
-              "located_line": 730
             }
           ],
           "set_aside": [],
@@ -3508,7 +3497,7 @@
           "min": 0,
           "max": 2
         },
-        "of": 63,
+        "of": 76,
         "false_alarms": {
           "min": 0,
           "max": 0
@@ -3737,7 +3726,7 @@
         },
         "heldout-double-entry.html": {
           "caught": [],
-          "recall_total": 38,
+          "recall_total": 51,
           "neutral": [],
           "habit_agrees": 0,
           "false_alarms": [],
@@ -3979,7 +3968,7 @@
             "heldout-double-entry-39",
             "heldout-double-entry-44"
           ],
-          "recall_total": 38,
+          "recall_total": 51,
           "neutral": [
             "heldout-double-entry-42"
           ],
@@ -4827,7 +4816,7 @@
         },
         "heldout-double-entry.html": {
           "caught": [],
-          "recall_total": 38,
+          "recall_total": 51,
           "neutral": [],
           "habit_agrees": 0,
           "false_alarms": [],
@@ -4960,10 +4949,10 @@
     "summary": {
       "held-out": {
         "caught": {
-          "min": 9,
+          "min": 10,
           "max": 15
         },
-        "of": 63,
+        "of": 76,
         "false_alarms": {
           "min": 0,
           "max": 0
@@ -5213,7 +5202,6 @@
             "heldout-double-entry-02",
             "heldout-double-entry-03",
             "heldout-double-entry-04",
-            "heldout-double-entry-07",
             "heldout-double-entry-08",
             "heldout-double-entry-14",
             "heldout-double-entry-23",
@@ -5221,9 +5209,13 @@
             "heldout-double-entry-25",
             "heldout-double-entry-39",
             "heldout-double-entry-44",
-            "heldout-double-entry-45"
+            "heldout-double-entry-45",
+            "heldout-double-entry-48",
+            "heldout-double-entry-51",
+            "heldout-double-entry-52",
+            "heldout-double-entry-56"
           ],
-          "recall_total": 38,
+          "recall_total": 51,
           "neutral": [],
           "habit_agrees": 1,
           "false_alarms": [],
@@ -5259,14 +5251,6 @@
               "quote": "something",
               "why": "passage needs a real specific detail from the author",
               "located_line": 438
-            },
-            {
-              "line": 444,
-              "habit": "generic-detail",
-              "severity": "high",
-              "quote": "a confession from the system that already failed to notice",
-              "why": "passage needs a real specific detail from the author",
-              "located_line": 444
             },
             {
               "line": 447,
@@ -5315,14 +5299,6 @@
               "quote": "the exact words from the draft",
               "why": "one sentence on what makes this an instance of the habit",
               "located_line": 774
-            },
-            {
-              "line": 787,
-              "habit": "triad",
-              "severity": "medium",
-              "quote": "A question phrased entirely in synonyms of a gap's description will not trigger a refusal. Swapping in a trained encoder is a one-line change and would improve this materially.",
-              "why": "one sentence on what makes this an instance of the habit",
-              "located_line": 787
             },
             {
               "line": 870,
@@ -6001,7 +5977,7 @@
             "heldout-double-entry-45",
             "heldout-double-entry-46"
           ],
-          "recall_total": 38,
+          "recall_total": 51,
           "neutral": [],
           "habit_agrees": 4,
           "false_alarms": [],
@@ -6542,13 +6518,15 @@
             "heldout-double-entry-34",
             "heldout-double-entry-38",
             "heldout-double-entry-41",
-            "heldout-double-entry-46"
+            "heldout-double-entry-46",
+            "heldout-double-entry-59"
           ],
-          "recall_total": 38,
+          "recall_total": 51,
           "neutral": [
-            "heldout-double-entry-16"
+            "heldout-double-entry-16",
+            "heldout-double-entry-50"
           ],
-          "habit_agrees": 2,
+          "habit_agrees": 3,
           "false_alarms": [],
           "unlabelled": [
             {
@@ -6654,13 +6632,6 @@
               "located_line": 761
             },
             {
-              "line": 764,
-              "habit": "closer",
-              "severity": "medium",
-              "quote": "So pdfmux's verdict is recorded as evidence in the ledger, never as the status",
-              "located_line": 763
-            },
-            {
               "line": 741,
               "habit": "cliche-emphasis",
               "severity": "low",
@@ -6673,20 +6644,6 @@
               "severity": "high",
               "quote": "a scanned page has no text layer",
               "located_line": 760
-            },
-            {
-              "line": 765,
-              "habit": "generic-detail",
-              "severity": "high",
-              "quote": "a page counts as missing if either signal says so",
-              "located_line": 764
-            },
-            {
-              "line": 684,
-              "habit": "emphasis-word",
-              "severity": "low",
-              "quote": "actually",
-              "located_line": 338
             },
             {
               "line": 786,
@@ -7117,7 +7074,7 @@
           "min": 0,
           "max": 0
         },
-        "of": 63,
+        "of": 76,
         "false_alarms": {
           "min": 0,
           "max": 0
@@ -7337,7 +7294,7 @@
         },
         "heldout-double-entry.html": {
           "caught": [],
-          "recall_total": 38,
+          "recall_total": 51,
           "neutral": [],
           "habit_agrees": 0,
           "false_alarms": [],
@@ -7537,7 +7494,7 @@
         },
         "heldout-double-entry.html": {
           "caught": [],
-          "recall_total": 38,
+          "recall_total": 51,
           "neutral": [],
           "habit_agrees": 0,
           "false_alarms": [],
@@ -7715,7 +7672,7 @@
         },
         "heldout-double-entry.html": {
           "caught": [],
-          "recall_total": 38,
+          "recall_total": 51,
           "neutral": [],
           "habit_agrees": 0,
           "false_alarms": [],
@@ -7856,9 +7813,9 @@
       "held-out": {
         "caught": {
           "min": 0,
-          "max": 1
+          "max": 3
         },
-        "of": 63,
+        "of": 76,
         "false_alarms": {
           "min": 0,
           "max": 0
@@ -8029,7 +7986,7 @@
         },
         "heldout-double-entry.html": {
           "caught": [],
-          "recall_total": 38,
+          "recall_total": 51,
           "neutral": [],
           "habit_agrees": 0,
           "false_alarms": [],
@@ -8143,22 +8100,14 @@
         },
         "heldout-double-entry.html": {
           "caught": [
-            "heldout-double-entry-15"
+            "heldout-double-entry-15",
+            "heldout-double-entry-61"
           ],
-          "recall_total": 38,
+          "recall_total": 51,
           "neutral": [],
           "habit_agrees": 1,
           "false_alarms": [],
-          "unlabelled": [
-            {
-              "line": 35,
-              "habit": "triad",
-              "severity": "high",
-              "quote": "The standard way to build that is called retrieval-augmented generation. The name is worse than the idea. It works in four steps:",
-              "why": "Three clauses in one sentence: defining the term, criticizing it, and describing its steps.",
-              "located_line": 35
-            }
-          ],
+          "unlabelled": [],
           "set_aside": [],
           "quotes_not_in_draft": 1,
           "findings": 2
@@ -8356,21 +8305,15 @@
         },
         "heldout-double-entry.html": {
           "caught": [
-            "heldout-double-entry-01"
+            "heldout-double-entry-01",
+            "heldout-double-entry-48",
+            "heldout-double-entry-56"
           ],
-          "recall_total": 38,
+          "recall_total": 51,
           "neutral": [],
           "habit_agrees": 0,
           "false_alarms": [],
           "unlabelled": [
-            {
-              "line": 443,
-              "habit": "cliche-emphasis",
-              "severity": "low",
-              "quote": "The remedy usually suggested is to ask the AI what it processed &mdash; <em>'summarise which files you read'</em>. That's a confession from the system that already failed to notice.",
-              "why": "Uses a cliche phrase to emphasize the point.",
-              "located_line": 443
-            },
             {
               "line": 657,
               "habit": "closer",
@@ -8378,14 +8321,6 @@
               "quote": "All output below is real, produced by <code>make demo</code> against a corpus of deliberately broken files the repository generates for the purpose.",
               "why": "Concludes the section with a summary of the output, reiterating the point already made.",
               "located_line": 655
-            },
-            {
-              "line": 769,
-              "habit": "restatement",
-              "severity": "medium",
-              "quote": "Gap matching is lexical; The default embedding is a dependency-free hashing function, chosen so the refusal logic can be tested offline on any machine with no model and no API key. It matches on shared vocabulary. A question phrased entirely in synonyms of a gap's description will not trigger a refusal. Swapping in a trained encoder is a one-line change and would improve this materially.",
-              "why": "The two sentences restate the same idea in slightly different words.",
-              "located_line": 769
             }
           ],
           "set_aside": [],
@@ -8410,10 +8345,10 @@
     "summary": {
       "held-out": {
         "caught": {
-          "min": 11,
-          "max": 13
+          "min": 13,
+          "max": 16
         },
-        "of": 63,
+        "of": 76,
         "false_alarms": {
           "min": 0,
           "max": 0
@@ -8619,11 +8554,13 @@
             "heldout-double-entry-23",
             "heldout-double-entry-44",
             "heldout-double-entry-45",
-            "heldout-double-entry-46"
+            "heldout-double-entry-46",
+            "heldout-double-entry-48",
+            "heldout-double-entry-52"
           ],
-          "recall_total": 38,
+          "recall_total": 51,
           "neutral": [],
-          "habit_agrees": 1,
+          "habit_agrees": 2,
           "false_alarms": [],
           "unlabelled": [
             {
@@ -9062,14 +8999,15 @@
         },
         "heldout-double-entry.html": {
           "caught": [
-            "heldout-double-entry-07",
             "heldout-double-entry-15",
             "heldout-double-entry-30",
             "heldout-double-entry-34",
             "heldout-double-entry-44",
-            "heldout-double-entry-45"
+            "heldout-double-entry-45",
+            "heldout-double-entry-51",
+            "heldout-double-entry-53"
           ],
-          "recall_total": 38,
+          "recall_total": 51,
           "neutral": [
             "heldout-double-entry-06"
           ],
@@ -9477,11 +9415,16 @@
             "heldout-double-entry-25",
             "heldout-double-entry-34",
             "heldout-double-entry-40",
-            "heldout-double-entry-46"
+            "heldout-double-entry-46",
+            "heldout-double-entry-52",
+            "heldout-double-entry-53",
+            "heldout-double-entry-54",
+            "heldout-double-entry-56",
+            "heldout-double-entry-63"
           ],
-          "recall_total": 38,
+          "recall_total": 51,
           "neutral": [],
-          "habit_agrees": 0,
+          "habit_agrees": 2,
           "false_alarms": [],
           "unlabelled": [
             {
@@ -9517,14 +9460,6 @@
               "located_line": 633
             },
             {
-              "line": 644,
-              "habit": "closer",
-              "severity": "high",
-              "quote": "If a gap wins, the tool refuses.",
-              "why": "Ends the paragraph with a point, which is a closing technique.",
-              "located_line": 644
-            },
-            {
               "line": 669,
               "habit": "fragment",
               "severity": "medium",
@@ -9547,14 +9482,6 @@
               "quote": "files: 6 of 9 complete, 3 quarantined\n   pages       25.0%   &lt;-- gap\n   sheets      75.0%   &lt;-- gap",
               "why": "Three items in a row, likely for the sake of completion.",
               "located_line": 680
-            },
-            {
-              "line": 779,
-              "habit": "generic-detail",
-              "severity": "medium",
-              "quote": "It matches on shared vocabulary. A question phrased entirely in synonyms of a gap's description will not trigger a refusal. Swapping in a trained encoder is a one-line change and would improve this materially.",
-              "why": "Uses vague phrases like 'matches on shared vocabulary' and 'would improve this materially' without specific details.",
-              "located_line": 787
             },
             {
               "line": 835,
@@ -9788,10 +9715,10 @@
     "summary": {
       "held-out": {
         "caught": {
-          "min": 3,
-          "max": 4
+          "min": 4,
+          "max": 5
         },
-        "of": 63,
+        "of": 76,
         "false_alarms": {
           "min": 0,
           "max": 0
@@ -9990,23 +9917,17 @@
           "caught": [
             "heldout-double-entry-11",
             "heldout-double-entry-28",
-            "heldout-double-entry-39"
+            "heldout-double-entry-39",
+            "heldout-double-entry-48",
+            "heldout-double-entry-52"
           ],
-          "recall_total": 38,
+          "recall_total": 51,
           "neutral": [
             "heldout-double-entry-12"
           ],
-          "habit_agrees": 0,
+          "habit_agrees": 1,
           "false_alarms": [],
           "unlabelled": [
-            {
-              "line": 358,
-              "habit": "cliche-emphasis",
-              "severity": "medium",
-              "quote": "That's a confession from the system that already failed to notice.",
-              "why": "Uses 'confession' to emphasize the system's failure, which is a stock phrase.",
-              "located_line": 444
-            },
             {
               "line": 428,
               "habit": "dramatic-beat",
@@ -10014,14 +9935,6 @@
               "quote": "Here the model behaves impeccably — it reports exactly what it was given.",
               "why": "A very short sentence for emphasis, but it is the right shape for the point.",
               "located_line": 428
-            },
-            {
-              "line": 575,
-              "habit": "closer",
-              "severity": "medium",
-              "quote": "Everything else in the tool exists to preserve it.",
-              "why": "A summary sentence to land the point.",
-              "located_line": 522
             }
           ],
           "set_aside": [],
@@ -10181,7 +10094,7 @@
             "heldout-double-entry-33",
             "heldout-double-entry-46"
           ],
-          "recall_total": 38,
+          "recall_total": 51,
           "neutral": [],
           "habit_agrees": 2,
           "false_alarms": [],
@@ -10363,7 +10276,7 @@
             "heldout-double-entry-08",
             "heldout-double-entry-39"
           ],
-          "recall_total": 38,
+          "recall_total": 51,
           "neutral": [],
           "habit_agrees": 3,
           "false_alarms": [],
@@ -10415,10 +10328,10 @@
     "summary": {
       "held-out": {
         "caught": {
-          "min": 13,
-          "max": 13
+          "min": 14,
+          "max": 14
         },
-        "of": 63,
+        "of": 76,
         "false_alarms": {
           "min": 0,
           "max": 0
@@ -10908,11 +10821,13 @@
             "heldout-double-entry-39",
             "heldout-double-entry-41",
             "heldout-double-entry-44",
-            "heldout-double-entry-45"
+            "heldout-double-entry-45",
+            "heldout-double-entry-62"
           ],
-          "recall_total": 38,
+          "recall_total": 51,
           "neutral": [
-            "heldout-double-entry-05"
+            "heldout-double-entry-05",
+            "heldout-double-entry-49"
           ],
           "habit_agrees": 0,
           "false_alarms": [],
@@ -11035,15 +10950,6 @@
               "located_line": 514
             },
             {
-              "line": 512,
-              "habit": null,
-              "severity": "n/a",
-              "quote": ": how many pages the page tree declares, what the tabs are named, how many entries the archive lists",
-              "rule": "colon-triple",
-              "why": "",
-              "located_line": 514
-            },
-            {
               "line": 563,
               "habit": null,
               "severity": "n/a",
@@ -11141,15 +11047,6 @@
               "rule": "no-chain",
               "why": "",
               "located_line": 786
-            },
-            {
-              "line": 819,
-              "habit": null,
-              "severity": "n/a",
-              "quote": "No PowerPoint, no email archives, no images, no HTML",
-              "rule": "no-chain",
-              "why": "",
-              "located_line": 820
             },
             {
               "line": 819,
@@ -11965,7 +11862,7 @@
           "min": 0,
           "max": 0
         },
-        "of": 63,
+        "of": 76,
         "false_alarms": {
           "min": 0,
           "max": 0
@@ -12366,7 +12263,7 @@
         },
         "heldout-double-entry.html": {
           "caught": [],
-          "recall_total": 38,
+          "recall_total": 51,
           "neutral": [],
           "habit_agrees": 0,
           "false_alarms": [],
@@ -13295,7 +13192,7 @@
           "min": 8,
           "max": 8
         },
-        "of": 63,
+        "of": 76,
         "false_alarms": {
           "min": 0,
           "max": 0
@@ -13459,7 +13356,7 @@
             "heldout-double-entry-23",
             "heldout-double-entry-26"
           ],
-          "recall_total": 38,
+          "recall_total": 51,
           "neutral": [],
           "habit_agrees": 0,
           "false_alarms": [],
@@ -13927,10 +13824,10 @@
     "summary": {
       "held-out": {
         "caught": {
-          "min": 6,
-          "max": 6
+          "min": 7,
+          "max": 7
         },
-        "of": 63,
+        "of": 76,
         "false_alarms": {
           "min": 0,
           "max": 0
@@ -14229,9 +14126,10 @@
           "caught": [
             "heldout-double-entry-17",
             "heldout-double-entry-34",
-            "heldout-double-entry-45"
+            "heldout-double-entry-45",
+            "heldout-double-entry-62"
           ],
-          "recall_total": 38,
+          "recall_total": 51,
           "neutral": [
             "heldout-double-entry-37"
           ],
@@ -14417,24 +14315,6 @@
               "rule": "em-dash",
               "why": "",
               "located_line": 1
-            },
-            {
-              "line": 819,
-              "habit": null,
-              "severity": "n/a",
-              "quote": "No PowerPoint, no email",
-              "rule": "no-x-no-y",
-              "why": "",
-              "located_line": 820
-            },
-            {
-              "line": 819,
-              "habit": null,
-              "severity": "n/a",
-              "quote": "no images, no HTML",
-              "rule": "no-x-no-y",
-              "why": "",
-              "located_line": 821
             },
             {
               "line": 819,
@@ -15186,7 +15066,7 @@
           "min": 2,
           "max": 2
         },
-        "of": 63,
+        "of": 76,
         "false_alarms": {
           "min": 0,
           "max": 0
@@ -15415,7 +15295,7 @@
             "heldout-double-entry-40",
             "heldout-double-entry-46"
           ],
-          "recall_total": 38,
+          "recall_total": 51,
           "neutral": [
             "heldout-double-entry-22",
             "heldout-double-entry-42"
@@ -15601,10 +15481,10 @@
     "summary": {
       "held-out": {
         "caught": {
-          "min": 36,
-          "max": 43
+          "min": 40,
+          "max": 47
         },
-        "of": 63,
+        "of": 76,
         "false_alarms": {
           "min": 0,
           "max": 0
@@ -15943,7 +15823,6 @@
             "heldout-double-entry-02",
             "heldout-double-entry-03",
             "heldout-double-entry-04",
-            "heldout-double-entry-07",
             "heldout-double-entry-08",
             "heldout-double-entry-09",
             "heldout-double-entry-10",
@@ -15957,59 +15836,32 @@
             "heldout-double-entry-25",
             "heldout-double-entry-29",
             "heldout-double-entry-31",
-            "heldout-double-entry-32",
             "heldout-double-entry-33",
             "heldout-double-entry-34",
             "heldout-double-entry-41",
             "heldout-double-entry-44",
             "heldout-double-entry-45",
             "heldout-double-entry-46",
-            "heldout-double-entry-47"
+            "heldout-double-entry-47",
+            "heldout-double-entry-51",
+            "heldout-double-entry-53",
+            "heldout-double-entry-55",
+            "heldout-double-entry-58",
+            "heldout-double-entry-60",
+            "heldout-double-entry-63"
           ],
-          "recall_total": 38,
+          "recall_total": 51,
           "neutral": [],
-          "habit_agrees": 20,
+          "habit_agrees": 22,
           "false_alarms": [],
           "unlabelled": [
             {
-              "line": 395,
-              "habit": "antithesis",
-              "severity": "low",
-              "quote": "contains pictures of text, not text.",
-              "why": "A same-sentence contrast built on the \"X, not Y\" shape.",
-              "located_line": 395
-            },
-            {
-              "line": 645,
-              "habit": "dramatic-beat",
+              "line": 685,
+              "habit": "closer",
               "severity": "medium",
-              "quote": "If a gap wins, the tool refuses.",
-              "why": "A short sentence placed right after the mechanism is explained, landing like a reveal the content already delivered.",
-              "located_line": 644
-            },
-            {
-              "line": 708,
-              "habit": "dramatic-beat",
-              "severity": "high",
-              "quote": "It never throws.",
-              "why": "A very short sentence standing alone for effect, functioning as a beat rather than carrying new information.",
-              "located_line": 708
-            },
-            {
-              "line": 751,
-              "habit": "hedge",
-              "severity": "low",
-              "quote": "A well-regarded existing tool",
-              "why": "\"Well-regarded\" attributes a reputation to no one in particular, so the claim can't be checked.",
-              "located_line": 751
-            },
-            {
-              "line": 751,
-              "habit": "generic-detail",
-              "severity": "high",
-              "quote": "answers a different question than expected",
-              "why": "The sentence never says whose expectation this was or what was actually expected; that is a real specific only the author can supply, and none is offered here.",
-              "located_line": 751
+              "quote": "Pages and nodes are not interchangeable quantities.",
+              "why": "A tidy summary line closing the figure caption, telling the reader what the point was.",
+              "located_line": 685
             }
           ],
           "set_aside": [],
@@ -16801,7 +16653,6 @@
             "heldout-double-entry-01",
             "heldout-double-entry-02",
             "heldout-double-entry-03",
-            "heldout-double-entry-07",
             "heldout-double-entry-08",
             "heldout-double-entry-09",
             "heldout-double-entry-10",
@@ -16822,15 +16673,22 @@
             "heldout-double-entry-43",
             "heldout-double-entry-44",
             "heldout-double-entry-45",
-            "heldout-double-entry-46"
+            "heldout-double-entry-46",
+            "heldout-double-entry-48",
+            "heldout-double-entry-51",
+            "heldout-double-entry-52",
+            "heldout-double-entry-53",
+            "heldout-double-entry-58"
           ],
-          "recall_total": 38,
+          "recall_total": 51,
           "neutral": [
             "heldout-double-entry-05",
             "heldout-double-entry-12",
-            "heldout-double-entry-37"
+            "heldout-double-entry-37",
+            "heldout-double-entry-49",
+            "heldout-double-entry-50"
           ],
-          "habit_agrees": 20,
+          "habit_agrees": 24,
           "false_alarms": [],
           "unlabelled": [
             {
@@ -16842,14 +16700,6 @@
               "located_line": 357
             },
             {
-              "line": 395,
-              "habit": "antithesis",
-              "severity": "high",
-              "quote": "A PDF made by a photocopier contains pictures of text, not text.",
-              "why": "Sets up \"text\" only to knock it down with \"not text\" in the same breath, the same shape as \"not X, but Y\".",
-              "located_line": 395
-            },
-            {
               "line": 444,
               "habit": "hedge",
               "severity": "medium",
@@ -16858,52 +16708,12 @@
               "located_line": 443
             },
             {
-              "line": 445,
-              "habit": "restatement",
-              "severity": "low",
-              "quote": "That's a confession from the system that already failed to notice. A pipeline that silently dropped a file can just as silently fail to mention dropping it.",
-              "why": "The second sentence restates the first point (a system blind to its own failure can't report it) in different words.",
-              "located_line": 444
-            },
-            {
-              "line": 514,
-              "habit": "triad",
-              "severity": "low",
-              "quote": "how many pages the page tree declares, what the tabs are named, how many entries the archive lists",
-              "why": "Three parallel clauses in a row, though each names a genuinely different format's structural count.",
-              "located_line": 514
-            },
-            {
-              "line": 522,
-              "habit": "closer",
-              "severity": "medium",
-              "quote": "Everything else in the tool exists to preserve it.",
-              "why": "A tidy summary line that seals the paragraph's meaning rather than adding new information.",
-              "located_line": 522
-            },
-            {
               "line": 628,
               "habit": "cliche-emphasis",
               "severity": "medium",
               "quote": "Why the second index is the interesting part",
               "why": "\"The interesting part\" is a stock importance-flag in a heading, echoing \"the key insight\".",
               "located_line": 628
-            },
-            {
-              "line": 653,
-              "habit": "emphasis-word",
-              "severity": "low",
-              "quote": "What it actually prints",
-              "why": "\"Actually\" stresses authenticity in a heading without adding information beyond what \"prints\" already says.",
-              "located_line": 653
-            },
-            {
-              "line": 708,
-              "habit": "dramatic-beat",
-              "severity": "medium",
-              "quote": "It never throws.",
-              "why": "A very short standalone sentence inserted for punch just before the closing line.",
-              "located_line": 708
             }
           ],
           "set_aside": [],
@@ -17520,7 +17330,6 @@
             "heldout-double-entry-01",
             "heldout-double-entry-02",
             "heldout-double-entry-03",
-            "heldout-double-entry-07",
             "heldout-double-entry-08",
             "heldout-double-entry-09",
             "heldout-double-entry-10",
@@ -17537,7 +17346,6 @@
             "heldout-double-entry-29",
             "heldout-double-entry-30",
             "heldout-double-entry-31",
-            "heldout-double-entry-32",
             "heldout-double-entry-33",
             "heldout-double-entry-34",
             "heldout-double-entry-35",
@@ -17547,15 +17355,22 @@
             "heldout-double-entry-44",
             "heldout-double-entry-45",
             "heldout-double-entry-46",
-            "heldout-double-entry-47"
+            "heldout-double-entry-47",
+            "heldout-double-entry-51",
+            "heldout-double-entry-52",
+            "heldout-double-entry-53",
+            "heldout-double-entry-55",
+            "heldout-double-entry-57",
+            "heldout-double-entry-60"
           ],
-          "recall_total": 38,
+          "recall_total": 51,
           "neutral": [
             "heldout-double-entry-05",
             "heldout-double-entry-37",
-            "heldout-double-entry-42"
+            "heldout-double-entry-42",
+            "heldout-double-entry-49"
           ],
-          "habit_agrees": 25,
+          "habit_agrees": 29,
           "false_alarms": [],
           "unlabelled": [
             {
@@ -17567,44 +17382,12 @@
               "located_line": 357
             },
             {
-              "line": 514,
-              "habit": "triad",
-              "severity": "low",
-              "quote": "how many pages the page tree declares, what the tabs are named, how many entries the archive lists",
-              "why": "Three parallel clauses describing the skeleton read, shaped for a rounded list rather than dictated by exactly three format types being discussed at that point.",
-              "located_line": 514
-            },
-            {
-              "line": 522,
+              "line": 685,
               "habit": "closer",
               "severity": "medium",
-              "quote": "Everything else in the tool exists to preserve it.",
-              "why": "A tidy summary line ending the paragraph, telling the reader what the preceding point amounts to.",
-              "located_line": 522
-            },
-            {
-              "line": 708,
-              "habit": "dramatic-beat",
-              "severity": "medium",
-              "quote": "It never throws.",
-              "why": "A three-word sentence dropped in for a pause right before the caption's closing line.",
-              "located_line": 708
-            },
-            {
-              "line": 729,
-              "habit": "antithesis",
-              "severity": "medium",
-              "quote": "The first is answerable from files that were read completely. The second is not, and the tool says so instead of answering from the remainder.",
-              "why": "Sets up the first case only to contrast it against the second, the recurring one-versus-the-other shape.",
-              "located_line": 729
-            },
-            {
-              "line": 751,
-              "habit": "generic-detail",
-              "severity": "medium",
-              "quote": "A well-regarded existing tool answers a different question than expected.",
-              "why": "A claim about the tool's standing with no evidence behind 'well-regarded' — the passage needs a real specific from the author about what establishes that regard, not a supplied one.",
-              "located_line": 751
+              "quote": "Pages and nodes are not interchangeable quantities.",
+              "why": "A tidy restatement closing the figure caption, telling the reader the lesson of the anecdote just given.",
+              "located_line": 685
             },
             {
               "line": 838,
@@ -17927,10 +17710,10 @@
     "summary": {
       "held-out": {
         "caught": {
-          "min": 33,
-          "max": 41
+          "min": 39,
+          "max": 48
         },
-        "of": 63,
+        "of": 76,
         "false_alarms": {
           "min": 0,
           "max": 0
@@ -18281,13 +18064,13 @@
             "heldout-double-entry-01",
             "heldout-double-entry-02",
             "heldout-double-entry-03",
-            "heldout-double-entry-07",
             "heldout-double-entry-08",
             "heldout-double-entry-09",
             "heldout-double-entry-10",
             "heldout-double-entry-14",
             "heldout-double-entry-15",
             "heldout-double-entry-17",
+            "heldout-double-entry-18",
             "heldout-double-entry-19",
             "heldout-double-entry-20",
             "heldout-double-entry-21",
@@ -18296,7 +18079,6 @@
             "heldout-double-entry-27",
             "heldout-double-entry-28",
             "heldout-double-entry-29",
-            "heldout-double-entry-32",
             "heldout-double-entry-33",
             "heldout-double-entry-34",
             "heldout-double-entry-36",
@@ -18307,17 +18089,26 @@
             "heldout-double-entry-44",
             "heldout-double-entry-45",
             "heldout-double-entry-46",
-            "heldout-double-entry-47"
+            "heldout-double-entry-47",
+            "heldout-double-entry-51",
+            "heldout-double-entry-52",
+            "heldout-double-entry-53",
+            "heldout-double-entry-54",
+            "heldout-double-entry-58",
+            "heldout-double-entry-59",
+            "heldout-double-entry-60",
+            "heldout-double-entry-61",
+            "heldout-double-entry-62",
+            "heldout-double-entry-63"
           ],
-          "recall_total": 38,
+          "recall_total": 51,
           "neutral": [
             "heldout-double-entry-05",
             "heldout-double-entry-12",
-            "heldout-double-entry-18",
             "heldout-double-entry-37",
             "heldout-double-entry-42"
           ],
-          "habit_agrees": 26,
+          "habit_agrees": 35,
           "false_alarms": [],
           "unlabelled": [
             {
@@ -18337,28 +18128,12 @@
               "located_line": 357
             },
             {
-              "line": 364,
-              "habit": "dramatic-beat",
-              "severity": "medium",
-              "quote": "The name is worse than the idea.",
-              "why": "A short, punchy aside sentence is dropped in before the explanation, without needing to carry any information itself.",
-              "located_line": 364
-            },
-            {
               "line": 383,
               "habit": "hedge",
-              "severity": "medium",
-              "quote": "Nearly every",
-              "why": "A universal claim about 'chat with your documents' products is softened with no named set, so it can't be checked.",
-              "located_line": 383
-            },
-            {
-              "line": 396,
-              "habit": "antithesis",
-              "severity": "medium",
-              "quote": "contains pictures of text, not text.",
-              "why": "The sentence sets up 'pictures of text' only to knock it down against plain 'text' in the same breath.",
-              "located_line": 395
+              "severity": "low",
+              "quote": "roughly",
+              "why": "A second vague qualifier stacks in the same sentence as 'nearly every', compounding the unverifiable claim.",
+              "located_line": 374
             },
             {
               "line": 409,
@@ -18367,14 +18142,6 @@
               "quote": "footnotes, headers, and the contents of text boxes are others.",
               "why": "Three items are listed in parallel; defensible since a docx genuinely has three other part types, but it still reads as a tidy triad.",
               "located_line": 409
-            },
-            {
-              "line": 522,
-              "habit": "closer",
-              "severity": "medium",
-              "quote": "Everything else in the tool exists to preserve it.",
-              "why": "The paragraph ends on a sweeping line that tells the reader what the whole design is for.",
-              "located_line": 522
             },
             {
               "line": 600,
@@ -18393,20 +18160,12 @@
               "located_line": 633
             },
             {
-              "line": 644,
+              "line": 685,
               "habit": "closer",
               "severity": "medium",
-              "quote": "If a gap wins, the tool refuses.",
-              "why": "A short final line wraps up the subsection by stating the payoff of the mechanism just explained.",
-              "located_line": 644
-            },
-            {
-              "line": 708,
-              "habit": "dramatic-beat",
-              "severity": "high",
-              "quote": "It never throws.",
-              "why": "A very short standalone sentence creates a flat, dramatic pause, matching the catalogue's own short-sentence example.",
-              "located_line": 708
+              "quote": "Pages and nodes are not interchangeable quantities.",
+              "why": "The figure caption ends with an abstract restatement of the lesson already shown by the concrete example.",
+              "located_line": 685
             },
             {
               "line": 743,
@@ -18415,38 +18174,6 @@
               "quote": "returned plausible-looking text",
               "why": "The passage never says what the actual returned text was, leaving a vague description where a specific quote or sample belongs.",
               "located_line": 743
-            },
-            {
-              "line": 751,
-              "habit": "generic-detail",
-              "severity": "medium",
-              "quote": "A well-regarded existing tool",
-              "why": "The reputation claim is asserted with no evidence of who regards it well or by what measure.",
-              "located_line": 751
-            },
-            {
-              "line": 763,
-              "habit": "closer",
-              "severity": "medium",
-              "quote": "So pdfmux's verdict is recorded as evidence in the ledger, never as the status, and a page counts as missing if either signal says so.",
-              "why": "The paragraph ends by summarizing the resolution of the two-questions point just made.",
-              "located_line": 763
-            },
-            {
-              "line": 802,
-              "habit": "antithesis",
-              "severity": "medium",
-              "quote": "Counting units is not reading them",
-              "why": "The heading itself is a 'X is not Y' contrast, denying one activity to distinguish it from another.",
-              "located_line": 802
-            },
-            {
-              "line": 820,
-              "habit": "fragment",
-              "severity": "high",
-              "quote": "No PowerPoint, no email archives, no images, no HTML.",
-              "why": "A row of verbless parallel phrases stands in for a sentence, matching the catalogue's fragment shape.",
-              "located_line": 820
             },
             {
               "line": 838,
@@ -19136,7 +18863,6 @@
             "heldout-double-entry-01",
             "heldout-double-entry-02",
             "heldout-double-entry-03",
-            "heldout-double-entry-07",
             "heldout-double-entry-08",
             "heldout-double-entry-09",
             "heldout-double-entry-10",
@@ -19156,14 +18882,21 @@
             "heldout-double-entry-39",
             "heldout-double-entry-44",
             "heldout-double-entry-45",
-            "heldout-double-entry-46"
+            "heldout-double-entry-46",
+            "heldout-double-entry-51",
+            "heldout-double-entry-52",
+            "heldout-double-entry-53",
+            "heldout-double-entry-55",
+            "heldout-double-entry-56",
+            "heldout-double-entry-60",
+            "heldout-double-entry-63"
           ],
-          "recall_total": 38,
+          "recall_total": 51,
           "neutral": [
             "heldout-double-entry-12",
             "heldout-double-entry-37"
           ],
-          "habit_agrees": 20,
+          "habit_agrees": 26,
           "false_alarms": [],
           "unlabelled": [
             {
@@ -19173,46 +18906,6 @@
               "quote": "Suppose you have a folder of business documents — contracts, spreadsheets, scanned forms, a zip file somebody emailed you — and you want to ask questions about them in plain English.",
               "why": "Opens on \"Suppose,\" directing the reader into a hypothetical rather than stating a fact.",
               "located_line": 357
-            },
-            {
-              "line": 522,
-              "habit": "closer",
-              "severity": "medium",
-              "quote": "Everything else in the tool exists to preserve it.",
-              "why": "A sweeping summary line built to close out the section's argument.",
-              "located_line": 522
-            },
-            {
-              "line": 644,
-              "habit": "closer",
-              "severity": "medium",
-              "quote": "If a gap wins, the tool refuses.",
-              "why": "A short declarative line built to land the paragraph's point.",
-              "located_line": 644
-            },
-            {
-              "line": 708,
-              "habit": "dramatic-beat",
-              "severity": "medium",
-              "quote": "It never throws.",
-              "why": "A very short sentence inserted immediately before the closing line, functioning as a pause before the reveal.",
-              "located_line": 708
-            },
-            {
-              "line": 751,
-              "habit": "generic-detail",
-              "severity": "medium",
-              "quote": "A well-regarded existing tool answers a different question than expected.",
-              "why": "\"Well-regarded\" asserts a reputation with no evidence behind it — no benchmark, adoption figure, or citation.",
-              "located_line": 751
-            },
-            {
-              "line": 788,
-              "habit": "generic-detail",
-              "severity": "medium",
-              "quote": "Swapping in a trained encoder is a one-line change and would improve this materially.",
-              "why": "Asserts ease and impact without specifying the change or the size of the improvement.",
-              "located_line": 788
             }
           ],
           "set_aside": [],
@@ -19919,7 +19612,6 @@
             "heldout-double-entry-01",
             "heldout-double-entry-02",
             "heldout-double-entry-03",
-            "heldout-double-entry-07",
             "heldout-double-entry-08",
             "heldout-double-entry-09",
             "heldout-double-entry-10",
@@ -19935,7 +19627,6 @@
             "heldout-double-entry-29",
             "heldout-double-entry-30",
             "heldout-double-entry-31",
-            "heldout-double-entry-32",
             "heldout-double-entry-33",
             "heldout-double-entry-34",
             "heldout-double-entry-35",
@@ -19947,16 +19638,26 @@
             "heldout-double-entry-44",
             "heldout-double-entry-45",
             "heldout-double-entry-46",
-            "heldout-double-entry-47"
+            "heldout-double-entry-47",
+            "heldout-double-entry-51",
+            "heldout-double-entry-52",
+            "heldout-double-entry-53",
+            "heldout-double-entry-55",
+            "heldout-double-entry-58",
+            "heldout-double-entry-59",
+            "heldout-double-entry-61",
+            "heldout-double-entry-62",
+            "heldout-double-entry-63"
           ],
-          "recall_total": 38,
+          "recall_total": 51,
           "neutral": [
             "heldout-double-entry-05",
             "heldout-double-entry-12",
             "heldout-double-entry-22",
-            "heldout-double-entry-37"
+            "heldout-double-entry-37",
+            "heldout-double-entry-49"
           ],
-          "habit_agrees": 27,
+          "habit_agrees": 34,
           "false_alarms": [],
           "unlabelled": [
             {
@@ -19976,76 +19677,12 @@
               "located_line": 357
             },
             {
-              "line": 364,
-              "habit": "dramatic-beat",
-              "severity": "medium",
-              "quote": "The name is worse than the idea.",
-              "why": "A short, standalone aside dropped mid-paragraph for effect rather than because the point needs its own beat.",
-              "located_line": 364
-            },
-            {
-              "line": 395,
-              "habit": "antithesis",
-              "severity": "medium",
-              "quote": "A PDF made by a photocopier contains pictures of text, not text.",
-              "why": "'Pictures of text, not text' sets up one framing only to negate it for another in the same breath.",
-              "located_line": 395
-            },
-            {
-              "line": 514,
-              "habit": "triad",
-              "severity": "medium",
-              "quote": "how many pages the page tree declares, what the tabs are named, how many entries the archive lists",
-              "why": "Three parallel clauses listing what the upper path reads, in the same three-beat rhythm used elsewhere.",
-              "located_line": 514
-            },
-            {
-              "line": 522,
+              "line": 685,
               "habit": "closer",
-              "severity": "medium",
-              "quote": "Everything else in the tool exists to preserve it.",
-              "why": "A short summary line telling the reader what everything else in the tool is for.",
-              "located_line": 522
-            },
-            {
-              "line": 644,
-              "habit": "closer",
-              "severity": "medium",
-              "quote": "If a gap wins, the tool refuses.",
-              "why": "A short summary sentence landing the subsection's point right as it ends.",
-              "located_line": 644
-            },
-            {
-              "line": 708,
-              "habit": "dramatic-beat",
-              "severity": "medium",
-              "quote": "It never throws.",
-              "why": "A two-word sentence inserted as a beat right before the caption's closing line.",
-              "located_line": 708
-            },
-            {
-              "line": 751,
-              "habit": "generic-detail",
-              "severity": "high",
-              "quote": "answers a different question than expected",
-              "why": "Claims a surprising result without saying what was expected or why; the passage needs a real specific from the author, not a characterization of the surprise.",
-              "located_line": 751
-            },
-            {
-              "line": 763,
-              "habit": "closer",
-              "severity": "medium",
-              "quote": "So pdfmux's verdict is recorded as evidence in the ledger, never as the status, and a page counts as missing if either signal says so.",
-              "why": "The subsection's final sentence, wrapping up how pdfmux's verdict is used.",
-              "located_line": 763
-            },
-            {
-              "line": 820,
-              "habit": "fragment",
-              "severity": "medium",
-              "quote": "No PowerPoint, no email archives, no images, no HTML.",
-              "why": "Four verbless 'no X' phrases in a row, standing in for a sentence.",
-              "located_line": 820
+              "severity": "low",
+              "quote": "Pages and nodes are not interchangeable quantities.",
+              "why": "A short aphoristic line closing the figure caption.",
+              "located_line": 685
             }
           ],
           "set_aside": [],
@@ -20442,10 +20079,10 @@
     "summary": {
       "held-out": {
         "caught": {
-          "min": 18,
-          "max": 18
+          "min": 21,
+          "max": 21
         },
-        "of": 63,
+        "of": 76,
         "false_alarms": {
           "min": 0,
           "max": 0
@@ -21376,11 +21013,15 @@
             "heldout-double-entry-28",
             "heldout-double-entry-29",
             "heldout-double-entry-38",
-            "heldout-double-entry-45"
+            "heldout-double-entry-45",
+            "heldout-double-entry-61",
+            "heldout-double-entry-62",
+            "heldout-double-entry-63"
           ],
-          "recall_total": 38,
+          "recall_total": 51,
           "neutral": [
-            "heldout-double-entry-22"
+            "heldout-double-entry-22",
+            "heldout-double-entry-49"
           ],
           "habit_agrees": 0,
           "false_alarms": [],
@@ -21411,15 +21052,6 @@
               "rule": "ai-tells.RestatementMarkers",
               "why": "",
               "located_line": 359
-            },
-            {
-              "line": 362,
-              "habit": null,
-              "severity": "n/a",
-              "quote": "The name is worse than the idea.",
-              "rule": "ai-tells.MicDrop",
-              "why": "",
-              "located_line": 364
             },
             {
               "line": 369,
@@ -21546,15 +21178,6 @@
               "rule": "ai-tells.UniversalSubject",
               "why": "",
               "located_line": 467
-            },
-            {
-              "line": 512,
-              "habit": null,
-              "severity": "n/a",
-              "quote": ": how many pages the page tree declares, what the tabs are named, how many entries the archive lists",
-              "rule": "ai-tells.VerbTricolon",
-              "why": "",
-              "located_line": 514
             },
             {
               "line": 520,
@@ -21692,15 +21315,6 @@
               "located_line": 1
             },
             {
-              "line": 642,
-              "habit": null,
-              "severity": "n/a",
-              "quote": "a gap wins",
-              "rule": "ai-tells.FigurativeWins",
-              "why": "",
-              "located_line": 644
-            },
-            {
               "line": 681,
               "habit": null,
               "severity": "n/a",
@@ -21798,24 +21412,6 @@
               "rule": "ai-tells.FigurativeStays",
               "why": "",
               "located_line": 813
-            },
-            {
-              "line": 819,
-              "habit": null,
-              "severity": "n/a",
-              "quote": "No PowerPoint, no email archives, no images, no HTML",
-              "rule": "ai-tells.ContrastiveNegation",
-              "why": "",
-              "located_line": 820
-            },
-            {
-              "line": 819,
-              "habit": null,
-              "severity": "n/a",
-              "quote": "No PowerPoint, no email archives, no images, no HTML",
-              "rule": "ai-tells.StackedAnaphora",
-              "why": "",
-              "located_line": 820
             },
             {
               "line": 819,
@@ -23189,10 +22785,10 @@
     "summary": {
       "held-out": {
         "caught": {
-          "min": 14,
-          "max": 14
+          "min": 19,
+          "max": 19
         },
-        "of": 63,
+        "of": 76,
         "false_alarms": {
           "min": 0,
           "max": 0
@@ -24245,13 +23841,19 @@
             "heldout-double-entry-39",
             "heldout-double-entry-41",
             "heldout-double-entry-44",
-            "heldout-double-entry-46"
+            "heldout-double-entry-46",
+            "heldout-double-entry-48",
+            "heldout-double-entry-51",
+            "heldout-double-entry-56",
+            "heldout-double-entry-57",
+            "heldout-double-entry-59"
           ],
-          "recall_total": 38,
+          "recall_total": 51,
           "neutral": [
             "heldout-double-entry-12",
             "heldout-double-entry-13",
-            "heldout-double-entry-22"
+            "heldout-double-entry-22",
+            "heldout-double-entry-49"
           ],
           "habit_agrees": 0,
           "false_alarms": [],
@@ -24266,15 +23868,6 @@
               "located_line": 371
             },
             {
-              "line": 381,
-              "habit": null,
-              "severity": "n/a",
-              "quote": "Nearly",
-              "rule": "weaselWords",
-              "why": "",
-              "located_line": 383
-            },
-            {
               "line": 442,
               "habit": null,
               "severity": "n/a",
@@ -24282,33 +23875,6 @@
               "rule": "weaselWords",
               "why": "",
               "located_line": 443
-            },
-            {
-              "line": 442,
-              "habit": null,
-              "severity": "n/a",
-              "quote": "just",
-              "rule": "weaselWords",
-              "why": "",
-              "located_line": 446
-            },
-            {
-              "line": 512,
-              "habit": null,
-              "severity": "n/a",
-              "quote": "many",
-              "rule": "weaselWords",
-              "why": "",
-              "located_line": 514
-            },
-            {
-              "line": 512,
-              "habit": null,
-              "severity": "n/a",
-              "quote": "many",
-              "rule": "weaselWords",
-              "why": "",
-              "located_line": 514
             },
             {
               "line": 615,
@@ -24327,15 +23893,6 @@
               "rule": "weaselWords",
               "why": "",
               "located_line": 638
-            },
-            {
-              "line": 728,
-              "habit": null,
-              "severity": "n/a",
-              "quote": "completely",
-              "rule": "weaselWords",
-              "why": "",
-              "located_line": 730
             },
             {
               "line": 862,
@@ -24408,15 +23965,6 @@
               "rule": "passiveVoice",
               "why": "",
               "located_line": 467
-            },
-            {
-              "line": 512,
-              "habit": null,
-              "severity": "n/a",
-              "quote": "are named",
-              "rule": "passiveVoice",
-              "why": "",
-              "located_line": 514
             },
             {
               "line": 528,
@@ -24518,15 +24066,6 @@
               "located_line": 682
             },
             {
-              "line": 728,
-              "habit": null,
-              "severity": "n/a",
-              "quote": "were read",
-              "rule": "passiveVoice",
-              "why": "",
-              "located_line": 730
-            },
-            {
               "line": 740,
               "habit": null,
               "severity": "n/a",
@@ -24561,15 +24100,6 @@
               "rule": "passiveVoice",
               "why": "",
               "located_line": 760
-            },
-            {
-              "line": 758,
-              "habit": null,
-              "severity": "n/a",
-              "quote": "is recorded",
-              "rule": "passiveVoice",
-              "why": "",
-              "located_line": 763
             },
             {
               "line": 784,
@@ -24732,15 +24262,6 @@
               "rule": "nominalizations",
               "why": "",
               "located_line": 327
-            },
-            {
-              "line": 784,
-              "habit": null,
-              "severity": "n/a",
-              "quote": "materially",
-              "rule": "adverbs",
-              "why": "",
-              "located_line": 789
             },
             {
               "line": 870,

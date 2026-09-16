@@ -8,13 +8,13 @@ Generated from `labels.json` by `render_labels.py`; edit `labels.jsonl`, not thi
 
 | Draft | Role | High | Medium | Low |
 | --- | --- | --- | --- | --- |
-| `heldout-double-entry.html` | held-out | 22 | 16 | 9 |
+| `heldout-double-entry.html` | held-out | 33 | 18 | 10 |
 | `heldout-where-the-cut-falls.html` | held-out | 11 | 14 | 4 |
 | `dev-database-before.html` | development | 17 | 14 | 3 |
 | `dev-protocol-before.md` | development | 17 | 9 | 6 |
 | `clean-database-after.html` | clean | 1 | 12 | 8 |
 | `clean-protocol-after.md` | clean | 0 | 0 | 2 |
-| **total** | | 68 | 65 | 32 |
+| **total** | | 79 | 67 | 33 |
 
 ## `heldout-double-entry.html`
 
@@ -25,11 +25,13 @@ Generated from `labels.json` by `render_labels.py`; edit `labels.jsonl`, not thi
 | `heldout-double-entry-01` | 316 | high | triad | Nothing crashes, nothing warns you, and the answers keep coming. |
 | `heldout-double-entry-02` | 344 | high | cliche-emphasis | That difference is the entire idea. |
 | `heldout-double-entry-03` | 344 | high | antithesis | One number can only ever be a system grading its own homework. Two numbers, counted independently, can disagree. |
-| `heldout-double-entry-04` | 354 | medium | dramatic-beat | Your files go in. Some of them don't arrive. |
+| `heldout-double-entry-04` | 354 | high | dramatic-beat | Your files go in. Some of them don't arrive. |
 | `heldout-double-entry-05` | 357 | low | dramatic-beat | Start from nothing. |
+| `heldout-double-entry-61` | 364 | medium | dramatic-beat | The name is worse than the idea. |
 | `heldout-double-entry-06` | 382 | low | dramatic-beat | This is a good design. |
-| `heldout-double-entry-07` | 384 | medium | hedge | product works roughly this way. |
+| `heldout-double-entry-51` | 383 | medium | hedge | Nearly every |
 | `heldout-double-entry-08` | 388 | high | dramatic-beat | The trouble is entirely in step one, and it is invisible from step four. |
+| `heldout-double-entry-58` | 395 | medium | antithesis | contains pictures of text, not text. |
 | `heldout-double-entry-09` | 397 | high | antithesis | Not an error - an empty string. |
 | `heldout-double-entry-10` | 402 | medium | hedge | A great deal of extraction code opens a |
 | `heldout-double-entry-11` | 410 | medium | generic-detail | The most popular way to read one walks the body and stops. |
@@ -38,35 +40,47 @@ Generated from `labels.json` by `render_labels.py`; edit `labels.jsonl`, not thi
 | `heldout-double-entry-14` | 427 | high | antithesis | This is not hallucination. |
 | `heldout-double-entry-15` | 430 | high | closer | It is the missing passages that lie. |
 | `heldout-double-entry-16` | 437 | low | fragment | Because none of these raise an exception. |
+| `heldout-double-entry-48` | 444 | high | restatement | That's a confession from the system that already failed to notice. A pipeline that silently dropped a file can just as silently fail to mention dropping it. |
 | `heldout-double-entry-17` | 446 | high | antithesis | What's needed is not a confession. It's a checksum. |
-| `heldout-double-entry-18` | 456 | low | triad | Count it twice, on purpose, by different routes |
+| `heldout-double-entry-18` | 456 | high | triad | Count it twice, on purpose, by different routes |
 | `heldout-double-entry-19` | 460 | medium | triad | records every transaction twice, in two places, by two routes that must agree |
 | `heldout-double-entry-20` | 461 | high | antithesis | Not because the second entry is more accurate - because a single entry has nothing to be checked against. |
 | `heldout-double-entry-21` | 462 | high | closer | An error in one column is invisible; the same error in one of two columns is a mismatch. |
+| `heldout-double-entry-49` | 514 | low | triad | how many pages the page tree declares, what the tabs are named, how many entries the archive lists |
 | `heldout-double-entry-22` | 515 | low | cliche-emphasis | and more importantly it is |
 | `heldout-double-entry-23` | 522 | high | cliche-emphasis | The independence is the whole mechanism. |
+| `heldout-double-entry-52` | 522 | medium | closer | Everything else in the tool exists to preserve it. |
 | `heldout-double-entry-24` | 550 | high | fragment | A detail that matters more than it looks. |
 | `heldout-double-entry-25` | 564 | medium | emphasis-word | because they genuinely are a sequence |
 | `heldout-double-entry-26` | 586 | high | antithesis | This is not for speed. It is so that a parse killed |
 | `heldout-double-entry-27` | 630 | medium | dramatic-beat | Here is the trap that ordinary retrieval falls into. |
-| `heldout-double-entry-28` | 632 | medium | emphasis-word | there is literally nothing to rank |
+| `heldout-double-entry-28` | 632 | high | emphasis-word | there is literally nothing to rank |
 | `heldout-double-entry-29` | 632 | high | antithesis | The system doesn't ignore it; it never knew it existed. |
 | `heldout-double-entry-30` | 636 | high | triad | You still have its name. You have the tab that came back empty, and that tab has a name. You have the error. |
-| `heldout-double-entry-31` | 638 | medium | emphasis-word | startlingly often the exact vocabulary |
-| `heldout-double-entry-32` | 685 | medium | closer | Pages and nodes are not interchangeable quantities. |
+| `heldout-double-entry-31` | 638 | high | emphasis-word | startlingly often the exact vocabulary |
+| `heldout-double-entry-63` | 644 | medium | closer | If a gap wins, the tool refuses. |
+| `heldout-double-entry-50` | 653 | low | emphasis-word | What it actually prints |
 | `heldout-double-entry-33` | 706 | high | reader-instruction | Note that it says ok on all |
 | `heldout-double-entry-34` | 708 | high | closer | That is the whole problem, rendered as a column. |
+| `heldout-double-entry-53` | 708 | medium | dramatic-beat | It never throws. |
 | `heldout-double-entry-35` | 729 | high | fragment | Same corpus, same index, two questions. |
-| `heldout-double-entry-36` | 756 | medium | dramatic-beat | coverage 1.00. That is correct. |
+| `heldout-double-entry-57` | 729 | medium | antithesis | The first is answerable from files that were read completely. The second is not, and the tool says so instead of answering from the remainder. |
+| `heldout-double-entry-55` | 751 | high | generic-detail | answers a different question than expected |
+| `heldout-double-entry-60` | 751 | medium | generic-detail | A well-regarded existing tool |
+| `heldout-double-entry-36` | 756 | high | dramatic-beat | coverage 1.00. That is correct. |
 | `heldout-double-entry-37` | 762 | low | emphasis-word | which is exactly the hole an index would inherit |
 | `heldout-double-entry-38` | 762 | high | fragment | Two different questions, both worth asking. |
-| `heldout-double-entry-39` | 776 | medium | closer | Stated plainly, because a tool about honest reporting that oversold itself would be a poor joke. |
+| `heldout-double-entry-59` | 763 | medium | closer | So pdfmux's verdict is recorded as evidence in the ledger, never as the status, and a page counts as missing if either signal says so. |
+| `heldout-double-entry-39` | 776 | high | closer | Stated plainly, because a tool about honest reporting that oversold itself would be a poor joke. |
+| `heldout-double-entry-56` | 788 | medium | generic-detail | Swapping in a trained encoder is a one-line change and would improve this materially. |
+| `heldout-double-entry-54` | 802 | medium | antithesis | Counting units is not reading them |
 | `heldout-double-entry-40` | 804 | medium | antithesis | This catches wholesale loss, not quality degradation. |
+| `heldout-double-entry-62` | 820 | high | fragment | No PowerPoint, no email archives, no images, no HTML. |
 | `heldout-double-entry-41` | 822 | high | antithesis | an honest gap rather than a silent one - but a gap all the same |
 | `heldout-double-entry-42` | 839 | low | closer | This is the most valuable next thing. |
-| `heldout-double-entry-43` | 869 | medium | restatement | The point, restated |
+| `heldout-double-entry-43` | 869 | high | restatement | The point, restated |
 | `heldout-double-entry-44` | 872 | medium | hedge | Almost nothing checks that promise |
-| `heldout-double-entry-45` | 873 | medium | triad | no crash, no warning, plausible output |
+| `heldout-double-entry-45` | 873 | high | triad | no crash, no warning, plausible output |
 | `heldout-double-entry-46` | 875 | high | closer | one number cannot be wrong, it can only be the number |
 | `heldout-double-entry-47` | 885 | high | fragment | MIT-adjacent in spirit, deterministic in the core, model-free where it counts. |
 

@@ -866,7 +866,11 @@
       "habit": "triad",
       "severity": "high",
       "quote": "Nothing crashes, nothing warns you, and the answers keep coming.",
-      "source": "hand"
+      "source": "hand",
+      "review": {
+        "verdict": "keep",
+        "at": "2026-09-15T12:13:55.503Z"
+      }
     },
     {
       "id": "heldout-double-entry-02",
@@ -875,7 +879,11 @@
       "habit": "cliche-emphasis",
       "severity": "high",
       "quote": "That difference is the entire idea.",
-      "source": "hand"
+      "source": "hand",
+      "review": {
+        "verdict": "keep",
+        "at": "2026-09-15T12:14:04.569Z"
+      }
     },
     {
       "id": "heldout-double-entry-03",
@@ -884,16 +892,28 @@
       "habit": "antithesis",
       "severity": "high",
       "quote": "One number can only ever be a system grading its own homework. Two numbers, counted independently, can disagree.",
-      "source": "hand"
+      "source": "hand",
+      "review": {
+        "verdict": "keep",
+        "at": "2026-09-15T12:14:15.727Z"
+      }
     },
     {
       "id": "heldout-double-entry-04",
       "draft": "heldout-double-entry.html",
       "line": 354,
       "habit": "dramatic-beat",
-      "severity": "medium",
+      "severity": "high",
       "quote": "Your files go in. Some of them don't arrive.",
-      "source": "hand"
+      "source": "hand",
+      "was": {
+        "habit": "dramatic-beat",
+        "severity": "medium"
+      },
+      "review": {
+        "verdict": "change",
+        "at": "2026-09-16T11:48:46.923Z"
+      }
     },
     {
       "id": "heldout-double-entry-05",
@@ -902,7 +922,11 @@
       "habit": "dramatic-beat",
       "severity": "low",
       "quote": "Start from nothing.",
-      "source": "hand"
+      "source": "hand",
+      "review": {
+        "verdict": "keep",
+        "at": "2026-09-16T11:48:31.014Z"
+      }
     },
     {
       "id": "heldout-double-entry-06",
@@ -911,16 +935,11 @@
       "habit": "dramatic-beat",
       "severity": "low",
       "quote": "This is a good design.",
-      "source": "hand"
-    },
-    {
-      "id": "heldout-double-entry-07",
-      "draft": "heldout-double-entry.html",
-      "line": 384,
-      "habit": "hedge",
-      "severity": "medium",
-      "quote": "product works roughly this way.",
-      "source": "hand"
+      "source": "hand",
+      "review": {
+        "verdict": "keep",
+        "at": "2026-09-16T11:48:29.239Z"
+      }
     },
     {
       "id": "heldout-double-entry-08",
@@ -929,7 +948,11 @@
       "habit": "dramatic-beat",
       "severity": "high",
       "quote": "The trouble is entirely in step one, and it is invisible from step four.",
-      "source": "hand"
+      "source": "hand",
+      "review": {
+        "verdict": "keep",
+        "at": "2026-09-16T12:34:22.669Z"
+      }
     },
     {
       "id": "heldout-double-entry-09",
@@ -938,7 +961,11 @@
       "habit": "antithesis",
       "severity": "high",
       "quote": "Not an error - an empty string.",
-      "source": "hand"
+      "source": "hand",
+      "review": {
+        "verdict": "keep",
+        "at": "2026-09-16T12:34:24.931Z"
+      }
     },
     {
       "id": "heldout-double-entry-10",
@@ -947,7 +974,11 @@
       "habit": "hedge",
       "severity": "medium",
       "quote": "A great deal of extraction code opens a",
-      "source": "hand"
+      "source": "hand",
+      "review": {
+        "verdict": "keep",
+        "at": "2026-09-16T11:49:35.902Z"
+      }
     },
     {
       "id": "heldout-double-entry-11",
@@ -956,7 +987,11 @@
       "habit": "generic-detail",
       "severity": "medium",
       "quote": "The most popular way to read one walks the body and stops.",
-      "source": "hand"
+      "source": "hand",
+      "review": {
+        "verdict": "keep",
+        "at": "2026-09-16T11:49:48.419Z"
+      }
     },
     {
       "id": "heldout-double-entry-12",
@@ -965,7 +1000,11 @@
       "habit": "hedge",
       "severity": "low",
       "quote": "frequently the sentence that changes the meaning",
-      "source": "hand"
+      "source": "hand",
+      "review": {
+        "verdict": "keep",
+        "at": "2026-09-16T11:44:51.645Z"
+      }
     },
     {
       "id": "heldout-double-entry-13",
@@ -974,7 +1013,11 @@
       "habit": "emphasis-word",
       "severity": "low",
       "quote": "is simply not in the corpus",
-      "source": "hand"
+      "source": "hand",
+      "review": {
+        "verdict": "keep",
+        "at": "2026-09-16T11:48:27.073Z"
+      }
     },
     {
       "id": "heldout-double-entry-14",
@@ -983,7 +1026,11 @@
       "habit": "antithesis",
       "severity": "high",
       "quote": "This is not hallucination.",
-      "source": "hand"
+      "source": "hand",
+      "review": {
+        "verdict": "keep",
+        "at": "2026-09-16T12:34:26.131Z"
+      }
     },
     {
       "id": "heldout-double-entry-15",
@@ -992,7 +1039,11 @@
       "habit": "closer",
       "severity": "high",
       "quote": "It is the missing passages that lie.",
-      "source": "hand"
+      "source": "hand",
+      "review": {
+        "verdict": "keep",
+        "at": "2026-09-16T12:34:27.473Z"
+      }
     },
     {
       "id": "heldout-double-entry-16",
@@ -1001,7 +1052,11 @@
       "habit": "fragment",
       "severity": "low",
       "quote": "Because none of these raise an exception.",
-      "source": "hand"
+      "source": "hand",
+      "review": {
+        "verdict": "keep",
+        "at": "2026-09-16T11:48:25.156Z"
+      }
     },
     {
       "id": "heldout-double-entry-17",
@@ -1010,16 +1065,28 @@
       "habit": "antithesis",
       "severity": "high",
       "quote": "What's needed is not a confession. It's a checksum.",
-      "source": "hand"
+      "source": "hand",
+      "review": {
+        "verdict": "keep",
+        "at": "2026-09-16T12:34:29.181Z"
+      }
     },
     {
       "id": "heldout-double-entry-18",
       "draft": "heldout-double-entry.html",
       "line": 456,
       "habit": "triad",
-      "severity": "low",
+      "severity": "high",
       "quote": "Count it twice, on purpose, by different routes",
-      "source": "hand"
+      "source": "hand",
+      "was": {
+        "habit": "triad",
+        "severity": "low"
+      },
+      "review": {
+        "verdict": "change",
+        "at": "2026-09-16T11:45:34.782Z"
+      }
     },
     {
       "id": "heldout-double-entry-19",
@@ -1028,7 +1095,11 @@
       "habit": "triad",
       "severity": "medium",
       "quote": "records every transaction twice, in two places, by two routes that must agree",
-      "source": "hand"
+      "source": "hand",
+      "review": {
+        "verdict": "keep",
+        "at": "2026-09-16T11:49:54.748Z"
+      }
     },
     {
       "id": "heldout-double-entry-20",
@@ -1037,7 +1108,11 @@
       "habit": "antithesis",
       "severity": "high",
       "quote": "Not because the second entry is more accurate - because a single entry has nothing to be checked against.",
-      "source": "hand"
+      "source": "hand",
+      "review": {
+        "verdict": "keep",
+        "at": "2026-09-16T12:34:31.223Z"
+      }
     },
     {
       "id": "heldout-double-entry-21",
@@ -1046,7 +1121,11 @@
       "habit": "closer",
       "severity": "high",
       "quote": "An error in one column is invisible; the same error in one of two columns is a mismatch.",
-      "source": "hand"
+      "source": "hand",
+      "review": {
+        "verdict": "keep",
+        "at": "2026-09-16T12:34:35.566Z"
+      }
     },
     {
       "id": "heldout-double-entry-22",
@@ -1055,7 +1134,11 @@
       "habit": "cliche-emphasis",
       "severity": "low",
       "quote": "and more importantly it is",
-      "source": "hand"
+      "source": "hand",
+      "review": {
+        "verdict": "keep",
+        "at": "2026-09-16T11:48:04.914Z"
+      }
     },
     {
       "id": "heldout-double-entry-23",
@@ -1064,7 +1147,11 @@
       "habit": "cliche-emphasis",
       "severity": "high",
       "quote": "The independence is the whole mechanism.",
-      "source": "hand"
+      "source": "hand",
+      "review": {
+        "verdict": "keep",
+        "at": "2026-09-16T12:34:36.431Z"
+      }
     },
     {
       "id": "heldout-double-entry-24",
@@ -1073,7 +1160,11 @@
       "habit": "fragment",
       "severity": "high",
       "quote": "A detail that matters more than it looks.",
-      "source": "hand"
+      "source": "hand",
+      "review": {
+        "verdict": "keep",
+        "at": "2026-09-16T12:34:38.015Z"
+      }
     },
     {
       "id": "heldout-double-entry-25",
@@ -1082,7 +1173,11 @@
       "habit": "emphasis-word",
       "severity": "medium",
       "quote": "because they genuinely are a sequence",
-      "source": "hand"
+      "source": "hand",
+      "review": {
+        "verdict": "keep",
+        "at": "2026-09-16T11:50:01.973Z"
+      }
     },
     {
       "id": "heldout-double-entry-26",
@@ -1091,7 +1186,11 @@
       "habit": "antithesis",
       "severity": "high",
       "quote": "This is not for speed. It is so that a parse killed",
-      "source": "hand"
+      "source": "hand",
+      "review": {
+        "verdict": "keep",
+        "at": "2026-09-16T12:34:39.290Z"
+      }
     },
     {
       "id": "heldout-double-entry-27",
@@ -1100,16 +1199,28 @@
       "habit": "dramatic-beat",
       "severity": "medium",
       "quote": "Here is the trap that ordinary retrieval falls into.",
-      "source": "hand"
+      "source": "hand",
+      "review": {
+        "verdict": "keep",
+        "at": "2026-09-16T11:50:11.915Z"
+      }
     },
     {
       "id": "heldout-double-entry-28",
       "draft": "heldout-double-entry.html",
       "line": 632,
       "habit": "emphasis-word",
-      "severity": "medium",
+      "severity": "high",
       "quote": "there is literally nothing to rank",
-      "source": "hand"
+      "source": "hand",
+      "was": {
+        "habit": "emphasis-word",
+        "severity": "medium"
+      },
+      "review": {
+        "verdict": "change",
+        "at": "2026-09-16T11:50:19.231Z"
+      }
     },
     {
       "id": "heldout-double-entry-29",
@@ -1118,7 +1229,11 @@
       "habit": "antithesis",
       "severity": "high",
       "quote": "The system doesn't ignore it; it never knew it existed.",
-      "source": "hand"
+      "source": "hand",
+      "review": {
+        "verdict": "keep",
+        "at": "2026-09-16T12:34:40.012Z"
+      }
     },
     {
       "id": "heldout-double-entry-30",
@@ -1127,25 +1242,28 @@
       "habit": "triad",
       "severity": "high",
       "quote": "You still have its name. You have the tab that came back empty, and that tab has a name. You have the error.",
-      "source": "hand"
+      "source": "hand",
+      "review": {
+        "verdict": "keep",
+        "at": "2026-09-16T12:34:41.311Z"
+      }
     },
     {
       "id": "heldout-double-entry-31",
       "draft": "heldout-double-entry.html",
       "line": 638,
       "habit": "emphasis-word",
-      "severity": "medium",
+      "severity": "high",
       "quote": "startlingly often the exact vocabulary",
-      "source": "hand"
-    },
-    {
-      "id": "heldout-double-entry-32",
-      "draft": "heldout-double-entry.html",
-      "line": 685,
-      "habit": "closer",
-      "severity": "medium",
-      "quote": "Pages and nodes are not interchangeable quantities.",
-      "source": "hand"
+      "source": "hand",
+      "was": {
+        "habit": "emphasis-word",
+        "severity": "medium"
+      },
+      "review": {
+        "verdict": "change",
+        "at": "2026-09-16T11:50:30.231Z"
+      }
     },
     {
       "id": "heldout-double-entry-33",
@@ -1154,7 +1272,11 @@
       "habit": "reader-instruction",
       "severity": "high",
       "quote": "Note that it says ok on all",
-      "source": "hand"
+      "source": "hand",
+      "review": {
+        "verdict": "keep",
+        "at": "2026-09-16T12:34:48.752Z"
+      }
     },
     {
       "id": "heldout-double-entry-34",
@@ -1163,7 +1285,11 @@
       "habit": "closer",
       "severity": "high",
       "quote": "That is the whole problem, rendered as a column.",
-      "source": "hand"
+      "source": "hand",
+      "review": {
+        "verdict": "keep",
+        "at": "2026-09-16T12:34:51.694Z"
+      }
     },
     {
       "id": "heldout-double-entry-35",
@@ -1172,16 +1298,28 @@
       "habit": "fragment",
       "severity": "high",
       "quote": "Same corpus, same index, two questions.",
-      "source": "hand"
+      "source": "hand",
+      "review": {
+        "verdict": "keep",
+        "at": "2026-09-16T12:34:53.040Z"
+      }
     },
     {
       "id": "heldout-double-entry-36",
       "draft": "heldout-double-entry.html",
       "line": 756,
       "habit": "dramatic-beat",
-      "severity": "medium",
+      "severity": "high",
       "quote": "coverage 1.00. That is correct.",
-      "source": "hand"
+      "source": "hand",
+      "was": {
+        "habit": "dramatic-beat",
+        "severity": "medium"
+      },
+      "review": {
+        "verdict": "change",
+        "at": "2026-09-16T11:50:43.492Z"
+      }
     },
     {
       "id": "heldout-double-entry-37",
@@ -1190,7 +1328,11 @@
       "habit": "emphasis-word",
       "severity": "low",
       "quote": "which is exactly the hole an index would inherit",
-      "source": "hand"
+      "source": "hand",
+      "review": {
+        "verdict": "keep",
+        "at": "2026-09-16T11:47:57.414Z"
+      }
     },
     {
       "id": "heldout-double-entry-38",
@@ -1199,16 +1341,28 @@
       "habit": "fragment",
       "severity": "high",
       "quote": "Two different questions, both worth asking.",
-      "source": "hand"
+      "source": "hand",
+      "review": {
+        "verdict": "keep",
+        "at": "2026-09-16T12:34:54.848Z"
+      }
     },
     {
       "id": "heldout-double-entry-39",
       "draft": "heldout-double-entry.html",
       "line": 776,
       "habit": "closer",
-      "severity": "medium",
+      "severity": "high",
       "quote": "Stated plainly, because a tool about honest reporting that oversold itself would be a poor joke.",
-      "source": "hand"
+      "source": "hand",
+      "was": {
+        "habit": "closer",
+        "severity": "medium"
+      },
+      "review": {
+        "verdict": "change",
+        "at": "2026-09-16T11:50:53.590Z"
+      }
     },
     {
       "id": "heldout-double-entry-40",
@@ -1217,7 +1371,11 @@
       "habit": "antithesis",
       "severity": "medium",
       "quote": "This catches wholesale loss, not quality degradation.",
-      "source": "hand"
+      "source": "hand",
+      "review": {
+        "verdict": "keep",
+        "at": "2026-09-16T11:50:58.877Z"
+      }
     },
     {
       "id": "heldout-double-entry-41",
@@ -1226,7 +1384,11 @@
       "habit": "antithesis",
       "severity": "high",
       "quote": "an honest gap rather than a silent one - but a gap all the same",
-      "source": "hand"
+      "source": "hand",
+      "review": {
+        "verdict": "keep",
+        "at": "2026-09-16T12:34:56.473Z"
+      }
     },
     {
       "id": "heldout-double-entry-42",
@@ -1235,16 +1397,28 @@
       "habit": "closer",
       "severity": "low",
       "quote": "This is the most valuable next thing.",
-      "source": "hand"
+      "source": "hand",
+      "review": {
+        "verdict": "keep",
+        "at": "2026-09-16T11:47:32.400Z"
+      }
     },
     {
       "id": "heldout-double-entry-43",
       "draft": "heldout-double-entry.html",
       "line": 869,
       "habit": "restatement",
-      "severity": "medium",
+      "severity": "high",
       "quote": "The point, restated",
-      "source": "hand"
+      "source": "hand",
+      "was": {
+        "habit": "restatement",
+        "severity": "medium"
+      },
+      "review": {
+        "verdict": "change",
+        "at": "2026-09-16T11:51:02.545Z"
+      }
     },
     {
       "id": "heldout-double-entry-44",
@@ -1253,16 +1427,28 @@
       "habit": "hedge",
       "severity": "medium",
       "quote": "Almost nothing checks that promise",
-      "source": "hand"
+      "source": "hand",
+      "review": {
+        "verdict": "keep",
+        "at": "2026-09-16T11:51:11.207Z"
+      }
     },
     {
       "id": "heldout-double-entry-45",
       "draft": "heldout-double-entry.html",
       "line": 873,
       "habit": "triad",
-      "severity": "medium",
+      "severity": "high",
       "quote": "no crash, no warning, plausible output",
-      "source": "hand"
+      "source": "hand",
+      "was": {
+        "habit": "triad",
+        "severity": "medium"
+      },
+      "review": {
+        "verdict": "change",
+        "at": "2026-09-16T11:51:19.841Z"
+      }
     },
     {
       "id": "heldout-double-entry-46",
@@ -1271,7 +1457,11 @@
       "habit": "closer",
       "severity": "high",
       "quote": "one number cannot be wrong, it can only be the number",
-      "source": "hand"
+      "source": "hand",
+      "review": {
+        "verdict": "keep",
+        "at": "2026-09-16T12:34:57.898Z"
+      }
     },
     {
       "id": "heldout-double-entry-47",
@@ -1280,7 +1470,11 @@
       "habit": "fragment",
       "severity": "high",
       "quote": "MIT-adjacent in spirit, deterministic in the core, model-free where it counts.",
-      "source": "hand"
+      "source": "hand",
+      "review": {
+        "verdict": "keep",
+        "at": "2026-09-16T12:34:58.865Z"
+      }
     },
     {
       "id": "heldout-where-the-cut-falls-01",
@@ -1542,7 +1736,258 @@
       "severity": "medium",
       "quote": "Worth saying out loud, because that paragraph very nearly got written the other way.",
       "source": "hand"
+    },
+    {
+      "id": "heldout-double-entry-48",
+      "draft": "heldout-double-entry.html",
+      "line": 444,
+      "habit": "restatement",
+      "severity": "high",
+      "quote": "That's a confession from the system that already failed to notice. A pipeline that silently dropped a file can just as silently fail to mention dropping it.",
+      "source": "model",
+      "candidate_id": "heldout-double-entry-c05ad9f",
+      "review": {
+        "verdict": "accepted",
+        "at": "2026-09-16T11:54:17.116Z"
+      }
+    },
+    {
+      "id": "heldout-double-entry-49",
+      "draft": "heldout-double-entry.html",
+      "line": 514,
+      "habit": "triad",
+      "severity": "low",
+      "quote": "how many pages the page tree declares, what the tabs are named, how many entries the archive lists",
+      "source": "model",
+      "candidate_id": "heldout-double-entry-c1aa35f",
+      "review": {
+        "verdict": "accepted",
+        "at": "2026-09-16T11:52:44.548Z"
+      }
+    },
+    {
+      "id": "heldout-double-entry-50",
+      "draft": "heldout-double-entry.html",
+      "line": 653,
+      "habit": "emphasis-word",
+      "severity": "low",
+      "quote": "What it actually prints",
+      "source": "model",
+      "candidate_id": "heldout-double-entry-c25ac6a",
+      "review": {
+        "verdict": "accepted",
+        "at": "2026-09-16T12:14:58.116Z"
+      }
+    },
+    {
+      "id": "heldout-double-entry-51",
+      "draft": "heldout-double-entry.html",
+      "line": 383,
+      "habit": "hedge",
+      "severity": "medium",
+      "quote": "Nearly every",
+      "source": "model",
+      "candidate_id": "heldout-double-entry-c290b16",
+      "review": {
+        "verdict": "accepted",
+        "at": "2026-09-16T11:53:27.403Z"
+      }
+    },
+    {
+      "id": "heldout-double-entry-52",
+      "draft": "heldout-double-entry.html",
+      "line": 522,
+      "habit": "closer",
+      "severity": "medium",
+      "quote": "Everything else in the tool exists to preserve it.",
+      "source": "model",
+      "candidate_id": "heldout-double-entry-c2af1f7",
+      "review": {
+        "verdict": "accepted",
+        "at": "2026-09-16T11:51:39.998Z"
+      }
+    },
+    {
+      "id": "heldout-double-entry-53",
+      "draft": "heldout-double-entry.html",
+      "line": 708,
+      "habit": "dramatic-beat",
+      "severity": "medium",
+      "quote": "It never throws.",
+      "source": "model",
+      "candidate_id": "heldout-double-entry-c2f95db",
+      "review": {
+        "verdict": "accepted",
+        "at": "2026-09-16T11:51:27.762Z"
+      }
+    },
+    {
+      "id": "heldout-double-entry-54",
+      "draft": "heldout-double-entry.html",
+      "line": 802,
+      "habit": "antithesis",
+      "severity": "medium",
+      "quote": "Counting units is not reading them",
+      "source": "model",
+      "candidate_id": "heldout-double-entry-c450170",
+      "review": {
+        "verdict": "accepted",
+        "at": "2026-09-16T12:34:07.148Z"
+      }
+    },
+    {
+      "id": "heldout-double-entry-55",
+      "draft": "heldout-double-entry.html",
+      "line": 751,
+      "habit": "generic-detail",
+      "severity": "high",
+      "quote": "answers a different question than expected",
+      "source": "model",
+      "candidate_id": "heldout-double-entry-c68153d",
+      "review": {
+        "verdict": "accepted",
+        "at": "2026-09-16T12:33:47.490Z"
+      }
+    },
+    {
+      "id": "heldout-double-entry-56",
+      "draft": "heldout-double-entry.html",
+      "line": 788,
+      "habit": "generic-detail",
+      "severity": "medium",
+      "quote": "Swapping in a trained encoder is a one-line change and would improve this materially.",
+      "source": "model",
+      "candidate_id": "heldout-double-entry-c6ab742",
+      "review": {
+        "verdict": "accepted",
+        "at": "2026-09-16T12:34:03.581Z"
+      }
+    },
+    {
+      "id": "heldout-double-entry-57",
+      "draft": "heldout-double-entry.html",
+      "line": 729,
+      "habit": "antithesis",
+      "severity": "medium",
+      "quote": "The first is answerable from files that were read completely. The second is not, and the tool says so instead of answering from the remainder.",
+      "source": "model",
+      "candidate_id": "heldout-double-entry-c7939ca",
+      "review": {
+        "verdict": "accepted",
+        "at": "2026-09-16T12:15:11.650Z"
+      }
+    },
+    {
+      "id": "heldout-double-entry-58",
+      "draft": "heldout-double-entry.html",
+      "line": 395,
+      "habit": "antithesis",
+      "severity": "medium",
+      "quote": "contains pictures of text, not text.",
+      "source": "model",
+      "candidate_id": "heldout-double-entry-c7bb19b",
+      "review": {
+        "verdict": "accepted",
+        "at": "2026-09-16T11:52:25.849Z"
+      }
+    },
+    {
+      "id": "heldout-double-entry-59",
+      "draft": "heldout-double-entry.html",
+      "line": 763,
+      "habit": "closer",
+      "severity": "medium",
+      "quote": "So pdfmux's verdict is recorded as evidence in the ledger, never as the status, and a page counts as missing if either signal says so.",
+      "source": "model",
+      "candidate_id": "heldout-double-entry-c8a3452",
+      "review": {
+        "verdict": "accepted",
+        "at": "2026-09-16T11:52:58.612Z"
+      }
+    },
+    {
+      "id": "heldout-double-entry-60",
+      "draft": "heldout-double-entry.html",
+      "line": 751,
+      "habit": "generic-detail",
+      "severity": "medium",
+      "quote": "A well-regarded existing tool",
+      "source": "model",
+      "candidate_id": "heldout-double-entry-cc75c91",
+      "review": {
+        "verdict": "accepted",
+        "at": "2026-09-16T11:52:17.358Z"
+      }
+    },
+    {
+      "id": "heldout-double-entry-61",
+      "draft": "heldout-double-entry.html",
+      "line": 364,
+      "habit": "dramatic-beat",
+      "severity": "medium",
+      "quote": "The name is worse than the idea.",
+      "source": "model",
+      "candidate_id": "heldout-double-entry-cd1ced6",
+      "review": {
+        "verdict": "accepted",
+        "at": "2026-09-16T11:52:41.115Z"
+      }
+    },
+    {
+      "id": "heldout-double-entry-62",
+      "draft": "heldout-double-entry.html",
+      "line": 820,
+      "habit": "fragment",
+      "severity": "high",
+      "quote": "No PowerPoint, no email archives, no images, no HTML.",
+      "source": "model",
+      "candidate_id": "heldout-double-entry-ce9a496",
+      "review": {
+        "verdict": "accepted",
+        "at": "2026-09-16T11:53:01.765Z"
+      }
+    },
+    {
+      "id": "heldout-double-entry-63",
+      "draft": "heldout-double-entry.html",
+      "line": 644,
+      "habit": "closer",
+      "severity": "medium",
+      "quote": "If a gap wins, the tool refuses.",
+      "source": "model",
+      "candidate_id": "heldout-double-entry-ceec908",
+      "review": {
+        "verdict": "accepted",
+        "at": "2026-09-16T11:52:37.244Z"
+      }
     }
   ],
-  "dropped": []
+  "dropped": [
+    {
+      "id": "heldout-double-entry-07",
+      "draft": "heldout-double-entry.html",
+      "line": 384,
+      "habit": "hedge",
+      "severity": "medium",
+      "quote": "product works roughly this way.",
+      "source": "hand",
+      "review": {
+        "verdict": "drop",
+        "at": "2026-09-16T11:49:01.785Z"
+      }
+    },
+    {
+      "id": "heldout-double-entry-32",
+      "draft": "heldout-double-entry.html",
+      "line": 685,
+      "habit": "closer",
+      "severity": "medium",
+      "quote": "Pages and nodes are not interchangeable quantities.",
+      "source": "hand",
+      "review": {
+        "verdict": "drop",
+        "at": "2026-09-16T11:50:33.719Z"
+      }
+    }
+  ]
 }

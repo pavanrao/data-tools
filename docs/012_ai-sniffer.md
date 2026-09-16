@@ -1,6 +1,6 @@
 # 012 — `ai-sniffer` (#218): the habits in agent-written prose
 
-**Status:** built; eval scored against unreviewed labels · **Date:** 2026-09-14, results 2026-09-15
+**Status:** built; first label review applied · **Date:** 2026-09-14, results 2026-09-15, review 2026-09-16
 
 ## Purpose
 
@@ -287,6 +287,45 @@ log records exactly those 9, none during the chunked runs. An early check missed
 - Times are wall-clock model time on one laptop, part of it under memory pressure with
   over 4 GB of swap in use, so they're an upper bound for this machine rather than a
   benchmark.
+
+## 4c · After the first label review (2026-09-16)
+
+Pavan reviewed every label on *Double-Entry for Documents* and the candidates raised on
+it, then closed the review with the defaults: unmarked labels on the other five drafts
+count as keep. His marks: 37 keeps, 8 changes (7 of them raising severity, one lowering
+nothing), 2 drops, 16 candidates accepted and 4 rejected. The label file went from 165
+labels to 179, of which 2 are dropped and 16 carry `source: model`.
+
+Held-out counted labels rose from 63 to 76, so the reviewed and provisional numbers
+aren't directly comparable. The third column counts hand-written labels only, excluding
+the 16 accepted from model findings, and that's the honest headline: a label a model
+found flatters the model that found it.
+
+| Setup | Held-out, of 76 | Hand labels only, of 62 | False alarms on clean drafts |
+| --- | --- | --- | --- |
+| sonnet | 40–47 | 35–41 | 15–22 |
+| sonnet + linter report | 39–48 | 32–39 | 12–16 |
+| vale-ai-tells | 21 | 18 | 52 |
+| wsc | 19 | 14 | 66 |
+| qwen2.5:7b, chunked | 13–16 | 11–13 | 10–13 |
+| `ai-sniffer check` | 11 | 9 | 15 |
+| llama3.1:8b, chunked | 10–15 | 9–15 | 11–26 |
+| haiku | 8–10 | 7–10 | 5–8 |
+| haiku + linter report | 7–12 | 6–11 | 6–14 |
+
+Nothing about the ranking changed. On hand labels alone every setup lands within a
+point or two of its provisional score (§4a, §4b), which is what you'd expect when 37 of
+47 marks were keeps.
+
+**Severity, after the review.** Pavan raised 7 labels rather than lowering them, and
+asked what the three levels are for. They do one thing: high and medium count toward
+recall, low is neutral. Two levels would say the same, and the reports already treat
+high and medium as one bucket; the third level stays in the files because renaming it
+would change nothing a reader sees.
+
+**Still open.** Five drafts keep their labels unreviewed by anyone but the labeller, and
+221 candidates from the model runs are unmarked. Both are recorded here rather than
+worked around.
 
 ## 5 · Keeping the labels current
 

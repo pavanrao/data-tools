@@ -3,10 +3,10 @@
     "summary": {
       "held-out": {
         "caught": {
-          "min": 10,
-          "max": 10
+          "min": 9,
+          "max": 9
         },
-        "of": 63,
+        "of": 62,
         "false_alarms": {
           "min": 0,
           "max": 0
@@ -391,7 +391,6 @@
         },
         "heldout-double-entry.html": {
           "caught": [
-            "heldout-double-entry-07",
             "heldout-double-entry-08",
             "heldout-double-entry-10",
             "heldout-double-entry-25",
@@ -400,7 +399,7 @@
             "heldout-double-entry-39",
             "heldout-double-entry-44"
           ],
-          "recall_total": 38,
+          "recall_total": 37,
           "neutral": [
             "heldout-double-entry-12",
             "heldout-double-entry-37"
@@ -418,6 +417,15 @@
               "located_line": 357
             },
             {
+              "line": 373,
+              "habit": null,
+              "severity": "n/a",
+              "quote": "roughly",
+              "rule": "hedge",
+              "why": "",
+              "located_line": 374
+            },
+            {
               "line": 381,
               "habit": null,
               "severity": "n/a",
@@ -425,6 +433,15 @@
               "rule": "hedge",
               "why": "",
               "located_line": 383
+            },
+            {
+              "line": 381,
+              "habit": null,
+              "severity": "n/a",
+              "quote": "roughly",
+              "rule": "hedge",
+              "why": "",
+              "located_line": 374
             },
             {
               "line": 654,
@@ -905,7 +922,7 @@
           "min": 7,
           "max": 10
         },
-        "of": 63,
+        "of": 62,
         "false_alarms": {
           "min": 0,
           "max": 0
@@ -1066,7 +1083,7 @@
             "heldout-double-entry-34",
             "heldout-double-entry-46"
           ],
-          "recall_total": 38,
+          "recall_total": 37,
           "neutral": [],
           "habit_agrees": 7,
           "false_alarms": [],
@@ -1408,7 +1425,7 @@
             "heldout-double-entry-44",
             "heldout-double-entry-46"
           ],
-          "recall_total": 38,
+          "recall_total": 37,
           "neutral": [
             "heldout-double-entry-05",
             "heldout-double-entry-06",
@@ -1727,7 +1744,7 @@
             "heldout-double-entry-28",
             "heldout-double-entry-46"
           ],
-          "recall_total": 38,
+          "recall_total": 37,
           "neutral": [],
           "habit_agrees": 7,
           "false_alarms": [],
@@ -1800,10 +1817,10 @@
     "summary": {
       "held-out": {
         "caught": {
-          "min": 7,
-          "max": 12
+          "min": 6,
+          "max": 11
         },
-        "of": 63,
+        "of": 62,
         "false_alarms": {
           "min": 0,
           "max": 0
@@ -2057,19 +2074,27 @@
         "heldout-double-entry.html": {
           "caught": [
             "heldout-double-entry-01",
-            "heldout-double-entry-07",
             "heldout-double-entry-10",
             "heldout-double-entry-17",
             "heldout-double-entry-20",
             "heldout-double-entry-44"
           ],
-          "recall_total": 38,
+          "recall_total": 37,
           "neutral": [
             "heldout-double-entry-12"
           ],
-          "habit_agrees": 5,
+          "habit_agrees": 4,
           "false_alarms": [],
-          "unlabelled": [],
+          "unlabelled": [
+            {
+              "line": 383,
+              "habit": "hedge",
+              "severity": "medium",
+              "quote": "Nearly every \"chat with your documents\" product works roughly this way.",
+              "why": "Universal claim softened without naming which products, making it uncheckable.",
+              "located_line": 383
+            }
+          ],
           "set_aside": [],
           "quotes_not_in_draft": 0,
           "findings": 7
@@ -2372,7 +2397,6 @@
         "heldout-double-entry.html": {
           "caught": [
             "heldout-double-entry-02",
-            "heldout-double-entry-07",
             "heldout-double-entry-08",
             "heldout-double-entry-10",
             "heldout-double-entry-17",
@@ -2382,13 +2406,22 @@
             "heldout-double-entry-44",
             "heldout-double-entry-45"
           ],
-          "recall_total": 38,
+          "recall_total": 37,
           "neutral": [
             "heldout-double-entry-12"
           ],
-          "habit_agrees": 9,
+          "habit_agrees": 8,
           "false_alarms": [],
-          "unlabelled": [],
+          "unlabelled": [
+            {
+              "line": 383,
+              "habit": "hedge",
+              "severity": "medium",
+              "quote": "Nearly every 'chat with your documents' product works roughly this way.",
+              "why": "Softens the scope with 'nearly every' and 'roughly' both in one sentence, making the claim untestable.",
+              "located_line": 383
+            }
+          ],
           "set_aside": [],
           "quotes_not_in_draft": 1,
           "findings": 11
@@ -2724,7 +2757,6 @@
         },
         "heldout-double-entry.html": {
           "caught": [
-            "heldout-double-entry-07",
             "heldout-double-entry-08",
             "heldout-double-entry-10",
             "heldout-double-entry-17",
@@ -2734,13 +2766,22 @@
             "heldout-double-entry-44",
             "heldout-double-entry-45"
           ],
-          "recall_total": 38,
+          "recall_total": 37,
           "neutral": [
             "heldout-double-entry-12"
           ],
-          "habit_agrees": 6,
+          "habit_agrees": 5,
           "false_alarms": [],
-          "unlabelled": [],
+          "unlabelled": [
+            {
+              "line": 383,
+              "habit": "hedge",
+              "severity": "medium",
+              "quote": "Nearly every \"chat with your documents\" product works roughly this way.",
+              "why": "Universal claim softened without naming a specific source for the claim.",
+              "located_line": 383
+            }
+          ],
           "set_aside": [],
           "quotes_not_in_draft": 0,
           "findings": 9
@@ -2871,10 +2912,10 @@
     "summary": {
       "held-out": {
         "caught": {
-          "min": 10,
-          "max": 10
+          "min": 9,
+          "max": 9
         },
-        "of": 63,
+        "of": 62,
         "false_alarms": {
           "min": 0,
           "max": 0
@@ -3163,7 +3204,6 @@
         },
         "heldout-double-entry.html": {
           "caught": [
-            "heldout-double-entry-07",
             "heldout-double-entry-08",
             "heldout-double-entry-10",
             "heldout-double-entry-25",
@@ -3172,12 +3212,12 @@
             "heldout-double-entry-39",
             "heldout-double-entry-44"
           ],
-          "recall_total": 38,
+          "recall_total": 37,
           "neutral": [
             "heldout-double-entry-12",
             "heldout-double-entry-37"
           ],
-          "habit_agrees": 7,
+          "habit_agrees": 6,
           "false_alarms": [],
           "unlabelled": [
             {
@@ -3193,10 +3233,22 @@
               "located_line": 357
             },
             {
+              "line": 373,
+              "habit": "hedge",
+              "quote": "roughly",
+              "located_line": 374
+            },
+            {
               "line": 383,
               "habit": "hedge",
               "quote": "Nearly every",
               "located_line": 383
+            },
+            {
+              "line": 383,
+              "habit": "hedge",
+              "quote": "roughly",
+              "located_line": 374
             },
             {
               "line": 655,
@@ -3508,7 +3560,7 @@
           "min": 0,
           "max": 2
         },
-        "of": 63,
+        "of": 62,
         "false_alarms": {
           "min": 0,
           "max": 0
@@ -3737,7 +3789,7 @@
         },
         "heldout-double-entry.html": {
           "caught": [],
-          "recall_total": 38,
+          "recall_total": 37,
           "neutral": [],
           "habit_agrees": 0,
           "false_alarms": [],
@@ -3979,7 +4031,7 @@
             "heldout-double-entry-39",
             "heldout-double-entry-44"
           ],
-          "recall_total": 38,
+          "recall_total": 37,
           "neutral": [
             "heldout-double-entry-42"
           ],
@@ -4827,7 +4879,7 @@
         },
         "heldout-double-entry.html": {
           "caught": [],
-          "recall_total": 38,
+          "recall_total": 37,
           "neutral": [],
           "habit_agrees": 0,
           "false_alarms": [],
@@ -4963,7 +5015,7 @@
           "min": 9,
           "max": 15
         },
-        "of": 63,
+        "of": 62,
         "false_alarms": {
           "min": 0,
           "max": 0
@@ -5213,7 +5265,6 @@
             "heldout-double-entry-02",
             "heldout-double-entry-03",
             "heldout-double-entry-04",
-            "heldout-double-entry-07",
             "heldout-double-entry-08",
             "heldout-double-entry-14",
             "heldout-double-entry-23",
@@ -5223,7 +5274,7 @@
             "heldout-double-entry-44",
             "heldout-double-entry-45"
           ],
-          "recall_total": 38,
+          "recall_total": 37,
           "neutral": [],
           "habit_agrees": 1,
           "false_alarms": [],
@@ -6001,7 +6052,7 @@
             "heldout-double-entry-45",
             "heldout-double-entry-46"
           ],
-          "recall_total": 38,
+          "recall_total": 37,
           "neutral": [],
           "habit_agrees": 4,
           "false_alarms": [],
@@ -6544,7 +6595,7 @@
             "heldout-double-entry-41",
             "heldout-double-entry-46"
           ],
-          "recall_total": 38,
+          "recall_total": 37,
           "neutral": [
             "heldout-double-entry-16"
           ],
@@ -7117,7 +7168,7 @@
           "min": 0,
           "max": 0
         },
-        "of": 63,
+        "of": 62,
         "false_alarms": {
           "min": 0,
           "max": 0
@@ -7337,7 +7388,7 @@
         },
         "heldout-double-entry.html": {
           "caught": [],
-          "recall_total": 38,
+          "recall_total": 37,
           "neutral": [],
           "habit_agrees": 0,
           "false_alarms": [],
@@ -7537,7 +7588,7 @@
         },
         "heldout-double-entry.html": {
           "caught": [],
-          "recall_total": 38,
+          "recall_total": 37,
           "neutral": [],
           "habit_agrees": 0,
           "false_alarms": [],
@@ -7715,7 +7766,7 @@
         },
         "heldout-double-entry.html": {
           "caught": [],
-          "recall_total": 38,
+          "recall_total": 37,
           "neutral": [],
           "habit_agrees": 0,
           "false_alarms": [],
@@ -7858,7 +7909,7 @@
           "min": 0,
           "max": 1
         },
-        "of": 63,
+        "of": 62,
         "false_alarms": {
           "min": 0,
           "max": 0
@@ -8029,7 +8080,7 @@
         },
         "heldout-double-entry.html": {
           "caught": [],
-          "recall_total": 38,
+          "recall_total": 37,
           "neutral": [],
           "habit_agrees": 0,
           "false_alarms": [],
@@ -8145,7 +8196,7 @@
           "caught": [
             "heldout-double-entry-15"
           ],
-          "recall_total": 38,
+          "recall_total": 37,
           "neutral": [],
           "habit_agrees": 1,
           "false_alarms": [],
@@ -8358,7 +8409,7 @@
           "caught": [
             "heldout-double-entry-01"
           ],
-          "recall_total": 38,
+          "recall_total": 37,
           "neutral": [],
           "habit_agrees": 0,
           "false_alarms": [],
@@ -8413,7 +8464,7 @@
           "min": 11,
           "max": 13
         },
-        "of": 63,
+        "of": 62,
         "false_alarms": {
           "min": 0,
           "max": 0
@@ -8621,7 +8672,7 @@
             "heldout-double-entry-45",
             "heldout-double-entry-46"
           ],
-          "recall_total": 38,
+          "recall_total": 37,
           "neutral": [],
           "habit_agrees": 1,
           "false_alarms": [],
@@ -9062,14 +9113,13 @@
         },
         "heldout-double-entry.html": {
           "caught": [
-            "heldout-double-entry-07",
             "heldout-double-entry-15",
             "heldout-double-entry-30",
             "heldout-double-entry-34",
             "heldout-double-entry-44",
             "heldout-double-entry-45"
           ],
-          "recall_total": 38,
+          "recall_total": 37,
           "neutral": [
             "heldout-double-entry-06"
           ],
@@ -9479,7 +9529,7 @@
             "heldout-double-entry-40",
             "heldout-double-entry-46"
           ],
-          "recall_total": 38,
+          "recall_total": 37,
           "neutral": [],
           "habit_agrees": 0,
           "false_alarms": [],
@@ -9791,7 +9841,7 @@
           "min": 3,
           "max": 4
         },
-        "of": 63,
+        "of": 62,
         "false_alarms": {
           "min": 0,
           "max": 0
@@ -9992,7 +10042,7 @@
             "heldout-double-entry-28",
             "heldout-double-entry-39"
           ],
-          "recall_total": 38,
+          "recall_total": 37,
           "neutral": [
             "heldout-double-entry-12"
           ],
@@ -10181,7 +10231,7 @@
             "heldout-double-entry-33",
             "heldout-double-entry-46"
           ],
-          "recall_total": 38,
+          "recall_total": 37,
           "neutral": [],
           "habit_agrees": 2,
           "false_alarms": [],
@@ -10363,7 +10413,7 @@
             "heldout-double-entry-08",
             "heldout-double-entry-39"
           ],
-          "recall_total": 38,
+          "recall_total": 37,
           "neutral": [],
           "habit_agrees": 3,
           "false_alarms": [],
@@ -10418,7 +10468,7 @@
           "min": 13,
           "max": 13
         },
-        "of": 63,
+        "of": 62,
         "false_alarms": {
           "min": 0,
           "max": 0
@@ -10910,7 +10960,7 @@
             "heldout-double-entry-44",
             "heldout-double-entry-45"
           ],
-          "recall_total": 38,
+          "recall_total": 37,
           "neutral": [
             "heldout-double-entry-05"
           ],
@@ -11965,7 +12015,7 @@
           "min": 0,
           "max": 0
         },
-        "of": 63,
+        "of": 62,
         "false_alarms": {
           "min": 0,
           "max": 0
@@ -12366,7 +12416,7 @@
         },
         "heldout-double-entry.html": {
           "caught": [],
-          "recall_total": 38,
+          "recall_total": 37,
           "neutral": [],
           "habit_agrees": 0,
           "false_alarms": [],
@@ -13295,7 +13345,7 @@
           "min": 8,
           "max": 8
         },
-        "of": 63,
+        "of": 62,
         "false_alarms": {
           "min": 0,
           "max": 0
@@ -13459,7 +13509,7 @@
             "heldout-double-entry-23",
             "heldout-double-entry-26"
           ],
-          "recall_total": 38,
+          "recall_total": 37,
           "neutral": [],
           "habit_agrees": 0,
           "false_alarms": [],
@@ -13930,7 +13980,7 @@
           "min": 6,
           "max": 6
         },
-        "of": 63,
+        "of": 62,
         "false_alarms": {
           "min": 0,
           "max": 0
@@ -14231,7 +14281,7 @@
             "heldout-double-entry-34",
             "heldout-double-entry-45"
           ],
-          "recall_total": 38,
+          "recall_total": 37,
           "neutral": [
             "heldout-double-entry-37"
           ],
@@ -15186,7 +15236,7 @@
           "min": 2,
           "max": 2
         },
-        "of": 63,
+        "of": 62,
         "false_alarms": {
           "min": 0,
           "max": 0
@@ -15415,7 +15465,7 @@
             "heldout-double-entry-40",
             "heldout-double-entry-46"
           ],
-          "recall_total": 38,
+          "recall_total": 37,
           "neutral": [
             "heldout-double-entry-22",
             "heldout-double-entry-42"
@@ -15601,10 +15651,10 @@
     "summary": {
       "held-out": {
         "caught": {
-          "min": 36,
-          "max": 43
+          "min": 35,
+          "max": 41
         },
-        "of": 63,
+        "of": 62,
         "false_alarms": {
           "min": 0,
           "max": 0
@@ -15943,7 +15993,6 @@
             "heldout-double-entry-02",
             "heldout-double-entry-03",
             "heldout-double-entry-04",
-            "heldout-double-entry-07",
             "heldout-double-entry-08",
             "heldout-double-entry-09",
             "heldout-double-entry-10",
@@ -15957,7 +16006,6 @@
             "heldout-double-entry-25",
             "heldout-double-entry-29",
             "heldout-double-entry-31",
-            "heldout-double-entry-32",
             "heldout-double-entry-33",
             "heldout-double-entry-34",
             "heldout-double-entry-41",
@@ -15966,11 +16014,19 @@
             "heldout-double-entry-46",
             "heldout-double-entry-47"
           ],
-          "recall_total": 38,
+          "recall_total": 37,
           "neutral": [],
-          "habit_agrees": 20,
+          "habit_agrees": 18,
           "false_alarms": [],
           "unlabelled": [
+            {
+              "line": 383,
+              "habit": "hedge",
+              "severity": "medium",
+              "quote": "Nearly every \"chat with your documents\" product works roughly this way.",
+              "why": "A universal claim about nearly every product with no named product or count, so it can't be checked.",
+              "located_line": 383
+            },
             {
               "line": 395,
               "habit": "antithesis",
@@ -15986,6 +16042,14 @@
               "quote": "If a gap wins, the tool refuses.",
               "why": "A short sentence placed right after the mechanism is explained, landing like a reveal the content already delivered.",
               "located_line": 644
+            },
+            {
+              "line": 685,
+              "habit": "closer",
+              "severity": "medium",
+              "quote": "Pages and nodes are not interchangeable quantities.",
+              "why": "A tidy summary line closing the figure caption, telling the reader what the point was.",
+              "located_line": 685
             },
             {
               "line": 708,
@@ -16801,7 +16865,6 @@
             "heldout-double-entry-01",
             "heldout-double-entry-02",
             "heldout-double-entry-03",
-            "heldout-double-entry-07",
             "heldout-double-entry-08",
             "heldout-double-entry-09",
             "heldout-double-entry-10",
@@ -16824,13 +16887,13 @@
             "heldout-double-entry-45",
             "heldout-double-entry-46"
           ],
-          "recall_total": 38,
+          "recall_total": 37,
           "neutral": [
             "heldout-double-entry-05",
             "heldout-double-entry-12",
             "heldout-double-entry-37"
           ],
-          "habit_agrees": 20,
+          "habit_agrees": 19,
           "false_alarms": [],
           "unlabelled": [
             {
@@ -16840,6 +16903,14 @@
               "quote": "Suppose you have a folder of business documents",
               "why": "Opens on \"Suppose\", telling the reader how to picture the scenario rather than describing it directly.",
               "located_line": 357
+            },
+            {
+              "line": 383,
+              "habit": "hedge",
+              "severity": "high",
+              "quote": "Nearly every \"chat with your documents\" product works roughly this way.",
+              "why": "A universal claim about an unnamed set of products, softened so it can't actually be checked.",
+              "located_line": 383
             },
             {
               "line": 395,
@@ -17520,7 +17591,6 @@
             "heldout-double-entry-01",
             "heldout-double-entry-02",
             "heldout-double-entry-03",
-            "heldout-double-entry-07",
             "heldout-double-entry-08",
             "heldout-double-entry-09",
             "heldout-double-entry-10",
@@ -17537,7 +17607,6 @@
             "heldout-double-entry-29",
             "heldout-double-entry-30",
             "heldout-double-entry-31",
-            "heldout-double-entry-32",
             "heldout-double-entry-33",
             "heldout-double-entry-34",
             "heldout-double-entry-35",
@@ -17549,13 +17618,13 @@
             "heldout-double-entry-46",
             "heldout-double-entry-47"
           ],
-          "recall_total": 38,
+          "recall_total": 37,
           "neutral": [
             "heldout-double-entry-05",
             "heldout-double-entry-37",
             "heldout-double-entry-42"
           ],
-          "habit_agrees": 25,
+          "habit_agrees": 23,
           "false_alarms": [],
           "unlabelled": [
             {
@@ -17565,6 +17634,14 @@
               "quote": "Suppose you have a folder of business documents",
               "why": "Opens on 'Suppose', the same directive move as 'Consider' or 'Imagine', telling the reader how to frame the scenario.",
               "located_line": 357
+            },
+            {
+              "line": 383,
+              "habit": "hedge",
+              "severity": "medium",
+              "quote": "Nearly every \"chat with your documents\" product works roughly this way.",
+              "why": "A universal claim about an entire product category softened by 'nearly', with no named products to check it against.",
+              "located_line": 383
             },
             {
               "line": 514,
@@ -17581,6 +17658,14 @@
               "quote": "Everything else in the tool exists to preserve it.",
               "why": "A tidy summary line ending the paragraph, telling the reader what the preceding point amounts to.",
               "located_line": 522
+            },
+            {
+              "line": 685,
+              "habit": "closer",
+              "severity": "medium",
+              "quote": "Pages and nodes are not interchangeable quantities.",
+              "why": "A tidy restatement closing the figure caption, telling the reader the lesson of the anecdote just given.",
+              "located_line": 685
             },
             {
               "line": 708,
@@ -17927,10 +18012,10 @@
     "summary": {
       "held-out": {
         "caught": {
-          "min": 33,
-          "max": 41
+          "min": 32,
+          "max": 39
         },
-        "of": 63,
+        "of": 62,
         "false_alarms": {
           "min": 0,
           "max": 0
@@ -18281,13 +18366,13 @@
             "heldout-double-entry-01",
             "heldout-double-entry-02",
             "heldout-double-entry-03",
-            "heldout-double-entry-07",
             "heldout-double-entry-08",
             "heldout-double-entry-09",
             "heldout-double-entry-10",
             "heldout-double-entry-14",
             "heldout-double-entry-15",
             "heldout-double-entry-17",
+            "heldout-double-entry-18",
             "heldout-double-entry-19",
             "heldout-double-entry-20",
             "heldout-double-entry-21",
@@ -18296,7 +18381,6 @@
             "heldout-double-entry-27",
             "heldout-double-entry-28",
             "heldout-double-entry-29",
-            "heldout-double-entry-32",
             "heldout-double-entry-33",
             "heldout-double-entry-34",
             "heldout-double-entry-36",
@@ -18309,15 +18393,14 @@
             "heldout-double-entry-46",
             "heldout-double-entry-47"
           ],
-          "recall_total": 38,
+          "recall_total": 37,
           "neutral": [
             "heldout-double-entry-05",
             "heldout-double-entry-12",
-            "heldout-double-entry-18",
             "heldout-double-entry-37",
             "heldout-double-entry-42"
           ],
-          "habit_agrees": 26,
+          "habit_agrees": 25,
           "false_alarms": [],
           "unlabelled": [
             {
@@ -18351,6 +18434,14 @@
               "quote": "Nearly every",
               "why": "A universal claim about 'chat with your documents' products is softened with no named set, so it can't be checked.",
               "located_line": 383
+            },
+            {
+              "line": 383,
+              "habit": "hedge",
+              "severity": "low",
+              "quote": "roughly",
+              "why": "A second vague qualifier stacks in the same sentence as 'nearly every', compounding the unverifiable claim.",
+              "located_line": 374
             },
             {
               "line": 396,
@@ -18399,6 +18490,14 @@
               "quote": "If a gap wins, the tool refuses.",
               "why": "A short final line wraps up the subsection by stating the payoff of the mechanism just explained.",
               "located_line": 644
+            },
+            {
+              "line": 685,
+              "habit": "closer",
+              "severity": "medium",
+              "quote": "Pages and nodes are not interchangeable quantities.",
+              "why": "The figure caption ends with an abstract restatement of the lesson already shown by the concrete example.",
+              "located_line": 685
             },
             {
               "line": 708,
@@ -19136,7 +19235,6 @@
             "heldout-double-entry-01",
             "heldout-double-entry-02",
             "heldout-double-entry-03",
-            "heldout-double-entry-07",
             "heldout-double-entry-08",
             "heldout-double-entry-09",
             "heldout-double-entry-10",
@@ -19158,12 +19256,12 @@
             "heldout-double-entry-45",
             "heldout-double-entry-46"
           ],
-          "recall_total": 38,
+          "recall_total": 37,
           "neutral": [
             "heldout-double-entry-12",
             "heldout-double-entry-37"
           ],
-          "habit_agrees": 20,
+          "habit_agrees": 19,
           "false_alarms": [],
           "unlabelled": [
             {
@@ -19173,6 +19271,14 @@
               "quote": "Suppose you have a folder of business documents — contracts, spreadsheets, scanned forms, a zip file somebody emailed you — and you want to ask questions about them in plain English.",
               "why": "Opens on \"Suppose,\" directing the reader into a hypothetical rather than stating a fact.",
               "located_line": 357
+            },
+            {
+              "line": 383,
+              "habit": "hedge",
+              "severity": "high",
+              "quote": "Nearly every \"chat with your documents\" product works roughly this way.",
+              "why": "An unquantified universal claim about \"nearly every\" product, naming none of them.",
+              "located_line": 383
             },
             {
               "line": 522,
@@ -19919,7 +20025,6 @@
             "heldout-double-entry-01",
             "heldout-double-entry-02",
             "heldout-double-entry-03",
-            "heldout-double-entry-07",
             "heldout-double-entry-08",
             "heldout-double-entry-09",
             "heldout-double-entry-10",
@@ -19935,7 +20040,6 @@
             "heldout-double-entry-29",
             "heldout-double-entry-30",
             "heldout-double-entry-31",
-            "heldout-double-entry-32",
             "heldout-double-entry-33",
             "heldout-double-entry-34",
             "heldout-double-entry-35",
@@ -19949,14 +20053,14 @@
             "heldout-double-entry-46",
             "heldout-double-entry-47"
           ],
-          "recall_total": 38,
+          "recall_total": 37,
           "neutral": [
             "heldout-double-entry-05",
             "heldout-double-entry-12",
             "heldout-double-entry-22",
             "heldout-double-entry-37"
           ],
-          "habit_agrees": 27,
+          "habit_agrees": 25,
           "false_alarms": [],
           "unlabelled": [
             {
@@ -19982,6 +20086,14 @@
               "quote": "The name is worse than the idea.",
               "why": "A short, standalone aside dropped mid-paragraph for effect rather than because the point needs its own beat.",
               "located_line": 364
+            },
+            {
+              "line": 383,
+              "habit": "hedge",
+              "severity": "medium",
+              "quote": "Nearly every \"chat with your documents\" product works roughly this way.",
+              "why": "'Nearly every' makes a near-universal claim about a whole category of products without naming any of them.",
+              "located_line": 383
             },
             {
               "line": 395,
@@ -20014,6 +20126,14 @@
               "quote": "If a gap wins, the tool refuses.",
               "why": "A short summary sentence landing the subsection's point right as it ends.",
               "located_line": 644
+            },
+            {
+              "line": 685,
+              "habit": "closer",
+              "severity": "low",
+              "quote": "Pages and nodes are not interchangeable quantities.",
+              "why": "A short aphoristic line closing the figure caption.",
+              "located_line": 685
             },
             {
               "line": 708,
@@ -20445,7 +20565,7 @@
           "min": 18,
           "max": 18
         },
-        "of": 63,
+        "of": 62,
         "false_alarms": {
           "min": 0,
           "max": 0
@@ -21378,7 +21498,7 @@
             "heldout-double-entry-38",
             "heldout-double-entry-45"
           ],
-          "recall_total": 38,
+          "recall_total": 37,
           "neutral": [
             "heldout-double-entry-22"
           ],
@@ -23192,7 +23312,7 @@
           "min": 14,
           "max": 14
         },
-        "of": 63,
+        "of": 62,
         "false_alarms": {
           "min": 0,
           "max": 0
@@ -24247,7 +24367,7 @@
             "heldout-double-entry-44",
             "heldout-double-entry-46"
           ],
-          "recall_total": 38,
+          "recall_total": 37,
           "neutral": [
             "heldout-double-entry-12",
             "heldout-double-entry-13",
