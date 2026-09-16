@@ -1038,6 +1038,39 @@ is a result either way.
 - **Cost note:** the metrics are cheap; the evaluation is #25's, which is free.
 - **Covers:** §2 Chunking · §5 Retrieval metrics · the reproduction habit itself.
 
+### 219. `slopify` — put the tells back in, on purpose ⭐⭐ 💻
+Takes a passage a human wrote and injects the habits #218 looks for, at positions it
+records. Deterministic and seeded, so the same input and seed give the same output
+every time, and each injection is written out as a label (line, habit, quote) in the
+format `tools/ai-sniffer/eval/labels.jsonl` already uses. It's the inverse of the
+reviewer, and it exists because every number in #218's eval rests on 165 labels one
+person wrote: injection gives ground truth with no labeller's judgement in it.
+
+Transformations, one per habit in #218's catalogue: split a claim into "It isn't Y.
+It's X." (antithesis); pad a pair into three (triad); soften a universal to "almost
+every" (hedge); prefix "Note that" (reader-instruction); break a clause into a one-line
+paragraph (dramatic-beat); append a summarising line to a section (closer); replace a
+number or a name with "surprisingly" (generic-detail); insert "exactly" before a verb
+(emphasis-word).
+
+- **What it buys the eval:** per-habit recall, which the hand labels can't give — they
+  hold 34 antithesis labels and 2 restatement. Run 50 injections per habit and every
+  tool and model in the comparison gets a recall figure per habit, with no ambiguity
+  about what the right answer was.
+- **The limit, to state wherever its numbers appear:** injected habits are what a
+  template produces on demand, not what a model produces when left alone. A tool can
+  score well here and badly on real drafts, so these numbers stay a diagnostic and the
+  hand-labelled held-out numbers stay the headline.
+- **Source text matters.** Inject into prose no model wrote: Pavan's own older writing,
+  or public-domain text. Injecting into Claude-drafted posts would measure habits on
+  top of habits.
+- **The demo it makes possible:** one human paragraph, one slopped paragraph, and the
+  linter's output under each. No model needed.
+- **Where it fits:** built after Pavan's label review is applied and #218's scores are
+  final, and before post 3 of the series, whose comparison it strengthens.
+- **Covers:** §4 What alignment does to style · §5 Task metrics vs. vibes · building
+  ground truth rather than judging it.
+
 ### 218. `ai-sniffer` — the tells in your own draft ✅ ⭐⭐ 💻 🔌
 Counts the habits that make prose read as machine-written, and refuses to say
 whether it was. Sentence-length variance; contraction rate; the recurring
