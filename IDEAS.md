@@ -1125,6 +1125,8 @@ repository's own documentation.
      drafts. Before this runs, add drafts by other writers and labels from someone
      other than the original labeller, and report each tool on its own categories
      as well as on ours, so the comparison isn't scored on our home ground.
+  0. *An overview post* linking the four, written last, so a reader arriving at any one
+     of them can find the rest. Pavan's idea, 2026-09-16.
   4. *The revised tool.* Write down what changes and why from posts 2 and 3 before
      rerunning, then run once on fresh held-out drafts, so the improvement isn't
      tuned to the text it's measured on.
