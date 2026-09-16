@@ -78,7 +78,11 @@ numbers stay the headline.
 
 **Source text matters.** Inject into prose no model wrote. Injecting into an
 AI-drafted post measures habits on top of habits, and the labels no longer say
-what is ground truth and what was already there.
+what is ground truth and what was already there. Where clean source is not
+available, `eval/per_habit_recall.py` records everything the detector says about
+the untouched draft and subtracts it, so a habit that was already there cannot be
+credited to the injection. That is honest arithmetic on contaminated source, not a
+substitute for clean source.
 
 **Word-borrowing is approximate.** `fragment` and `triad` take a noun from the
 paragraph by looking for what an article points at, which is right most of the

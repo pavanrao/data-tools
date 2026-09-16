@@ -19,7 +19,7 @@ Injection removes the labeller. If the tool put a hedge at line 19, a hedge is a
 line 19 — there is no judgement in the label and no second labeller to recruit.
 Ten seeds across three sources gives thirty instances of each habit, and every
 detector in the comparison gets a per-habit recall number with nothing to argue
-about.
+about. What the source text is still matters, which §2 is about.
 
 ## 2. What it is not
 
@@ -32,11 +32,36 @@ habits* those numbers are made of.
 
 **Source text matters.** Inject into prose no model wrote. Injecting into an
 AI-drafted post measures habits on top of habits, and the labels stop saying which
-is which. The measurement in §5 uses three posts from `pavanrao.github.io` written
-in January 2026, eight months before any of this tooling existed. They carry 0.4
-to 2.6 contractions per 100 words and sentence-length variation of 0.51 to 0.72,
-against 0.1 and 1.04 for the posts drafted with Claude — which is itself a small
-piece of evidence that they are the human baseline they are being used as.
+is which.
+
+> **Corrected 2026-09-16.** This section previously read: *"The measurement in §5
+> uses three posts from `pavanrao.github.io` written in January 2026, eight months
+> before any of this tooling existed. They carry 0.4 to 2.6 contractions per 100
+> words and sentence-length variation of 0.51 to 0.72, against 0.1 and 1.04 for the
+> posts drafted with Claude — which is itself a small piece of evidence that they
+> are the human baseline they are being used as."* Every post on that blog was
+> written by a model to Pavan's instructions, the January ones included. The source
+> for §5 is model-written, and the sentence calling it a human baseline was an
+> inference I drew from style statistics and then presented as evidence.
+
+Two things follow from that. **The measurement now subtracts a baseline.** Every finding the detector already
+makes on the untouched draft is recorded before anything is injected and excluded
+afterwards, matched on habit and text rather than line, since an injection moves
+everything below it. A habit that was there already cannot be credited to the
+injection. The three sources carry 13, 14 and 17 findings before any injection, so
+this is not a small correction: it removed 21 of the 132 "on line" credits. What it
+cannot remove is that an injection sometimes lands in a paragraph that already had
+a habit, which is a site the detector had two reasons to flag. Prose no model wrote
+is still wanted, and neither repository contains any.
+
+**The style statistics separate two sets of model-written posts, not human from
+machine.** The January posts really do carry 0.4 to 2.6 contractions per 100 words
+against 0.1 for the September ones, and sentence-length variation of 0.51 to 0.72
+against 1.04. Both sets came from a model. Those numbers track register and
+instructions, and reading origin out of them is the mistake
+[docs/012](012_ai-sniffer.md) says the tool exists to avoid — which did not stop me
+making it here, from ai-sniffer's own output, in the document explaining why the
+tool has no verdict mode.
 
 ## 3. Design
 
@@ -90,39 +115,49 @@ habit; the word is sometimes odd.
 
 ## 5. The first measurement: what `ai-sniffer check` can and cannot see
 
-280 single-habit injections — 11 habits × 3 human-written posts × 10 seeds, minus
-the combinations that found no site — scored against `ai-sniffer check`, the
-model-free linter. **Quoted** means the linter's own quote overlaps the injected
-one. **On line** is the generous reading: any finding within one line of the
-injection, which credits coincidence and is reported so the strict number can be
-read against it.
+280 single-habit injections — 11 habits × 3 posts × 10 seeds, minus the
+combinations that found no site — scored against `ai-sniffer check`, the model-free
+linter. **Quoted** means the linter's own quote overlaps the injected one. **On
+line** is the generous reading: any finding within one line of the injection, which
+credits coincidence and is reported so the strict number can be read against it.
+Both columns exclude what the linter already said about the untouched draft, per §2.
 
 | habit | injected | quoted | on line |
 | --- | --- | --- | --- |
 | reader-instruction | 30 | 30 | 30 |
 | emphasis-word | 20 | 20 | 20 |
-| dramatic-beat | 30 | 21 | 23 |
+| dramatic-beat | 30 | 19 | 22 |
 | hedge | 20 | 17 | 17 |
-| cliche-emphasis | 30 | 14 | 16 |
-| generic-detail | 10 | 7 | 10 |
-| fragment | 30 | 1 | 3 |
-| restatement | 30 | 1 | 1 |
-| antithesis | 20 | 0 | 2 |
-| closer | 30 | 0 | 3 |
-| triad | 30 | 0 | 7 |
-| **total** | **280** | **111** | **132** |
+| cliche-emphasis | 30 | 13 | 14 |
+| generic-detail | 10 | 7 | 7 |
+| fragment | 30 | 1 | 1 |
+| restatement | 30 | 0 | 0 |
+| antithesis | 20 | 0 | 0 |
+| closer | 30 | 0 | 0 |
+| triad | 30 | 0 | 0 |
+| **total** | **280** | **107** | **111** |
+
+> **Corrected 2026-09-16.** The first version of this table was run without the
+> baseline subtraction and read 111 quoted and 132 on line, with dramatic-beat 21/23,
+> cliche-emphasis 14/16, generic-detail 7/10, fragment 1/3, restatement 1/1,
+> antithesis 0/2, closer 0/3 and triad 0/7. The strict column moved by 4 and the
+> generous one by 21, which is the useful part: matching the detector's own quote
+> against the injected words survived the contamination almost intact, and crediting
+> anything found near the injected line did not.
 
 The line this draws is the one the tool was built to draw, and it is sharper than
 the overall figure in [docs/012](012_ai-sniffer.md) §4 could ever be. The linter is
 at or near perfect on the habits that are a word list — an opener it can match, an
-intensifier, a softened universal — and at or near zero on every habit that is a
-*shape*: antithesis, closer, triad. Those three are 0 of 80. `fragment` at 1 of 30
-and `restatement` at 1 of 30 are the same story.
+intensifier, a softened universal — and at zero on every habit that is a *shape*.
+Antithesis, closer, triad and restatement are **0 of 110** between them, by either
+column. `fragment` at 1 of 30 is the same story.
 
 This is not a defect in the linter. It is the reason ai-sniffer ships a reviewer
 prompt at all, and it now has a number attached per habit instead of an argument.
 The same 280 drafts are what the model reviewers should be run against next, which
 turns "Sonnet caught 35 to 41 of 62" into a statement about which habits those were.
+Running that on source no model wrote would settle §2's remaining doubt at the same
+time.
 
 Two counts are lower than 30 because the sources offered no site: `antithesis`
 needs a copula with a subject that is a thing, and `generic-detail` needs a figure
@@ -141,10 +176,10 @@ and the linter's output under each.
 make demo-slopify SLOPIFY_DRAFT=path/to/your-own-writing.md
 ```
 
-There is no default and no sample corpus, for the reason in §2: the repository
-holds no prose that no model touched. Shipping a sample would invite the mistake
-that section warns about, so the path is required and the target refuses without
-it.
+There is no default and no sample corpus, for the reason in §2: neither this
+repository nor the blog holds prose that no model touched. Shipping a sample would
+invite the mistake that section warns about, so the path is required and the target
+refuses without it.
 
 ## 7. What is deliberately not here
 

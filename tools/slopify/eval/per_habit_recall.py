@@ -5,7 +5,12 @@ finding can only be credited to the habit that was put there.
 
     uv run python tools/slopify/eval/per_habit_recall.py DRAFT [DRAFT ...]
 
-The drafts must be prose no model wrote — see docs/014 section 2.
+Ideally the drafts are prose no model wrote (docs/014 section 2). Where that is not
+available, every finding the detector already makes on the untouched draft is
+recorded first and subtracted, so a habit that was there before the injection
+cannot be credited to it. That makes the result honest on contaminated source; it
+does not make the source clean, because an injection landing on top of an existing
+habit is still a site the detector had two reasons to flag.
 """
 
 from __future__ import annotations
@@ -46,6 +51,15 @@ def findings(path: Path) -> list[tuple[int, str, str]]:
     return out
 
 
+def baseline(path: Path) -> set[tuple[str, str]]:
+    """What the detector says about the draft before anything is injected.
+
+    Matched on habit and text, never on line number, because an injection above a
+    pre-existing finding moves it down the file.
+    """
+    return {(habit, flat(text)) for _, habit, text in findings(path)}
+
+
 def main(sources: list[Path]) -> int:
     injected: defaultdict[str, int] = defaultdict(int)
     quoted: defaultdict[str, int] = defaultdict(int)
@@ -53,6 +67,7 @@ def main(sources: list[Path]) -> int:
     workspace = Path(tempfile.mkdtemp())
 
     for source in sources:
+        already = baseline(source)
         for habit in habits():
             for seed in SEEDS:
                 draft, labels = workspace / "slopped.md", workspace / "labels.jsonl"
@@ -81,7 +96,9 @@ def main(sources: list[Path]) -> int:
                     continue  # no site for this habit in this draft
                 label = records[0]
                 injected[habit] += 1
-                found = findings(draft)
+                # Only what the injection added: a finding the detector already
+                # made on the untouched draft is not evidence about this habit.
+                found = [f for f in findings(draft) if (f[1], flat(f[2])) not in already]
                 quote = flat(label["quote"])
                 if any(flat(t) and (flat(t) in quote or quote in flat(t)) for _, _, t in found):
                     quoted[habit] += 1
