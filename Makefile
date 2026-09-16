@@ -153,17 +153,15 @@ chunking-models:
 # Ground truth with no labeller in it: inject habits at known positions, then run
 # the model-free linter over the result.
 #
-#   make demo-slopify SLOPIFY_DRAFT=path/to/your-own-writing.md
+#   make demo-slopify
+#   make demo-slopify SLOPIFY_DRAFT=path/to/other-prose.md
 #
-# The draft has to be prose no model wrote -- your own older writing, or something
-# public domain. Injecting into an AI-drafted file measures habits on top of habits
-# and the labels stop saying which is which, so there is no default and no sample
-# shipped: see docs/014 section 2.
-SLOPIFY_DRAFT ?=
+# The draft has to be prose no model wrote, or the labels stop saying what is ground
+# truth and what was already there (docs/014 section 2). The default is the reference
+# corpus, which fetch.py downloads because it is not ours to commit.
+SLOPIFY_DRAFT ?= tools/slopify/corpus/reference/willison-2021-standing-out.md
 demo-slopify:
-	@test -n "$(SLOPIFY_DRAFT)" || { \
-	    echo "set SLOPIFY_DRAFT to a Markdown draft that no model wrote:"; \
-	    echo "  make demo-slopify SLOPIFY_DRAFT=path/to/draft.md"; exit 2; }
+	uv run python tools/slopify/corpus/fetch.py
 	@test -f "$(SLOPIFY_DRAFT)" || { echo "no such file: $(SLOPIFY_DRAFT)"; exit 2; }
 	@rm -rf .slopify && mkdir -p .slopify
 	uv run slopify inject $(SLOPIFY_DRAFT) --seed 42 --count 8 \

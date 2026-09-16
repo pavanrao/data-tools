@@ -187,3 +187,10 @@ def test_antithesis_does_not_call_a_person_a_technicality():
     text = "Having worked in the US before moving to Canada, I was unsure how it applied."
     result = run("antithesis", text)
     assert result is None or "I wasn't a" not in result.text
+
+
+def test_a_sentence_opening_on_a_conjunction_is_lowercased_when_prefixed():
+    """ "Note that But as a candidate..." kept a capital that belongs to no name."""
+    result = run("reader-instruction", "But as a candidate, this gives you a real advantage.")
+    assert result is not None
+    assert "that But" not in result.text

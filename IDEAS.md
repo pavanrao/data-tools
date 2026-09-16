@@ -1071,24 +1071,24 @@ number or a name with "surprisingly" (generic-detail); insert "exactly" before a
 - **Covers:** §4 What alignment does to style · §5 Task metrics vs. vibes · building
   ground truth rather than judging it.
 - **Built:** [`tools/slopify/`](./tools/slopify/), eleven injectors, stdlib only.
-  Design record [`docs/014`](./docs/014_slopify.md). The first measurement it made
-  possible: over 280 single-habit injections, `ai-sniffer check` quotes 107. Split by
-  habit, it is at or near perfect on the habits that are a word list —
-  reader-instruction 30/30, emphasis-word 20/20, hedge 17/20 — and at zero on every
-  habit that is a shape: antithesis, closer, triad and restatement are 0 of 110
-  between them. That is the argument for shipping a reviewer prompt, with a number
-  per habit attached instead of an assertion.
+  Design record [`docs/014`](./docs/014_slopify.md). Source prose is three Simon
+  Willison posts from 2018 to 2021, downloaded by `corpus/fetch.py` and hash-pinned
+  rather than committed, since they carry no reuse licence.
+  Two measurements came out of it. **The linter fires 56 times on 4,695 words of
+  human technical blogging before anything is injected** — 37 of them one-sentence
+  paragraphs, which this author writes deliberately. That is the *break it on
+  purpose* step, and the best argument in the repo for having no verdict mode.
+  **Per-habit recall over 320 single-habit injections, discounting that baseline:
+  129 quoted.** Perfect on the habits that are a closed word list
+  (reader-instruction 30/30, emphasis-word 30/30), and at or near zero on every
+  habit that is a shape — antithesis, closer, triad and restatement are 3 of 120
+  between them. That is the case for the reviewer prompt, per habit, in numbers.
   Three counts differ from the plan above: severity is fixed at `high` rather than
   judged, `--count` is a ceiling because an injector declines where a paragraph
-  offers no site, and there is no sample corpus, because neither repository holds
-  prose that no model touched.
-  **The source bullet above is not yet satisfied.** The 280 injections went into
-  posts from `pavanrao.github.io`, which Pavan confirms were all model-written to
-  his instructions, so the eval subtracts every finding the detector already makes
-  on the untouched draft. That is honest arithmetic on contaminated source and not
-  the same as clean source; a run on public-domain prose is still owed. (An earlier
-  version of this note read "three posts written eight months before this tooling
-  existed" and quoted 111, from the run before the subtraction.)
+  offers no site, and the corpus is fetched rather than shipped.
+  (An earlier run used posts from `pavanrao.github.io` as the human baseline; Pavan
+  confirmed they were all model-written to his instructions. docs/014 §2 keeps the
+  superseded claim and §5b the superseded numbers.)
 
 ### 218. `ai-sniffer` — the tells in your own draft ✅ ⭐⭐ 💻 🔌
 Counts the habits that make prose read as machine-written, and refuses to say

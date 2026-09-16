@@ -78,11 +78,14 @@ numbers stay the headline.
 
 **Source text matters.** Inject into prose no model wrote. Injecting into an
 AI-drafted post measures habits on top of habits, and the labels no longer say
-what is ground truth and what was already there. Where clean source is not
-available, `eval/per_habit_recall.py` records everything the detector says about
-the untouched draft and subtracts it, so a habit that was already there cannot be
-credited to the injection. That is honest arithmetic on contaminated source, not a
-substitute for clean source.
+what is ground truth and what was already there. `corpus/fetch.py` downloads the
+reference corpus: three Simon Willison posts, 2018 to 2021, hash-pinned and not
+committed, because they carry no reuse licence.
+
+The eval discounts whatever the detector already says about the untouched draft,
+which matters even on clean source: the linter reports 56 findings on those 4,695
+human-written words before anything is injected, 37 of them one-sentence
+paragraphs. A detector is never credited for a habit that was there first.
 
 **Word-borrowing is approximate.** `fragment` and `triad` take a noun from the
 paragraph by looking for what an article points at, which is right most of the

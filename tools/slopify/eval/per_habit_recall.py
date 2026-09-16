@@ -20,7 +20,7 @@ import re
 import subprocess
 import sys
 import tempfile
-from collections import defaultdict
+from collections import Counter, defaultdict
 from pathlib import Path
 
 REPO = Path(__file__).resolve().parents[3]
@@ -51,13 +51,29 @@ def findings(path: Path) -> list[tuple[int, str, str]]:
     return out
 
 
-def baseline(path: Path) -> set[tuple[str, str]]:
+def baseline(path: Path) -> Counter[tuple[str, str]]:
     """What the detector says about the draft before anything is injected.
 
-    Matched on habit and text, never on line number, because an injection above a
-    pre-existing finding moves it down the file.
+    Counted, not just collected, and matched on habit and text rather than line,
+    because an injection above a pre-existing finding moves it down the file. The
+    count matters: the human sources already contain the word "exactly", so
+    injecting another one has to show up as a second instance and not be cancelled
+    by the first.
     """
-    return {(habit, flat(text)) for _, habit, text in findings(path)}
+    return Counter((habit, flat(text)) for _, habit, text in findings(path))
+
+
+def added(found: list[tuple[int, str, str]], already: Counter[tuple[str, str]]):
+    """The findings this injection is responsible for, one instance at a time."""
+    remaining = already.copy()
+    new = []
+    for line, habit, text in found:
+        key = (habit, flat(text))
+        if remaining[key]:
+            remaining[key] -= 1
+        else:
+            new.append((line, habit, text))
+    return new
 
 
 def main(sources: list[Path]) -> int:
@@ -98,7 +114,7 @@ def main(sources: list[Path]) -> int:
                 injected[habit] += 1
                 # Only what the injection added: a finding the detector already
                 # made on the untouched draft is not evidence about this habit.
-                found = [f for f in findings(draft) if (f[1], flat(f[2])) not in already]
+                found = added(findings(draft), already)
                 quote = flat(label["quote"])
                 if any(flat(t) and (flat(t) in quote or quote in flat(t)) for _, _, t in found):
                     quoted[habit] += 1

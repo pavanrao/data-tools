@@ -33,7 +33,8 @@ _STOPWORDS = frozenset(_STOPWORDS_TEXT.split())
 #: habit it was asked for.
 _LOWERABLE_TEXT = """a an the this that these those it its there here we you they he she his her
     their our some most many both one two three each every all no none such if when
-    where while because although since after before what which who"""
+    where while because although since after before what which who
+    but and so yet or nor then though however"""
 _LOWERABLE = frozenset(_LOWERABLE_TEXT.split())
 
 

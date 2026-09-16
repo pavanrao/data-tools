@@ -34,34 +34,37 @@ habits* those numbers are made of.
 AI-drafted post measures habits on top of habits, and the labels stop saying which
 is which.
 
-> **Corrected 2026-09-16.** This section previously read: *"The measurement in §5
-> uses three posts from `pavanrao.github.io` written in January 2026, eight months
-> before any of this tooling existed. They carry 0.4 to 2.6 contractions per 100
-> words and sentence-length variation of 0.51 to 0.72, against 0.1 and 1.04 for the
-> posts drafted with Claude — which is itself a small piece of evidence that they
-> are the human baseline they are being used as."* Every post on that blog was
-> written by a model to Pavan's instructions, the January ones included. The source
-> for §5 is model-written, and the sentence calling it a human baseline was an
-> inference I drew from style statistics and then presented as evidence.
+The corpus is three posts by Simon Willison, published 2018 to 2021: a named
+engineer arguing a technical case in public, which is the register ai-sniffer is
+aimed at. 4,108 prose words across 120 paragraphs. They carry no reuse licence, so
+`tools/slopify/corpus/fetch.py` downloads them and the repository holds the hashes
+rather than the prose, following the precedent in
+`tools/chunking-lab/benchmarks/fetch.py`. The hash is taken over the extracted
+prose and not the HTML, because the page template carries a sponsor block that
+changes weekly while the article does not. Provenance and the licence position are
+recorded in `tools/slopify/corpus/SOURCE.md`.
 
-Two things follow from that. **The measurement now subtracts a baseline.** Every finding the detector already
-makes on the untouched draft is recorded before anything is injected and excluded
-afterwards, matched on habit and text rather than line, since an injection moves
-everything below it. A habit that was there already cannot be credited to the
-injection. The three sources carry 13, 14 and 17 findings before any injection, so
-this is not a small correction: it removed 21 of the 132 "on line" credits. What it
-cannot remove is that an injection sometimes lands in a paragraph that already had
-a habit, which is a site the detector had two reasons to flag. Prose no model wrote
-is still wanted, and neither repository contains any.
+One limit to carry: every habit is measured against one author's voice, so a
+detector tuned to these numbers would be tuned to him. Widening the corpus to
+several authors is the obvious next improvement.
 
-**The style statistics separate two sets of model-written posts, not human from
-machine.** The January posts really do carry 0.4 to 2.6 contractions per 100 words
-against 0.1 for the September ones, and sentence-length variation of 0.51 to 0.72
-against 1.04. Both sets came from a model. Those numbers track register and
-instructions, and reading origin out of them is the mistake
-[docs/012](012_ai-sniffer.md) says the tool exists to avoid — which did not stop me
-making it here, from ai-sniffer's own output, in the document explaining why the
-tool has no verdict mode.
+> **Corrected 2026-09-16.** This section first claimed three posts from
+> `pavanrao.github.io` as its human baseline, on the grounds that they were written
+> in January 2026, *"eight months before any of this tooling existed"*, and cited
+> their contraction rate and sentence-length variation as evidence: *"which is
+> itself a small piece of evidence that they are the human baseline they are being
+> used as."* Every post on that blog was written by a model to Pavan's
+> instructions. Reading authorship out of style statistics is the mistake
+> [docs/012](012_ai-sniffer.md) says this tool exists to avoid, and the statistics
+> in question were ai-sniffer's own output. §5 now runs on the Willison corpus; the
+> superseded table is kept there.
+
+The measurement also subtracts a baseline, which is worth keeping even on clean
+source, because human prose contains these habits too. Every finding the detector
+makes on the untouched draft is counted first and then discounted, matched on habit
+and text rather than line, since an injection moves everything below it. Counted,
+not merely collected: the sources already contain the word *exactly*, so injecting
+another has to register as a second instance rather than be cancelled by the first.
 
 ## 3. Design
 
@@ -113,56 +116,74 @@ for what an article points at is right most of the time and occasionally picks a
 compound's modifier, so `that finish line` yields *finish*. The shape is still the
 habit; the word is sometimes odd.
 
-## 5. The first measurement: what `ai-sniffer check` can and cannot see
+## 5. What `ai-sniffer check` can and cannot see
 
-280 single-habit injections — 11 habits × 3 posts × 10 seeds, minus the
-combinations that found no site — scored against `ai-sniffer check`, the model-free
-linter. **Quoted** means the linter's own quote overlaps the injected one. **On
-line** is the generous reading: any finding within one line of the injection, which
-credits coincidence and is reported so the strict number can be read against it.
-Both columns exclude what the linter already said about the untouched draft, per §2.
+### 5a. What it says about human prose, before anything is injected
+
+The corpus is 4,695 words of technical blogging that no model wrote. The
+model-free linter reports **56 findings** in it:
+
+| habit | findings |
+| --- | --- |
+| one-sentence-paragraph | 37 |
+| emphasis-word | 13 |
+| hedge | 4 |
+| reader-instruction | 1 |
+| even-rhythm | 1 |
+| **total** | **56** |
+
+This is the *break it on purpose* step [#218](../IDEAS.md) asked for, and it is the
+strongest argument in this repository for why ai-sniffer has no verdict mode. Two
+thirds of those findings are one-sentence paragraphs, which in this author's hands
+are a house style rather than a tell: he writes them deliberately and often. A
+threshold over this corpus would call a working engineer's blog machine-written.
+
+Which is also why every recall figure below discounts them. A detector cannot be
+credited for finding a habit that was in the prose before slopify touched it.
+
+### 5b. Per-habit recall
+
+320 single-habit injections — 11 habits × 3 posts × 10 seeds, minus combinations
+that found no site. **Quoted** means the linter's own quote overlaps the injected
+one. **On line** is the looser reading: any finding within one line of the
+injection. Both discount the baseline in §5a.
 
 | habit | injected | quoted | on line |
 | --- | --- | --- | --- |
 | reader-instruction | 30 | 30 | 30 |
-| emphasis-word | 20 | 20 | 20 |
-| dramatic-beat | 30 | 19 | 22 |
-| hedge | 20 | 17 | 17 |
-| cliche-emphasis | 30 | 13 | 14 |
-| generic-detail | 10 | 7 | 7 |
-| fragment | 30 | 1 | 1 |
-| restatement | 30 | 0 | 0 |
-| antithesis | 20 | 0 | 0 |
+| emphasis-word | 30 | 30 | 25 |
+| hedge | 30 | 21 | 21 |
+| dramatic-beat | 30 | 21 | 11 |
+| generic-detail | 20 | 11 | 11 |
+| cliche-emphasis | 30 | 8 | 8 |
+| fragment | 30 | 5 | 3 |
+| restatement | 30 | 2 | 2 |
+| triad | 30 | 1 | 0 |
+| antithesis | 30 | 0 | 0 |
 | closer | 30 | 0 | 0 |
-| triad | 30 | 0 | 0 |
-| **total** | **280** | **107** | **111** |
-
-> **Corrected 2026-09-16.** The first version of this table was run without the
-> baseline subtraction and read 111 quoted and 132 on line, with dramatic-beat 21/23,
-> cliche-emphasis 14/16, generic-detail 7/10, fragment 1/3, restatement 1/1,
-> antithesis 0/2, closer 0/3 and triad 0/7. The strict column moved by 4 and the
-> generous one by 21, which is the useful part: matching the detector's own quote
-> against the injected words survived the contamination almost intact, and crediting
-> anything found near the injected line did not.
+| **total** | **320** | **129** | **106** |
 
 The line this draws is the one the tool was built to draw, and it is sharper than
 the overall figure in [docs/012](012_ai-sniffer.md) §4 could ever be. The linter is
-at or near perfect on the habits that are a word list — an opener it can match, an
-intensifier, a softened universal — and at zero on every habit that is a *shape*.
-Antithesis, closer, triad and restatement are **0 of 110** between them, by either
-column. `fragment` at 1 of 30 is the same story.
+perfect on the two habits that are a closed word list it can match — an opener, an
+intensifier — good on a third, and at or near zero on every habit that is a
+*shape*. Antithesis, closer, triad and restatement are **3 of 120** between them.
 
-This is not a defect in the linter. It is the reason ai-sniffer ships a reviewer
-prompt at all, and it now has a number attached per habit instead of an argument.
-The same 280 drafts are what the model reviewers should be run against next, which
-turns "Sonnet caught 35 to 41 of 62" into a statement about which habits those were.
-Running that on source no model wrote would settle §2's remaining doubt at the same
-time.
+That is not a defect in the linter; it is the reason ai-sniffer ships a reviewer
+prompt at all, and it now has a number per habit instead of an argument. The same
+320 drafts are what the model reviewers should be run against next, which turns
+"Sonnet caught 35 to 41 of 62" into a statement about which habits those were.
 
-Two counts are lower than 30 because the sources offered no site: `antithesis`
-needs a copula with a subject that is a thing, and `generic-detail` needs a figure
-with a noun after it. Those absences are visible in the table rather than hidden
-in a percentage.
+`generic-detail` is 20 rather than 30 because one post contains no figure with a
+noun after it for the injector to replace. That absence is visible in the table
+instead of hidden in a percentage.
+
+> **Superseded 2026-09-16.** The first version of this section ran on three posts
+> from `pavanrao.github.io`, before Pavan confirmed they were model-written (§2).
+> Over 280 injections it read 111 quoted and 132 on line; adding the baseline
+> subtraction brought it to 107 and 111. Those numbers described a detector scored
+> against contaminated source, and the fault they carried was the source, not the
+> arithmetic — the shape habits were already at or near zero there too.
 
 ## 6. Where it fits
 
