@@ -10,7 +10,12 @@ Findings the reviewer already made on the *untouched* draft are discounted first
 counted rather than merely collected, so a second instance of a habit the prose
 already had is still credited to the injection that added it.
 
-    uv run python tools/slopify/eval/score_reviewer.py RUN_DIR
+    uv run python tools/slopify/eval/score_reviewer.py RUN_DIR [TOOL]
+
+With TOOL, it reads NAME.TOOL.findings.json and SOURCE.TOOL.findings.json instead,
+which is what `run_linters.py --drafts-dir` writes for the other linters. Those tools
+report their own rule names rather than catalogue habits, so the `named` column is
+zero for them by construction and only `caught` is comparable.
 
 RUN_DIR holds, per draft: NAME.labels.jsonl (from slopify) and NAME.findings.json
 (from the reviewer), plus baseline-SOURCE.findings.json for each untouched source.
@@ -85,7 +90,8 @@ def discount(found: list[dict], already: list[dict]) -> list[dict]:
     return kept
 
 
-def main(run: Path) -> int:
+def main(run: Path, tool: str = "") -> int:
+    suffix = f".{tool}" if tool else ""
     injected: Counter[str] = Counter()
     caught: Counter[str] = Counter()
     named: Counter[str] = Counter()  # caught *and* called the right habit
@@ -98,9 +104,10 @@ def main(run: Path) -> int:
     for labels_path in drafts:
         stem = labels_path.name[: -len(".labels.jsonl")]
         labels = load(labels_path)
-        found = load(run / f"{stem}.findings.json")
+        found = load(run / f"{stem}{suffix}.findings.json")
         source = stem.rsplit("--", 1)[0]
-        found = discount(found, load(run / f"baseline-{source}.findings.json"))
+        baseline = f"{source}{suffix}.findings.json" if tool else f"baseline-{source}.findings.json"
+        found = discount(found, load(run / baseline))
         for label in labels:
             injected[label["habit"]] += 1
             per_source[source][0] += 1
@@ -124,7 +131,7 @@ def main(run: Path) -> int:
 
 
 if __name__ == "__main__":
-    if len(sys.argv) != 2:
+    if len(sys.argv) not in (2, 3):
         print(__doc__, file=sys.stderr)
         raise SystemExit(2)
-    raise SystemExit(main(Path(sys.argv[1])))
+    raise SystemExit(main(Path(sys.argv[1]), sys.argv[2] if len(sys.argv) == 3 else ""))

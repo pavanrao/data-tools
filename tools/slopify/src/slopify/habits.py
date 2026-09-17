@@ -170,13 +170,26 @@ def fragment(text: str, rng: random.Random) -> Injection | None:
     return Injection("fragment", f"{text.rstrip()} {quote}", quote)
 
 
+#: Several surface forms, because one fixed opener makes the habit detectable by
+#: matching that string. vale-ai-tells caught 28 of 32 injected triads by matching
+#: the literal "Three things follow:" 27 times — scoring the template, not the habit.
+#: See docs/014 §5e.
+_TRIADS = (
+    "It is {a}, {b} and {c}, all at once.",
+    "{A}, {b}, {c}: the three of them together.",
+    "That covers {a}, {b} and {c}.",
+    "Three things are in play here — {a}, {b} and {c}.",
+    "You are looking at {a}, at {b}, and at {c}.",
+)
+
+
 def triad(text: str, rng: random.Random) -> Injection | None:
     """Add a sentence whose only shape is three of something."""
     words = _content_words(text)
     if len(set(words)) < 3:
         return None
     a, b, c = rng.sample(sorted(set(words)), 3)
-    quote = f"Three things follow: {a}, {b} and {c}."
+    quote = rng.choice(_TRIADS).format(a=a, b=b, c=c, A=a[0].upper() + a[1:])
     return Injection("triad", f"{text.rstrip()} {quote}", quote)
 
 
@@ -244,6 +257,16 @@ def closer(text: str, rng: random.Random) -> Injection | None:
     return Injection("closer", f"{text.rstrip()} {quote}", quote)
 
 
+#: As with _TRIADS: one opener is a string to match, not a habit to detect.
+_RESTATEMENTS = (
+    "Put another way, {s}.",
+    "Which is to say, {s}.",
+    "The same point again: {s}.",
+    "In other words, {s}.",
+    "To say it once more, {s}.",
+)
+
+
 def restatement(text: str, rng: random.Random) -> Injection | None:
     """Say the previous sentence again, adding nothing."""
     index = _pick_sentence(text, rng)
@@ -255,7 +278,7 @@ def restatement(text: str, rng: random.Random) -> Injection | None:
     said = parts[index].rstrip(" .!?—–-:;")
     if not said:
         return None
-    quote = f"Put another way, {_lower_first(said)}."
+    quote = rng.choice(_RESTATEMENTS).format(s=_lower_first(said), S=said)
     parts.insert(index + 1, quote)
     return Injection("restatement", _rejoin(parts), quote)
 

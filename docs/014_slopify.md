@@ -282,6 +282,48 @@ linter, which scores near zero on those same conspicuous insertions.
 session limit. Per-habit counts of 25 to 28 rather than a flat 30 are that, not a
 property of the corpus.
 
+### 5e. Every detector, and the fault the comparison exposed
+
+The same 327 injections, scored against every tool in
+[docs/013](013_ai-sniffer-linter-comparison.md) plus the model reviewer. All of them
+see the same drafts and the same ground truth, and all of them have whatever they say
+about the untouched posts discounted first.
+
+| detector | caught, of 327 |
+| --- | --- |
+| Sonnet reviewer | 256 |
+| wsc | 124 |
+| vale-ai-tells | 123 |
+| `ai-sniffer check` | 123 |
+| slopscore | 58 |
+| slop | 56 |
+| slopless | 52 |
+| sloplint | 19 |
+| slop-lint | 4 |
+
+**And then the per-habit column broke the conclusion §5c had reached.** vale-ai-tells
+catches `triad` 28 of 32 and `restatement` 24 of 30 — the rhetorical shapes that §5c
+said needed a reader, found by a regex linter. That was worth checking rather than
+writing up, and the check is one line: vale's most frequent matches across the run are
+`"Three things follow:"` 27 times and `"Put another way"` 24 times.
+
+Those are slopify's own template strings. `triad` and `restatement` each had one
+surface form and no other, so a tool whose word list happens to contain that opener scores
+near the top of the column while understanding nothing about the habit. **The benchmark was
+measuring template-detectability and reporting it as habit-detectability**, and it was
+being gamed by a tool that had no idea it was in a benchmark.
+
+The templates now have five surface forms each, which reduces the effect without
+removing it: every injector still draws from a fixed list of phrasings, and a detector
+tuned to those phrasings would still score above its true ability. The honest reading
+of every number in §5b, §5c and this table is **an upper bound on each detector,
+inflated by however much of its word list overlaps slopify's templates** — and the
+overlap is measurable per tool, which is the next thing worth running.
+
+This is the sharpest form of the limit §2 states. A template on demand is not a model
+left alone, and the gap is not a caveat at the bottom of a page: it is large enough to
+reverse a conclusion.
+
 ## 6. Where it fits
 
 Before post 3 of the [#218 series](../IDEAS.md), whose comparison it strengthens:

@@ -213,12 +213,61 @@ def write_run(path: Path, findings: list[dict]) -> None:
     path.write_text(f"```json\n{body}\n```\n", encoding="utf-8")
 
 
+def _run_over(args: argparse.Namespace, drafts: list[Path]) -> int:
+    """The same tools over an arbitrary directory of Markdown drafts.
+
+    Findings land as <stem>.<tool>.findings.json next to the drafts, which is the
+    shape slopify's score_reviewer.py reads. The drafts are already Markdown, so
+    there is no HTML view to build.
+    """
+    for draft in drafts:
+        # Resumable: seven tools over a long corpus is slow enough that a killed
+        # run should not start again from the first draft.
+        if all(
+            (draft.parent / f"{draft.stem}.{tool}.findings.json").exists() for tool in ADAPTERS
+        ):
+            continue
+        view = draft.read_text(encoding="utf-8")
+        counts = {}
+        for tool, cmd in commands(args.tools_dir, draft).items():
+            done = subprocess.run(cmd, capture_output=True, text=True, cwd=args.tools_dir)
+            try:
+                found = ADAPTERS[tool](done.stdout, view)
+            except (json.JSONDecodeError, KeyError, TypeError) as exc:
+                print(f"  {tool} on {draft.name}: unreadable ({exc}); {done.stderr[:120]}")
+                continue
+            out = draft.parent / f"{draft.stem}.{tool}.findings.json"
+            out.write_text(
+                json.dumps(
+                    [
+                        {"line": f["line"], "habit": None, "severity": "n/a", "quote": f["quote"]}
+                        for f in found
+                    ],
+                    ensure_ascii=False,
+                ),
+                encoding="utf-8",
+            )
+            counts[tool] = len(found)
+        print(draft.name, counts, flush=True)
+    return 0
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
     parser.add_argument("--tools-dir", type=Path, required=True)
+    parser.add_argument(
+        "--drafts-dir",
+        type=Path,
+        help="run over every .md here instead of the eval drafts, and write "
+        "<stem>.findings.json beside them for a scorer that reads that shape "
+        "(slopify's eval does). Nothing else changes: same tools, same adapters.",
+    )
     args = parser.parse_args(argv)
     from ai_sniffer.document import read
     from ai_sniffer.signals import check
+
+    if args.drafts_dir:
+        return _run_over(args, sorted(args.drafts_dir.glob("*.md")))
 
     meta = build_labels.load_meta()
     with tempfile.TemporaryDirectory() as tmp:
