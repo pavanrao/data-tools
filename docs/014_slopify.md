@@ -344,6 +344,24 @@ This is the sharpest form of the limit §2 states. A template on demand is not a
 left alone, and the gap is not a caveat at the bottom of a page: it is large enough to
 reverse a conclusion.
 
+**A grammatical form of the same fault, found 2026-09-17** while writing the blog post
+that covers this work. The `hedge` injector mapped `each` to `most`, so
+"opens each page" became "opens most page". `each` takes a singular noun and `most`
+takes a plural one. That is ungrammatical at 14 of the 70 hedge sites in the reference
+corpus, roughly a fifth of them.
+
+Pluralising the noun does not fix it, because the disagreement moves to the verb:
+"each index is rebuilt nightly" becomes "most indexes is rebuilt nightly". `each` now
+maps to "nearly every", which takes a singular noun and was not already in the table,
+so the habit keeps four distinct surface forms.
+
+The point is the same as the template fault above. Injected text that is detectable by
+being ungrammatical is detectable by something other than the habit, and a detector
+could score on that instead. The runs in §5b, §5c and the table above predate this fix
+and are left as they were reported; `ai-sniffer check` matches the hedge word list
+either way, so the effect on its column should be nil, but that has not been
+re-measured.
+
 ## 6. Where it fits
 
 Before post 3 of the [#218 series](../IDEAS.md), whose comparison it strengthens:
