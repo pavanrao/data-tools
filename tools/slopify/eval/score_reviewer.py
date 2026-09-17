@@ -114,7 +114,9 @@ def main(run: Path) -> int:
     print(f"{'habit':<20}{'injected':>9}{'caught':>8}{'named':>7}")
     for habit in sorted(injected):
         print(f"{habit:<20}{injected[habit]:>9}{caught[habit]:>8}{named[habit]:>7}")
-    print(f"{'total':<20}{sum(injected.values()):>9}{sum(caught.values()):>8}{sum(named.values()):>7}")
+    print(
+        f"{'total':<20}{sum(injected.values()):>9}{sum(caught.values()):>8}{sum(named.values()):>7}"
+    )
     print(f"\n{'source':<36}{'injected':>9}{'caught':>8}")
     for source, (n, hit) in sorted(per_source.items()):
         print(f"{source:<36}{n:>9}{hit:>8}")
