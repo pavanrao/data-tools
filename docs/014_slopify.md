@@ -118,72 +118,87 @@ habit; the word is sometimes odd.
 
 ## 5. What `ai-sniffer check` can and cannot see
 
+The corpus is six posts by four authors — Simon Willison, Haki Benita, Daniel Abadi
+and Andy Pavlo — published 2018 to 2022. 12,268 words of prose that no model wrote.
+Provenance, licence position and the one caveat are in
+`tools/slopify/corpus/SOURCE.md`.
+
 ### 5a. What it says about human prose, before anything is injected
 
-The corpus is 4,695 words of technical blogging that no model wrote. The
-model-free linter reports **56 findings** in it:
+The model-free linter reports **100 findings** across that corpus:
 
-| habit | findings |
-| --- | --- |
-| one-sentence-paragraph | 37 |
-| emphasis-word | 13 |
-| hedge | 4 |
-| reader-instruction | 1 |
-| even-rhythm | 1 |
-| **total** | **56** |
+| source | words | findings | per 1,000 words |
+| --- | --- | --- | --- |
+| willison-2018-datasette-ideas | 2,690 | 34 | 12.6 |
+| willison-2021-standing-out | 489 | 6 | 12.3 |
+| willison-2018-docker-images | 1,516 | 16 | 10.6 |
+| benita-2021-hash-indexes | 2,208 | 18 | 8.2 |
+| starburst-2021-data-mesh | 2,335 | 16 | 6.9 |
+| pavlo-2022-databases-review | 3,030 | 10 | 3.3 |
+| **total** | **12,268** | **100** | **8.2** |
 
-This is the *break it on purpose* step [#218](../IDEAS.md) asked for, and it is the
-strongest argument in this repository for why ai-sniffer has no verdict mode. Two
-thirds of those findings are one-sentence paragraphs, which in this author's hands
-are a house style rather than a tell: he writes them deliberately and often. A
-threshold over this corpus would call a working engineer's blog machine-written.
+Those 100 split by habit as one-sentence-paragraph 56, emphasis-word 23, hedge 17,
+reader-instruction 2 and even-rhythm 2. This is the *break it on purpose* step [#218](../IDEAS.md) asked for, and it is the
+strongest argument in this repository for why ai-sniffer has no verdict mode. More
+than half the findings are one-sentence paragraphs, which in Willison's hands are a
+house style: he writes them deliberately and often, and his rate is nearly four
+times Pavlo's. A threshold tuned on this corpus would rank four working engineers
+by how much they resemble a machine, and would put the one with the most distinctive
+voice at the top.
 
-Which is also why every recall figure below discounts them. A detector cannot be
-credited for finding a habit that was in the prose before slopify touched it.
+That spread is also why the figure has to be read per author rather than as one
+number. The same linter, on the same kind of writing, varies by 4x depending on who
+is writing.
+
+Which is why every recall figure below discounts it. A detector cannot be credited
+for finding a habit that was in the prose before slopify touched it.
 
 ### 5b. Per-habit recall
 
-320 single-habit injections — 11 habits × 3 posts × 10 seeds, minus combinations
+650 single-habit injections — 11 habits × 6 posts × 10 seeds, minus combinations
 that found no site. **Quoted** means the linter's own quote overlaps the injected
 one. **On line** is the looser reading: any finding within one line of the
 injection. Both discount the baseline in §5a.
 
 | habit | injected | quoted | on line |
 | --- | --- | --- | --- |
-| reader-instruction | 30 | 30 | 30 |
-| emphasis-word | 30 | 30 | 25 |
-| hedge | 30 | 21 | 21 |
-| dramatic-beat | 30 | 21 | 11 |
-| generic-detail | 20 | 11 | 11 |
-| cliche-emphasis | 30 | 8 | 8 |
-| fragment | 30 | 5 | 3 |
-| restatement | 30 | 2 | 2 |
-| triad | 30 | 1 | 0 |
-| antithesis | 30 | 0 | 0 |
-| closer | 30 | 0 | 0 |
-| **total** | **320** | **129** | **106** |
+| reader-instruction | 60 | 60 | 48 |
+| emphasis-word | 60 | 60 | 48 |
+| dramatic-beat | 60 | 44 | 25 |
+| hedge | 60 | 30 | 30 |
+| cliche-emphasis | 60 | 13 | 14 |
+| generic-detail | 50 | 12 | 16 |
+| fragment | 60 | 7 | 5 |
+| restatement | 60 | 3 | 3 |
+| triad | 60 | 1 | 0 |
+| antithesis | 60 | 0 | 0 |
+| closer | 60 | 0 | 0 |
+| **total** | **650** | **230** | **189** |
 
 The line this draws is the one the tool was built to draw, and it is sharper than
 the overall figure in [docs/012](012_ai-sniffer.md) §4 could ever be. The linter is
 perfect on the two habits that are a closed word list it can match — an opener, an
-intensifier — good on a third, and at or near zero on every habit that is a
-*shape*. Antithesis, closer, triad and restatement are **3 of 120** between them.
+intensifier — good on a paragraph shape it can count, and at or near zero on every
+habit that is a *rhetorical* shape. Antithesis, closer, triad and restatement are
+**4 of 240** between them.
 
 That is not a defect in the linter; it is the reason ai-sniffer ships a reviewer
 prompt at all, and it now has a number per habit instead of an argument. The same
-320 drafts are what the model reviewers should be run against next, which turns
+650 drafts are what the model reviewers should be run against next, which turns
 "Sonnet caught 35 to 41 of 62" into a statement about which habits those were.
 
-`generic-detail` is 20 rather than 30 because one post contains no figure with a
+`generic-detail` is 50 rather than 60 because one post contains no figure with a
 noun after it for the injector to replace. That absence is visible in the table
 instead of hidden in a percentage.
 
-> **Superseded 2026-09-16.** The first version of this section ran on three posts
-> from `pavanrao.github.io`, before Pavan confirmed they were model-written (§2).
-> Over 280 injections it read 111 quoted and 132 on line; adding the baseline
-> subtraction brought it to 107 and 111. Those numbers described a detector scored
-> against contaminated source, and the fault they carried was the source, not the
-> arithmetic — the shape habits were already at or near zero there too.
+> **Superseded twice, 2026-09-16.** The first run used three posts from
+> `pavanrao.github.io` before Pavan confirmed they were model-written (§2): 280
+> injections, 111 quoted, falling to 107 once the baseline subtraction was added.
+> The second used three Willison posts only: 320 injections, 129 quoted, with a
+> 56-finding baseline over 4,695 words. Widening to four authors changed the
+> proportions — `hedge` fell from 21/30 to 30/60 and `dramatic-beat` rose from 21/30
+> to 44/60 — and left the conclusion where it was: the rhetorical shapes stay at or
+> near zero.
 
 ## 6. Where it fits
 

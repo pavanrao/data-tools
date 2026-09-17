@@ -79,13 +79,17 @@ numbers stay the headline.
 **Source text matters.** Inject into prose no model wrote. Injecting into an
 AI-drafted post measures habits on top of habits, and the labels no longer say
 what is ground truth and what was already there. `corpus/fetch.py` downloads the
-reference corpus: three Simon Willison posts, 2018 to 2021, hash-pinned and not
-committed, because they carry no reuse licence.
+reference corpus — six posts by Simon Willison, Haki Benita, Daniel Abadi and Andy
+Pavlo, 2018 to 2022 — hash-pinned and not committed, because none of them carries a
+reuse licence. `corpus/SOURCE.md` records provenance, including the one post whose
+date does not settle it.
 
 The eval discounts whatever the detector already says about the untouched draft,
-which matters even on clean source: the linter reports 56 findings on those 4,695
-human-written words before anything is injected, 37 of them one-sentence
-paragraphs. A detector is never credited for a habit that was there first.
+which matters even on clean source: the linter reports 100 findings across those
+12,268 human-written words before anything is injected, 56 of them one-sentence
+paragraphs. The rate varies by author from 3.3 to 12.6 per thousand words, so it has
+to be read per author rather than as one number. A detector is never credited for a
+habit that was there first.
 
 **Word-borrowing is approximate.** `fragment` and `triad` take a noun from the
 paragraph by looking for what an article points at, which is right most of the
