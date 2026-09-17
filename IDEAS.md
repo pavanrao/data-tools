@@ -1171,10 +1171,19 @@ repository's own documentation.
   2. *The reviewer.* The catalogue prompt, why it only quotes, and the eval:
      Haiku, Sonnet and local models (qwen2.5:7b, llama3.1:8b) on recall, false
      alarms, dollars and time per 1,000 words, chunked and unchunked.
-  3. *Against the market.* Both tools and the open-source ones on one set of
-     drafts. Before this runs, add drafts by other writers and labels from someone
-     other than the original labeller, and report each tool on its own categories
-     as well as on ours, so the comparison isn't scored on our home ground.
+  3. *Against the market.* ✅ **Drafted 2026-09-17 as "What the Benchmark Measured".**
+     Nine detectors over 327 habits injected by #219 into six posts by four other
+     engineers: Sonnet 256, wsc 124, vale 123, `ai-sniffer check` 123, slopscore 58,
+     slop 56, slopless 52, sloplint 19, slop-lint 4. Two of the three preconditions
+     were met and one was replaced. Other writers' drafts: yes, 12,268 words by
+     Willison, Benita, Abadi and Pavlo. A second labeller: **not recruited** —
+     injection removes the labeller instead, which is stronger for per-habit recall
+     and answers nothing about whether the catalogue's categories are the right ones.
+     Each tool on its own categories: **not done**, and still owed; every tool is
+     scored on whether it quoted our injected span.
+     The post's result is that the benchmark flattered whichever tool shared slopify's
+     phrasing — vale scored 28 of 32 triads by matching one template string — so every
+     figure in it is an upper bound. docs/014 §5e.
   0. *An overview post* linking the four, written last, so a reader arriving at any one
      of them can find the rest. Pavan's idea, 2026-09-16.
   4. *The revised tool.* Write down what changes and why from posts 2 and 3 before
