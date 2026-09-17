@@ -198,7 +198,13 @@ _HEDGES = {
     "all": "most",
     "always": "nearly always",
     "never": "hardly ever",
-    "each": "most",
+    #: Not "most": "each" takes a singular noun and "most" takes a plural one, so
+    #: that substitution wrote "opens most page". Pluralising the noun only moves
+    #: the disagreement onto the verb ("most indexes is rebuilt"), so the
+    #: replacement has to take a singular noun too. An injector that leaves
+    #: ungrammatical text is detectable by something other than the habit, which
+    #: is the fault of a fixed template in another form — see docs/014 §5e.
+    "each": "nearly every",
 }
 
 
