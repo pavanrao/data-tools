@@ -1094,6 +1094,17 @@ number or a name with "surprisingly" (generic-detail); insert "exactly" before a
   docs/014 §5d records the three faults in that run: one reviewer consulted the linter
   (effect measured, none detectable at this sample size), the injected habits read as
   conspicuous to reviewers, and a session limit left four drafts unreviewed.
+- **The benchmark turned out to be gameable, and a regex linter was gaming it.** All
+  nine detectors over the same 327 injections: Sonnet 256, wsc 124, vale 123,
+  `ai-sniffer check` 123, slopscore 58, slop 56, slopless 52, sloplint 19, slop-lint 4.
+  But vale caught triad 28/32 and restatement 24/30 — the shapes supposedly needing a
+  reader — by matching "Three things follow:" 27 times and "Put another way" 24 times,
+  which were slopify's only surface forms for those two habits. Giving each five forms
+  costs vale 7 triad catches and 10 findings overall while `ai-sniffer check` does not
+  move, since its rules never held those phrases. So every recall figure is an upper
+  bound inflated by whatever a detector's rules share with these templates, and the
+  next real improvement is surface forms drawn from the paragraph rather than a list.
+  docs/014 §5e.
   Three counts differ from the plan above: severity is fixed at `high` rather than
   judged, `--count` is a ceiling because an injector declines where a paragraph offers
   no site, and the corpus is fetched rather than shipped.

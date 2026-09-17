@@ -178,7 +178,7 @@ _TRIADS = (
     "It is {a}, {b} and {c}, all at once.",
     "{A}, {b}, {c}: the three of them together.",
     "That covers {a}, {b} and {c}.",
-    "Three things are in play here — {a}, {b} and {c}.",
+    "Three things are in play here: {a}, {b} and {c}.",  # no em dash: vale rules on it
     "You are looking at {a}, at {b}, and at {c}.",
 )
 

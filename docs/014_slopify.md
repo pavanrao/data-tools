@@ -313,12 +313,32 @@ near the top of the column while understanding nothing about the habit. **The be
 measuring template-detectability and reporting it as habit-detectability**, and it was
 being gamed by a tool that had no idea it was in a benchmark.
 
-The templates now have five surface forms each, which reduces the effect without
-removing it: every injector still draws from a fixed list of phrasings, and a detector
-tuned to those phrasings would still score above its true ability. The honest reading
-of every number in §5b, §5c and this table is **an upper bound on each detector,
-inflated by however much of its word list overlaps slopify's templates** — and the
-overlap is measurable per tool, which is the next thing worth running.
+**How much it was worth, measured.** Both injectors were given five surface forms,
+the 30 drafts regenerated, and the same tools re-run:
+
+| | fixed template | five forms |
+| --- | --- | --- |
+| vale, triad | 28 of 32 | **21 of 32** |
+| vale, restatement | 24 of 30 | **22 of 30** |
+| vale, total | 123 | **113** |
+| `ai-sniffer check`, total | 123 | 123 |
+
+vale loses 7 of its triad catches and 10 findings overall. `ai-sniffer check` does not
+move at all, which is the control the comparison needed: its signals are word lists for
+hedges and intensifiers plus a paragraph-shape count, none of which touch these
+openers, so it had nothing to lose. The drop belongs to the one tool whose rules
+contained the phrase.
+
+It reduces the effect without removing it. vale still finds 21 of 32 triads, so some
+of that column is genuine three-item-list matching rather than my opener, and every
+injector still draws from a fixed list of phrasings. The honest reading of every number
+in §5b, §5c and this table is **an upper bound on each detector, inflated by however
+much of its rules overlap slopify's templates**.
+
+One more artifact turned up in the fix itself: a replacement triad template used an em
+dash, which vale rules on directly. It was removed, and re-running showed vale's score
+unchanged — those em-dash matches were in the source prose already and the baseline
+discount had been removing them.
 
 This is the sharpest form of the limit §2 states. A template on demand is not a model
 left alone, and the gap is not a caveat at the bottom of a page: it is large enough to
