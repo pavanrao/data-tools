@@ -102,3 +102,19 @@ def test_label_is_hashable_and_comparable():
     a = Label("hedge", "almost every", 3, 0, 1)
     b = Label("hedge", "almost every", 3, 0, 1)
     assert a == b
+
+
+def test_habits_are_spread_evenly_rather_than_picked_at_random():
+    """Uneven cells make a per-habit score meaningless, so every habit takes a turn."""
+    from collections import Counter
+
+    long_draft = "\n\n".join(
+        f"The retriever ranks every chunk against question {n} and returns the top few. "
+        f"It is a simple component and it never changes between runs of the tool. "
+        f"We measured 472 questions on the corpus and the score was 17.7 for that run."
+        for n in range(12)
+    )
+    _, labels = slop(long_draft, seed=5, count=22)
+    counts = Counter(label.habit for label in labels)
+    assert len(counts) >= 8, f"only {len(counts)} habits used: {counts}"
+    assert max(counts.values()) - min(counts.values()) <= 2, counts

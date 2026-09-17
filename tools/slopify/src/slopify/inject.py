@@ -95,20 +95,32 @@ def slop(
     per_paragraph: Counter[int] = Counter()
     placed: list[tuple[int, str, str]] = []
 
+    # Balanced by habit, not by paragraph. Each round offers every habit one
+    # placement, so a habit that finds no site in this paragraph tries the next
+    # one instead of losing its turn. Rotating by paragraph instead produced 56
+    # cliche-emphasis against 7 generic-detail on the reference corpus, because
+    # the habits that decline most often kept being skipped — and a per-habit
+    # score computed from seven instances is not a score.
+    queue = list(names)
+    rng.shuffle(queue)
+    cursor = 0  # where to start looking for a paragraph, so placements spread out
+
     while len(placed) < count:
         progress = False
-        for index in order:
+        for name in queue:
             if len(placed) >= count:
                 break
-            if per_paragraph[index] >= MAX_PER_PARAGRAPH:
-                continue
-            for name in rng.sample(names, len(names)):
+            for step in range(len(order)):
+                index = order[(cursor + step) % len(order)]
+                if per_paragraph[index] >= MAX_PER_PARAGRAPH:
+                    continue
                 result = INJECTORS[name](blocks[index].text, rng)
                 if result is None:
                     continue
                 blocks[index].text = result.text
                 placed.append((index, name, result.quote))
                 per_paragraph[index] += 1
+                cursor = (cursor + step + 1) % len(order)
                 progress = True
                 break
         if not progress:

@@ -153,6 +153,28 @@ is writing.
 Which is why every recall figure below discounts it. A detector cannot be credited
 for finding a habit that was in the prose before slopify touched it.
 
+**The model reviewer was run over the same six untouched posts**, and reports 65
+findings against the linter's 100. The totals are the least interesting part, because
+per post the two disagree in both directions:
+
+| post | linter | model |
+| --- | --- | --- |
+| willison-2018-datasette-ideas | 34 | 16 |
+| benita-2021-hash-indexes | 18 | 7 |
+| willison-2018-docker-images | 16 | 2 |
+| starburst-2021-data-mesh | 16 | 19 |
+| pavlo-2022-databases-review | 10 | 9 |
+| willison-2021-standing-out | 6 | 12 |
+| **total** | **100** | **65** |
+
+They are not reading the same text the same way. The linter's findings are
+one-sentence paragraphs and intensifiers; the model's are triads, closers and hedges,
+which the linter cannot see. On the docker post the linter fires sixteen times at a
+paragraph shape this author uses on purpose and the model finds two things; on the
+data-mesh piece the model finds nineteen rhetorical figures in an academic's
+argumentative prose. Their false positives on human writing barely overlap, which is
+the same shape as the recall result in §5c.
+
 ### 5b. Per-habit recall
 
 650 single-habit injections — 11 habits × 6 posts × 10 seeds, minus combinations
@@ -199,6 +221,66 @@ instead of hidden in a percentage.
 > proportions — `hedge` fell from 21/30 to 30/60 and `dramatic-beat` rose from 21/30
 > to 44/60 — and left the conclusion where it was: the rhetorical shapes stay at or
 > near zero.
+
+### 5c. The same drafts, reviewed by a model
+
+The point of §5b is not that the linter is weak. It is that the habits split into two
+kinds, and the second kind needs a reader. So the same injected drafts went to the
+Sonnet reviewer that ai-sniffer ships, run as a Claude Code subagent because
+`ai-sniffer review` needs an API key and this account has no credits.
+
+26 drafts, 283 injections, plus a separate review of each untouched post whose
+findings are discounted as in §5a. Counts differ from §5b because a session limit
+ended the run with four drafts unreviewed.
+
+| habit | injected | model caught | model named | linter, for comparison |
+| --- | --- | --- | --- | --- |
+| triad | 28 | **28** | 28 | 1 of 60 |
+| restatement | 26 | **26** | 26 | 3 of 60 |
+| fragment | 26 | **26** | 24 | 7 of 60 |
+| closer | 26 | **25** | 21 | 0 of 60 |
+| reader-instruction | 26 | 25 | 25 | 60 of 60 |
+| emphasis-word | 28 | 25 | 25 | 60 of 60 |
+| cliche-emphasis | 26 | 24 | 24 | 13 of 60 |
+| antithesis | 25 | **23** | 21 | 0 of 60 |
+| generic-detail | 21 | 13 | 4 | 12 of 50 |
+| dramatic-beat | 25 | **5** | 3 | 44 of 60 |
+| hedge | 26 | **4** | 4 | 30 of 60 |
+| **total** | **283** | **224** | **205** | |
+
+**The two detectors are close to complementary.** The four habits the linter cannot
+see at all — antithesis, closer, triad, restatement — the model catches 102 times out
+of 105. The two the linter is best at, hedge and dramatic-beat, the model catches 9
+times out of 51. Neither is a better version of the other, and a tool that
+reported one number from both would be adding two unrelated error sources.
+
+**Caught is not the same as named.** `generic-detail` is quoted 13 times and called
+`generic-detail` only 4 of them; the model finds the vague passage and files it under
+another habit. A per-habit claim therefore has to say which column it means.
+
+### 5d. Three things wrong with the run above
+
+**One reviewer used the linter.** The prompt did not forbid it, and the agent handling
+five drafts said it ran `ai-sniffer check --json` first "as a hint" for the
+linter-countable habits. That breaks the independence the comparison rests on. The
+re-run without it was killed by the session limit, so the effect was measured by
+dropping those five drafts instead: 185 of 228 against 224 of 283, and every
+linter-countable habit within a few points — hedge 14% against 15%, emphasis-word 87%
+against 89%, reader-instruction 95% against 96%. The contamination is real and its
+effect is not detectable at this sample size. The prompt now forbids it.
+
+**The injected habits are conspicuous.** Two reviewers, unprompted, described them as
+nonsensical or ungrammatical: a triad whose three items are an odd word list, a
+verbless "Two Ns, both familiar" tag, insertions that "often made ungrammatical by the
+insertion", which is why one rated them all high severity. So part of what the model
+is detecting is *damage*, not *habit*, and the recall figures above overstate what it
+would do against the same habits written fluently. This is §2's limit arriving with
+evidence: a template on demand is not a model left alone. It does not rescue the
+linter, which scores near zero on those same conspicuous insertions.
+
+**Four drafts are missing**, two Starburst and two Pavlo, because the run hit the
+session limit. Per-habit counts of 25 to 28 rather than a flat 30 are that, not a
+property of the corpus.
 
 ## 6. Where it fits
 

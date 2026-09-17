@@ -1071,21 +1071,32 @@ number or a name with "surprisingly" (generic-detail); insert "exactly" before a
 - **Covers:** §4 What alignment does to style · §5 Task metrics vs. vibes · building
   ground truth rather than judging it.
 - **Built:** [`tools/slopify/`](./tools/slopify/), eleven injectors, stdlib only.
-  Design record [`docs/014`](./docs/014_slopify.md). Source prose is three Simon
-  Willison posts from 2018 to 2021, downloaded by `corpus/fetch.py` and hash-pinned
-  rather than committed, since they carry no reuse licence.
-  Two measurements came out of it. **The linter fires 56 times on 4,695 words of
-  human technical blogging before anything is injected** — 37 of them one-sentence
-  paragraphs, which this author writes deliberately. That is the *break it on
-  purpose* step, and the best argument in the repo for having no verdict mode.
-  **Per-habit recall over 320 single-habit injections, discounting that baseline:
-  129 quoted.** Perfect on the habits that are a closed word list
-  (reader-instruction 30/30, emphasis-word 30/30), and at or near zero on every
-  habit that is a shape — antithesis, closer, triad and restatement are 3 of 120
-  between them. That is the case for the reviewer prompt, per habit, in numbers.
+  Design record [`docs/014`](./docs/014_slopify.md). Source prose is six posts by four
+  authors — Willison, Benita, Abadi, Pavlo, 2018 to 2022, 12,268 prose words —
+  downloaded by `corpus/fetch.py` and hash-pinned rather than committed, since none
+  carries a reuse licence.
+  **The linter fires 100 times on that untouched human prose**, 56 of them
+  one-sentence paragraphs, at a rate varying by author from 3.3 to 12.6 per thousand
+  words. A threshold tuned there would rank four working engineers by how much they
+  resemble a machine. That is the *break it on purpose* step, and the best argument in
+  the repo for having no verdict mode.
+  **Per-habit recall, linter, over 650 single-habit injections: 230 quoted.** Perfect
+  where the habit is a closed word list (reader-instruction 60/60, emphasis-word
+  60/60) and at or near zero where it is a rhetorical shape — antithesis, closer,
+  triad and restatement are 4 of 240 between them.
+  **Per-habit recall, Sonnet reviewer, over 283 of the same injections: 224 caught**,
+  run as a Claude Code subagent because the account has no API credits. It is the
+  mirror image: 102 of 105 on the four shapes the linter cannot see, and 9 of 51 on
+  hedge and dramatic-beat, which the linter is best at. On the untouched posts it
+  reports 65 findings to the linter's 100, and per post the two disagree in both
+  directions. So the result is not a ranking — the habits split into countable and
+  rhetorical, and each detector owns one half, which is the argument for shipping both.
+  docs/014 §5d records the three faults in that run: one reviewer consulted the linter
+  (effect measured, none detectable at this sample size), the injected habits read as
+  conspicuous to reviewers, and a session limit left four drafts unreviewed.
   Three counts differ from the plan above: severity is fixed at `high` rather than
-  judged, `--count` is a ceiling because an injector declines where a paragraph
-  offers no site, and the corpus is fetched rather than shipped.
+  judged, `--count` is a ceiling because an injector declines where a paragraph offers
+  no site, and the corpus is fetched rather than shipped.
   (An earlier run used posts from `pavanrao.github.io` as the human baseline; Pavan
   confirmed they were all model-written to his instructions. docs/014 §2 keeps the
   superseded claim and §5b the superseded numbers.)
