@@ -1,0 +1,20 @@
+{
+  "model": "llama3.1:latest",
+  "parameters": "8.0B",
+  "quantization": "Q4_K_M",
+  "digest": null,
+  "num_ctx": 32768,
+  "prompt_tokens": 5823,
+  "output_tokens": 688,
+  "seconds": {
+    "prompt": 30.3,
+    "output": 34.8,
+    "total": 66.7
+  },
+  "truncated": false,
+  "setup": "llama3.1-8b+linter",
+  "draft": "clean-protocol-after.md",
+  "neutral_name": "draft-2.md",
+  "run": 2,
+  "linter": true
+}

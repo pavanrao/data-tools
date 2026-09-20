@@ -1,0 +1,298 @@
+{
+ "version": "0.14.0",
+ "input": {
+  "source_type": "markdown",
+  "source": "sample.md",
+  "profile": "blog",
+  "language": "en",
+  "word_count": 30
+ },
+ "score": {
+  "slop_score": 93.2,
+  "label": "mild",
+  "confidence": 0.25,
+  "strictness": "conservative",
+  "abstained": true,
+  "abstention_reason": "Only 30 words: too short to assign a confident label (reliable above ~300)."
+ },
+ "dimensions": {
+  "lexical_markers": 1.0,
+  "formulaic_structure": 0.0,
+  "genericity": 1.0,
+  "redundancy": 0.0,
+  "cadence_sameness": 0.0,
+  "unsupported_claims": 0.0,
+  "prompt_residue": 0.0,
+  "significance_inflation": 1.0,
+  "insight_signaling": 0.0,
+  "performative_candor": 0.0,
+  "metadiscourse": 0.0,
+  "superficial_analysis": 0.0,
+  "weasel_attribution": 0.0,
+  "parallelism": 0.0,
+  "copula_avoidance": 0.0,
+  "formatting_tells": 0.0,
+  "structure_tells": 0.0,
+  "human_writing_signals": 0.0,
+  "optional_ai_detector": null
+ },
+ "evidence": [
+  {
+   "rule_id": "GENERIC_SENTENCE",
+   "severity": "low",
+   "span": "It didn't degrade. ",
+   "start_char": 8,
+   "end_char": 27,
+   "explanation": "5 of 5 sentences carry no name, number, date, URL, or identifier (genericity 1.00); this is one.",
+   "suggestion": null,
+   "kind": "summary"
+  },
+  {
+   "rule_id": "GENERIC_SENTENCE",
+   "severity": "low",
+   "span": "Note that this is not a bug, but a feature \u2014 and it delves into the rich tapestry of data.\n\n",
+   "start_char": 41,
+   "end_char": 133,
+   "explanation": "5 of 5 sentences carry no name, number, date, URL, or identifier (genericity 1.00); this is one.",
+   "suggestion": null,
+   "kind": "summary"
+  },
+  {
+   "rule_id": "LEXICAL_OVERPOLISHED_VERBS",
+   "severity": "medium",
+   "span": "delves",
+   "start_char": 93,
+   "end_char": 99,
+   "explanation": "Over-polished verb associated with LLM prose.",
+   "suggestion": null,
+   "kind": "finding"
+  },
+  {
+   "rule_id": "SIGNIF_RICH_HERITAGE",
+   "severity": "medium",
+   "span": "rich tapestry",
+   "start_char": 109,
+   "end_char": 122,
+   "explanation": "'rich cultural heritage / vibrant tapestry' travel-guide puffery.",
+   "suggestion": null,
+   "kind": "finding"
+  },
+  {
+   "rule_id": "LEXICAL_SYNTHETIC_SOPHISTICATION",
+   "severity": "medium",
+   "span": "tapestry",
+   "start_char": 114,
+   "end_char": 122,
+   "explanation": "Inflated sophistication adjective common in generic LLM writing.",
+   "suggestion": null,
+   "kind": "finding"
+  },
+  {
+   "rule_id": "GENERIC_SENTENCE",
+   "severity": "low",
+   "span": "Same idea, different engine.",
+   "start_char": 133,
+   "end_char": 161,
+   "explanation": "5 of 5 sentences carry no name, number, date, URL, or identifier (genericity 1.00); this is one.",
+   "suggestion": null,
+   "kind": "summary"
+  }
+ ],
+ "warnings": [
+  "Very short text (30 words): score is low-confidence and easily skewed.",
+  "This flags writing patterns, not authorship. It cannot prove text was written by AI.",
+  "A single tell (one fancy word, one em dash) is weak alone; scores rise when tells co-occur.",
+  "Scores are unreliable on short, translated, or non-native English text, which detectors over-flag (up to ~61% false positives in one study)."
+ ],
+ "breakdown": {
+  "bias": -2.6,
+  "gain": 0.8,
+  "corroboration": 1.0,
+  "contributions": [
+   {
+    "dimension": "prompt_residue",
+    "value": 0.0,
+    "weight": 4.5,
+    "multiplier": 1.0,
+    "gate": 1.0,
+    "logit": 0.0,
+    "statistical": false,
+    "findings": 0
+   },
+   {
+    "dimension": "superficial_analysis",
+    "value": 0.0,
+    "weight": 2.8,
+    "multiplier": 1.0,
+    "gate": 1.0,
+    "logit": 0.0,
+    "statistical": false,
+    "findings": 0
+   },
+   {
+    "dimension": "significance_inflation",
+    "value": 1.0,
+    "weight": 2.8,
+    "multiplier": 1.2,
+    "gate": 1.0,
+    "logit": 2.688,
+    "statistical": false,
+    "findings": 1
+   },
+   {
+    "dimension": "formulaic_structure",
+    "value": 0.0,
+    "weight": 2.6,
+    "multiplier": 1.2,
+    "gate": 1.0,
+    "logit": 0.0,
+    "statistical": false,
+    "findings": 0
+   },
+   {
+    "dimension": "insight_signaling",
+    "value": 0.0,
+    "weight": 2.4,
+    "multiplier": 1.15,
+    "gate": 1.0,
+    "logit": 0.0,
+    "statistical": false,
+    "findings": 0
+   },
+   {
+    "dimension": "weasel_attribution",
+    "value": 0.0,
+    "weight": 2.0,
+    "multiplier": 1.0,
+    "gate": 1.0,
+    "logit": 0.0,
+    "statistical": false,
+    "findings": 0
+   },
+   {
+    "dimension": "unsupported_claims",
+    "value": 0.0,
+    "weight": 1.6,
+    "multiplier": 1.1,
+    "gate": 1.0,
+    "logit": 0.0,
+    "statistical": false,
+    "findings": 0
+   },
+   {
+    "dimension": "genericity",
+    "value": 1.0,
+    "weight": 0.8,
+    "multiplier": 1.2,
+    "gate": 1.0,
+    "logit": 0.768,
+    "statistical": true,
+    "findings": 0
+   },
+   {
+    "dimension": "redundancy",
+    "value": 0.0,
+    "weight": 1.2,
+    "multiplier": 1.0,
+    "gate": 1.0,
+    "logit": 0.0,
+    "statistical": true,
+    "findings": 0
+   },
+   {
+    "dimension": "cadence_sameness",
+    "value": 0.0,
+    "weight": 0.9,
+    "multiplier": 0.8,
+    "gate": 1.0,
+    "logit": 0.0,
+    "statistical": true,
+    "findings": 0
+   },
+   {
+    "dimension": "lexical_markers",
+    "value": 1.0,
+    "weight": 2.2,
+    "multiplier": 1.0,
+    "gate": 1.0,
+    "logit": 1.76,
+    "statistical": false,
+    "findings": 2
+   },
+   {
+    "dimension": "parallelism",
+    "value": 0.0,
+    "weight": 1.6,
+    "multiplier": 1.0,
+    "gate": 1.0,
+    "logit": 0.0,
+    "statistical": false,
+    "findings": 0
+   },
+   {
+    "dimension": "copula_avoidance",
+    "value": 0.0,
+    "weight": 1.4,
+    "multiplier": 1.0,
+    "gate": 1.0,
+    "logit": 0.0,
+    "statistical": false,
+    "findings": 0
+   },
+   {
+    "dimension": "formatting_tells",
+    "value": 0.0,
+    "weight": 0.8,
+    "multiplier": 1.0,
+    "gate": 1.0,
+    "logit": 0.0,
+    "statistical": false,
+    "findings": 0
+   },
+   {
+    "dimension": "structure_tells",
+    "value": 0.0,
+    "weight": 1.0,
+    "multiplier": 1.0,
+    "gate": 1.0,
+    "logit": 0.0,
+    "statistical": false,
+    "findings": 0
+   },
+   {
+    "dimension": "performative_candor",
+    "value": 0.0,
+    "weight": 1.8,
+    "multiplier": 1.1,
+    "gate": 1.0,
+    "logit": 0.0,
+    "statistical": false,
+    "findings": 0
+   },
+   {
+    "dimension": "metadiscourse",
+    "value": 0.0,
+    "weight": 2.0,
+    "multiplier": 1.15,
+    "gate": 1.0,
+    "logit": 0.0,
+    "statistical": false,
+    "findings": 0
+   },
+   {
+    "dimension": "human_writing_signals",
+    "value": 0.0,
+    "weight": -2.2,
+    "multiplier": 1.0,
+    "gate": 1.0,
+    "logit": -0.0,
+    "statistical": true,
+    "findings": 0
+   }
+  ],
+  "statistical_logit": 0.768
+ },
+ "baseline": null,
+ "authorship": null,
+ "original_text": "Sample\n\nIt didn't degrade. It collapsed. Note that this is not a bug, but a feature \u2014 and it delves into the rich tapestry of data.\n\nSame idea, different engine."
+}

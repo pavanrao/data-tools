@@ -1,0 +1,76 @@
+{
+ "sample.md": [
+  {
+   "Action": {
+    "Name": "",
+    "Params": null
+   },
+   "Suggestions": [],
+   "Span": [
+    77,
+    77
+   ],
+   "Check": "ai-tells.EmDashUsage",
+   "Description": "",
+   "Link": "",
+   "Message": "AI punctuation: em-dash detected. Use a comma, period, or parentheses instead.",
+   "Severity": "error",
+   "Match": "\u2014",
+   "Line": 3
+  },
+  {
+   "Action": {
+    "Name": "",
+    "Params": null
+   },
+   "Suggestions": [],
+   "Span": [
+    86,
+    91
+   ],
+   "Check": "ai-tells.OverusedVocabulary",
+   "Description": "",
+   "Link": "",
+   "Message": "AI vocabulary: 'delves'. Replace with a more specific or common word.",
+   "Severity": "error",
+   "Match": "delves",
+   "Line": 3
+  },
+  {
+   "Action": {
+    "Name": "",
+    "Params": null
+   },
+   "Suggestions": [],
+   "Span": [
+    102,
+    114
+   ],
+   "Check": "ai-tells.AICompoundPhrases",
+   "Description": "",
+   "Link": "",
+   "Message": "AI fingerprint: 'rich tapestry'. Rewrite with concrete specifics instead of this clich\u00e9d phrase.",
+   "Severity": "error",
+   "Match": "rich tapestry",
+   "Line": 3
+  },
+  {
+   "Action": {
+    "Name": "",
+    "Params": null
+   },
+   "Suggestions": [],
+   "Span": [
+    1,
+    28
+   ],
+   "Check": "ai-tells.MicDrop",
+   "Description": "",
+   "Link": "",
+   "Message": "AI mic-drop: 'Same idea, different engine.'. Integrate the point into the surrounding text or cut it.",
+   "Severity": "error",
+   "Match": "Same idea, different engine.",
+   "Line": 5
+  }
+ ]
+}

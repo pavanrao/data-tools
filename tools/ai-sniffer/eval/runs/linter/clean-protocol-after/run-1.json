@@ -1,0 +1,96 @@
+{
+  "path": "draft-2.md",
+  "format": "markdown",
+  "metrics": {
+    "words": 1375,
+    "sentences": 75,
+    "paragraphs": 26,
+    "contractions": 31,
+    "contractions_per_100_words": 2.3,
+    "sentence_length": {
+      "mean": 18.3,
+      "cv": 0.51
+    },
+    "detail": {
+      "numbers": 5,
+      "dates": 5,
+      "quoted": 3,
+      "code": 34,
+      "per_100_words": 3.4
+    }
+  },
+  "findings": [
+    {
+      "signal": "one-sentence-paragraph",
+      "line": 21,
+      "quote": "I'd just built a server of my own on the new revision, and wanted to know which protocol everyone else's servers speak.",
+      "sentence": "I'd just built a server of my own on the new revision, and wanted to know which protocol everyone else's servers speak."
+    },
+    {
+      "signal": "emphasis-word",
+      "line": 26,
+      "quote": "exactly",
+      "sentence": "The trouble is that the Python SDK's client, left on its default, does exactly the negotiation you're trying to observe."
+    },
+    {
+      "signal": "emphasis-word",
+      "line": 47,
+      "quote": "actually",
+      "sentence": "I probed the six official reference servers from the MCP project, five servers published by companies whose tools people actually run, and my own as a control."
+    },
+    {
+      "signal": "one-sentence-paragraph",
+      "line": 112,
+      "quote": "Before probing any vendor servers, I'd checked the TypeScript side and written down that its SDK hadn't shipped the July revision, because the newest CODE on npm is 1.30.0 and there's no mention of CODE anywhere in its build.",
+      "sentence": "Before probing any vendor servers, I'd checked the TypeScript side and written down that its SDK hadn't shipped the July revision, because the newest CODE on npm is 1.30.0 and there's no mention of CODE anywhere in its build."
+    },
+    {
+      "signal": "hedge",
+      "line": 159,
+      "quote": "nearly any",
+      "sentence": "The Python v2 SDK's own negotiation falls back on nearly any error, which handles both kinds of refusal in the table."
+    }
+  ],
+  "closers": [
+    {
+      "line": 21,
+      "section": "",
+      "text": "I'd just built a server of my own on the new revision, and wanted to know which protocol everyone else's servers speak."
+    },
+    {
+      "line": 42,
+      "section": "You can't find out by connecting",
+      "text": "Those last two have to stay apart, because a server that never answered hasn't told you anything about which protocol it speaks."
+    },
+    {
+      "line": 106,
+      "section": "Twelve servers",
+      "text": "And CODE, which the MCP project uses to demonstrate every protocol feature, was published on 31 August, five weeks after the revision it doesn't speak."
+    },
+    {
+      "line": 125,
+      "section": "The upgrade that bumping won't get you",
+      "text": "On the Python side it's the same package, CODE, so moving is an ordinary major-version upgrade that someone has to choose to take."
+    },
+    {
+      "line": 159,
+      "section": "Two ways to say you don't know a method",
+      "text": "The Python v2 SDK's own negotiation falls back on nearly any error, which handles both kinds of refusal in the table."
+    },
+    {
+      "line": 188,
+      "section": "What running it on real servers taught me about the probe",
+      "text": "My own summary script had cut every message at 40 characters, and the full text was \"Invalid request parameters\", which matches the code."
+    },
+    {
+      "line": 202,
+      "section": "Run it yourself",
+      "text": "A server that only speaks the old protocol exits CODE, because the failure codes are kept for servers that advertise something they can't do."
+    },
+    {
+      "line": 234,
+      "section": "Loose ends",
+      "text": "Written against MCP protocol revision 2026-07-28."
+    }
+  ]
+}

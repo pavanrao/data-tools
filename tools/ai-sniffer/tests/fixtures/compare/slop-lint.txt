@@ -1,0 +1,9 @@
+
+sample.md
+  3: ✗ em-dash ×1  It didn't degrade. It collapsed. Note that this is not a bug, bu
+  3: ⚠ word "delves"
+  3: ⚠ word "tapestry"
+  3: ⚠ "rich cultural heritage/tapestry"
+
+1 em-dash failure(s), 3 warning(s) across 1 file(s).
+FAIL on em-dash; warnings are prompts to review, not bans.

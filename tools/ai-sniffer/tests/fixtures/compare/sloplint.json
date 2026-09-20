@@ -1,0 +1,41 @@
+[
+  {
+    "path": "sample.md",
+    "line": 3,
+    "column": 44,
+    "severity": "info",
+    "rule": "not-x-but-y",
+    "category": "structure",
+    "message": "\"not A but B\" is the bare AI corrective frame.",
+    "excerpt": "this is not a bug, but a feature",
+    "context": "…degrade. It collapsed. Note that [this is not a bug, but a feature] — and it delves into the rich tapestry…",
+    "rationale": "The bare 'is not A but B' corrective is the 'not just… but' move with the escalation word dropped, and models reach for it constantly. It is the noisiest rule in the catalog by design: a loose version scored 174 hits before narrowing, cut to 15 here -- but not all 15 are correctives. Some are concessions with an elided subject (Walden's 'It was not lonely, but made all the earth lonely beneath it'), which no surface pattern can tell apart from the real thing. Hence info: a flag here means 'this has the shape', not 'this is slop'.",
+    "suggestion": "Make the claim once; drop the 'not… but' frame."
+  },
+  {
+    "path": "sample.md",
+    "line": 3,
+    "column": 77,
+    "severity": "info",
+    "rule": "em-dash",
+    "category": "structure",
+    "message": "Em dash — an AI punctuation tell.",
+    "excerpt": "—",
+    "context": "…that this is not a bug, but a feature [—] and it delves into the rich tapestry…",
+    "rationale": "Models reach for the em dash by default; humans use it too, but far less often.",
+    "suggestion": "Recast with a comma, parentheses, or a separate sentence."
+  },
+  {
+    "path": "sample.md",
+    "line": 3,
+    "column": 102,
+    "severity": "warning",
+    "rule": "rich-tapestry",
+    "category": "puffery",
+    "message": "\"rich tapestry\"/\"tapestry of\" is a signature AI cliché.",
+    "excerpt": "rich tapestry",
+    "context": "…but a feature — and it delves into the [rich tapestry] of data. Same idea, different engine.",
+    "rationale": "'tapestry of' is one of the most reliable single-phrase model tells.",
+    "suggestion": "Cut the metaphor; name the actual things."
+  }
+]

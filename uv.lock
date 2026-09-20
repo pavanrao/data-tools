@@ -7,11 +7,14 @@ resolution-markers = [
 
 [manifest]
 members = [
+    "data-tools-ai-sniffer",
     "data-tools-chunking-lab",
     "data-tools-core",
+    "data-tools-discover-probe",
     "data-tools-docs-rag",
     "data-tools-ingest-ledger",
     "data-tools-repo-rag",
+    "data-tools-slopify",
     "data-tools-sqlite-mcp",
 ]
 
@@ -542,6 +545,19 @@ wheels = [
 ]
 
 [[package]]
+name = "data-tools-ai-sniffer"
+version = "0.1.0"
+source = { editable = "tools/ai-sniffer" }
+
+[package.optional-dependencies]
+llm = [
+    { name = "data-tools-core", extra = ["llm"] },
+]
+
+[package.metadata]
+requires-dist = [{ name = "data-tools-core", extras = ["llm"], marker = "extra == 'llm'", editable = "shared/data-tools-core" }]
+
+[[package]]
 name = "data-tools-chunking-lab"
 version = "0.1.0"
 source = { editable = "tools/chunking-lab" }
@@ -582,6 +598,21 @@ llm = [
 
 [package.metadata]
 requires-dist = [{ name = "litellm", marker = "extra == 'llm'", specifier = ">=1.0" }]
+
+[[package]]
+name = "data-tools-discover-probe"
+version = "0.1.0"
+source = { editable = "tools/discover-probe" }
+dependencies = [
+    { name = "data-tools-core" },
+    { name = "mcp" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "data-tools-core", editable = "shared/data-tools-core" },
+    { name = "mcp", specifier = ">=2.2.0,<3" },
+]
 
 [[package]]
 name = "data-tools-docs-rag"
@@ -666,6 +697,11 @@ requires-dist = [
     { name = "mcp", specifier = ">=2.2.0,<3" },
     { name = "sqlite-vec", specifier = ">=0.1" },
 ]
+
+[[package]]
+name = "data-tools-slopify"
+version = "0.1.0"
+source = { editable = "tools/slopify" }
 
 [[package]]
 name = "data-tools-sqlite-mcp"

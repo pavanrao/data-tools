@@ -1,0 +1,22 @@
+{
+  "model": "llama3.1:latest",
+  "parameters": "8.0B",
+  "quantization": "Q4_K_M",
+  "digest": null,
+  "num_ctx": 32768,
+  "prompt_tokens": 6429,
+  "output_tokens": 1399,
+  "seconds": {
+    "prompt": 20.0,
+    "output": 62.9,
+    "total": 87.2
+  },
+  "truncated": false,
+  "chunks": 2,
+  "unparseable_chunks": 1,
+  "setup": "llama3.1-8b+chunks",
+  "draft": "dev-database-before.html",
+  "neutral_name": "draft-3.html",
+  "run": 3,
+  "linter": false
+}

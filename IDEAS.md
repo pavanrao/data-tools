@@ -1038,7 +1038,90 @@ is a result either way.
 - **Cost note:** the metrics are cheap; the evaluation is #25's, which is free.
 - **Covers:** §2 Chunking · §5 Retrieval metrics · the reproduction habit itself.
 
-### 218. `ai-sniffer` — the tells in your own draft ⭐⭐ 💻 🔌
+### 219. `slopify` — put the tells back in, on purpose ✅ ⭐⭐ 💻
+Takes a passage a human wrote and injects the habits #218 looks for, at positions it
+records. Deterministic and seeded, so the same input and seed give the same output
+every time, and each injection is written out as a label (line, habit, quote) in the
+format `tools/ai-sniffer/eval/labels.jsonl` already uses. It's the inverse of the
+reviewer, and it exists because every number in #218's eval rests on 165 labels one
+person wrote: injection gives ground truth with no labeller's judgement in it.
+
+Transformations, one per habit in #218's catalogue: split a claim into "It isn't Y.
+It's X." (antithesis); pad a pair into three (triad); soften a universal to "almost
+every" (hedge); prefix "Note that" (reader-instruction); break a clause into a one-line
+paragraph (dramatic-beat); append a summarising line to a section (closer); replace a
+number or a name with "surprisingly" (generic-detail); insert "exactly" before a verb
+(emphasis-word).
+
+- **What it buys the eval:** per-habit recall, which the hand labels can't give — they
+  hold 34 antithesis labels and 2 restatement. Run 50 injections per habit and every
+  tool and model in the comparison gets a recall figure per habit, with no ambiguity
+  about what the right answer was.
+- **The limit, to state wherever its numbers appear:** injected habits are what a
+  template produces on demand, not what a model produces when left alone. A tool can
+  score well here and badly on real drafts, so these numbers stay a diagnostic and the
+  hand-labelled held-out numbers stay the headline.
+- **Source text matters.** Inject into prose no model wrote: Pavan's own older writing,
+  or public-domain text. Injecting into Claude-drafted posts would measure habits on
+  top of habits.
+- **The demo it makes possible:** one human paragraph, one slopped paragraph, and the
+  linter's output under each. No model needed.
+- **Where it fits:** built after Pavan's label review is applied and #218's scores are
+  final, and before post 3 of the series, whose comparison it strengthens.
+- **Covers:** §4 What alignment does to style · §5 Task metrics vs. vibes · building
+  ground truth rather than judging it.
+- **Built:** [`tools/slopify/`](./tools/slopify/), eleven injectors, stdlib only.
+  Design record [`docs/014`](./docs/014_slopify.md). Source prose is six posts by four
+  authors — Willison, Benita, Abadi, Pavlo, 2018 to 2022, 12,268 prose words —
+  downloaded by `corpus/fetch.py` and hash-pinned rather than committed, since none
+  carries a reuse licence.
+  **The linter fires 100 times on that untouched human prose**, 56 of them
+  one-sentence paragraphs, at a rate varying by author from 3.3 to 12.6 per thousand
+  words. A threshold tuned there would rank four working engineers by how much they
+  resemble a machine. That is the *break it on purpose* step, and the best argument in
+  the repo for having no verdict mode.
+  **Per-habit recall, linter, over 650 single-habit injections: 230 quoted.** Perfect
+  where the habit is a closed word list (reader-instruction 60/60, emphasis-word
+  60/60) and at or near zero where it is a rhetorical shape — antithesis, closer,
+  triad and restatement are 4 of 240 between them.
+  **Per-habit recall, Sonnet reviewer, over 283 of the same injections: 224 caught**,
+  run as a Claude Code subagent because the account has no API credits. It is the
+  mirror image: 102 of 105 on the four shapes the linter cannot see, and 9 of 51 on
+  hedge and dramatic-beat, which the linter is best at. On the untouched posts it
+  reports 65 findings to the linter's 100, and per post the two disagree in both
+  directions. So the result is not a ranking — the habits split into countable and
+  rhetorical, and each detector owns one half, which is the argument for shipping both.
+  docs/014 §5d records the three faults in that run: one reviewer consulted the linter
+  (effect measured, none detectable at this sample size), the injected habits read as
+  conspicuous to reviewers, and a session limit left four drafts unreviewed.
+- **The benchmark turned out to be gameable, and a regex linter was gaming it.** All
+  nine detectors over the same 327 injections: Sonnet 256, wsc 124, vale 123,
+  `ai-sniffer check` 123, slopscore 58, slop 56, slopless 52, sloplint 19, slop-lint 4.
+  But vale caught triad 28/32 and restatement 24/30 — the shapes supposedly needing a
+  reader — by matching "Three things follow:" 27 times and "Put another way" 24 times,
+  which were slopify's only surface forms for those two habits. Giving each five forms
+  costs vale 7 triad catches and 10 findings overall while `ai-sniffer check` does not
+  move, since its rules never held those phrases. So every recall figure is an upper
+  bound inflated by whatever a detector's rules share with these templates, and the
+  next real improvement is surface forms drawn from the paragraph rather than a list.
+  docs/014 §5e.
+  Three counts differ from the plan above: severity is fixed at `high` rather than
+  judged, `--count` is a ceiling because an injector declines where a paragraph offers
+  no site, and the corpus is fetched rather than shipped.
+  (An earlier run used posts from `pavanrao.github.io` as the human baseline; Pavan
+  confirmed they were all model-written to his instructions. docs/014 §2 keeps the
+  superseded claim and §5b the superseded numbers.)
+- **Prior art, searched after building again.** The method is mutation testing aimed
+  at a linter. [CheckList](https://aclanthology.org/2020.acl-main.442.pdf) (ACL 2020)
+  already does templated perturbation with per-capability reporting, which is what
+  per-habit recall is; [APT-Eval](https://arxiv.org/pdf/2502.15666) already builds
+  detector benchmarks by adding AI-ness to human text, using LLM polishing. What is
+  left as ours is span-level ground truth: a template gives the line and the exact
+  words, so recall can be scored against a reviewer that quotes, which polishing
+  cannot do. Reading those two first would not have stopped the build; it would have
+  made that the stated reason for it on day one.
+
+### 218. `ai-sniffer` — the tells in your own draft ✅ ⭐⭐ 💻 🔌
 Counts the habits that make prose read as machine-written, and refuses to say
 whether it was. Sentence-length variance; contraction rate; the recurring
 "not X, but Y" pivot; paragraphs that keep landing on a short sentence; hedge
@@ -1073,6 +1156,58 @@ repository's own documentation.
   measurable on their own.
 - **Covers:** §4 What alignment does to style · §5 Task metrics vs. vibes ·
   §5 Calibrated confidence & honest uncertainty.
+- **Built:** [`tools/ai-sniffer/`](./tools/ai-sniffer/), as a stdlib linter and a
+  review-only prompt that is also a Claude Code agent. The corpus-overlap and
+  surprisal parts above weren't built. The eval on 2026-09-15 used 165 hand labels on
+  six drafts and 72 model runs. Scored before the labels were reviewed, Sonnet caught
+  36 to 43 of 63 held-out habits, Haiku 7 to 10, and the linter alone 10. Design and
+  results: [`docs/012`](docs/012_ai-sniffer.md).
+- **Series, after the build** (planned 2026-09-15). Four posts, each resting on
+  something measured:
+  1. *The linter.* What `ai-sniffer check` counts, set against the open-source
+     prose linters found on 2026-09-15 (slopless, SlopScore, wsc, sloplint, slop,
+     slop-lint, vale-ai-tells) and the Antislop paper. The landscape goes here as
+     background, not as a post of its own.
+  2. *The reviewer.* The catalogue prompt, why it only quotes, and the eval:
+     Haiku, Sonnet and local models (qwen2.5:7b, llama3.1:8b) on recall, false
+     alarms, dollars and time per 1,000 words, chunked and unchunked.
+  3. *Against the market.* ✅ **Drafted 2026-09-17 as "What the Benchmark Measured".**
+     Nine detectors over 327 habits injected by #219 into six posts by four other
+     engineers: Sonnet 256, wsc 124, vale 123, `ai-sniffer check` 123, slopscore 58,
+     slop 56, slopless 52, sloplint 19, slop-lint 4. Two of the three preconditions
+     were met and one was replaced. Other writers' drafts: yes, 12,268 words by
+     Willison, Benita, Abadi and Pavlo. A second labeller: **not recruited** —
+     injection removes the labeller instead, which is stronger for per-habit recall
+     and answers nothing about whether the catalogue's categories are the right ones.
+     Each tool on its own categories: **not done**, and still owed; every tool is
+     scored on whether it quoted our injected span.
+     The post's result is that the benchmark flattered whichever tool shared slopify's
+     phrasing — vale scored 28 of 32 triads by matching one template string — so every
+     figure in it is an upper bound. docs/014 §5e.
+  0. *An overview post* linking the four, written last, so a reader arriving at any one
+     of them can find the rest. Pavan's idea, 2026-09-16.
+  4. *The revised tool.* Write down what changes and why from posts 2 and 3 before
+     rerunning, then run once on fresh held-out drafts, so the improvement isn't
+     tuned to the text it's measured on.
+     Candidates to test, cheapest first:
+     - *Quote checks in code.* Drop any finding whose quote isn't in the draft before
+       it's reported; the scorer already locates quotes, so this is a few lines.
+     - *A whole-draft pass.* After the section-by-section review, one more request
+       over the whole draft only for habits that span sections (closers repeated
+       across sections, triads used everywhere), which chunking can't see.
+     - *An agentic review.* A tool loop where the model reads sections, runs
+       `ai-sniffer check`, and re-checks its own findings against the file. Build it
+       only if the eval shows a clear gain over the two cheaper steps: in the 72
+       subagent runs, the tool loop re-sent the prompt and draft every turn and cost
+       more than a single request would.
+     - *Whether to keep our own linter rules at all.* vale-ai-tells caught 18 of 63
+       held-out habits to `ai-sniffer check`'s 10, mostly with structural rules. Our
+       linter is more precise per finding (13.5 catches per 100 findings against 8.4)
+       and it feeds the reviewer, but wrapping Vale's rules, or adopting its structural
+       ones, may beat growing our own. Decide this on the post 3 numbers.
+     - *Running the agent headless.* Claude Code's print mode (`claude -p`) should
+       run the ai-sniffer agent from a script on the Claude Code sign-in, with no API
+       key; confirm the flags for choosing an agent before relying on it.
 
 ## G. Concept notes (markdown, not code)
 
@@ -2533,7 +2668,7 @@ does instead, and if that line is weak the idea does not belong.
 
 ### M.1 · Protocol labs (#198–#207)
 
-### 198. `discover-probe` — what does this server actually support? ⭐⭐ 🔌 💻
+### 198. `discover-probe` — what does this server actually support? ✅ ⭐⭐ 🔌 💻
 Points at any MCP server and reports what it really is: which protocol revisions
 it accepts, which capabilities and extensions it advertises through
 `server/discover`, whether it still expects a handshake, and which deprecated
@@ -2551,6 +2686,15 @@ protocol catches it.
   advertisement does not match what they do.
 - **Cost note:** no model needed; it is a client. $0.
 - **Maps to:** §6 in `docs/005` — *Tool calling & MCP*.
+- **Built:** [`tools/discover-probe/`](./tools/discover-probe/). On 2026-09-14,
+  across twelve servers, the SDK's major version decided the era every time: v1
+  meant the old handshake only, v2 meant both. None of the six official reference
+  servers had migrated; Upstash, MotherDuck and AWS Labs had, Microsoft's
+  Playwright and dbt Labs had not. The two v1 SDKs also refuse an unknown method
+  with different codes, `-32601` from TypeScript and `-32602` from Python. Design
+  record [`docs/011`](docs/011_discover-probe.md), which records two claims this
+  entry first made and got wrong; evidence
+  [`evidence/discover-probe.jsonl`](evidence/discover-probe.jsonl).
 
 ### 199. `run-as-task` — the backfill that outlives the connection ⭐⭐⭐ 🔌 💻
 An eight-hour backfill cannot be a blocking tool call, and the workaround
@@ -2913,8 +3057,9 @@ the one thing nobody applies it to.
 - **Protocol surface:** the full request and result envelope including `_meta`;
   `resultType` discrimination between `complete`, `input_required` and `task`;
   `requestState` round-tripping; task polling sequences replayed in order. The SDK
-  ships no in-memory client/server pair any more, only a raw stream factory in
-  `mcp.shared.memory`, so building that harness is part of this tool rather than
+  keeps its in-memory client/server pair in a private module
+  (`mcp.client._memory`), and a live connection is not a replayable fixture
+  anyway, so building that harness is part of this tool rather than
   something it can borrow.
 - **Learn:** determinism at a protocol boundary; recording enough to replay without
   recording secrets; what an agent regression test actually has to assert.

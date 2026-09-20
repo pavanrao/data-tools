@@ -1,6 +1,7 @@
 .PHONY: help sync lint test demo demo-reconcile demo-compare demo-ask \
         demo-chunking chunking-benchmark chunking-correlate \
-        chunking-correlate-structured chunking-axes chunking-models clean
+        chunking-correlate-structured chunking-axes chunking-models \
+        demo-slopify clean
 
 help:
 	@echo "sync   install the whole collection in a dev venv"
@@ -13,6 +14,7 @@ help:
 	@echo "chunking-correlate-structured  the same, on documents with tables and code"
 	@echo "chunking-axes       is the chunker the big knob, or the retriever?"
 	@echo "chunking-models     which local model annotates best? (needs ollama)"
+	@echo "demo-slopify        inject habits into YOUR draft, then look for them again"
 
 sync:
 	uv sync --all-extras
@@ -148,8 +150,29 @@ chunking-models:
 	    --per-document 5 --seed 42 $(MODELS)
 	@rm -rf .model-compare
 
+# Ground truth with no labeller in it: inject habits at known positions, then run
+# the model-free linter over the result.
+#
+#   make demo-slopify
+#   make demo-slopify SLOPIFY_DRAFT=path/to/other-prose.md
+#
+# The draft has to be prose no model wrote, or the labels stop saying what is ground
+# truth and what was already there (docs/014 section 2). The default is the reference
+# corpus, which fetch.py downloads because it is not ours to commit.
+SLOPIFY_DRAFT ?= tools/slopify/corpus/reference/willison-2021-standing-out.md
+demo-slopify:
+	uv run python tools/slopify/corpus/fetch.py
+	@test -f "$(SLOPIFY_DRAFT)" || { echo "no such file: $(SLOPIFY_DRAFT)"; exit 2; }
+	@rm -rf .slopify && mkdir -p .slopify
+	uv run slopify inject $(SLOPIFY_DRAFT) --seed 42 --count 8 \
+	    --out .slopify/slopped.md --labels .slopify/labels.jsonl
+	@echo "\n=== what was injected, and where ===\n"
+	@cat .slopify/labels.jsonl
+	@echo "\n=== what the model-free linter finds ===\n"
+	uv run ai-sniffer check .slopify/slopped.md
+
 clean:
-	rm -rf tools/ingest-ledger/corpus/hostile tools/ingest-ledger/corpus/rfp \
+	rm -rf .slopify tools/ingest-ledger/corpus/hostile tools/ingest-ledger/corpus/rfp \
 	       tools/chunking-lab/corpus/hostile tools/chunking-lab/corpus/structured \
 	       chunking-results.jsonl chunking-structured-results.jsonl \
 	       chunking-axes-results.jsonl .model-compare \

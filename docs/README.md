@@ -29,6 +29,7 @@ Five kinds of document, deliberately kept apart. A verdict filed in a design doc
 | [`008`](008_data-engineering-coverage.md) | Data-engineering coverage — which enterprise data problems sections H–J cover, and which are bare. The second axis; `005` is the first | Current, plan |
 | [`009`](009_sqlite-mcp.md) | `sqlite-mcp` (#11) — read-only SQL as an MCP server; the guard belongs to the database | Current |
 | [`010`](010_mcp-concepts.md) | MCP concepts — the reference: every protocol concept we have built against, what it cost, and what is still only read about | Current, growing |
+| [`011`](011_discover-probe.md) | `discover-probe` (#198) — what an MCP server actually speaks; none of the reference servers speak the July revision | Current |
 
 The series is **append-only**. A superseded decision is annotated in place with
 a status line and a pointer to what replaced it, never deleted — see D1a and D2a
@@ -44,6 +45,7 @@ reason the log exists.
 | `repo-rag` | [README](../tools/repo-rag/README.md) | [`004`](004_repo-rag.md) |
 | `chunking-lab` ✅ *closed* | [README](../tools/chunking-lab/README.md), [`where-the-cut-falls.html`](where-the-cut-falls.html) | [`006`](006_chunking-lab.md), concepts in [`007`](007_chunking-concepts.md) |
 | `sqlite-mcp` | [README](../tools/sqlite-mcp/README.md), [`let-the-database-say-no.html`](let-the-database-say-no.html) | [`009`](009_sqlite-mcp.md), concepts in [`010`](010_mcp-concepts.md) |
+| `discover-probe` | [README](../tools/discover-probe/README.md) | [`011`](011_discover-probe.md), concepts in [`010`](010_mcp-concepts.md) |
 
 New tools take the next number in the series.
 

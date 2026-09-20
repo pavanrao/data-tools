@@ -1,0 +1,3890 @@
+[
+  {
+    "id": "clean-protocol-after-ce82006",
+    "draft": "clean-protocol-after.md",
+    "line": 159,
+    "quote": "nearly any",
+    "habits": {
+      "hedge": 11,
+      "fragment": 1,
+      "closer": 1,
+      "cliche-emphasis": 1
+    },
+    "severities": {
+      "medium": 11,
+      "low": 3
+    },
+    "raised_by": {
+      "haiku+linter": 3,
+      "llama3.1-8b+linter": 2,
+      "qwen2.5-7b+linter": 2,
+      "sonnet": 2,
+      "sonnet+linter": 3
+    },
+    "runs": 12
+  },
+  {
+    "id": "clean-protocol-after-cd712da",
+    "draft": "clean-protocol-after.md",
+    "line": 103,
+    "quote": "Every server on a version-one SDK spoke only the old handshake, and every server on version two spoke both.",
+    "habits": {
+      "generic-detail": 6,
+      "closer": 4,
+      "antithesis": 1,
+      "restatement": 1,
+      "fragment": 1,
+      "triad": 1,
+      "dramatic-beat": 1
+    },
+    "severities": {
+      "high": 8,
+      "low": 5,
+      "medium": 2
+    },
+    "raised_by": {
+      "haiku": 1,
+      "llama3.1-8b": 2,
+      "llama3.1-8b+chunks": 1,
+      "qwen2.5-7b": 2,
+      "qwen2.5-7b+chunks": 3,
+      "sonnet": 1,
+      "sonnet+linter": 1
+    },
+    "runs": 11
+  },
+  {
+    "id": "clean-protocol-after-cd96784",
+    "draft": "clean-protocol-after.md",
+    "line": 184,
+    "quote": "A server that never answers at all times out twice.",
+    "habits": {
+      "closer": 7,
+      "antithesis": 2,
+      "restatement": 1,
+      "cliche-emphasis": 1,
+      "triad": 1
+    },
+    "severities": {
+      "high": 4,
+      "low": 4,
+      "medium": 4
+    },
+    "raised_by": {
+      "llama3.1-8b": 1,
+      "llama3.1-8b+chunks": 1,
+      "llama3.1-8b+linter": 1,
+      "qwen2.5-7b+chunks": 2,
+      "qwen2.5-7b+linter": 1,
+      "sonnet": 3,
+      "sonnet+linter": 2
+    },
+    "runs": 11
+  },
+  {
+    "id": "clean-database-after-cd5d813",
+    "draft": "clean-database-after.html",
+    "line": 331,
+    "quote": "The server keeps returning results and you keep believing it's read-only.",
+    "habits": {
+      "closer": 8,
+      "restatement": 1,
+      "generic-detail": 1
+    },
+    "severities": {
+      "medium": 6,
+      "high": 3,
+      "low": 1
+    },
+    "raised_by": {
+      "haiku": 1,
+      "haiku+linter": 2,
+      "qwen2.5-7b": 1,
+      "qwen2.5-7b+linter": 2,
+      "sonnet": 2,
+      "sonnet+linter": 2
+    },
+    "runs": 10
+  },
+  {
+    "id": "clean-database-after-cd617b5",
+    "draft": "clean-database-after.html",
+    "line": 427,
+    "quote": "actually",
+    "habits": {
+      "emphasis-word": 7,
+      "triad": 2,
+      "antithesis": 1
+    },
+    "severities": {
+      "medium": 7,
+      "low": 2,
+      "high": 1
+    },
+    "raised_by": {
+      "haiku+linter": 3,
+      "llama3.1-8b+chunks": 1,
+      "qwen2.5-7b": 1,
+      "sonnet": 2,
+      "sonnet+linter": 2
+    },
+    "runs": 9
+  },
+  {
+    "id": "clean-protocol-after-c2a2733",
+    "draft": "clean-protocol-after.md",
+    "line": 165,
+    "quote": "the probe exited successfully. In fact it had died on startup before answering anything",
+    "habits": {
+      "antithesis": 6,
+      "dramatic-beat": 2,
+      "fragment": 2
+    },
+    "severities": {
+      "high": 4,
+      "medium": 3,
+      "low": 3
+    },
+    "raised_by": {
+      "haiku": 3,
+      "llama3.1-8b": 2,
+      "llama3.1-8b+chunks": 1,
+      "sonnet": 1,
+      "sonnet+linter": 2
+    },
+    "runs": 9
+  },
+  {
+    "id": "dev-database-before-c4cd567",
+    "draft": "dev-database-before.html",
+    "line": 497,
+    "quote": "an amount that surprises people",
+    "habits": {
+      "generic-detail": 8,
+      "hedge": 1,
+      "closer": 1
+    },
+    "severities": {
+      "high": 6,
+      "medium": 4
+    },
+    "raised_by": {
+      "haiku": 2,
+      "qwen2.5-7b+chunks": 1,
+      "sonnet": 3,
+      "sonnet+linter": 3
+    },
+    "runs": 9
+  },
+  {
+    "id": "dev-database-before-cf84f35",
+    "draft": "dev-database-before.html",
+    "line": 447,
+    "quote": "But nothing broke.",
+    "habits": {
+      "antithesis": 4,
+      "dramatic-beat": 4
+    },
+    "severities": {
+      "medium": 7,
+      "low": 1
+    },
+    "raised_by": {
+      "haiku+linter": 1,
+      "qwen2.5-7b+chunks": 1,
+      "sonnet": 3,
+      "sonnet+linter": 3
+    },
+    "runs": 8
+  },
+  {
+    "id": "clean-database-after-c93e4ce",
+    "draft": "clean-database-after.html",
+    "line": 472,
+    "quote": "Since the result isn't an error, nothing downstream treats it as a blip worth retrying.",
+    "habits": {
+      "closer": 6,
+      "cliche-emphasis": 1
+    },
+    "severities": {
+      "medium": 4,
+      "low": 2,
+      "high": 1
+    },
+    "raised_by": {
+      "haiku+linter": 2,
+      "qwen2.5-7b+chunks": 2,
+      "sonnet": 1,
+      "sonnet+linter": 2
+    },
+    "runs": 7
+  },
+  {
+    "id": "clean-database-after-c15aed1",
+    "draft": "clean-database-after.html",
+    "line": 555,
+    "quote": "Three tools felt obvious, but MCP has resources and prompts too, and a schema listing is arguably a resource",
+    "habits": {
+      "hedge": 3,
+      "antithesis": 1,
+      "triad": 1,
+      "fragment": 1,
+      "restatement": 1,
+      "cliche-emphasis": 1
+    },
+    "severities": {
+      "medium": 6,
+      "low": 2
+    },
+    "raised_by": {
+      "haiku+linter": 3,
+      "llama3.1-8b+linter": 1,
+      "qwen2.5-7b+chunks": 1,
+      "qwen2.5-7b+linter": 2
+    },
+    "runs": 7
+  },
+  {
+    "id": "dev-protocol-before-cc95e86",
+    "draft": "dev-protocol-before.md",
+    "line": 173,
+    "quote": "falls back on nearly any error",
+    "habits": {
+      "hedge": 7
+    },
+    "severities": {
+      "medium": 5,
+      "low": 2
+    },
+    "raised_by": {
+      "haiku+linter": 3,
+      "sonnet": 1,
+      "sonnet+linter": 3
+    },
+    "runs": 7
+  },
+  {
+    "id": "clean-database-after-c308c01",
+    "draft": "clean-database-after.html",
+    "line": 298,
+    "quote": "Most published examples do a version of this",
+    "habits": {
+      "hedge": 5,
+      "triad": 1
+    },
+    "severities": {
+      "low": 4,
+      "medium": 2
+    },
+    "raised_by": {
+      "llama3.1-8b+chunks": 2,
+      "sonnet": 3,
+      "sonnet+linter": 1
+    },
+    "runs": 6
+  },
+  {
+    "id": "clean-protocol-after-c270c8a",
+    "draft": "clean-protocol-after.md",
+    "line": 112,
+    "quote": "Before probing any vendor servers, I'd checked the TypeScript side and written down that its SDK hadn't shipped the July revision, because the newest `@modelcontextprotocol/sdk` on npm is 1.30.0 and there's no mention of `2026-07-28` anywhere in its build.",
+    "habits": {
+      "fragment": 5,
+      "dramatic-beat": 2,
+      "generic-detail": 2,
+      "antithesis": 1
+    },
+    "severities": {
+      "medium": 4,
+      "low": 4,
+      "high": 2
+    },
+    "raised_by": {
+      "haiku+linter": 2,
+      "llama3.1-8b": 1,
+      "llama3.1-8b+chunks": 2,
+      "qwen2.5-7b": 1
+    },
+    "runs": 6
+  },
+  {
+    "id": "clean-database-after-ce4e48a",
+    "draft": "clean-database-after.html",
+    "line": 296,
+    "quote": "Look at the statement.",
+    "habits": {
+      "reader-instruction": 3,
+      "fragment": 2
+    },
+    "severities": {
+      "low": 2,
+      "high": 2,
+      "medium": 1
+    },
+    "raised_by": {
+      "haiku+linter": 2,
+      "llama3.1-8b+linter": 1,
+      "qwen2.5-7b": 1,
+      "qwen2.5-7b+chunks": 1
+    },
+    "runs": 5
+  },
+  {
+    "id": "clean-database-after-c680bb5",
+    "draft": "clean-database-after.html",
+    "line": 404,
+    "quote": "On a warehouse that's a read-only role granted on a narrow set of views, not a string check in your server.",
+    "habits": {
+      "antithesis": 5
+    },
+    "severities": {
+      "medium": 4,
+      "low": 1
+    },
+    "raised_by": {
+      "sonnet": 2,
+      "sonnet+linter": 3
+    },
+    "runs": 5
+  },
+  {
+    "id": "clean-database-after-cc9020f",
+    "draft": "clean-database-after.html",
+    "line": 414,
+    "quote": "It got refused.",
+    "habits": {
+      "dramatic-beat": 5
+    },
+    "severities": {
+      "medium": 3,
+      "high": 2
+    },
+    "raised_by": {
+      "sonnet": 3,
+      "sonnet+linter": 2
+    },
+    "runs": 5
+  },
+  {
+    "id": "clean-database-after-c6eebc2",
+    "draft": "clean-database-after.html",
+    "line": 422,
+    "quote": "No mention of which action, which table, or which pragma.",
+    "habits": {
+      "fragment": 4,
+      "triad": 2
+    },
+    "severities": {
+      "medium": 4,
+      "low": 1,
+      "high": 1
+    },
+    "raised_by": {
+      "sonnet": 3,
+      "sonnet+linter": 2
+    },
+    "runs": 5
+  },
+  {
+    "id": "clean-protocol-after-cc1ec2d",
+    "draft": "clean-protocol-after.md",
+    "line": 131,
+    "quote": "The servers that don't speak July turn it down in two different ways, and the split follows the SDK again.",
+    "habits": {
+      "triad": 4,
+      "fragment": 2,
+      "cliche-emphasis": 1
+    },
+    "severities": {
+      "low": 3,
+      "medium": 2,
+      "high": 2
+    },
+    "raised_by": {
+      "llama3.1-8b": 1,
+      "llama3.1-8b+chunks": 1,
+      "llama3.1-8b+linter": 1,
+      "qwen2.5-7b": 1,
+      "qwen2.5-7b+chunks": 1
+    },
+    "runs": 5
+  },
+  {
+    "id": "dev-database-before-c117cc3",
+    "draft": "dev-database-before.html",
+    "line": 512,
+    "quote": "A colleague who does not write SQL, an agent running unattended, a client with no shell.",
+    "habits": {
+      "fragment": 3,
+      "triad": 3
+    },
+    "severities": {
+      "medium": 4,
+      "high": 2
+    },
+    "raised_by": {
+      "sonnet": 2,
+      "sonnet+linter": 3
+    },
+    "runs": 5
+  },
+  {
+    "id": "dev-database-before-cba871b",
+    "draft": "dev-database-before.html",
+    "line": 520,
+    "quote": "That is the problem it exists to solve, and it is why the specification compares itself to the language server protocol.",
+    "habits": {
+      "closer": 4,
+      "restatement": 1
+    },
+    "severities": {
+      "medium": 3,
+      "high": 1,
+      "low": 1
+    },
+    "raised_by": {
+      "llama3.1-8b": 1,
+      "sonnet": 1,
+      "sonnet+linter": 3
+    },
+    "runs": 5
+  },
+  {
+    "id": "heldout-where-the-cut-falls-cde2bd1",
+    "draft": "heldout-where-the-cut-falls.html",
+    "line": 769,
+    "quote": "“good chunking” is only defined relative to the questions people actually ask.",
+    "habits": {
+      "emphasis-word": 3,
+      "cliche-emphasis": 2
+    },
+    "severities": {
+      "medium": 3,
+      "high": 1,
+      "low": 1
+    },
+    "raised_by": {
+      "llama3.1-8b+chunks": 1,
+      "qwen2.5-7b+chunks": 1,
+      "sonnet": 1,
+      "sonnet+linter": 2
+    },
+    "runs": 5
+  },
+  {
+    "id": "clean-database-after-c4d3ece",
+    "draft": "clean-database-after.html",
+    "line": 276,
+    "quote": "Most SQL-over-MCP servers decide whether a query is safe by reading the query.",
+    "habits": {
+      "hedge": 4
+    },
+    "severities": {
+      "high": 2,
+      "medium": 2
+    },
+    "raised_by": {
+      "sonnet": 3,
+      "sonnet+linter": 1
+    },
+    "runs": 4
+  },
+  {
+    "id": "clean-database-after-c1bb1f9",
+    "draft": "clean-database-after.html",
+    "line": 422,
+    "quote": "I spent a while assuming I'd broken the connection string.",
+    "habits": {
+      "generic-detail": 4
+    },
+    "severities": {
+      "medium": 3,
+      "low": 1
+    },
+    "raised_by": {
+      "haiku": 1,
+      "sonnet": 1,
+      "sonnet+linter": 2
+    },
+    "runs": 4
+  },
+  {
+    "id": "clean-database-after-c976dd0",
+    "draft": "clean-database-after.html",
+    "line": 461,
+    "quote": "So a refusal comes back as an ordinary, successful result that happens to say no:",
+    "habits": {
+      "closer": 2,
+      "dramatic-beat": 1,
+      "fragment": 1
+    },
+    "severities": {
+      "medium": 2,
+      "low": 1,
+      "high": 1
+    },
+    "raised_by": {
+      "llama3.1-8b+chunks": 1,
+      "qwen2.5-7b": 1,
+      "qwen2.5-7b+chunks": 1,
+      "qwen2.5-7b+linter": 1
+    },
+    "runs": 4
+  },
+  {
+    "id": "clean-database-after-c0e0b6a",
+    "draft": "clean-database-after.html",
+    "line": 516,
+    "quote": "I'd reached the same conclusion about a different tool in this project a few weeks ago and it applies here too.",
+    "habits": {
+      "generic-detail": 3,
+      "reader-instruction": 1,
+      "dramatic-beat": 1
+    },
+    "severities": {
+      "low": 2,
+      "medium": 2,
+      "high": 1
+    },
+    "raised_by": {
+      "qwen2.5-7b+chunks": 1,
+      "sonnet": 1,
+      "sonnet+linter": 2
+    },
+    "runs": 4
+  },
+  {
+    "id": "clean-protocol-after-c382335",
+    "draft": "clean-protocol-after.md",
+    "line": 21,
+    "quote": "I'd just built a server of my own on the new revision, and wanted to know which protocol everyone else's servers speak.",
+    "habits": {
+      "dramatic-beat": 2,
+      "restatement": 1,
+      "reader-instruction": 1
+    },
+    "severities": {
+      "medium": 3,
+      "low": 1
+    },
+    "raised_by": {
+      "haiku+linter": 2,
+      "llama3.1-8b+linter": 1,
+      "qwen2.5-7b+linter": 1
+    },
+    "runs": 4
+  },
+  {
+    "id": "clean-protocol-after-c22f137",
+    "draft": "clean-protocol-after.md",
+    "line": 36,
+    "quote": "The connections have to be separate, because one that has answered discover is locked into the new protocol, so asking it for a handshake afterwards tells you about the lock and nothing about the server.",
+    "habits": {
+      "antithesis": 3,
+      "generic-detail": 1
+    },
+    "severities": {
+      "low": 2,
+      "high": 1,
+      "medium": 1
+    },
+    "raised_by": {
+      "qwen2.5-7b+chunks": 1,
+      "sonnet": 2,
+      "sonnet+linter": 1
+    },
+    "runs": 4
+  },
+  {
+    "id": "clean-protocol-after-cfb4a3b",
+    "draft": "clean-protocol-after.md",
+    "line": 53,
+    "quote": "Microsoft's Playwright server first:",
+    "habits": {
+      "fragment": 4
+    },
+    "severities": {
+      "low": 3,
+      "medium": 1
+    },
+    "raised_by": {
+      "llama3.1-8b": 1,
+      "sonnet": 2,
+      "sonnet+linter": 1
+    },
+    "runs": 4
+  },
+  {
+    "id": "clean-protocol-after-c5a6965",
+    "draft": "clean-protocol-after.md",
+    "line": 70,
+    "quote": "Upstash's Context7, run the same way:",
+    "habits": {
+      "fragment": 4
+    },
+    "severities": {
+      "low": 3,
+      "medium": 1
+    },
+    "raised_by": {
+      "llama3.1-8b": 1,
+      "sonnet": 2,
+      "sonnet+linter": 1
+    },
+    "runs": 4
+  },
+  {
+    "id": "clean-protocol-after-c22b90c",
+    "draft": "clean-protocol-after.md",
+    "line": 106,
+    "quote": "No server advertised a capability it couldn't list",
+    "habits": {
+      "closer": 2,
+      "dramatic-beat": 1,
+      "restatement": 1,
+      "fragment": 1
+    },
+    "severities": {
+      "medium": 2,
+      "low": 2,
+      "high": 1
+    },
+    "raised_by": {
+      "haiku": 1,
+      "haiku+linter": 1,
+      "llama3.1-8b": 2
+    },
+    "runs": 4
+  },
+  {
+    "id": "clean-protocol-after-cf9dd50",
+    "draft": "clean-protocol-after.md",
+    "line": 175,
+    "quote": "A crashed server now reads as unreachable, exits with a failure code, and shows the tail of its stderr.",
+    "habits": {
+      "fragment": 1,
+      "hedge": 1,
+      "closer": 1,
+      "triad": 1
+    },
+    "severities": {
+      "low": 2,
+      "medium": 1,
+      "high": 1
+    },
+    "raised_by": {
+      "llama3.1-8b": 1,
+      "llama3.1-8b+chunks": 1,
+      "qwen2.5-7b+chunks": 1,
+      "sonnet": 1
+    },
+    "runs": 4
+  },
+  {
+    "id": "clean-protocol-after-cd9210c",
+    "draft": "clean-protocol-after.md",
+    "line": 186,
+    "quote": "I'd concluded that the Python servers' error code and message contradicted each other, because the message read \"Invalid request\". My own summary script had cut every message at 40 characters, and the full text was \"Invalid request parameters\", which matches the code.",
+    "habits": {
+      "antithesis": 3,
+      "generic-detail": 1
+    },
+    "severities": {
+      "medium": 3,
+      "high": 1
+    },
+    "raised_by": {
+      "haiku": 2,
+      "llama3.1-8b+linter": 1,
+      "sonnet+linter": 1
+    },
+    "runs": 4
+  },
+  {
+    "id": "dev-database-before-cd617b5",
+    "draft": "dev-database-before.html",
+    "line": 531,
+    "quote": "actually",
+    "habits": {
+      "emphasis-word": 4
+    },
+    "severities": {
+      "medium": 3,
+      "low": 1
+    },
+    "raised_by": {
+      "haiku+linter": 3,
+      "sonnet+linter": 1
+    },
+    "runs": 4
+  },
+  {
+    "id": "dev-database-before-c994e8b",
+    "draft": "dev-database-before.html",
+    "line": 531,
+    "quote": "Test the round trip, not the registration.",
+    "habits": {
+      "antithesis": 4
+    },
+    "severities": {
+      "medium": 2,
+      "high": 1,
+      "low": 1
+    },
+    "raised_by": {
+      "sonnet": 2,
+      "sonnet+linter": 2
+    },
+    "runs": 4
+  },
+  {
+    "id": "dev-protocol-before-cf9dd50",
+    "draft": "dev-protocol-before.md",
+    "line": 191,
+    "quote": "A crashed server now reads as unreachable, exits with a failure code, and shows the tail of its stderr.",
+    "habits": {
+      "triad": 3,
+      "cliche-emphasis": 1
+    },
+    "severities": {
+      "medium": 3,
+      "low": 1
+    },
+    "raised_by": {
+      "qwen2.5-7b": 1,
+      "sonnet": 2,
+      "sonnet+linter": 1
+    },
+    "runs": 4
+  },
+  {
+    "id": "heldout-double-entry-c7b485b",
+    "draft": "heldout-double-entry.html",
+    "line": 685,
+    "quote": "Pages and nodes are not interchangeable quantities.",
+    "habits": {
+      "closer": 4
+    },
+    "severities": {
+      "medium": 3,
+      "low": 1
+    },
+    "raised_by": {
+      "sonnet": 2,
+      "sonnet+linter": 2
+    },
+    "runs": 4
+  },
+  {
+    "id": "clean-database-after-c86f781",
+    "draft": "clean-database-after.html",
+    "line": 288,
+    "quote": "Nearly all of it went on one question",
+    "habits": {
+      "hedge": 3
+    },
+    "severities": {
+      "high": 1,
+      "medium": 1,
+      "low": 1
+    },
+    "raised_by": {
+      "haiku+linter": 2,
+      "sonnet+linter": 1
+    },
+    "runs": 3
+  },
+  {
+    "id": "clean-database-after-cb9a0fb",
+    "draft": "clean-database-after.html",
+    "line": 370,
+    "quote": "It doesn't care how the statement is spelled, or whether it uses a CTE, or what SQL grows next year",
+    "habits": {
+      "triad": 3
+    },
+    "severities": {
+      "low": 2,
+      "medium": 1
+    },
+    "raised_by": {
+      "sonnet": 2,
+      "sonnet+linter": 1
+    },
+    "runs": 3
+  },
+  {
+    "id": "clean-database-after-ce82b20",
+    "draft": "clean-database-after.html",
+    "line": 514,
+    "quote": "For the case you're probably picturing, no.",
+    "habits": {
+      "dramatic-beat": 3
+    },
+    "severities": {
+      "high": 2,
+      "medium": 1
+    },
+    "raised_by": {
+      "haiku+linter": 1,
+      "sonnet": 2
+    },
+    "runs": 3
+  },
+  {
+    "id": "clean-protocol-after-c42055a",
+    "draft": "clean-protocol-after.md",
+    "line": 15,
+    "quote": "The revision removed it.",
+    "habits": {
+      "dramatic-beat": 2,
+      "restatement": 1
+    },
+    "severities": {
+      "low": 3
+    },
+    "raised_by": {
+      "llama3.1-8b": 1,
+      "sonnet": 2
+    },
+    "runs": 3
+  },
+  {
+    "id": "clean-protocol-after-c6a5fde",
+    "draft": "clean-protocol-after.md",
+    "line": 69,
+    "quote": "It doesn't know `server/discover` exists, and says so correctly",
+    "habits": {
+      "dramatic-beat": 3
+    },
+    "severities": {
+      "low": 1,
+      "high": 1,
+      "medium": 1
+    },
+    "raised_by": {
+      "llama3.1-8b": 2,
+      "llama3.1-8b+linter": 1
+    },
+    "runs": 3
+  },
+  {
+    "id": "clean-protocol-after-ca7ec87",
+    "draft": "clean-protocol-after.md",
+    "line": 88,
+    "quote": "| Server | Publisher | SDK underneath | Speaks July? |",
+    "habits": {
+      "fragment": 1,
+      "generic-detail": 1,
+      "triad": 1
+    },
+    "severities": {
+      "medium": 2,
+      "low": 1
+    },
+    "raised_by": {
+      "llama3.1-8b": 1,
+      "qwen2.5-7b": 2
+    },
+    "runs": 3
+  },
+  {
+    "id": "clean-protocol-after-c9330a1",
+    "draft": "clean-protocol-after.md",
+    "line": 153,
+    "quote": "I'd call it the likely mechanism rather than a proven one",
+    "habits": {
+      "antithesis": 1,
+      "hedge": 1,
+      "restatement": 1
+    },
+    "severities": {
+      "low": 2,
+      "medium": 1
+    },
+    "raised_by": {
+      "haiku": 1,
+      "llama3.1-8b+chunks": 1,
+      "llama3.1-8b+linter": 1
+    },
+    "runs": 3
+  },
+  {
+    "id": "clean-protocol-after-c2d8b2e",
+    "draft": "clean-protocol-after.md",
+    "line": 186,
+    "quote": "I also made a mistake outside the probe.",
+    "habits": {
+      "dramatic-beat": 3
+    },
+    "severities": {
+      "high": 2,
+      "medium": 1
+    },
+    "raised_by": {
+      "sonnet": 2,
+      "sonnet+linter": 1
+    },
+    "runs": 3
+  },
+  {
+    "id": "clean-protocol-after-c2eab7b",
+    "draft": "clean-protocol-after.md",
+    "line": 209,
+    "quote": "I also haven't probed anything running on someone else's infrastructure, because that means sending requests to their endpoints and I haven't decided to do that yet.",
+    "habits": {
+      "fragment": 2,
+      "generic-detail": 1,
+      "reader-instruction": 1
+    },
+    "severities": {
+      "low": 3,
+      "medium": 1
+    },
+    "raised_by": {
+      "haiku": 1,
+      "llama3.1-8b": 1,
+      "qwen2.5-7b+chunks": 1
+    },
+    "runs": 3
+  },
+  {
+    "id": "clean-protocol-after-cd5905c",
+    "draft": "clean-protocol-after.md",
+    "line": 220,
+    "quote": "The table will change as soon as the reference servers move to v2 SDKs",
+    "habits": {
+      "fragment": 4,
+      "closer": 1,
+      "generic-detail": 1
+    },
+    "severities": {
+      "low": 5,
+      "high": 1
+    },
+    "raised_by": {
+      "haiku": 1,
+      "llama3.1-8b": 1,
+      "llama3.1-8b+linter": 1
+    },
+    "runs": 3
+  },
+  {
+    "id": "clean-protocol-after-c6ec6b1",
+    "draft": "clean-protocol-after.md",
+    "line": 234,
+    "quote": "Written against MCP protocol revision 2026-07-28.",
+    "habits": {
+      "fragment": 2,
+      "closer": 1
+    },
+    "severities": {
+      "low": 1,
+      "high": 1,
+      "medium": 1
+    },
+    "raised_by": {
+      "llama3.1-8b": 1,
+      "llama3.1-8b+linter": 1,
+      "sonnet+linter": 1
+    },
+    "runs": 3
+  },
+  {
+    "id": "dev-database-before-ca80fca",
+    "draft": "dev-database-before.html",
+    "line": 301,
+    "quote": "Look at the SQL.",
+    "habits": {
+      "reader-instruction": 2,
+      "fragments": 1
+    },
+    "severities": {
+      "medium": 2,
+      "high": 1
+    },
+    "raised_by": {
+      "haiku+linter": 1,
+      "llama3.1-8b+linter": 1,
+      "qwen2.5-7b+chunks": 1
+    },
+    "runs": 3
+  },
+  {
+    "id": "dev-database-before-c659da8",
+    "draft": "dev-database-before.html",
+    "line": 327,
+    "quote": "a keyword scan says no to a perfectly ordinary query",
+    "habits": {
+      "emphasis-word": 3
+    },
+    "severities": {
+      "low": 2,
+      "medium": 1
+    },
+    "raised_by": {
+      "haiku+linter": 2,
+      "sonnet+linter": 1
+    },
+    "runs": 3
+  },
+  {
+    "id": "dev-database-before-c7a1373",
+    "draft": "dev-database-before.html",
+    "line": 406,
+    "quote": "On a warehouse this is a read-only role granted on a narrow set of views, not a string check in your server.",
+    "habits": {
+      "antithesis": 3
+    },
+    "severities": {
+      "medium": 3
+    },
+    "raised_by": {
+      "sonnet": 2,
+      "sonnet+linter": 1
+    },
+    "runs": 3
+  },
+  {
+    "id": "dev-database-before-caf044f",
+    "draft": "dev-database-before.html",
+    "line": 431,
+    "quote": "I would have shipped it.",
+    "habits": {
+      "dramatic-beat": 3
+    },
+    "severities": {
+      "medium": 3
+    },
+    "raised_by": {
+      "sonnet": 2,
+      "sonnet+linter": 1
+    },
+    "runs": 3
+  },
+  {
+    "id": "dev-database-before-c16bb4b",
+    "draft": "dev-database-before.html",
+    "line": 463,
+    "quote": "The result is not an error, so nothing downstream treats it as a transient failure to retry.",
+    "habits": {
+      "closer": 3
+    },
+    "severities": {
+      "medium": 3
+    },
+    "raised_by": {
+      "sonnet+linter": 3
+    },
+    "runs": 3
+  },
+  {
+    "id": "dev-database-before-ce9561d",
+    "draft": "dev-database-before.html",
+    "line": 538,
+    "quote": "Nothing errors, nothing warns, and the tool looks identical in a listing.",
+    "habits": {
+      "triad": 2,
+      "generic-detail": 1
+    },
+    "severities": {
+      "medium": 2,
+      "low": 1
+    },
+    "raised_by": {
+      "qwen2.5-7b+linter": 1,
+      "sonnet": 1,
+      "sonnet+linter": 1
+    },
+    "runs": 3
+  },
+  {
+    "id": "dev-protocol-before-c4d0937",
+    "draft": "dev-protocol-before.md",
+    "line": 23,
+    "quote": "actually speak",
+    "habits": {
+      "emphasis-word": 3
+    },
+    "severities": {
+      "medium": 2,
+      "low": 1
+    },
+    "raised_by": {
+      "haiku+linter": 1,
+      "sonnet": 1,
+      "sonnet+linter": 1
+    },
+    "runs": 3
+  },
+  {
+    "id": "heldout-double-entry-c17faad",
+    "draft": "heldout-double-entry.html",
+    "line": 357,
+    "quote": "Suppose you have a folder of business documents",
+    "habits": {
+      "reader-instruction": 3
+    },
+    "severities": {
+      "high": 2,
+      "medium": 1
+    },
+    "raised_by": {
+      "sonnet": 2,
+      "sonnet+linter": 1
+    },
+    "runs": 3
+  },
+  {
+    "id": "heldout-double-entry-cac80c1",
+    "draft": "heldout-double-entry.html",
+    "line": 358,
+    "quote": "contracts, spreadsheets, scanned forms, a zip file somebody emailed you &mdash;",
+    "habits": {
+      "reader-instruction": 2,
+      "generic-detail": 1
+    },
+    "severities": {
+      "low": 1,
+      "high": 1,
+      "medium": 1
+    },
+    "raised_by": {
+      "llama3.1-8b+chunks": 1,
+      "sonnet+linter": 2
+    },
+    "runs": 3
+  },
+  {
+    "id": "heldout-double-entry-c8a4f35",
+    "draft": "heldout-double-entry.html",
+    "line": 837,
+    "quote": "An evaluation set for the thresholds. Questions paired with known-correct refuse-or-answer decisions, so the constants above stop being guesses and start being measured.",
+    "habits": {
+      "antithesis": 3
+    },
+    "severities": {
+      "high": 1,
+      "low": 1,
+      "medium": 1
+    },
+    "raised_by": {
+      "llama3.1-8b+chunks": 1,
+      "sonnet": 1,
+      "sonnet+linter": 1
+    },
+    "runs": 3
+  },
+  {
+    "id": "heldout-where-the-cut-falls-cde963c",
+    "draft": "heldout-where-the-cut-falls.html",
+    "line": 1073,
+    "quote": "most obviously",
+    "habits": {
+      "hedge": 2,
+      "closer": 1
+    },
+    "severities": {
+      "medium": 3
+    },
+    "raised_by": {
+      "llama3.1-8b+chunks": 2,
+      "sonnet+linter": 1
+    },
+    "runs": 3
+  },
+  {
+    "id": "clean-database-after-c9198dc",
+    "draft": "clean-database-after.html",
+    "line": 303,
+    "quote": "Here's what mine already needed to get right, before anything unusual turned up:",
+    "habits": {
+      "fragment": 1,
+      "antithesis": 1
+    },
+    "severities": {
+      "medium": 2
+    },
+    "raised_by": {
+      "qwen2.5-7b+linter": 2
+    },
+    "runs": 2
+  },
+  {
+    "id": "clean-database-after-ce93f75",
+    "draft": "clean-database-after.html",
+    "line": 327,
+    "quote": "They're patches against shapes somebody happened to think of, and the list of shapes belongs to whoever maintains the SQL dialect rather than to me.",
+    "habits": {
+      "generic-detail": 2
+    },
+    "severities": {
+      "high": 1,
+      "low": 1
+    },
+    "raised_by": {
+      "qwen2.5-7b+chunks": 2
+    },
+    "runs": 2
+  },
+  {
+    "id": "clean-database-after-c913a65",
+    "draft": "clean-database-after.html",
+    "line": 329,
+    "quote": "The part that bothered me more is that the failures are quiet.",
+    "habits": {
+      "dramatic-beat": 1,
+      "closer": 1
+    },
+    "severities": {
+      "high": 1,
+      "medium": 1
+    },
+    "raised_by": {
+      "llama3.1-8b+chunks": 1,
+      "llama3.1-8b+linter": 1
+    },
+    "runs": 2
+  },
+  {
+    "id": "clean-database-after-cb1be3f",
+    "draft": "clean-database-after.html",
+    "line": 339,
+    "quote": "don't come up much",
+    "habits": {
+      "hedge": 1,
+      "dramatic-beat": 1
+    },
+    "severities": {
+      "low": 1,
+      "medium": 1
+    },
+    "raised_by": {
+      "haiku": 1,
+      "haiku+linter": 1
+    },
+    "runs": 2
+  },
+  {
+    "id": "clean-database-after-c1e4a5a",
+    "draft": "clean-database-after.html",
+    "line": 370,
+    "quote": "That's the guard.",
+    "habits": {
+      "dramatic-beat": 2
+    },
+    "severities": {
+      "low": 2
+    },
+    "raised_by": {
+      "haiku": 1,
+      "sonnet": 1
+    },
+    "runs": 2
+  },
+  {
+    "id": "clean-database-after-c275332",
+    "draft": "clean-database-after.html",
+    "line": 414,
+    "quote": "My own tool couldn't read its own schema, and the message SQLite gives you is three words long:",
+    "habits": {
+      "hedge": 1,
+      "restatement": 1
+    },
+    "severities": {
+      "low": 2
+    },
+    "raised_by": {
+      "llama3.1-8b+chunks": 1,
+      "sonnet": 1
+    },
+    "runs": 2
+  },
+  {
+    "id": "clean-database-after-c323ab4",
+    "draft": "clean-database-after.html",
+    "line": 436,
+    "quote": "I'd have preferred to discover this some other way, but it's the strongest argument for the approach that I have.",
+    "habits": {
+      "antithesis": 1,
+      "generic-detail": 1
+    },
+    "severities": {
+      "medium": 2
+    },
+    "raised_by": {
+      "qwen2.5-7b+chunks": 1,
+      "sonnet": 1
+    },
+    "runs": 2
+  },
+  {
+    "id": "clean-database-after-c26614e",
+    "draft": "clean-database-after.html",
+    "line": 438,
+    "quote": "I'd have shipped it and never known.",
+    "habits": {
+      "dramatic-beat": 2
+    },
+    "severities": {
+      "medium": 2
+    },
+    "raised_by": {
+      "sonnet": 1,
+      "sonnet+linter": 1
+    },
+    "runs": 2
+  },
+  {
+    "id": "clean-database-after-cee24f1",
+    "draft": "clean-database-after.html",
+    "line": 454,
+    "quote": "An error tells a model that something broke, and the sensible response to something breaking is to try again.",
+    "habits": {
+      "emphasis-word": 1,
+      "reader-instruction": 1
+    },
+    "severities": {
+      "low": 1,
+      "medium": 1
+    },
+    "raised_by": {
+      "llama3.1-8b+chunks": 1,
+      "qwen2.5-7b+chunks": 1
+    },
+    "runs": 2
+  },
+  {
+    "id": "clean-database-after-c16650e",
+    "draft": "clean-database-after.html",
+    "line": 496,
+    "quote": "the first page of an answer looks exactly like the entire answer",
+    "habits": {
+      "emphasis-word": 2
+    },
+    "severities": {
+      "low": 1,
+      "medium": 1
+    },
+    "raised_by": {
+      "haiku": 1,
+      "haiku+linter": 1
+    },
+    "runs": 2
+  },
+  {
+    "id": "clean-database-after-c60717a",
+    "draft": "clean-database-after.html",
+    "line": 520,
+    "quote": "It changes when the situation does:",
+    "habits": {
+      "dramatic-beat": 2
+    },
+    "severities": {
+      "low": 2
+    },
+    "raised_by": {
+      "haiku": 1,
+      "qwen2.5-7b+chunks": 1
+    },
+    "runs": 2
+  },
+  {
+    "id": "clean-database-after-cdc64c5",
+    "draft": "clean-database-after.html",
+    "line": 555,
+    "quote": "The thing I'm still unsure about is the shape.",
+    "habits": {
+      "generic-detail": 1,
+      "cliche-emphasis": 1
+    },
+    "severities": {
+      "high": 1,
+      "low": 1
+    },
+    "raised_by": {
+      "qwen2.5-7b+chunks": 2
+    },
+    "runs": 2
+  },
+  {
+    "id": "clean-database-after-cde8a2e",
+    "draft": "clean-database-after.html",
+    "line": 580,
+    "quote": "If a tutorial you're reading mentions either, it predates this.",
+    "habits": {
+      "closer": 2
+    },
+    "severities": {
+      "high": 2
+    },
+    "raised_by": {
+      "sonnet+linter": 2
+    },
+    "runs": 2
+  },
+  {
+    "id": "clean-protocol-after-c2e77ed",
+    "draft": "clean-protocol-after.md",
+    "line": 17,
+    "quote": "Older clients and servers are still in use",
+    "habits": {
+      "hedge": 2
+    },
+    "severities": {
+      "medium": 2
+    },
+    "raised_by": {
+      "sonnet": 1,
+      "sonnet+linter": 1
+    },
+    "runs": 2
+  },
+  {
+    "id": "clean-protocol-after-c9b0d46",
+    "draft": "clean-protocol-after.md",
+    "line": 34,
+    "quote": "That's a reasonable default for a client, and it's also why the probe can't use it.",
+    "habits": {
+      "antithesis": 1,
+      "generic-detail": 1
+    },
+    "severities": {
+      "medium": 1,
+      "high": 1
+    },
+    "raised_by": {
+      "haiku": 1,
+      "llama3.1-8b": 1
+    },
+    "runs": 2
+  },
+  {
+    "id": "clean-protocol-after-ca6af6e",
+    "draft": "clean-protocol-after.md",
+    "line": 99,
+    "quote": "| MotherDuck | MotherDuck | Python v2 | Yes |",
+    "habits": {
+      "fragment": 2,
+      "generic-detail": 1
+    },
+    "severities": {
+      "low": 2,
+      "medium": 1
+    },
+    "raised_by": {
+      "llama3.1-8b": 1,
+      "qwen2.5-7b": 1
+    },
+    "runs": 2
+  },
+  {
+    "id": "clean-protocol-after-c188bc1",
+    "draft": "clean-protocol-after.md",
+    "line": 104,
+    "quote": "I didn't find one that had implemented discovery by hand, or one on a v2 SDK that had turned it off.",
+    "habits": {
+      "cliche-emphasis": 1,
+      "fragment": 1
+    },
+    "severities": {
+      "medium": 1,
+      "low": 1
+    },
+    "raised_by": {
+      "llama3.1-8b": 2
+    },
+    "runs": 2
+  },
+  {
+    "id": "clean-protocol-after-c9ddfd0",
+    "draft": "clean-protocol-after.md",
+    "line": 117,
+    "quote": "Then Context7, an npm package, answered `server/discover`, so I went and read its dependencies.",
+    "habits": {
+      "generic-detail": 1,
+      "fragment": 1
+    },
+    "severities": {
+      "high": 1,
+      "low": 1
+    },
+    "raised_by": {
+      "llama3.1-8b": 2
+    },
+    "runs": 2
+  },
+  {
+    "id": "clean-protocol-after-ca928e3",
+    "draft": "clean-protocol-after.md",
+    "line": 125,
+    "quote": "On the Python side it's the same package, `mcp`, so moving is an ordinary major-version upgrade that someone has to choose to take.",
+    "habits": {
+      "closer": 1,
+      "fragment": 1
+    },
+    "severities": {
+      "medium": 1,
+      "low": 1
+    },
+    "raised_by": {
+      "haiku+linter": 1,
+      "llama3.1-8b": 1
+    },
+    "runs": 2
+  },
+  {
+    "id": "clean-protocol-after-cdfb84f",
+    "draft": "clean-protocol-after.md",
+    "line": 132,
+    "quote": "The Python ones don't",
+    "habits": {
+      "fragment": 2,
+      "antithesis": 1
+    },
+    "severities": {
+      "low": 2,
+      "high": 1
+    },
+    "raised_by": {
+      "llama3.1-8b": 1,
+      "llama3.1-8b+chunks": 1
+    },
+    "runs": 2
+  },
+  {
+    "id": "clean-protocol-after-cc05777",
+    "draft": "clean-protocol-after.md",
+    "line": 157,
+    "quote": "the obvious reading of the spec",
+    "habits": {
+      "hedge": 1,
+      "cliche-emphasis": 1
+    },
+    "severities": {
+      "high": 1,
+      "low": 1
+    },
+    "raised_by": {
+      "llama3.1-8b+chunks": 1,
+      "sonnet": 1
+    },
+    "runs": 2
+  },
+  {
+    "id": "clean-protocol-after-cc8554d",
+    "draft": "clean-protocol-after.md",
+    "line": 180,
+    "quote": "Discovery runs first, so on a first `uvx` run it also absorbs downloading the package, while the handshake that follows finds a warm cache.",
+    "habits": {
+      "dramatic-beat": 1,
+      "fragment": 1
+    },
+    "severities": {
+      "low": 1,
+      "medium": 1
+    },
+    "raised_by": {
+      "llama3.1-8b": 1,
+      "qwen2.5-7b+chunks": 1
+    },
+    "runs": 2
+  },
+  {
+    "id": "clean-protocol-after-c3b8d98",
+    "draft": "clean-protocol-after.md",
+    "line": 201,
+    "quote": "It exits `0` when every listing a server advertised worked",
+    "habits": {
+      "fragment": 1,
+      "generic-detail": 1
+    },
+    "severities": {
+      "low": 2
+    },
+    "raised_by": {
+      "llama3.1-8b": 1,
+      "qwen2.5-7b+chunks": 1
+    },
+    "runs": 2
+  },
+  {
+    "id": "clean-protocol-after-c061eee",
+    "draft": "clean-protocol-after.md",
+    "line": 202,
+    "quote": "A server that only speaks the old protocol exits `0`, because the failure codes are kept for servers that advertise something they can't do.",
+    "habits": {
+      "closer": 1,
+      "restatement": 1
+    },
+    "severities": {
+      "medium": 1,
+      "low": 1
+    },
+    "raised_by": {
+      "haiku+linter": 1,
+      "llama3.1-8b": 1
+    },
+    "runs": 2
+  },
+  {
+    "id": "clean-protocol-after-c4d5f3b",
+    "draft": "clean-protocol-after.md",
+    "line": 208,
+    "quote": "It only speaks stdio so far, which every server here offers",
+    "habits": {
+      "fragment": 2,
+      "reader-instruction": 1
+    },
+    "severities": {
+      "low": 2,
+      "medium": 1
+    },
+    "raised_by": {
+      "llama3.1-8b": 1,
+      "qwen2.5-7b+chunks": 1
+    },
+    "runs": 2
+  },
+  {
+    "id": "dev-database-before-ccb139d",
+    "draft": "dev-database-before.html",
+    "line": 298,
+    "quote": "The answer everyone reaches for",
+    "habits": {
+      "dramatic-beat": 2
+    },
+    "severities": {
+      "low": 2
+    },
+    "raised_by": {
+      "qwen2.5-7b+chunks": 2
+    },
+    "runs": 2
+  },
+  {
+    "id": "dev-database-before-cc2c9cb",
+    "draft": "dev-database-before.html",
+    "line": 334,
+    "quote": "Worse, the failure is silent in the direction that matters: nothing tells you when the guard has quietly stopped covering something.",
+    "habits": {
+      "closer": 2
+    },
+    "severities": {
+      "medium": 2
+    },
+    "raised_by": {
+      "sonnet+linter": 2
+    },
+    "runs": 2
+  },
+  {
+    "id": "dev-database-before-c1ba914",
+    "draft": "dev-database-before.html",
+    "line": 416,
+    "quote": "My own tool could not read its own schema.",
+    "habits": {
+      "restatement": 2
+    },
+    "severities": {
+      "medium": 2
+    },
+    "raised_by": {
+      "sonnet": 1,
+      "sonnet+linter": 1
+    },
+    "runs": 2
+  },
+  {
+    "id": "dev-database-before-c02219f",
+    "draft": "dev-database-before.html",
+    "line": 505,
+    "quote": "this project had already reached that conclusion in writing about a different tool",
+    "habits": {
+      "generic-detail": 2
+    },
+    "severities": {
+      "low": 1,
+      "medium": 1
+    },
+    "raised_by": {
+      "sonnet+linter": 2
+    },
+    "runs": 2
+  },
+  {
+    "id": "dev-database-before-c6cd03b",
+    "draft": "dev-database-before.html",
+    "line": 529,
+    "quote": "A folder of text files does not, and you will conclude it was redundant.",
+    "habits": {
+      "generic-detail": 1,
+      "antithesis": 1
+    },
+    "severities": {
+      "medium": 2
+    },
+    "raised_by": {
+      "qwen2.5-7b+chunks": 1,
+      "sonnet+linter": 1
+    },
+    "runs": 2
+  },
+  {
+    "id": "dev-protocol-before-c508bc3",
+    "draft": "dev-protocol-before.md",
+    "line": 108,
+    "quote": "The last column is entirely predicted by the third.",
+    "habits": {
+      "emphasis-word": 2
+    },
+    "severities": {
+      "medium": 1,
+      "low": 1
+    },
+    "raised_by": {
+      "haiku+linter": 2
+    },
+    "runs": 2
+  },
+  {
+    "id": "dev-protocol-before-ce03c0b",
+    "draft": "dev-protocol-before.md",
+    "line": 164,
+    "quote": "The Python v1 SDK models incoming requests as a closed set of known types, which fits the unknown method failing validation before anything routes it — though I haven't traced that path through the v1 source, so I'd call it the likely mechanism rather than a proven one.",
+    "habits": {
+      "antithesis": 2
+    },
+    "severities": {
+      "high": 1,
+      "low": 1
+    },
+    "raised_by": {
+      "qwen2.5-7b+linter": 1,
+      "sonnet": 1
+    },
+    "runs": 2
+  },
+  {
+    "id": "heldout-double-entry-c64584a",
+    "draft": "heldout-double-entry.html",
+    "line": 317,
+    "quote": "Here is a way to find out what was missed.",
+    "habits": {
+      "closer": 2
+    },
+    "severities": {
+      "medium": 1,
+      "low": 1
+    },
+    "raised_by": {
+      "sonnet+linter": 2
+    },
+    "runs": 2
+  },
+  {
+    "id": "heldout-double-entry-c588af8",
+    "draft": "heldout-double-entry.html",
+    "line": 409,
+    "quote": "The main body is one part; footnotes, headers, and the contents of text boxes are others.",
+    "habits": {
+      "triad": 2
+    },
+    "severities": {
+      "low": 2
+    },
+    "raised_by": {
+      "qwen2.5-7b+chunks": 1,
+      "sonnet+linter": 1
+    },
+    "runs": 2
+  },
+  {
+    "id": "heldout-double-entry-cd178a0",
+    "draft": "heldout-double-entry.html",
+    "line": 516,
+    "quote": "When the lower path dies of a memory limit, the upper path's answer is still standing.",
+    "habits": {
+      "antithesis": 1,
+      "closer": 1
+    },
+    "severities": {
+      "high": 1,
+      "low": 1
+    },
+    "raised_by": {
+      "llama3.1-8b+chunks": 1,
+      "qwen2.5-7b+linter": 1
+    },
+    "runs": 2
+  },
+  {
+    "id": "heldout-double-entry-c110b94",
+    "draft": "heldout-double-entry.html",
+    "line": 599,
+    "quote": "Anything below the threshold is quarantined &mdash; held back rather than fed onward.",
+    "habits": {
+      "restatement": 1,
+      "antithesis": 1
+    },
+    "severities": {
+      "low": 2
+    },
+    "raised_by": {
+      "qwen2.5-7b+linter": 1,
+      "sonnet+linter": 1
+    },
+    "runs": 2
+  },
+  {
+    "id": "heldout-double-entry-c81f6b9",
+    "draft": "heldout-double-entry.html",
+    "line": 633,
+    "quote": "So it answers from whatever else it has, at full confidence.",
+    "habits": {
+      "closer": 2
+    },
+    "severities": {
+      "high": 1,
+      "medium": 1
+    },
+    "raised_by": {
+      "qwen2.5-7b+chunks": 1,
+      "sonnet+linter": 1
+    },
+    "runs": 2
+  },
+  {
+    "id": "heldout-double-entry-c4300a9",
+    "draft": "heldout-double-entry.html",
+    "line": 643,
+    "quote": "So the gaps get embedded too",
+    "habits": {
+      "closer": 2
+    },
+    "severities": {
+      "high": 1,
+      "medium": 1
+    },
+    "raised_by": {
+      "llama3.1-8b": 1,
+      "qwen2.5-7b+linter": 1
+    },
+    "runs": 2
+  },
+  {
+    "id": "heldout-double-entry-ce1b419",
+    "draft": "heldout-double-entry.html",
+    "line": 760,
+    "quote": "a scanned page has no text layer",
+    "habits": {
+      "generic-detail": 1,
+      "fragment": 1
+    },
+    "severities": {
+      "high": 1,
+      "low": 1
+    },
+    "raised_by": {
+      "llama3.1-8b+chunks": 1,
+      "qwen2.5-7b+chunks": 1
+    },
+    "runs": 2
+  },
+  {
+    "id": "heldout-double-entry-ca2c6ff",
+    "draft": "heldout-double-entry.html",
+    "line": 787,
+    "quote": "A question phrased entirely in synonyms of a gap's description will not trigger a refusal.",
+    "habits": {
+      "generic-detail": 1,
+      "antithesis": 1
+    },
+    "severities": {
+      "high": 1,
+      "medium": 1
+    },
+    "raised_by": {
+      "llama3.1-8b+chunks": 2
+    },
+    "runs": 2
+  },
+  {
+    "id": "heldout-where-the-cut-falls-c14badf",
+    "draft": "heldout-where-the-cut-falls.html",
+    "line": 269,
+    "quote": "Suppose you want a program to answer questions about your company's documents.",
+    "habits": {
+      "reader-instruction": 2
+    },
+    "severities": {
+      "medium": 1,
+      "low": 1
+    },
+    "raised_by": {
+      "haiku+linter": 1,
+      "sonnet+linter": 1
+    },
+    "runs": 2
+  },
+  {
+    "id": "heldout-where-the-cut-falls-c671604",
+    "draft": "heldout-where-the-cut-falls.html",
+    "line": 450,
+    "quote": "Only the bottom row separates the two units.",
+    "habits": {
+      "dramatic-beat": 1,
+      "closer": 1
+    },
+    "severities": {
+      "high": 2
+    },
+    "raised_by": {
+      "llama3.1-8b+chunks": 1,
+      "qwen2.5-7b+chunks": 1
+    },
+    "runs": 2
+  },
+  {
+    "id": "heldout-where-the-cut-falls-c4ea4a9",
+    "draft": "heldout-where-the-cut-falls.html",
+    "line": 756,
+    "quote": "A chunker that drops a trailing paragraph produces a run that succeeds and scores that look fine.",
+    "habits": {
+      "fragment": 2
+    },
+    "severities": {
+      "high": 1,
+      "low": 1
+    },
+    "raised_by": {
+      "qwen2.5-7b+chunks": 2
+    },
+    "runs": 2
+  },
+  {
+    "id": "heldout-where-the-cut-falls-cb4e0a9",
+    "draft": "heldout-where-the-cut-falls.html",
+    "line": 758,
+    "quote": "On one document, arbitrary fixed-size cutting landed on a natural boundary 6% of the time. Splitting at headings: 83%.",
+    "habits": {
+      "fragment": 2
+    },
+    "severities": {
+      "high": 1,
+      "low": 1
+    },
+    "raised_by": {
+      "qwen2.5-7b+chunks": 1,
+      "sonnet": 1
+    },
+    "runs": 2
+  },
+  {
+    "id": "clean-database-after-c4973e7",
+    "draft": "clean-database-after.html",
+    "line": 277,
+    "quote": "SQLite has had a better answer sitting in it for twenty years.",
+    "habits": {
+      "generic-detail": 1
+    },
+    "severities": {
+      "high": 1
+    },
+    "raised_by": {
+      "qwen2.5-7b+linter": 1
+    },
+    "runs": 1
+  },
+  {
+    "id": "clean-database-after-cb755a7",
+    "draft": "clean-database-after.html",
+    "line": 289,
+    "quote": "when an agent hands you a SQL statement, how do you decide whether to run it?",
+    "habits": {
+      "reader-instruction": 1
+    },
+    "severities": {
+      "medium": 1
+    },
+    "raised_by": {
+      "qwen2.5-7b+linter": 1
+    },
+    "runs": 1
+  },
+  {
+    "id": "clean-database-after-cefbb13",
+    "draft": "clean-database-after.html",
+    "line": 293,
+    "quote": "First attempt: read the SQL",
+    "habits": {
+      "dramatic-beat": 1
+    },
+    "severities": {
+      "low": 1
+    },
+    "raised_by": {
+      "qwen2.5-7b": 1
+    },
+    "runs": 1
+  },
+  {
+    "id": "clean-database-after-c247280",
+    "draft": "clean-database-after.html",
+    "line": 296,
+    "quote": "If it starts with SELECT, run it. If it contains DROP or DELETE or UPDATE, refuse.",
+    "habits": {
+      "fragment": 1
+    },
+    "severities": {
+      "medium": 1
+    },
+    "raised_by": {
+      "llama3.1-8b+chunks": 1
+    },
+    "runs": 1
+  },
+  {
+    "id": "clean-database-after-cb08a7b",
+    "draft": "clean-database-after.html",
+    "line": 352,
+    "quote": "tells you what the action is, which table, and which column",
+    "habits": {
+      "triad": 1
+    },
+    "severities": {
+      "medium": 1
+    },
+    "raised_by": {
+      "sonnet": 1
+    },
+    "runs": 1
+  },
+  {
+    "id": "clean-database-after-c587bd7",
+    "draft": "clean-database-after.html",
+    "line": 372,
+    "quote": "those four cases from earlier",
+    "habits": {
+      "generic-detail": 1
+    },
+    "severities": {
+      "high": 1
+    },
+    "raised_by": {
+      "llama3.1-8b+chunks": 1
+    },
+    "runs": 1
+  },
+  {
+    "id": "clean-database-after-c7f7a93",
+    "draft": "clean-database-after.html",
+    "line": 372,
+    "quote": "same one deciding whether it may",
+    "habits": {
+      "generic-detail": 1
+    },
+    "severities": {
+      "medium": 1
+    },
+    "raised_by": {
+      "qwen2.5-7b": 1
+    },
+    "runs": 1
+  },
+  {
+    "id": "clean-database-after-c3146d4",
+    "draft": "clean-database-after.html",
+    "line": 379,
+    "quote": "<p>The writing CTE. It reaches <code>SQLITE_DELETE</code>, which isn't a read.</p>",
+    "habits": {
+      "reader-instruction": 1
+    },
+    "severities": {
+      "low": 1
+    },
+    "raised_by": {
+      "llama3.1-8b+chunks": 1
+    },
+    "runs": 1
+  },
+  {
+    "id": "clean-database-after-c20c46e",
+    "draft": "clean-database-after.html",
+    "line": 410,
+    "quote": "The guard's first victim was me",
+    "habits": {
+      "dramatic-beat": 1
+    },
+    "severities": {
+      "medium": 1
+    },
+    "raised_by": {
+      "sonnet+linter": 1
+    },
+    "runs": 1
+  },
+  {
+    "id": "clean-database-after-c058163",
+    "draft": "clean-database-after.html",
+    "line": 493,
+    "quote": "Every server like this caps how many rows it returns",
+    "habits": {
+      "hedge": 1
+    },
+    "severities": {
+      "medium": 1
+    },
+    "raised_by": {
+      "sonnet": 1
+    },
+    "runs": 1
+  },
+  {
+    "id": "clean-database-after-cc691a2",
+    "draft": "clean-database-after.html",
+    "line": 494,
+    "quote": "What matters is that a truncated result which doesn't mention it was truncated is worse than no result at all",
+    "habits": {
+      "cliche-emphasis": 1
+    },
+    "severities": {
+      "medium": 1
+    },
+    "raised_by": {
+      "sonnet": 1
+    },
+    "runs": 1
+  },
+  {
+    "id": "clean-database-after-cc28521",
+    "draft": "clean-database-after.html",
+    "line": 503,
+    "quote": "<code>elapsed_ms</code> is standing in for the field that'll matter on a real warehouse, where it would be bytes scanned and money.",
+    "habits": {
+      "generic-detail": 1
+    },
+    "severities": {
+      "low": 1
+    },
+    "raised_by": {
+      "llama3.1-8b+chunks": 1
+    },
+    "runs": 1
+  },
+  {
+    "id": "clean-database-after-c6c0ef9",
+    "draft": "clean-database-after.html",
+    "line": 504,
+    "quote": "A model can't trade accuracy against cost if it has no idea what anything costs.",
+    "habits": {
+      "generic-detail": 1
+    },
+    "severities": {
+      "medium": 1
+    },
+    "raised_by": {
+      "qwen2.5-7b+chunks": 1
+    },
+    "runs": 1
+  },
+  {
+    "id": "clean-database-after-ca8015b",
+    "draft": "clean-database-after.html",
+    "line": 507,
+    "quote": "the agent's loop is what drives it.",
+    "habits": {
+      "closer": 1
+    },
+    "severities": {
+      "medium": 1
+    },
+    "raised_by": {
+      "haiku": 1
+    },
+    "runs": 1
+  },
+  {
+    "id": "clean-database-after-c4291b3",
+    "draft": "clean-database-after.html",
+    "line": 523,
+    "quote": "A colleague who doesn't write SQL, an agent running unattended, a client with no shell.",
+    "habits": {
+      "fragment": 1
+    },
+    "severities": {
+      "high": 1
+    },
+    "raised_by": {
+      "sonnet+linter": 1
+    },
+    "runs": 1
+  },
+  {
+    "id": "clean-database-after-c1b38a4",
+    "draft": "clean-database-after.html",
+    "line": 535,
+    "quote": "Loose ends",
+    "habits": {
+      "closer": 1
+    },
+    "severities": {
+      "low": 1
+    },
+    "raised_by": {
+      "qwen2.5-7b+linter": 1
+    },
+    "runs": 1
+  },
+  {
+    "id": "clean-database-after-c45ac91",
+    "draft": "clean-database-after.html",
+    "line": 541,
+    "quote": "you'll spend a week discovering it was redundant.",
+    "habits": {
+      "closer": 1
+    },
+    "severities": {
+      "medium": 1
+    },
+    "raised_by": {
+      "haiku+linter": 1
+    },
+    "runs": 1
+  },
+  {
+    "id": "clean-database-after-cdf18bf",
+    "draft": "clean-database-after.html",
+    "line": 547,
+    "quote": "In the Python SDK a tool annotated -&gt; dict registers with no output schema and returns nothing structured.",
+    "habits": {
+      "cliche-emphasis": 1
+    },
+    "severities": {
+      "low": 1
+    },
+    "raised_by": {
+      "qwen2.5-7b+chunks": 1
+    },
+    "runs": 1
+  },
+  {
+    "id": "clean-database-after-c5a4a72",
+    "draft": "clean-database-after.html",
+    "line": 548,
+    "quote": "Annotated -> dict[str, object], it works.",
+    "habits": {
+      "fragment": 1
+    },
+    "severities": {
+      "medium": 1
+    },
+    "raised_by": {
+      "haiku+linter": 1
+    },
+    "runs": 1
+  },
+  {
+    "id": "clean-protocol-after-cdfa507",
+    "draft": "clean-protocol-after.md",
+    "line": 15,
+    "quote": "an MCP client opened every connection with an `initialize` handshake",
+    "habits": {
+      "fragment": 1
+    },
+    "severities": {
+      "low": 1
+    },
+    "raised_by": {
+      "llama3.1-8b": 1
+    },
+    "runs": 1
+  },
+  {
+    "id": "clean-protocol-after-c5c4298",
+    "draft": "clean-protocol-after.md",
+    "line": 26,
+    "quote": "the obvious move is to connect with the SDK and look at what you got",
+    "habits": {
+      "cliche-emphasis": 1
+    },
+    "severities": {
+      "medium": 1
+    },
+    "raised_by": {
+      "llama3.1-8b": 1
+    },
+    "runs": 1
+  },
+  {
+    "id": "clean-protocol-after-cfa41c3",
+    "draft": "clean-protocol-after.md",
+    "line": 41,
+    "quote": "Each path is recorded as having worked, been refused with an error code, or produced nothing usable.",
+    "habits": {
+      "triad": 1
+    },
+    "severities": {
+      "high": 1
+    },
+    "raised_by": {
+      "llama3.1-8b+chunks": 1
+    },
+    "runs": 1
+  },
+  {
+    "id": "clean-protocol-after-cdf89f6",
+    "draft": "clean-protocol-after.md",
+    "line": 42,
+    "quote": "Those last two have to stay apart",
+    "habits": {
+      "restatement": 1
+    },
+    "severities": {
+      "low": 1
+    },
+    "raised_by": {
+      "llama3.1-8b": 1
+    },
+    "runs": 1
+  },
+  {
+    "id": "clean-protocol-after-c673729",
+    "draft": "clean-protocol-after.md",
+    "line": 69,
+    "quote": "It speaks the previous revision and offers 24 tools.",
+    "habits": {
+      "generic-detail": 1
+    },
+    "severities": {
+      "medium": 1
+    },
+    "raised_by": {
+      "llama3.1-8b+chunks": 1
+    },
+    "runs": 1
+  },
+  {
+    "id": "clean-protocol-after-cdf2da0",
+    "draft": "clean-protocol-after.md",
+    "line": 86,
+    "quote": "That version of Context7 was published the day I probed it",
+    "habits": {
+      "fragment": 1
+    },
+    "severities": {
+      "low": 1
+    },
+    "raised_by": {
+      "llama3.1-8b": 1
+    },
+    "runs": 1
+  },
+  {
+    "id": "clean-protocol-after-c6f6e34",
+    "draft": "clean-protocol-after.md",
+    "line": 86,
+    "quote": "Here are all twelve",
+    "habits": {
+      "fragment": 1
+    },
+    "severities": {
+      "low": 1
+    },
+    "raised_by": {
+      "llama3.1-8b": 1
+    },
+    "runs": 1
+  },
+  {
+    "id": "clean-protocol-after-c5c9345",
+    "draft": "clean-protocol-after.md",
+    "line": 90,
+    "quote": "| `server-everything` | MCP project | TypeScript v1 | No |",
+    "habits": {
+      "fragment": 1
+    },
+    "severities": {
+      "low": 1
+    },
+    "raised_by": {
+      "llama3.1-8b": 1
+    },
+    "runs": 1
+  },
+  {
+    "id": "clean-protocol-after-cacd1da",
+    "draft": "clean-protocol-after.md",
+    "line": 93,
+    "quote": "| `mcp-server-fetch` | MCP project | Python v1 | No |",
+    "habits": {
+      "fragment": 1
+    },
+    "severities": {
+      "low": 1
+    },
+    "raised_by": {
+      "llama3.1-8b": 1
+    },
+    "runs": 1
+  },
+  {
+    "id": "clean-protocol-after-c37a8fd",
+    "draft": "clean-protocol-after.md",
+    "line": 96,
+    "quote": "| Playwright | Microsoft | TypeScript v1, bundled | No |",
+    "habits": {
+      "fragment": 1
+    },
+    "severities": {
+      "low": 1
+    },
+    "raised_by": {
+      "llama3.1-8b": 1
+    },
+    "runs": 1
+  },
+  {
+    "id": "clean-protocol-after-cd508c2",
+    "draft": "clean-protocol-after.md",
+    "line": 98,
+    "quote": "| Context7 | Upstash | TypeScript v2 | Yes |",
+    "habits": {
+      "fragment": 1
+    },
+    "severities": {
+      "low": 1
+    },
+    "raised_by": {
+      "llama3.1-8b": 1
+    },
+    "runs": 1
+  },
+  {
+    "id": "clean-protocol-after-ccafc68",
+    "draft": "clean-protocol-after.md",
+    "line": 103,
+    "quote": "The SDK column predicts the last one on every row",
+    "habits": {
+      "fragment": 1
+    },
+    "severities": {
+      "low": 1
+    },
+    "raised_by": {
+      "llama3.1-8b": 1
+    },
+    "runs": 1
+  },
+  {
+    "id": "clean-protocol-after-cd3ce71",
+    "draft": "clean-protocol-after.md",
+    "line": 110,
+    "quote": "## The upgrade that bumping won't get you",
+    "habits": {
+      "fragment": 1
+    },
+    "severities": {
+      "low": 1
+    },
+    "raised_by": {
+      "llama3.1-8b": 1
+    },
+    "runs": 1
+  },
+  {
+    "id": "clean-protocol-after-c45346a",
+    "draft": "clean-protocol-after.md",
+    "line": 120,
+    "quote": "TypeScript v2 went out on 27 July under those new package names",
+    "habits": {
+      "fragment": 1
+    },
+    "severities": {
+      "low": 1
+    },
+    "raised_by": {
+      "llama3.1-8b": 1
+    },
+    "runs": 1
+  },
+  {
+    "id": "clean-protocol-after-ca4f143",
+    "draft": "clean-protocol-after.md",
+    "line": 129,
+    "quote": "## Two ways to say you don't know a method",
+    "habits": {
+      "fragment": 1
+    },
+    "severities": {
+      "low": 1
+    },
+    "raised_by": {
+      "llama3.1-8b": 1
+    },
+    "runs": 1
+  },
+  {
+    "id": "clean-protocol-after-c5bd059",
+    "draft": "clean-protocol-after.md",
+    "line": 132,
+    "quote": "The TypeScript ones answer `-32601 Method not found`",
+    "habits": {
+      "fragment": 1
+    },
+    "severities": {
+      "low": 1
+    },
+    "raised_by": {
+      "llama3.1-8b": 1
+    },
+    "runs": 1
+  },
+  {
+    "id": "clean-protocol-after-cb55c00",
+    "draft": "clean-protocol-after.md",
+    "line": 149,
+    "quote": "-32602 is the JSON-RPC code for calling a method that exists with the wrong arguments.",
+    "habits": {
+      "hedge": 1
+    },
+    "severities": {
+      "high": 1
+    },
+    "raised_by": {
+      "qwen2.5-7b+chunks": 1
+    },
+    "runs": 1
+  },
+  {
+    "id": "clean-protocol-after-cb59dc5",
+    "draft": "clean-protocol-after.md",
+    "line": 156,
+    "quote": "It matters if you write a client that negotiates for itself.",
+    "habits": {
+      "cliche-emphasis": 1
+    },
+    "severities": {
+      "medium": 1
+    },
+    "raised_by": {
+      "llama3.1-8b+chunks": 1
+    },
+    "runs": 1
+  },
+  {
+    "id": "clean-protocol-after-cc506a2",
+    "draft": "clean-protocol-after.md",
+    "line": 162,
+    "quote": "## What running it on real servers taught me about the probe",
+    "habits": {
+      "fragment": 1
+    },
+    "severities": {
+      "low": 1
+    },
+    "raised_by": {
+      "llama3.1-8b": 1
+    },
+    "runs": 1
+  },
+  {
+    "id": "clean-protocol-after-c831719",
+    "draft": "clean-protocol-after.md",
+    "line": 173,
+    "quote": "Connection closed",
+    "habits": {
+      "generic-detail": 1
+    },
+    "severities": {
+      "high": 1
+    },
+    "raised_by": {
+      "llama3.1-8b+chunks": 1
+    },
+    "runs": 1
+  },
+  {
+    "id": "clean-protocol-after-cce1bd0",
+    "draft": "clean-protocol-after.md",
+    "line": 174,
+    "quote": "It had also been sending the server's stderr to `/dev/null`, which is where that line went.",
+    "habits": {
+      "reader-instruction": 1
+    },
+    "severities": {
+      "medium": 1
+    },
+    "raised_by": {
+      "llama3.1-8b+chunks": 1
+    },
+    "runs": 1
+  },
+  {
+    "id": "clean-protocol-after-c9bb537",
+    "draft": "clean-protocol-after.md",
+    "line": 176,
+    "quote": "With the flag added, MotherDuck speaks both.",
+    "habits": {
+      "dramatic-beat": 1
+    },
+    "severities": {
+      "medium": 1
+    },
+    "raised_by": {
+      "sonnet": 1
+    },
+    "runs": 1
+  },
+  {
+    "id": "clean-protocol-after-cc4137e",
+    "draft": "clean-protocol-after.md",
+    "line": 179,
+    "quote": "the first time I ran it and answered normally every time after",
+    "habits": {
+      "cliche-emphasis": 1
+    },
+    "severities": {
+      "low": 1
+    },
+    "raised_by": {
+      "llama3.1-8b+chunks": 1
+    },
+    "runs": 1
+  },
+  {
+    "id": "clean-protocol-after-ca8aa19",
+    "draft": "clean-protocol-after.md",
+    "line": 181,
+    "quote": "That would have made any server I probed for the first time look more old-fashioned than it is.",
+    "habits": {
+      "antithesis": 1
+    },
+    "severities": {
+      "low": 1
+    },
+    "raised_by": {
+      "sonnet+linter": 1
+    },
+    "runs": 1
+  },
+  {
+    "id": "clean-protocol-after-c429bdf",
+    "draft": "clean-protocol-after.md",
+    "line": 183,
+    "quote": "The probe tries discovery once more and says it did.",
+    "habits": {
+      "emphasis-word": 1
+    },
+    "severities": {
+      "medium": 1
+    },
+    "raised_by": {
+      "llama3.1-8b+chunks": 1
+    },
+    "runs": 1
+  },
+  {
+    "id": "clean-protocol-after-c95fa2b",
+    "draft": "clean-protocol-after.md",
+    "line": 191,
+    "quote": "## Run it yourself",
+    "habits": {
+      "fragment": 2
+    },
+    "severities": {
+      "low": 2
+    },
+    "raised_by": {
+      "llama3.1-8b": 1
+    },
+    "runs": 1
+  },
+  {
+    "id": "clean-protocol-after-c0e0ff2",
+    "draft": "clean-protocol-after.md",
+    "line": 206,
+    "quote": "## Loose ends",
+    "habits": {
+      "fragment": 3
+    },
+    "severities": {
+      "low": 3
+    },
+    "raised_by": {
+      "llama3.1-8b": 1
+    },
+    "runs": 1
+  },
+  {
+    "id": "clean-protocol-after-cff98a4",
+    "draft": "clean-protocol-after.md",
+    "line": 213,
+    "quote": "Capabilities varied a lot more than protocols did",
+    "habits": {
+      "fragment": 2
+    },
+    "severities": {
+      "low": 2
+    },
+    "raised_by": {
+      "llama3.1-8b": 1
+    },
+    "runs": 1
+  },
+  {
+    "id": "clean-protocol-after-ce8c28e",
+    "draft": "clean-protocol-after.md",
+    "line": 213,
+    "quote": "The AWS server and mine, both on Python v2, advertise change notifications only under the new protocol",
+    "habits": {
+      "fragment": 2
+    },
+    "severities": {
+      "low": 2
+    },
+    "raised_by": {
+      "llama3.1-8b": 1
+    },
+    "runs": 1
+  },
+  {
+    "id": "clean-protocol-after-c0da6d3",
+    "draft": "clean-protocol-after.md",
+    "line": 215,
+    "quote": "MotherDuck, also Python v2, does the reverse for its tool list",
+    "habits": {
+      "fragment": 2
+    },
+    "severities": {
+      "low": 2
+    },
+    "raised_by": {
+      "llama3.1-8b": 1
+    },
+    "runs": 1
+  },
+  {
+    "id": "clean-protocol-after-c835420",
+    "draft": "clean-protocol-after.md",
+    "line": 217,
+    "quote": "Context7 reports identical capabilities in both",
+    "habits": {
+      "fragment": 2
+    },
+    "severities": {
+      "low": 2
+    },
+    "raised_by": {
+      "llama3.1-8b": 1
+    },
+    "runs": 1
+  },
+  {
+    "id": "clean-protocol-after-c0a214e",
+    "draft": "clean-protocol-after.md",
+    "line": 217,
+    "quote": "Four servers isn't enough to tell whether those differences come from the SDKs or from how each server was written",
+    "habits": {
+      "fragment": 2
+    },
+    "severities": {
+      "low": 2
+    },
+    "raised_by": {
+      "llama3.1-8b": 1
+    },
+    "runs": 1
+  },
+  {
+    "id": "clean-protocol-after-c93c587",
+    "draft": "clean-protocol-after.md",
+    "line": 226,
+    "quote": "Its design record, <code>docs/011_discover-probe.md</code>, has the full table with versions and the corrections to what I first wrote down, and the raw measurement is in <code>evidence/discover-probe.jsonl</code>.",
+    "habits": {
+      "fragment": 1
+    },
+    "severities": {
+      "low": 1
+    },
+    "raised_by": {
+      "llama3.1-8b": 1
+    },
+    "runs": 1
+  },
+  {
+    "id": "clean-protocol-after-ccf2655",
+    "draft": "clean-protocol-after.md",
+    "line": 230,
+    "quote": "How this was made.",
+    "habits": {
+      "fragment": 1
+    },
+    "severities": {
+      "low": 1
+    },
+    "raised_by": {
+      "llama3.1-8b": 1
+    },
+    "runs": 1
+  },
+  {
+    "id": "clean-protocol-after-c8476e6",
+    "draft": "clean-protocol-after.md",
+    "line": 231,
+    "quote": "Every piece of terminal output here was copied from a run on 14 September 2026, and all twelve servers were probed on the same build of the tool.",
+    "habits": {
+      "fragment": 1
+    },
+    "severities": {
+      "low": 1
+    },
+    "raised_by": {
+      "llama3.1-8b": 1
+    },
+    "runs": 1
+  },
+  {
+    "id": "dev-database-before-c0e027e",
+    "draft": "dev-database-before.html",
+    "line": 276,
+    "quote": "reading the query",
+    "habits": {
+      "generic detail": 1
+    },
+    "severities": {
+      "high": 1
+    },
+    "raised_by": {
+      "llama3.1-8b+linter": 1
+    },
+    "runs": 1
+  },
+  {
+    "id": "dev-database-before-c1d99b8",
+    "draft": "dev-database-before.html",
+    "line": 303,
+    "quote": "the first thing anyone writes",
+    "habits": {
+      "cliche-emphasis": 1
+    },
+    "severities": {
+      "high": 1
+    },
+    "raised_by": {
+      "llama3.1-8b+linter": 1
+    },
+    "runs": 1
+  },
+  {
+    "id": "dev-database-before-cbb39e1",
+    "draft": "dev-database-before.html",
+    "line": 308,
+    "quote": "It is a denylist, and it inherits every denylist's problem: it has to anticipate.",
+    "habits": {
+      "generic-detail": 1
+    },
+    "severities": {
+      "medium": 1
+    },
+    "raised_by": {
+      "llama3.1-8b+chunks": 1
+    },
+    "runs": 1
+  },
+  {
+    "id": "dev-database-before-c5ef82b",
+    "draft": "dev-database-before.html",
+    "line": 339,
+    "quote": "The answer that does not have to anticipate",
+    "habits": {
+      "antithesis": 1
+    },
+    "severities": {
+      "low": 1
+    },
+    "raised_by": {
+      "sonnet": 1
+    },
+    "runs": 1
+  },
+  {
+    "id": "dev-database-before-c692b4a",
+    "draft": "dev-database-before.html",
+    "line": 342,
+    "quote": "SQLite will answer the question for you.",
+    "habits": {
+      "even-rhythm": 1
+    },
+    "severities": {
+      "low": 1
+    },
+    "raised_by": {
+      "llama3.1-8b+linter": 1
+    },
+    "runs": 1
+  },
+  {
+    "id": "dev-database-before-c6b002e",
+    "draft": "dev-database-before.html",
+    "line": 355,
+    "quote": "what the action is, which table, and which column",
+    "habits": {
+      "triad": 1
+    },
+    "severities": {
+      "low": 1
+    },
+    "raised_by": {
+      "sonnet": 1
+    },
+    "runs": 1
+  },
+  {
+    "id": "dev-database-before-cc232ff",
+    "draft": "dev-database-before.html",
+    "line": 373,
+    "quote": "how the statement is spelled, whether it uses a CTE, or what SQL adds next year",
+    "habits": {
+      "triad": 1
+    },
+    "severities": {
+      "low": 1
+    },
+    "raised_by": {
+      "sonnet": 1
+    },
+    "runs": 1
+  },
+  {
+    "id": "dev-database-before-ce63305",
+    "draft": "dev-database-before.html",
+    "line": 382,
+    "quote": "It reaches SQLITE_DELETE, which is not a read.",
+    "habits": {
+      "fragment": 1,
+      "triad": 1
+    },
+    "severities": {
+      "medium": 1,
+      "low": 1
+    },
+    "raised_by": {
+      "qwen2.5-7b": 1
+    },
+    "runs": 1
+  },
+  {
+    "id": "dev-database-before-c509c25",
+    "draft": "dev-database-before.html",
+    "line": 415,
+    "quote": "I wrote the guard, then wrote <code>schema()</code>, which reads column information with <code>PRAGMA table_info</code>.",
+    "habits": {
+      "dramatic-beat": 1
+    },
+    "severities": {
+      "high": 1
+    },
+    "raised_by": {
+      "llama3.1-8b": 1
+    },
+    "runs": 1
+  },
+  {
+    "id": "dev-database-before-ce39d83",
+    "draft": "dev-database-before.html",
+    "line": 485,
+    "quote": "Fine. But a truncated result that does not say it was truncated is worse than no result, because the first page of an answer is indistinguishable from the whole answer.",
+    "habits": {
+      "closer": 1
+    },
+    "severities": {
+      "high": 1
+    },
+    "raised_by": {
+      "qwen2.5-7b+chunks": 1
+    },
+    "runs": 1
+  },
+  {
+    "id": "dev-database-before-c270bd2",
+    "draft": "dev-database-before.html",
+    "line": 493,
+    "quote": "<code>elapsed_ms</code> is there as a placeholder for the field that matters on a real warehouse, where it would be bytes scanned and money.",
+    "habits": {
+      "generic-detail": 1
+    },
+    "severities": {
+      "medium": 1
+    },
+    "raised_by": {
+      "llama3.1-8b": 1
+    },
+    "runs": 1
+  },
+  {
+    "id": "dev-database-before-c038817",
+    "draft": "dev-database-before.html",
+    "line": 494,
+    "quote": "A model cannot trade accuracy against cost when it has no idea what anything costs.",
+    "habits": {
+      "cliche-emphasis": 1
+    },
+    "severities": {
+      "medium": 1
+    },
+    "raised_by": {
+      "qwen2.5-7b+chunks": 1
+    },
+    "runs": 1
+  },
+  {
+    "id": "dev-database-before-ca83d72",
+    "draft": "dev-database-before.html",
+    "line": 512,
+    "quote": "The consumer is not you.",
+    "habits": {
+      "emphasis-word": 1
+    },
+    "severities": {
+      "low": 1
+    },
+    "raised_by": {
+      "llama3.1-8b": 1
+    },
+    "runs": 1
+  },
+  {
+    "id": "dev-database-before-cfe6eb6",
+    "draft": "dev-database-before.html",
+    "line": 551,
+    "quote": "If a tutorial you are reading mentions either, it predates this.",
+    "habits": {
+      "closer": 1
+    },
+    "severities": {
+      "high": 1
+    },
+    "raised_by": {
+      "sonnet+linter": 1
+    },
+    "runs": 1
+  },
+  {
+    "id": "dev-protocol-before-ca6d7ce",
+    "draft": "dev-protocol-before.md",
+    "line": 11,
+    "quote": "The answer turned out to be one line in each project's dependency file.",
+    "habits": {
+      "generic-detail": 1
+    },
+    "severities": {
+      "high": 1
+    },
+    "raised_by": {
+      "qwen2.5-7b": 1
+    },
+    "runs": 1
+  },
+  {
+    "id": "dev-protocol-before-c269e96",
+    "draft": "dev-protocol-before.md",
+    "line": 18,
+    "quote": "Both SDKs kept the old path alongside the new one, and a given server might speak either, or both.",
+    "habits": {
+      "antithesis": 1
+    },
+    "severities": {
+      "high": 1
+    },
+    "raised_by": {
+      "qwen2.5-7b": 1
+    },
+    "runs": 1
+  },
+  {
+    "id": "dev-protocol-before-c5ab4b7",
+    "draft": "dev-protocol-before.md",
+    "line": 28,
+    "quote": "The obvious move is to connect with the SDK and look at what you got.",
+    "habits": {
+      "fragment": 1
+    },
+    "severities": {
+      "medium": 1
+    },
+    "raised_by": {
+      "qwen2.5-7b": 1
+    },
+    "runs": 1
+  },
+  {
+    "id": "dev-protocol-before-cedb4e6",
+    "draft": "dev-protocol-before.md",
+    "line": 30,
+    "quote": "It tries `server/discover`, falls back to `initialize` if that fails, and hands you a working session.",
+    "habits": {
+      "fragment": 1
+    },
+    "severities": {
+      "low": 1
+    },
+    "raised_by": {
+      "qwen2.5-7b+linter": 1
+    },
+    "runs": 1
+  },
+  {
+    "id": "dev-protocol-before-cb29c3b",
+    "draft": "dev-protocol-before.md",
+    "line": 31,
+    "quote": "Whether the server spoke the new protocol or the old one isn't recorded anywhere you can easily get at.",
+    "habits": {
+      "cliche-emphasis": 1
+    },
+    "severities": {
+      "medium": 1
+    },
+    "raised_by": {
+      "qwen2.5-7b": 1
+    },
+    "runs": 1
+  },
+  {
+    "id": "dev-protocol-before-c927972",
+    "draft": "dev-protocol-before.md",
+    "line": 45,
+    "quote": "It worked. The server answered and said no, in which case the error code is kept. Or nothing usable came back at all.",
+    "habits": {
+      "triad": 1
+    },
+    "severities": {
+      "medium": 1
+    },
+    "raised_by": {
+      "sonnet": 1
+    },
+    "runs": 1
+  },
+  {
+    "id": "dev-protocol-before-ca7ec87",
+    "draft": "dev-protocol-before.md",
+    "line": 93,
+    "quote": "| Server | Publisher | SDK underneath | Speaks July? |",
+    "habits": {
+      "triad": 1
+    },
+    "severities": {
+      "low": 1
+    },
+    "raised_by": {
+      "qwen2.5-7b": 1
+    },
+    "runs": 1
+  },
+  {
+    "id": "dev-protocol-before-ca91177",
+    "draft": "dev-protocol-before.md",
+    "line": 108,
+    "quote": "Every server on a version-one SDK spoke only the old handshake, and every server on version two spoke both. None of them implemented discovery by hand, and none failed to despite a v2 SDK.",
+    "habits": {
+      "closer": 1
+    },
+    "severities": {
+      "high": 1
+    },
+    "raised_by": {
+      "qwen2.5-7b+linter": 1
+    },
+    "runs": 1
+  },
+  {
+    "id": "dev-protocol-before-c22a62c",
+    "draft": "dev-protocol-before.md",
+    "line": 126,
+    "quote": "The newest `@modelcontextprotocol/sdk` on npm is 1.30.0, and its build has no mention of `2026-07-28` anywhere.",
+    "habits": {
+      "generic-detail": 1
+    },
+    "severities": {
+      "high": 1
+    },
+    "raised_by": {
+      "llama3.1-8b+chunks": 1
+    },
+    "runs": 1
+  },
+  {
+    "id": "dev-protocol-before-c829fb3",
+    "draft": "dev-protocol-before.md",
+    "line": 130,
+    "quote": "Then Context7, an npm package, answered server/discover.",
+    "habits": {
+      "dramatic-beat": 1
+    },
+    "severities": {
+      "low": 1
+    },
+    "raised_by": {
+      "sonnet+linter": 1
+    },
+    "runs": 1
+  },
+  {
+    "id": "dev-protocol-before-c4769a2",
+    "draft": "dev-protocol-before.md",
+    "line": 140,
+    "quote": "The Python side doesn't have this problem, since `mcp` 2.x is the same package with a higher number.",
+    "habits": {
+      "cliche-emphasis": 1
+    },
+    "severities": {
+      "medium": 1
+    },
+    "raised_by": {
+      "qwen2.5-7b": 1
+    },
+    "runs": 1
+  },
+  {
+    "id": "dev-protocol-before-cc1ec2d",
+    "draft": "dev-protocol-before.md",
+    "line": 145,
+    "quote": "The servers that don't speak July turn it down in two different ways, and the split\nfollows the SDK again.",
+    "habits": {
+      "fragment": 1
+    },
+    "severities": {
+      "medium": 1
+    },
+    "raised_by": {
+      "qwen2.5-7b+chunks": 1
+    },
+    "runs": 1
+  },
+  {
+    "id": "dev-protocol-before-c8f894e",
+    "draft": "dev-protocol-before.md",
+    "line": 146,
+    "quote": "The Python ones don't:",
+    "habits": {
+      "drastic-beat": 1
+    },
+    "severities": {
+      "low": 1
+    },
+    "raised_by": {
+      "qwen2.5-7b": 1
+    },
+    "runs": 1
+  },
+  {
+    "id": "heldout-double-entry-c02ac8d",
+    "draft": "heldout-double-entry.html",
+    "line": 327,
+    "quote": "pricing.xlsx &mdash; reconciliation sheet-level",
+    "habits": {
+      "triad": 1
+    },
+    "severities": {
+      "medium": 1
+    },
+    "raised_by": {
+      "llama3.1-8b+chunks": 1
+    },
+    "runs": 1
+  },
+  {
+    "id": "heldout-double-entry-c548806",
+    "draft": "heldout-double-entry.html",
+    "line": 353,
+    "quote": "The problem",
+    "habits": {
+      "generic-detail": 1
+    },
+    "severities": {
+      "low": 1
+    },
+    "raised_by": {
+      "llama3.1-8b+chunks": 1
+    },
+    "runs": 1
+  },
+  {
+    "id": "heldout-double-entry-ce2164a",
+    "draft": "heldout-double-entry.html",
+    "line": 397,
+    "quote": "A three-page document that yielded nothing looks exactly like a three-page document that was blank to begin with.",
+    "habits": {
+      "closer": 1
+    },
+    "severities": {
+      "medium": 1
+    },
+    "raised_by": {
+      "qwen2.5-7b+chunks": 1
+    },
+    "runs": 1
+  },
+  {
+    "id": "heldout-double-entry-caf58b2",
+    "draft": "heldout-double-entry.html",
+    "line": 416,
+    "quote": "The operating system kills the process. If the surrounding code catches that and carries on with whatever it had, you get a fragment presented as a whole.",
+    "habits": {
+      "fragment": 1
+    },
+    "severities": {
+      "medium": 1
+    },
+    "raised_by": {
+      "qwen2.5-7b+chunks": 1
+    },
+    "runs": 1
+  },
+  {
+    "id": "heldout-double-entry-c0fdb72",
+    "draft": "heldout-double-entry.html",
+    "line": 427,
+    "quote": "A hallucinating model invents a fact that was never in front of it.",
+    "habits": {
+      "generic-detail": 1
+    },
+    "severities": {
+      "low": 1
+    },
+    "raised_by": {
+      "llama3.1-8b+chunks": 1
+    },
+    "runs": 1
+  },
+  {
+    "id": "heldout-double-entry-cdb0efe",
+    "draft": "heldout-double-entry.html",
+    "line": 428,
+    "quote": "Here the model behaves impeccably — it reports exactly what it was given.",
+    "habits": {
+      "dramatic-beat": 1
+    },
+    "severities": {
+      "low": 1
+    },
+    "raised_by": {
+      "qwen2.5-7b+linter": 1
+    },
+    "runs": 1
+  },
+  {
+    "id": "heldout-double-entry-c305c29",
+    "draft": "heldout-double-entry.html",
+    "line": 438,
+    "quote": "Every downstream stage assumes the stage above it did its job, and nothing in the pipeline is responsible for asking whether the input arrived whole.",
+    "habits": {
+      "fragment": 1
+    },
+    "severities": {
+      "medium": 1
+    },
+    "raised_by": {
+      "qwen2.5-7b+chunks": 1
+    },
+    "runs": 1
+  },
+  {
+    "id": "heldout-double-entry-c346728",
+    "draft": "heldout-double-entry.html",
+    "line": 443,
+    "quote": "The remedy usually suggested is to ask the AI what it processed",
+    "habits": {
+      "hedge": 1
+    },
+    "severities": {
+      "medium": 1
+    },
+    "raised_by": {
+      "sonnet": 1
+    },
+    "runs": 1
+  },
+  {
+    "id": "heldout-double-entry-c35e147",
+    "draft": "heldout-double-entry.html",
+    "line": 467,
+    "quote": "Every file is counted twice:",
+    "habits": {
+      "fragment": 1
+    },
+    "severities": {
+      "low": 1
+    },
+    "raised_by": {
+      "qwen2.5-7b+chunks": 1
+    },
+    "runs": 1
+  },
+  {
+    "id": "heldout-double-entry-ca9c260",
+    "draft": "heldout-double-entry.html",
+    "line": 513,
+    "quote": "The upper path never reads content.",
+    "habits": {
+      "reader-instruction": 1
+    },
+    "severities": {
+      "high": 1
+    },
+    "raised_by": {
+      "llama3.1-8b+chunks": 1
+    },
+    "runs": 1
+  },
+  {
+    "id": "heldout-double-entry-ce1ee32",
+    "draft": "heldout-double-entry.html",
+    "line": 516,
+    "quote": "structurally different work",
+    "habits": {
+      "emphasis-word": 2
+    },
+    "severities": {
+      "medium": 2
+    },
+    "raised_by": {
+      "llama3.1-8b+chunks": 1
+    },
+    "runs": 1
+  },
+  {
+    "id": "heldout-double-entry-c214b30",
+    "draft": "heldout-double-entry.html",
+    "line": 628,
+    "quote": "Why the second index is the interesting part",
+    "habits": {
+      "cliche-emphasis": 1
+    },
+    "severities": {
+      "medium": 1
+    },
+    "raised_by": {
+      "sonnet": 1
+    },
+    "runs": 1
+  },
+  {
+    "id": "heldout-double-entry-c9eebb6",
+    "draft": "heldout-double-entry.html",
+    "line": 636,
+    "quote": "You are never fully blind to a file you couldn't read.",
+    "habits": {
+      "antithesis": 1,
+      "restatement": 1
+    },
+    "severities": {
+      "high": 1,
+      "medium": 1
+    },
+    "raised_by": {
+      "llama3.1-8b": 1
+    },
+    "runs": 1
+  },
+  {
+    "id": "heldout-double-entry-c242ffd",
+    "draft": "heldout-double-entry.html",
+    "line": 655,
+    "quote": "All output below is real, produced by <code>make demo</code> against a corpus of deliberately broken files the repository generates for the purpose.",
+    "habits": {
+      "closer": 1
+    },
+    "severities": {
+      "medium": 1
+    },
+    "raised_by": {
+      "qwen2.5-7b": 1
+    },
+    "runs": 1
+  },
+  {
+    "id": "heldout-double-entry-c0f570e",
+    "draft": "heldout-double-entry.html",
+    "line": 741,
+    "quote": "a bug in the tool itself, on its first run",
+    "habits": {
+      "cliche-emphasis": 1
+    },
+    "severities": {
+      "low": 1
+    },
+    "raised_by": {
+      "llama3.1-8b+chunks": 1
+    },
+    "runs": 1
+  },
+  {
+    "id": "heldout-double-entry-cd4973b",
+    "draft": "heldout-double-entry.html",
+    "line": 743,
+    "quote": "returned plausible-looking text",
+    "habits": {
+      "generic-detail": 1
+    },
+    "severities": {
+      "medium": 1
+    },
+    "raised_by": {
+      "sonnet+linter": 1
+    },
+    "runs": 1
+  },
+  {
+    "id": "heldout-double-entry-cdcaf41",
+    "draft": "heldout-double-entry.html",
+    "line": 754,
+    "quote": "but the extractor returned nothing",
+    "habits": {
+      "antithesis": 1
+    },
+    "severities": {
+      "low": 1
+    },
+    "raised_by": {
+      "llama3.1-8b+chunks": 1
+    },
+    "runs": 1
+  },
+  {
+    "id": "heldout-double-entry-cef5e0a",
+    "draft": "heldout-double-entry.html",
+    "line": 761,
+    "quote": "but measured against the declared page count",
+    "habits": {
+      "antithesis": 1
+    },
+    "severities": {
+      "low": 1
+    },
+    "raised_by": {
+      "llama3.1-8b+chunks": 1
+    },
+    "runs": 1
+  },
+  {
+    "id": "heldout-double-entry-c30ce52",
+    "draft": "heldout-double-entry.html",
+    "line": 785,
+    "quote": "the default embedding is a dependency-free hashing function, chosen so the refusal logic can be tested offline on any machine with no model and no API key.",
+    "habits": {
+      "hedge": 1
+    },
+    "severities": {
+      "medium": 1
+    },
+    "raised_by": {
+      "llama3.1-8b+chunks": 1
+    },
+    "runs": 1
+  },
+  {
+    "id": "heldout-double-entry-cea0a7a",
+    "draft": "heldout-double-entry.html",
+    "line": 833,
+    "quote": "Where this goes next",
+    "habits": {
+      "reader-instruction": 1
+    },
+    "severities": {
+      "medium": 1
+    },
+    "raised_by": {
+      "qwen2.5-7b+chunks": 1
+    },
+    "runs": 1
+  },
+  {
+    "id": "heldout-double-entry-c9dc21c",
+    "draft": "heldout-double-entry.html",
+    "line": 842,
+    "quote": "a local sentence-transformer behind it would test how much of the refusal behaviour survives paraphrase.",
+    "habits": {
+      "emphasis-word": 1
+    },
+    "severities": {
+      "medium": 1
+    },
+    "raised_by": {
+      "llama3.1-8b+chunks": 1
+    },
+    "runs": 1
+  },
+  {
+    "id": "heldout-double-entry-c580079",
+    "draft": "heldout-double-entry.html",
+    "line": 871,
+    "quote": "A system that answers questions from your documents makes an implicit promise: that it read them.",
+    "habits": {
+      "dramatic-beat": 1
+    },
+    "severities": {
+      "high": 1
+    },
+    "raised_by": {
+      "llama3.1-8b+chunks": 1
+    },
+    "runs": 1
+  },
+  {
+    "id": "heldout-double-entry-c898d60",
+    "draft": "heldout-double-entry.html",
+    "line": 873,
+    "quote": "the quiet kind",
+    "habits": {
+      "generic-detail": 1
+    },
+    "severities": {
+      "high": 1
+    },
+    "raised_by": {
+      "llama3.1-8b+chunks": 1
+    },
+    "runs": 1
+  },
+  {
+    "id": "heldout-where-the-cut-falls-cff7401",
+    "draft": "heldout-where-the-cut-falls.html",
+    "line": 270,
+    "quote": "there is far too much text",
+    "habits": {
+      "generic-detail": 1
+    },
+    "severities": {
+      "medium": 1
+    },
+    "raised_by": {
+      "qwen2.5-7b+chunks": 1
+    },
+    "runs": 1
+  },
+  {
+    "id": "heldout-where-the-cut-falls-cd25145",
+    "draft": "heldout-where-the-cut-falls.html",
+    "line": 275,
+    "quote": "every 800 characters, say",
+    "habits": {
+      "generic-detail": 1
+    },
+    "severities": {
+      "medium": 1
+    },
+    "raised_by": {
+      "llama3.1-8b+chunks": 1
+    },
+    "runs": 1
+  },
+  {
+    "id": "heldout-where-the-cut-falls-c00ec87",
+    "draft": "heldout-where-the-cut-falls.html",
+    "line": 284,
+    "quote": "│ = a cut, every 90 characters",
+    "habits": {
+      "fragment": 1
+    },
+    "severities": {
+      "high": 1
+    },
+    "raised_by": {
+      "qwen2.5-7b+chunks": 1
+    },
+    "runs": 1
+  },
+  {
+    "id": "heldout-where-the-cut-falls-cdac7c0",
+    "draft": "heldout-where-the-cut-falls.html",
+    "line": 286,
+    "quote": "The Northeast filing deadline is the one exception.",
+    "habits": {
+      "dramatic-beat": 1
+    },
+    "severities": {
+      "high": 1
+    },
+    "raised_by": {
+      "llama3.1-8b+chunks": 1
+    },
+    "runs": 1
+  },
+  {
+    "id": "heldout-where-the-cut-falls-c0cb281",
+    "draft": "heldout-where-the-cut-falls.html",
+    "line": 385,
+    "quote": "Every chunking strategy is answering one question — <em>what tells me where a boundary goes?</em> — and the answers get progressively more expensive.",
+    "habits": {
+      "fragment": 1
+    },
+    "severities": {
+      "medium": 1
+    },
+    "raised_by": {
+      "llama3.1-8b+chunks": 1
+    },
+    "runs": 1
+  },
+  {
+    "id": "heldout-where-the-cut-falls-c610bc9",
+    "draft": "heldout-where-the-cut-falls.html",
+    "line": 399,
+    "quote": "the document's own markup — headings, tables, code fences",
+    "habits": {
+      "triad": 1
+    },
+    "severities": {
+      "medium": 1
+    },
+    "raised_by": {
+      "qwen2.5-7b+chunks": 1
+    },
+    "runs": 1
+  },
+  {
+    "id": "heldout-where-the-cut-falls-c5ca54d",
+    "draft": "heldout-where-the-cut-falls.html",
+    "line": 407,
+    "quote": "It is not. It leaves the cuts exactly where they were and changes something else: what gets stored for searching need not be what gets handed to the model.",
+    "habits": {
+      "antithesis": 1
+    },
+    "severities": {
+      "low": 1
+    },
+    "raised_by": {
+      "haiku": 1
+    },
+    "runs": 1
+  },
+  {
+    "id": "heldout-where-the-cut-falls-c295562",
+    "draft": "heldout-where-the-cut-falls.html",
+    "line": 451,
+    "quote": "sharp, easy to match against a question",
+    "habits": {
+      "fragment": 1
+    },
+    "severities": {
+      "low": 1
+    },
+    "raised_by": {
+      "sonnet": 1
+    },
+    "runs": 1
+  },
+  {
+    "id": "heldout-where-the-cut-falls-c1e602d",
+    "draft": "heldout-where-the-cut-falls.html",
+    "line": 618,
+    "quote": "We built a set of documents designed to break specific strategies, to check the measurements caught what they were supposed to.",
+    "habits": {
+      "generic-detail": 1
+    },
+    "severities": {
+      "medium": 1
+    },
+    "raised_by": {
+      "llama3.1-8b+chunks": 1
+    },
+    "runs": 1
+  },
+  {
+    "id": "heldout-where-the-cut-falls-cef38ec",
+    "draft": "heldout-where-the-cut-falls.html",
+    "line": 665,
+    "quote": "The only way out is to widen what the model receives, or to write the missing context into the chunk before storing it.",
+    "habits": {
+      "generic-detail": 1
+    },
+    "severities": {
+      "medium": 1
+    },
+    "raised_by": {
+      "llama3.1-8b+chunks": 1
+    },
+    "runs": 1
+  },
+  {
+    "id": "heldout-where-the-cut-falls-c086b58",
+    "draft": "heldout-where-the-cut-falls.html",
+    "line": 761,
+    "quote": "A table severed from its header row is unusable, and nothing about the average chunk size will ever tell you.",
+    "habits": {
+      "fragment": 1
+    },
+    "severities": {
+      "high": 1
+    },
+    "raised_by": {
+      "qwen2.5-7b+chunks": 1
+    },
+    "runs": 1
+  },
+  {
+    "id": "heldout-where-the-cut-falls-cd24b7a",
+    "draft": "heldout-where-the-cut-falls.html",
+    "line": 764,
+    "quote": "A chunk opening with a reference to something outside itself has been cut off from what it needs.",
+    "habits": {
+      "fragment": 1
+    },
+    "severities": {
+      "high": 1
+    },
+    "raised_by": {
+      "qwen2.5-7b+chunks": 1
+    },
+    "runs": 1
+  },
+  {
+    "id": "heldout-where-the-cut-falls-ca59602",
+    "draft": "heldout-where-the-cut-falls.html",
+    "line": 1077,
+    "quote": "Change the chunking with the search engine held still; change the search engine with the chunking held still; see how far each one moves the score.",
+    "habits": {
+      "fragment": 1
+    },
+    "severities": {
+      "medium": 1
+    },
+    "raised_by": {
+      "qwen2.5-7b+chunks": 1
+    },
+    "runs": 1
+  },
+  {
+    "id": "heldout-where-the-cut-falls-c5435f1",
+    "draft": "heldout-where-the-cut-falls.html",
+    "line": 1096,
+    "quote": "the biggest effect either one ever had is almost the same — 14.4 against 14.9.",
+    "habits": {
+      "generic-detail": 1
+    },
+    "severities": {
+      "high": 1
+    },
+    "raised_by": {
+      "llama3.1-8b+chunks": 1
+    },
+    "runs": 1
+  },
+  {
+    "id": "heldout-where-the-cut-falls-c687eca",
+    "draft": "heldout-where-the-cut-falls.html",
+    "line": 1167,
+    "quote": "the relationship between how good a chunking was and how much the engine mattered is −0.04, which is nothing at all.",
+    "habits": {
+      "triad": 1
+    },
+    "severities": {
+      "high": 1
+    },
+    "raised_by": {
+      "llama3.1-8b+chunks": 1
+    },
+    "runs": 1
+  }
+]

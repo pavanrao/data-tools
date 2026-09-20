@@ -1,0 +1,891 @@
+<title>ai-sniffer Label Proof</title>
+<meta name="description" content="Keep, change or drop each of the 165 hand labels before the ai-sniffer eval is scored.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap">
+<style>
+:root {
+  --paper: #F3F4F0;
+  --sheet: #FBFBF8;
+  --ink: #1B1F27;
+  --muted: #5D6470;
+  --faint: #8A909A;
+  --rule: #DADDD5;
+  --rule-strong: #C3C7BD;
+  --pencil: #2B59C3;
+  --pencil-ink: #FFFFFF;
+  --pencil-wash: rgba(43, 89, 195, 0.14);
+  --high: #B3261E;
+  --medium: #A86A12;
+  --low: #6E7681;
+  --keep: #2E7D4F;
+  --drop: #7A3B35;
+  --mark-bg: rgba(43, 89, 195, 0.16);
+  --focus: #2B59C3;
+  --serif: "Source Serif 4", "Iowan Old Style", Georgia, serif;
+  --sans: "IBM Plex Sans", -apple-system, "Segoe UI", Helvetica, Arial, sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #14161A;
+    --sheet: #1B1E23;
+    --ink: #E5E7EB;
+    --muted: #A0A7B2;
+    --faint: #767D88;
+    --rule: #2A2E35;
+    --rule-strong: #3A3F48;
+    --pencil: #86A8F5;
+    --pencil-ink: #0F1522;
+    --pencil-wash: rgba(134, 168, 245, 0.16);
+    --high: #F0786E;
+    --medium: #E2A84E;
+    --low: #8E96A1;
+    --keep: #66C28E;
+    --drop: #D99A93;
+    --mark-bg: rgba(134, 168, 245, 0.22);
+    --focus: #86A8F5;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #14161A;
+  --sheet: #1B1E23;
+  --ink: #E5E7EB;
+  --muted: #A0A7B2;
+  --faint: #767D88;
+  --rule: #2A2E35;
+  --rule-strong: #3A3F48;
+  --pencil: #86A8F5;
+  --pencil-ink: #0F1522;
+  --pencil-wash: rgba(134, 168, 245, 0.16);
+  --high: #F0786E;
+  --medium: #E2A84E;
+  --low: #8E96A1;
+  --keep: #66C28E;
+  --drop: #D99A93;
+  --mark-bg: rgba(134, 168, 245, 0.22);
+  --focus: #86A8F5;
+}
+
+* { box-sizing: border-box; }
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font: 14px/1.5 var(--sans);
+  -webkit-font-smoothing: antialiased;
+}
+button, input, select, textarea { font: inherit; color: inherit; }
+:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+.mono { font-family: var(--mono); font-variant-numeric: tabular-nums; }
+
+/* ---------- masthead ---------- */
+.masthead {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(260px, 420px);
+  gap: 16px 40px;
+  align-items: end;
+  padding: 22px 32px 18px;
+  border-bottom: 1px solid var(--rule);
+  background: var(--paper);
+}
+.masthead h1 {
+  margin: 0;
+  font: 600 26px/1.15 var(--serif);
+  letter-spacing: -0.01em;
+  text-wrap: balance;
+}
+.masthead .sub { margin: 6px 0 0; color: var(--muted); max-width: 64ch; }
+.masthead .sub b { font-weight: 500; color: var(--ink); }
+.tally { display: grid; gap: 8px; }
+.tally-bar {
+  display: flex; height: 8px; border-radius: 2px; overflow: hidden;
+  background: var(--rule);
+}
+.tally-bar span { display: block; height: 100%; transition: width .25s ease; }
+.tally-bar .t-keep { background: var(--keep); }
+.tally-bar .t-change { background: var(--pencil); }
+.tally-bar .t-drop { background: var(--drop); }
+.tally-legend { display: flex; flex-wrap: wrap; gap: 4px 16px; color: var(--muted); font-size: 12.5px; }
+.tally-legend b { color: var(--ink); font-weight: 500; font-family: var(--mono); font-variant-numeric: tabular-nums; }
+.dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 6px; vertical-align: 0; }
+
+/* ---------- frame ---------- */
+.frame {
+  display: grid;
+  grid-template-columns: 280px minmax(0, 1fr);
+  align-items: start;
+}
+.rail {
+  position: sticky; top: 0;
+  max-height: 100vh; overflow-y: auto;
+  padding: 20px 20px 32px 32px;
+  display: grid; gap: 24px;
+  border-right: 1px solid var(--rule);
+}
+.rail h2 {
+  margin: 0 0 8px;
+  font: 600 11px/1.2 var(--sans);
+  letter-spacing: .08em; text-transform: uppercase; color: var(--faint);
+}
+.drafts { display: grid; gap: 16px; }
+.role-group { display: grid; gap: 2px; }
+.draft-btn {
+  display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 2px 10px;
+  width: 100%; text-align: left; padding: 8px 10px; margin: 0 -10px;
+  background: none; border: 0; border-radius: 4px; cursor: pointer;
+}
+.draft-btn:hover { background: var(--pencil-wash); }
+.draft-btn[aria-current="true"] { background: var(--sheet); box-shadow: inset 0 0 0 1px var(--rule-strong); }
+.draft-btn .t { font: 500 13.5px/1.3 var(--sans); }
+.draft-btn .n { font: 12px/1.3 var(--mono); color: var(--muted); font-variant-numeric: tabular-nums; align-self: start; padding-top: 1px; }
+.draft-btn .f { font: 11.5px/1.3 var(--mono); color: var(--faint); overflow-wrap: anywhere; }
+.draft-btn .mini { grid-column: 1 / -1; height: 3px; background: var(--rule); border-radius: 2px; overflow: hidden; display: flex; margin-top: 4px; }
+.draft-btn .mini span { display: block; height: 100%; }
+
+.filters { display: grid; gap: 12px; }
+.seg { display: inline-flex; border: 1px solid var(--rule-strong); border-radius: 4px; overflow: hidden; }
+.seg button {
+  border: 0; background: transparent; padding: 4px 10px; cursor: pointer; font-size: 12.5px;
+  border-right: 1px solid var(--rule-strong);
+}
+.seg button:last-child { border-right: 0; }
+.seg button[aria-pressed="true"] { background: var(--ink); color: var(--paper); }
+.field { display: grid; gap: 4px; }
+.field > span { font-size: 12px; color: var(--muted); }
+select, input[type="text"], textarea {
+  background: var(--sheet); border: 1px solid var(--rule-strong); border-radius: 4px; padding: 5px 8px;
+}
+textarea { resize: vertical; min-height: 64px; line-height: 1.45; }
+.check { display: flex; gap: 8px; align-items: center; cursor: pointer; }
+.check input { accent-color: var(--pencil); }
+
+.keys { display: grid; grid-template-columns: auto 1fr; gap: 4px 10px; color: var(--muted); font-size: 12.5px; }
+kbd {
+  font: 11.5px/1 var(--mono); padding: 3px 5px; border-radius: 3px;
+  border: 1px solid var(--rule-strong); border-bottom-width: 2px; background: var(--sheet); color: var(--ink);
+  justify-self: start;
+}
+.status { font-size: 12.5px; color: var(--muted); display: flex; gap: 8px; align-items: baseline; }
+.status::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--faint); flex: none; transform: translateY(-1px); }
+.status[data-mode="db"]::before { background: var(--keep); }
+.status[data-mode="local"]::before { background: var(--medium); }
+.export summary { cursor: pointer; font-size: 12.5px; color: var(--muted); }
+.export textarea { width: 100%; min-height: 140px; margin-top: 8px; font: 11.5px/1.4 var(--mono); }
+
+/* ---------- sheet ---------- */
+.sheet { padding: 24px 40px 80px; min-width: 0; }
+.draft-head { max-width: 820px; display: grid; gap: 6px; padding-bottom: 18px; border-bottom: 1px solid var(--rule); }
+.draft-head .eyebrow { display: flex; flex-wrap: wrap; gap: 6px 14px; align-items: baseline; font-size: 12.5px; color: var(--muted); }
+.role-tag {
+  font: 600 11px/1 var(--sans); letter-spacing: .08em; text-transform: uppercase;
+  padding: 4px 7px; border-radius: 3px; border: 1px solid currentColor;
+}
+.role-tag[data-role="held-out"] { color: var(--pencil); }
+.role-tag[data-role="development"] { color: var(--medium); }
+.role-tag[data-role="clean"] { color: var(--keep); }
+.draft-head h2 { margin: 4px 0 0; font: 600 22px/1.2 var(--serif); text-wrap: balance; }
+.draft-head p { margin: 0; color: var(--muted); max-width: 68ch; }
+.draft-head .scope { color: var(--ink); }
+.showing { font-size: 12.5px; color: var(--faint); margin-top: 6px; }
+
+.entries { max-width: 820px; }
+.entry {
+  display: grid; grid-template-columns: 76px minmax(0, 1fr); gap: 0 18px;
+  padding: 18px 0; border-bottom: 1px solid var(--rule);
+  scroll-margin-top: 16px;
+}
+.entry:focus { outline: none; }
+.entry:focus-visible, .entry.cursor { box-shadow: -14px 0 0 -11px var(--pencil); }
+.margin { display: grid; align-content: start; gap: 6px; padding-top: 3px; }
+.pips { display: flex; gap: 3px; }
+.pips i { width: 7px; height: 7px; border-radius: 50%; border: 1.5px solid var(--sev); }
+.pips i.on { background: var(--sev); }
+.margin .sev-word { font-size: 11.5px; color: var(--sev); font-weight: 500; }
+.margin .ln { font-size: 11.5px; color: var(--faint); }
+.proofmark { font: italic 400 15px/1 var(--serif); margin-top: 8px; min-height: 15px; }
+.entry[data-verdict="keep"] .proofmark { color: var(--keep); }
+.entry[data-verdict="change"] .proofmark { color: var(--pencil); }
+.entry[data-verdict="drop"] .proofmark { color: var(--drop); }
+
+.e-meta { display: flex; flex-wrap: wrap; gap: 4px 12px; align-items: baseline; font-size: 12.5px; color: var(--muted); }
+.e-meta .habit { font-weight: 600; color: var(--ink); font-size: 13px; }
+.e-meta .habit.was { text-decoration: line-through; color: var(--faint); font-weight: 500; }
+.e-meta .habit-new { font-weight: 600; color: var(--pencil); font-size: 13px; }
+.e-meta .section { font-style: italic; font-family: var(--serif); font-size: 13.5px; overflow-wrap: anywhere; }
+.e-meta .id { margin-left: auto; font-size: 11.5px; color: var(--faint); }
+.context {
+  margin: 8px 0 12px; font: 400 16.5px/1.6 var(--serif); color: var(--muted); max-width: 66ch;
+}
+.context mark {
+  color: var(--ink); background: var(--mark-bg); padding: 1px 2px; border-radius: 2px;
+  box-decoration-break: clone; -webkit-box-decoration-break: clone;
+}
+.entry[data-verdict="drop"] .context mark { background: transparent; text-decoration: line-through; text-decoration-color: var(--drop); text-decoration-thickness: 1.5px; }
+.entry[data-verdict="keep"] .context mark { box-shadow: inset 0 -2px 0 var(--keep); }
+
+.controls { display: flex; flex-wrap: wrap; gap: 10px 14px; align-items: center; }
+.verdict { display: inline-flex; border: 1px solid var(--rule-strong); border-radius: 5px; overflow: hidden; background: var(--sheet); }
+.verdict button {
+  border: 0; background: transparent; padding: 6px 12px; cursor: pointer; display: inline-flex; gap: 8px; align-items: center;
+  border-right: 1px solid var(--rule-strong); font-weight: 500;
+}
+.verdict button:last-child { border-right: 0; }
+.verdict button .k { font: 10.5px/1 var(--mono); color: var(--faint); }
+.verdict button:hover { background: var(--pencil-wash); }
+.verdict button[data-v="keep"][aria-pressed="true"] { background: var(--keep); color: var(--sheet); }
+.verdict button[data-v="change"][aria-pressed="true"] { background: var(--pencil); color: var(--pencil-ink); }
+.verdict button[data-v="drop"][aria-pressed="true"] { background: var(--drop); color: var(--sheet); }
+.verdict button[aria-pressed="true"] .k { color: inherit; opacity: .7; }
+.change-fields { display: inline-flex; gap: 8px; flex-wrap: wrap; }
+.change-fields select { padding: 5px 6px; }
+.note { flex: 1 1 220px; min-width: 0; }
+
+/* ---------- candidates ---------- */
+.cands { max-width: 820px; margin-top: 40px; display: grid; gap: 10px; }
+.cands h3 { margin: 0; font: 600 17px/1.3 var(--serif); }
+.cands > p { margin: 0; color: var(--muted); max-width: 66ch; }
+.cand-tag {
+  font: 600 10.5px/1 var(--sans); letter-spacing: .08em; text-transform: uppercase;
+  color: var(--pencil); border: 1px solid currentColor; border-radius: 3px; padding: 3px 5px;
+}
+.raised { font-size: 12px; color: var(--faint); }
+.entry[data-verdict="accept"] .proofmark { color: var(--keep); }
+.entry[data-verdict="reject"] .proofmark { color: var(--drop); }
+.entry[data-verdict="reject"] .context mark { background: transparent; text-decoration: line-through; text-decoration-color: var(--drop); }
+.entry[data-verdict="accept"] .context mark { box-shadow: inset 0 -2px 0 var(--keep); }
+.verdict button[data-v="accept"][aria-pressed="true"] { background: var(--keep); color: var(--sheet); }
+.verdict button[data-v="reject"][aria-pressed="true"] { background: var(--drop); color: var(--sheet); }
+
+/* ---------- missed ---------- */
+.missed { max-width: 820px; margin-top: 40px; display: grid; gap: 14px; }
+.missed h3 { margin: 0; font: 600 17px/1.3 var(--serif); }
+.missed > p { margin: 0; color: var(--muted); max-width: 66ch; }
+.missed-form { display: grid; grid-template-columns: 1fr 1fr; gap: 10px 14px; padding: 16px; background: var(--sheet); border: 1px solid var(--rule); border-radius: 6px; }
+.missed-form .wide { grid-column: 1 / -1; }
+.missed-form textarea { font: 15px/1.5 var(--serif); }
+.missed-form .actions { grid-column: 1 / -1; display: flex; gap: 12px; align-items: center; }
+.btn {
+  border: 1px solid var(--pencil); background: var(--pencil); color: var(--pencil-ink);
+  padding: 6px 14px; border-radius: 4px; cursor: pointer; font-weight: 500;
+}
+.btn:disabled { opacity: .45; cursor: default; }
+.btn-quiet { border: 0; background: none; color: var(--muted); padding: 2px 4px; cursor: pointer; text-decoration: underline; text-underline-offset: 2px; }
+.form-msg { font-size: 12.5px; color: var(--muted); }
+.missed-list { display: grid; }
+.missed-item { display: grid; grid-template-columns: 76px minmax(0, 1fr) auto; gap: 0 18px; padding: 12px 0; border-top: 1px solid var(--rule); align-items: start; }
+.missed-item q { font: 16px/1.55 var(--serif); }
+.missed-item .e-meta { margin-top: 4px; }
+.empty { color: var(--faint); font-style: italic; }
+
+@media (max-width: 900px) {
+  .masthead { grid-template-columns: 1fr; padding: 18px 20px; }
+  .frame { grid-template-columns: 1fr; }
+  .rail { position: static; max-height: none; border-right: 0; border-bottom: 1px solid var(--rule); padding: 16px 20px; }
+  .sheet { padding: 20px 20px 64px; }
+  .entry, .missed-item { grid-template-columns: 56px minmax(0, 1fr); }
+  .missed-item .btn-quiet { grid-column: 2; justify-self: start; }
+  .keys-block { display: none; }
+  .missed-form { grid-template-columns: 1fr; }
+}
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; scroll-behavior: auto !important; }
+}
+</style>
+
+<header class="masthead">
+  <div>
+    <h1>ai-sniffer label proof</h1>
+    <p class="sub">Hand labels for the ai-sniffer eval, pinned at <b class="mono">__COMMIT__</b>. Each quote sits in its own paragraph. Mark it <b>keep</b>, <b>change</b> its habit or severity, or <b>drop</b> it. Nothing is scored until this pass is done.</p>
+  </div>
+  <div class="tally" aria-live="polite">
+    <div class="tally-bar" id="tally-bar"><span class="t-keep"></span><span class="t-change"></span><span class="t-drop"></span></div>
+    <div class="tally-legend" id="tally-legend"></div>
+  </div>
+</header>
+
+<div class="frame">
+  <aside class="rail">
+    <nav class="drafts" id="drafts" aria-label="Drafts"></nav>
+
+    <section class="filters" aria-label="Filters">
+      <h2>Show</h2>
+      <div class="seg" id="sev-filter" role="group" aria-label="Severity">
+        <button type="button" data-sev="all" aria-pressed="true">All</button>
+        <button type="button" data-sev="high" aria-pressed="false">High</button>
+        <button type="button" data-sev="medium" aria-pressed="false">Medium</button>
+        <button type="button" data-sev="low" aria-pressed="false">Low</button>
+      </div>
+      <label class="field"><span>Habit</span>
+        <select id="habit-filter"><option value="all">Every habit</option></select>
+      </label>
+      <label class="check"><input type="checkbox" id="undecided-filter"> Only labels without a mark</label>
+    </section>
+
+    <section class="keys-block">
+      <h2>Keys</h2>
+      <div class="keys">
+        <kbd>j</kbd><span>next label</span>
+        <kbd>k</kbd><span>previous label</span>
+        <kbd>1</kbd><span>keep, then move on</span>
+        <kbd>2</kbd><span>change habit or severity</span>
+        <kbd>3</kbd><span>drop, then move on</span>
+        <kbd>n</kbd><span>write a note</span>
+        <kbd>0</kbd><span>clear the mark</span>
+      </div>
+    </section>
+
+    <section>
+      <h2>Saving</h2>
+      <p class="status" id="status" data-mode="pending">Connecting…</p>
+      <details class="export">
+        <summary>Show every mark as JSON</summary>
+        <textarea id="export" readonly aria-label="Marks as JSON"></textarea>
+      </details>
+    </section>
+  </aside>
+
+  <main class="sheet">
+    <header class="draft-head" id="draft-head"></header>
+    <div class="entries" id="entries"></div>
+
+    <section class="cands" id="candidates" aria-labelledby="cand-title" hidden>
+      <h3 id="cand-title">Found by the reviewers, not labelled</h3>
+      <p>Findings from the model runs that match no label, grouped across runs. Accept one to make it a label, marked as model-sourced so recall can be reported without it. Keys: <kbd>1</kbd> accept, <kbd>3</kbd> reject.</p>
+      <div id="cand-list"></div>
+    </section>
+
+    <section class="missed" aria-labelledby="missed-title">
+      <h3 id="missed-title">Habits with no label</h3>
+      <p>Anything in this draft that should have been labelled. Paste the text exactly as it appears in the draft, so the build script can find it.</p>
+      <form class="missed-form" id="missed-form">
+        <label class="field wide"><span>Quote from the draft</span>
+          <textarea id="m-quote" required></textarea>
+        </label>
+        <label class="field"><span>Habit</span><select id="m-habit"></select></label>
+        <label class="field"><span>Severity</span>
+          <select id="m-sev"><option>high</option><option selected>medium</option><option>low</option></select>
+        </label>
+        <label class="field wide"><span>Note (optional)</span><input type="text" id="m-note"></label>
+        <div class="actions">
+          <button class="btn" type="submit">Add to this draft</button>
+          <span class="form-msg" id="m-msg" role="status"></span>
+        </div>
+      </form>
+      <div class="missed-list" id="missed-list"></div>
+    </section>
+  </main>
+</div>
+
+<script type="application/json" id="label-data">__DATA__</script>
+<script>
+(() => {
+  const DATA = JSON.parse(document.getElementById("label-data").textContent);
+  const ORDER = [
+    "heldout-double-entry.html", "heldout-where-the-cut-falls.html",
+    "dev-database-before.html", "dev-protocol-before.md",
+    "clean-database-after.html", "clean-protocol-after.md",
+  ];
+  const ROLES = [
+    ["held-out", "Held out"],
+    ["development", "Development"],
+    ["clean", "Clean"],
+  ];
+  const ROLE_NOTE = {
+    "held-out": "Never quoted in the reviewer prompt, and labelled before any model saw it. Recall here is the number that counts.",
+    "development": "The reviewer prompt quotes its examples from this draft, so recall here will be optimistic.",
+    "clean": "Habits the rewrite left behind or added. A flag on anything not labelled here counts as a false alarm.",
+  };
+  const SECTIONS = { "heldout-where-the-cut-falls.html": "Only sections 1, 4, 7, 10 and 13 are labelled and scored. The model reads the whole post." };
+  const PROOF = { keep: "stet", change: "change", drop: "dele" };
+  const SEV_PIPS = { high: 3, medium: 2, low: 1 };
+  const HABITS = DATA.habits;
+  const LOCAL_KEY = "ai-sniffer-label-proof-v1";
+
+  const byDraft = {};
+  for (const l of DATA.labels) (byDraft[l.draft] ||= []).push(l);
+  for (const k in byDraft) byDraft[k].sort((a, b) => a.line - b.line);
+  const labelById = Object.fromEntries(DATA.labels.map(l => [l.id, l]));
+
+  let decisions = {};
+  let missed = {};
+  let candMarks = {};
+  const CANDS = DATA.candidates || [];
+  const candById = Object.fromEntries(CANDS.map((c) => [c.id, c]));
+  const CAND_WORD = { accept: "add", reject: "no" };
+  const view = { draft: ORDER[0], sev: "all", habit: "all", undecided: false };
+  let db = null;
+  let mode = "pending";
+
+  const $ = (id) => document.getElementById(id);
+  const el = (tag, attrs = {}, ...kids) => {
+    const n = document.createElement(tag);
+    for (const [k, v] of Object.entries(attrs)) {
+      if (v == null || v === false) continue;
+      if (k === "class") n.className = v;
+      else if (k === "text") n.textContent = v;
+      else n.setAttribute(k, v === true ? "" : v);
+    }
+    for (const kid of kids) if (kid != null) n.append(kid);
+    return n;
+  };
+  const sevVar = (s) => `var(--${s})`;
+
+  try { const v = JSON.parse(localStorage.getItem(LOCAL_KEY + ":view") || "null"); if (v && ORDER.includes(v.draft)) view.draft = v.draft; } catch {}
+  const saveView = () => { try { localStorage.setItem(LOCAL_KEY + ":view", JSON.stringify({ draft: view.draft })); } catch {} };
+
+  // ---------- persistence ----------
+  function setStatus(m, text) { mode = m; const s = $("status"); s.dataset.mode = m; s.textContent = text; }
+
+  function loadLocal() {
+    try {
+      const saved = JSON.parse(localStorage.getItem(LOCAL_KEY) || "null");
+      if (saved) { decisions = saved.decisions || {}; missed = saved.missed || {}; candMarks = saved.candidates || {}; }
+    } catch {}
+  }
+  function saveLocal() {
+    try { localStorage.setItem(LOCAL_KEY, JSON.stringify({ decisions, missed, candidates: candMarks })); } catch {}
+  }
+  function localMode() {
+    if (mode === "db") return;
+    loadLocal();
+    setStatus("local", "Saving in this browser only. Copy the JSON below to hand the marks back.");
+    refresh();
+  }
+
+  async function writeDecision(id, value) {
+    if (value) decisions[id] = value; else delete decisions[id];
+    refresh();
+    if (mode === "db") {
+      try {
+        const ref = db.collection("decisions").doc(id);
+        if (value) await ref.set(value); else await ref.delete();
+      } catch (e) { setStatus("local", `Couldn't save ${id}: ${e && e.message ? e.message : "the store refused the write"}. Marks are kept in this browser for now.`); mode = "local"; saveLocal(); }
+    } else saveLocal();
+  }
+  async function writeCandidate(id, value) {
+    if (value) candMarks[id] = value; else delete candMarks[id];
+    refresh();
+    if (mode === "db") {
+      try {
+        const ref = db.collection("candidates").doc(id);
+        if (value) await ref.set(value); else await ref.delete();
+      } catch (e) { setStatus("local", `Couldn't save ${id}: ${e && e.message ? e.message : "the store refused the write"}. Marks are kept in this browser for now.`); mode = "local"; saveLocal(); }
+    } else saveLocal();
+  }
+  async function addMissed(item) {
+    if (mode === "db") {
+      const ref = await db.collection("missed").add(item);
+      missed[ref.id] = item;
+    } else {
+      missed["m" + Date.now().toString(36)] = item;
+      saveLocal();
+    }
+    refresh();
+  }
+  async function removeMissed(id) {
+    delete missed[id];
+    refresh();
+    if (mode === "db") { try { await db.collection("missed").doc(id).delete(); } catch {} } else saveLocal();
+  }
+
+  function connect() {
+    if (!window.claude || typeof window.claude.use !== "function") { localMode(); return; }
+    window.claude.use("db").then((handle) => {
+      if (!handle) { localMode(); return; }
+      db = handle;
+      setStatus("db", "Saved to this artifact as you go. Claude reads the marks from here.");
+      db.collection("decisions").onSnapshot((snap) => {
+        const next = {};
+        snap.docs.forEach((d) => { next[d.id] = d.data(); });
+        decisions = next; refresh();
+      }, (e) => setStatus("local", `Lost the connection to saved marks (${e.code}). Reload to reconnect.`));
+      db.collection("missed").onSnapshot((snap) => {
+        const next = {};
+        snap.docs.forEach((d) => { next[d.id] = d.data(); });
+        missed = next; refresh();
+      });
+      db.collection("candidates").onSnapshot((snap) => {
+        const next = {};
+        snap.docs.forEach((d) => { next[d.id] = d.data(); });
+        candMarks = next; refresh();
+      });
+    }).catch(localMode);
+  }
+
+  // ---------- rendering ----------
+  function counts(labels) {
+    const c = { keep: 0, change: 0, drop: 0, total: labels.length };
+    for (const l of labels) { const d = decisions[l.id]; if (d && c[d.verdict] != null) c[d.verdict]++; }
+    c.done = c.keep + c.change + c.drop;
+    return c;
+  }
+  function barSpans(target, c) {
+    const [k, ch, d] = target.children;
+    const pct = (n) => (c.total ? (100 * n / c.total) : 0) + "%";
+    k.style.width = pct(c.keep); ch.style.width = pct(c.change); d.style.width = pct(c.drop);
+  }
+
+  function renderTally() {
+    const c = counts(DATA.labels);
+    barSpans($("tally-bar"), c);
+    const legend = $("tally-legend");
+    legend.replaceChildren(
+      el("span", {}, el("b", { text: `${c.done} / ${c.total}` }), " marked"),
+      el("span", {}, el("i", { class: "dot", style: "background:var(--keep)" }), "keep ", el("b", { text: c.keep })),
+      el("span", {}, el("i", { class: "dot", style: "background:var(--pencil)" }), "change ", el("b", { text: c.change })),
+      el("span", {}, el("i", { class: "dot", style: "background:var(--drop)" }), "drop ", el("b", { text: c.drop })),
+      el("span", {}, "missed ", el("b", { text: Object.keys(missed).length })),
+      CANDS.length ? el("span", {}, "candidates ", el("b", { text: `${Object.values(candMarks).filter((m) => m.verdict).length} / ${CANDS.length}` })) : null,
+    );
+  }
+
+  function renderDrafts() {
+    const nav = $("drafts");
+    nav.replaceChildren();
+    for (const [role, name] of ROLES) {
+      const group = el("div", { class: "role-group" }, el("h2", { text: name }));
+      for (const file of ORDER.filter((f) => DATA.drafts[f].role === role)) {
+        const c = counts(byDraft[file]);
+        const mini = el("span", { class: "mini" },
+          el("span", { style: `width:${100 * c.keep / c.total}%;background:var(--keep)` }),
+          el("span", { style: `width:${100 * c.change / c.total}%;background:var(--pencil)` }),
+          el("span", { style: `width:${100 * c.drop / c.total}%;background:var(--drop)` }));
+        const btn = el("button", { type: "button", class: "draft-btn", "aria-current": String(file === view.draft) },
+          el("span", { class: "t", text: DATA.drafts[file].title }),
+          el("span", { class: "n", text: `${c.done}/${c.total}` }),
+          el("span", { class: "f", text: file }),
+          mini);
+        btn.addEventListener("click", () => { view.draft = file; saveView(); renderDraft(); renderDrafts(); window.scrollTo({ top: 0 }); });
+        group.append(btn);
+      }
+      nav.append(group);
+    }
+  }
+
+  function trimBefore(s) {
+    if (s.length <= 240) return s;
+    const cut = s.slice(-240); const sp = cut.indexOf(" ");
+    return "… " + cut.slice(sp + 1);
+  }
+  function trimAfter(s) {
+    if (s.length <= 240) return s;
+    const cut = s.slice(0, 240); const sp = cut.lastIndexOf(" ");
+    return cut.slice(0, sp) + " …";
+  }
+  const habitOptions = (selected) => HABITS.map((h) => el("option", { value: h, selected: h === selected, text: h }));
+  const sevOptions = (selected) => ["high", "medium", "low"].map((s) => el("option", { value: s, selected: s === selected, text: s }));
+
+  function entryFor(l) {
+    const art = el("article", { class: "entry", "data-id": l.id, tabindex: "-1", style: `--sev:${sevVar(l.severity)}` });
+    const pips = el("span", { class: "pips", "aria-hidden": "true" });
+    for (let i = 0; i < 3; i++) pips.append(el("i", { class: i < SEV_PIPS[l.severity] ? "on" : null }));
+    const margin = el("div", { class: "margin" },
+      pips,
+      el("span", { class: "sev-word", text: l.severity }),
+      el("span", { class: "ln mono", text: `line ${l.line}` }),
+      el("span", { class: "proofmark", "aria-hidden": "true" }));
+
+    const meta = el("div", { class: "e-meta" },
+      el("span", { class: "habit", text: l.habit }),
+      el("span", { class: "habit-new", hidden: true }),
+      l.heading ? el("span", { class: "section", text: l.heading }) : null,
+      el("span", { class: "id mono", text: l.id }));
+
+    const ctx = el("p", { class: "context" }, trimBefore(l.before), el("mark", { text: l.match }), trimAfter(l.after));
+
+    const group = el("div", { class: "verdict", role: "group", "aria-label": `Mark for ${l.id}` });
+    [["keep", "Keep", "1"], ["change", "Change", "2"], ["drop", "Drop", "3"]].forEach(([v, text, key]) => {
+      const b = el("button", { type: "button", "data-v": v, "aria-pressed": "false" }, text, el("span", { class: "k", text: key }));
+      b.addEventListener("click", () => setVerdict(l.id, v, true));
+      group.append(b);
+    });
+    const habitSel = el("select", { "aria-label": "Habit" }, ...habitOptions(l.habit));
+    const sevSel = el("select", { "aria-label": "Severity" }, ...sevOptions(l.severity));
+    const fields = el("span", { class: "change-fields", hidden: true }, habitSel, sevSel);
+    const onFieldChange = () => {
+      const d = decisions[l.id];
+      if (!d || d.verdict !== "change") return;
+      writeDecision(l.id, { ...d, habit: habitSel.value, severity: sevSel.value, updatedAt: new Date().toISOString() });
+    };
+    habitSel.addEventListener("change", onFieldChange);
+    sevSel.addEventListener("change", onFieldChange);
+    const note = el("input", { type: "text", class: "note", placeholder: "Note (optional)", "aria-label": `Note for ${l.id}` });
+    note.addEventListener("change", () => {
+      const d = decisions[l.id];
+      const text = note.value.trim();
+      if (!d && !text) return;
+      writeDecision(l.id, { ...(d || { verdict: "", draft: l.draft }), note: text, updatedAt: new Date().toISOString() });
+    });
+    note.addEventListener("keydown", (e) => { if (e.key === "Escape" || e.key === "Enter") { note.blur(); art.focus(); } });
+
+    art.append(margin, el("div", {}, meta, ctx, el("div", { class: "controls" }, group, fields, note)));
+    art.addEventListener("focusin", () => setCursor(art, false));
+    art.addEventListener("click", (e) => { if (e.target === art || e.target.closest(".context")) setCursor(art, false); });
+    applyDecision(art);
+    return art;
+  }
+
+  function applyDecision(art) {
+    const l = labelById[art.dataset.id];
+    const d = decisions[l.id] || {};
+    const v = d.verdict || "";
+    art.dataset.verdict = v;
+    art.querySelectorAll(".verdict button").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.v === v)));
+    art.querySelector(".proofmark").textContent = PROOF[v] || "";
+    const fields = art.querySelector(".change-fields");
+    fields.hidden = v !== "change";
+    const [habitSel, sevSel] = fields.querySelectorAll("select");
+    if (document.activeElement !== habitSel) habitSel.value = d.habit || l.habit;
+    if (document.activeElement !== sevSel) sevSel.value = d.severity || l.severity;
+    const note = art.querySelector(".note");
+    if (document.activeElement !== note) note.value = d.note || "";
+    const oldHabit = art.querySelector(".habit"), newHabit = art.querySelector(".habit-new");
+    const habitChanged = v === "change" && d.habit && d.habit !== l.habit;
+    oldHabit.classList.toggle("was", !!habitChanged);
+    newHabit.hidden = !habitChanged;
+    newHabit.textContent = habitChanged ? d.habit : "";
+    const sev = v === "change" && d.severity ? d.severity : l.severity;
+    art.style.setProperty("--sev", sevVar(sev));
+    art.querySelectorAll(".pips i").forEach((p, i) => p.classList.toggle("on", i < SEV_PIPS[sev]));
+    art.querySelector(".sev-word").textContent = sev === l.severity ? sev : `${l.severity} → ${sev}`;
+  }
+
+  function visibleLabels() {
+    return byDraft[view.draft].filter((l) =>
+      (view.sev === "all" || l.severity === view.sev) &&
+      (view.habit === "all" || l.habit === view.habit) &&
+      (!view.undecided || !(decisions[l.id] && decisions[l.id].verdict)));
+  }
+
+  function renderDraft() {
+    const meta = DATA.drafts[view.draft];
+    const all = byDraft[view.draft];
+    const shown = visibleLabels();
+    const c = counts(all);
+    $("draft-head").replaceChildren(
+      el("div", { class: "eyebrow" },
+        el("span", { class: "role-tag", "data-role": meta.role, text: meta.role }),
+        el("span", { class: "mono", text: view.draft }),
+        el("span", { class: "mono", text: meta.source })),
+      el("h2", { text: meta.title }),
+      el("p", { text: ROLE_NOTE[meta.role] }),
+      SECTIONS[view.draft] ? el("p", { class: "scope", text: SECTIONS[view.draft] }) : null,
+      el("p", { class: "showing", text: `${shown.length} of ${all.length} labels shown · ${c.done} marked` }));
+    const list = $("entries");
+    list.replaceChildren(...shown.map(entryFor));
+    if (!shown.length) list.append(el("p", { class: "empty", text: "No labels match these filters." }));
+    cursor = null;
+    renderCandidates();
+    renderMissed();
+  }
+
+  function topKey(counts, allowed) {
+    return Object.keys(counts || {}).find((k) => allowed.includes(k)) || allowed[0];
+  }
+
+  function candidateEntry(c) {
+    const habit = topKey(c.habits, HABITS), severity = topKey(c.severities, ["high", "medium", "low"]);
+    const art = el("article", { class: "entry cand", "data-id": c.id, tabindex: "-1", style: `--sev:${sevVar(severity)}` });
+    const pips = el("span", { class: "pips", "aria-hidden": "true" });
+    for (let i = 0; i < 3; i++) pips.append(el("i"));
+    const margin = el("div", { class: "margin" }, pips, el("span", { class: "sev-word" }),
+      el("span", { class: "ln mono", text: `line ${c.line}` }), el("span", { class: "proofmark", "aria-hidden": "true" }));
+    const raised = Object.entries(c.raised_by).map(([setup, n]) => `${setup} ${n}`).join(", ");
+    const meta = el("div", { class: "e-meta" },
+      el("span", { class: "cand-tag", text: "candidate" }),
+      el("span", { class: "habit", text: Object.entries(c.habits).map(([h, n]) => `${h} ×${n}`).join(", ") }),
+      c.heading ? el("span", { class: "section", text: c.heading }) : null,
+      el("span", { class: "id mono", text: c.id }));
+    const ctx = el("p", { class: "context" }, trimBefore(c.before), el("mark", { text: c.match }), trimAfter(c.after));
+    const group = el("div", { class: "verdict", role: "group", "aria-label": `Mark for ${c.id}` });
+    [["accept", "Accept", "1"], ["reject", "Reject", "3"]].forEach(([v, text, key]) => {
+      const b = el("button", { type: "button", "data-v": v, "aria-pressed": "false" }, text, el("span", { class: "k", text: key }));
+      b.addEventListener("click", () => setCandidate(c.id, v, true));
+      group.append(b);
+    });
+    const habitSel = el("select", { "aria-label": "Habit" }, ...habitOptions(habit));
+    const sevSel = el("select", { "aria-label": "Severity" }, ...sevOptions(severity));
+    const onField = () => {
+      const m = candMarks[c.id];
+      art.style.setProperty("--sev", sevVar(sevSel.value));
+      paintPips(art, sevSel.value);
+      if (m && m.verdict) writeCandidate(c.id, { ...m, habit: habitSel.value, severity: sevSel.value, updatedAt: new Date().toISOString() });
+    };
+    habitSel.addEventListener("change", onField);
+    sevSel.addEventListener("change", onField);
+    const note = el("input", { type: "text", class: "note", placeholder: "Note (optional)", "aria-label": `Note for ${c.id}` });
+    note.addEventListener("change", () => {
+      const m = candMarks[c.id];
+      if (m) writeCandidate(c.id, { ...m, note: note.value.trim(), updatedAt: new Date().toISOString() });
+    });
+    note.addEventListener("keydown", (e) => { if (e.key === "Escape" || e.key === "Enter") { note.blur(); art.focus(); } });
+    art.append(margin, el("div", {}, meta, ctx,
+      el("div", { class: "controls" }, group, el("span", { class: "change-fields" }, habitSel, sevSel), note),
+      el("p", { class: "raised", text: `Raised in ${c.runs} run${c.runs === 1 ? "" : "s"}: ${raised}` })));
+    art.addEventListener("focusin", () => setCursor(art, false));
+    art.addEventListener("click", (e) => { if (e.target === art || e.target.closest(".context")) setCursor(art, false); });
+    applyCandidate(art);
+    return art;
+  }
+
+  function paintPips(art, sev) {
+    art.querySelectorAll(".pips i").forEach((p, i) => p.classList.toggle("on", i < SEV_PIPS[sev]));
+    art.querySelector(".sev-word").textContent = sev;
+  }
+
+  function applyCandidate(art) {
+    const m = candMarks[art.dataset.id] || {};
+    const v = m.verdict || "";
+    art.dataset.verdict = v;
+    art.querySelectorAll(".verdict button").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.v === v)));
+    art.querySelector(".proofmark").textContent = CAND_WORD[v] || "";
+    const [habitSel, sevSel] = art.querySelectorAll(".change-fields select");
+    if (m.habit && document.activeElement !== habitSel) habitSel.value = m.habit;
+    if (m.severity && document.activeElement !== sevSel) sevSel.value = m.severity;
+    const note = art.querySelector(".note");
+    if (document.activeElement !== note) note.value = m.note || "";
+    art.style.setProperty("--sev", sevVar(sevSel.value));
+    paintPips(art, sevSel.value);
+  }
+
+  function setCandidate(id, v, fromClick) {
+    const c = candById[id];
+    const art = document.querySelector(`.cand[data-id="${id}"]`);
+    const prev = candMarks[id] || {};
+    if (prev.verdict === v && fromClick) { writeCandidate(id, null); return; }
+    const [habitSel, sevSel] = art ? art.querySelectorAll(".change-fields select") : [];
+    writeCandidate(id, {
+      verdict: v, draft: c.draft, quote: c.quote,
+      habit: habitSel ? habitSel.value : topKey(c.habits, HABITS),
+      severity: sevSel ? sevSel.value : topKey(c.severities, ["high", "medium", "low"]),
+      note: prev.note || "", updatedAt: new Date().toISOString(),
+    });
+  }
+
+  function renderCandidates() {
+    const mine = CANDS.filter((c) => c.draft === view.draft &&
+      (!view.undecided || !(candMarks[c.id] && candMarks[c.id].verdict)));
+    $("candidates").hidden = !CANDS.some((c) => c.draft === view.draft);
+    $("cand-list").replaceChildren(...mine.map(candidateEntry));
+  }
+
+  function renderMissed() {
+    const list = $("missed-list");
+    const items = Object.entries(missed).filter(([, m]) => m.draft === view.draft)
+      .sort((a, b) => String(a[1].createdAt).localeCompare(String(b[1].createdAt)));
+    list.replaceChildren(...items.map(([id, m]) => {
+      const pips = el("span", { class: "pips", "aria-hidden": "true", style: `--sev:${sevVar(m.severity)}` });
+      for (let i = 0; i < 3; i++) pips.append(el("i", { class: i < SEV_PIPS[m.severity] ? "on" : null }));
+      const rm = el("button", { type: "button", class: "btn-quiet", text: "Remove" });
+      rm.addEventListener("click", () => removeMissed(id));
+      return el("div", { class: "missed-item" },
+        el("div", { class: "margin", style: `--sev:${sevVar(m.severity)}` }, pips, el("span", { class: "sev-word", text: m.severity })),
+        el("div", {}, el("q", { text: m.quote }),
+          el("div", { class: "e-meta" }, el("span", { class: "habit", text: m.habit }), m.note ? el("span", { text: m.note }) : null)),
+        rm);
+    }));
+  }
+
+  function renderExport() {
+    const box = $("export");
+    if (document.activeElement === box) return;
+    box.value = JSON.stringify({ decisions, missed: Object.values(missed), candidates: candMarks }, null, 2);
+  }
+
+  function refresh() {
+    renderTally();
+    renderDrafts();
+    document.querySelectorAll(".entry:not(.cand)").forEach(applyDecision);
+    document.querySelectorAll(".entry.cand").forEach(applyCandidate);
+    const all = byDraft[view.draft], c = counts(all);
+    const showing = document.querySelector(".showing");
+    if (showing) showing.textContent = `${document.querySelectorAll(".entry:not(.cand)").length} of ${all.length} labels shown · ${c.done} marked`;
+    renderMissed();
+    renderExport();
+  }
+
+  // ---------- actions ----------
+  function setVerdict(id, v, fromClick) {
+    const l = labelById[id];
+    const prev = decisions[id] || {};
+    if (prev.verdict === v && fromClick) {
+      if (prev.note) writeDecision(id, { verdict: "", draft: l.draft, note: prev.note, updatedAt: new Date().toISOString() });
+      else writeDecision(id, null);
+      return;
+    }
+    const next = { verdict: v, draft: l.draft, note: prev.note || "", updatedAt: new Date().toISOString() };
+    if (v === "change") { next.habit = prev.habit || l.habit; next.severity = prev.severity || l.severity; }
+    for (const k in next) if (next[k] === undefined) delete next[k];
+    writeDecision(id, next);
+  }
+
+  let cursor = null;
+  function setCursor(art, scroll = true) {
+    if (cursor && cursor !== art) cursor.classList.remove("cursor");
+    cursor = art;
+    if (!art) return;
+    art.classList.add("cursor");
+    if (scroll) { art.focus({ preventScroll: true }); art.scrollIntoView({ block: "nearest", behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" }); }
+  }
+  function move(step) {
+    const entries = [...document.querySelectorAll(".entry")];
+    if (!entries.length) return;
+    const i = cursor ? entries.indexOf(cursor) : -1;
+    const next = entries[Math.max(0, Math.min(entries.length - 1, i + step))];
+    setCursor(next);
+  }
+  document.addEventListener("keydown", (e) => {
+    if (e.metaKey || e.ctrlKey || e.altKey) return;
+    const t = e.target;
+    if (t.closest && t.closest("input, textarea, select")) return;
+    if (e.key === "j") { e.preventDefault(); move(1); return; }
+    if (e.key === "k") { e.preventDefault(); move(-1); return; }
+    if (!cursor) return;
+    const id = cursor.dataset.id;
+    if (cursor.classList.contains("cand")) {
+      if (e.key === "1") { e.preventDefault(); setCandidate(id, "accept"); move(1); }
+      else if (e.key === "3") { e.preventDefault(); setCandidate(id, "reject"); move(1); }
+      else if (e.key === "0") { e.preventDefault(); writeCandidate(id, null); }
+      else if (e.key === "n") { e.preventDefault(); cursor.querySelector(".note").focus(); }
+      return;
+    }
+    if (e.key === "1") { e.preventDefault(); setVerdict(id, "keep"); move(1); }
+    else if (e.key === "3") { e.preventDefault(); setVerdict(id, "drop"); move(1); }
+    else if (e.key === "2") { e.preventDefault(); setVerdict(id, "change"); requestAnimationFrame(() => cursor.querySelector(".change-fields select").focus()); }
+    else if (e.key === "0") { e.preventDefault(); const d = decisions[id]; if (d) writeDecision(id, d.note ? { verdict: "", draft: d.draft, note: d.note, updatedAt: new Date().toISOString() } : null); }
+    else if (e.key === "n") { e.preventDefault(); cursor.querySelector(".note").focus(); }
+  });
+
+  // filters
+  $("sev-filter").addEventListener("click", (e) => {
+    const b = e.target.closest("button"); if (!b) return;
+    view.sev = b.dataset.sev;
+    $("sev-filter").querySelectorAll("button").forEach((x) => x.setAttribute("aria-pressed", String(x === b)));
+    renderDraft();
+  });
+  $("habit-filter").append(...HABITS.map((h) => el("option", { value: h, text: h })));
+  $("habit-filter").addEventListener("change", (e) => { view.habit = e.target.value; renderDraft(); });
+  $("undecided-filter").addEventListener("change", (e) => { view.undecided = e.target.checked; renderDraft(); });
+
+  // missed form
+  $("m-habit").append(...HABITS.map((h) => el("option", { value: h, text: h })), el("option", { value: "other", text: "other (say which in the note)" }));
+  $("missed-form").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const quote = $("m-quote").value.trim();
+    if (!quote) { $("m-msg").textContent = "Paste the text from the draft first."; return; }
+    const btn = e.submitter || $("missed-form").querySelector("button");
+    btn.disabled = true;
+    try {
+      await addMissed({ draft: view.draft, quote, habit: $("m-habit").value, severity: $("m-sev").value, note: $("m-note").value.trim(), createdAt: new Date().toISOString() });
+      $("m-quote").value = ""; $("m-note").value = "";
+      $("m-msg").textContent = "Added.";
+    } catch (err) {
+      $("m-msg").textContent = `Not saved: ${err && err.message ? err.message : "the store refused it"}. Try again.`;
+    } finally { btn.disabled = false; }
+  });
+
+  renderDraft();
+  refresh();
+  connect();
+})();
+</script>

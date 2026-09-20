@@ -1,0 +1,20 @@
+{
+  "model": "qwen2.5:7b",
+  "parameters": "7.6B",
+  "quantization": "Q4_K_M",
+  "digest": null,
+  "num_ctx": 32768,
+  "prompt_tokens": 9533,
+  "output_tokens": 425,
+  "seconds": {
+    "prompt": 0.1,
+    "output": 19.9,
+    "total": 20.2
+  },
+  "truncated": false,
+  "setup": "qwen2.5-7b",
+  "draft": "dev-database-before.html",
+  "neutral_name": "draft-3.html",
+  "run": 2,
+  "linter": false
+}

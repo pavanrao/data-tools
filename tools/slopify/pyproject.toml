@@ -1,0 +1,21 @@
+[project]
+name = "data-tools-slopify"
+version = "0.1.0"
+description = "Inject the habits ai-sniffer looks for, at positions it records, so a detector's recall can be measured against ground truth nobody judged."
+requires-python = ">=3.13"
+# Deterministic and model-free: the injectors are string surgery, so a global
+# `uv tool install` needs nothing.
+dependencies = []
+
+[project.scripts]
+slopify = "slopify.cli:main"
+
+[project.entry-points."data_tools.tools"]
+slopify = "slopify.cli:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/slopify"]

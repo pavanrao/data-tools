@@ -1,0 +1,20 @@
+{
+  "model": "llama3.1:latest",
+  "parameters": "8.0B",
+  "quantization": "Q4_K_M",
+  "digest": null,
+  "num_ctx": 32768,
+  "prompt_tokens": 10227,
+  "output_tokens": 473,
+  "seconds": {
+    "prompt": 52.4,
+    "output": 24.8,
+    "total": 78.1
+  },
+  "truncated": false,
+  "setup": "llama3.1-8b+linter",
+  "draft": "clean-database-after.html",
+  "neutral_name": "draft-4.html",
+  "run": 1,
+  "linter": true
+}

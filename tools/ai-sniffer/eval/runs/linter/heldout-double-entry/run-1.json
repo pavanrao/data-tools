@@ -1,0 +1,208 @@
+{
+  "path": "draft-6.html",
+  "format": "html",
+  "metrics": {
+    "words": 2205,
+    "sentences": 189,
+    "paragraphs": 81,
+    "contractions": 7,
+    "contractions_per_100_words": 0.3,
+    "sentence_length": {
+      "mean": 11.7,
+      "cv": 0.67
+    },
+    "detail": {
+      "numbers": 7,
+      "dates": 0,
+      "quoted": 9,
+      "code": 15,
+      "per_100_words": 1.4
+    }
+  },
+  "findings": [
+    {
+      "signal": "emphasis-word",
+      "line": 338,
+      "quote": "Actually",
+      "sentence": "Actually read"
+    },
+    {
+      "signal": "reader-instruction",
+      "line": 357,
+      "quote": "Suppose",
+      "sentence": "Suppose you have a folder of business documents — contracts, spreadsheets, scanned forms, a zip file somebody emailed you — and you want to ask questions about them in plain English."
+    },
+    {
+      "signal": "hedge",
+      "line": 373,
+      "quote": "roughly",
+      "sentence": "Convert each passage into a list of numbers — an embedding — that captures roughly what it is about, so that passages about similar topics end up with similar numbers."
+    },
+    {
+      "signal": "hedge",
+      "line": 383,
+      "quote": "Nearly every",
+      "sentence": "Nearly every \"chat with your documents\" product works roughly this way."
+    },
+    {
+      "signal": "hedge",
+      "line": 383,
+      "quote": "roughly",
+      "sentence": "Nearly every \"chat with your documents\" product works roughly this way."
+    },
+    {
+      "signal": "emphasis-word",
+      "line": 388,
+      "quote": "entirely",
+      "sentence": "The trouble is entirely in step one, and it is invisible from step four."
+    },
+    {
+      "signal": "one-sentence-paragraph",
+      "line": 388,
+      "quote": "The trouble is entirely in step one, and it is invisible from step four.",
+      "sentence": "The trouble is entirely in step one, and it is invisible from step four."
+    },
+    {
+      "signal": "emphasis-word",
+      "line": 397,
+      "quote": "exactly",
+      "sentence": "To the next stage of the pipeline, a three-page document that yielded nothing looks exactly like a three-page document that was blank to begin with."
+    },
+    {
+      "signal": "hedge",
+      "line": 402,
+      "quote": "A great deal of",
+      "sentence": "A great deal of extraction code opens a spreadsheet and reads the active sheet — whichever tab happened to be selected when the file was last saved."
+    },
+    {
+      "signal": "hedge",
+      "line": 410,
+      "quote": "frequently",
+      "sentence": "The caveat in the footnote — frequently the sentence that changes the meaning — is never seen."
+    },
+    {
+      "signal": "emphasis-word",
+      "line": 428,
+      "quote": "exactly",
+      "sentence": "Here the model behaves impeccably — it reports exactly what it was given."
+    },
+    {
+      "signal": "emphasis-word",
+      "line": 564,
+      "quote": "genuinely",
+      "sentence": "These are numbered because they genuinely are a sequence — each one consumes what the last produced."
+    },
+    {
+      "signal": "one-sentence-paragraph",
+      "line": 564,
+      "quote": "These are numbered because they genuinely are a sequence — each one consumes what the last produced.",
+      "sentence": "These are numbered because they genuinely are a sequence — each one consumes what the last produced."
+    },
+    {
+      "signal": "emphasis-word",
+      "line": 631,
+      "quote": "literally",
+      "sentence": "It is therefore invisible to similarity search — there is literally nothing to rank."
+    },
+    {
+      "signal": "even-rhythm",
+      "line": 631,
+      "quote": "It is therefore invisible to similarity search — there is literally nothing to rank.",
+      "sentence": "It is therefore invisible to similarity search — there is literally nothing to rank."
+    },
+    {
+      "signal": "one-sentence-paragraph",
+      "line": 655,
+      "quote": "All output below is real, produced by CODE against a corpus of deliberately broken files the repository generates for the purpose.",
+      "sentence": "All output below is real, produced by CODE against a corpus of deliberately broken files the repository generates for the purpose."
+    },
+    {
+      "signal": "reader-instruction",
+      "line": 706,
+      "quote": "Note that",
+      "sentence": "Note that it says CODE on all eight, including CODE for a three-page scanned document."
+    },
+    {
+      "signal": "emphasis-word",
+      "line": 729,
+      "quote": "completely",
+      "sentence": "The first is answerable from files that were read completely."
+    },
+    {
+      "signal": "emphasis-word",
+      "line": 761,
+      "quote": "exactly",
+      "sentence": "But measured against the declared page count, that same file yielded nothing at all — which is exactly the hole an index would inherit."
+    },
+    {
+      "signal": "one-sentence-paragraph",
+      "line": 776,
+      "quote": "Stated plainly, because a tool about honest reporting that oversold itself would be a poor joke.",
+      "sentence": "Stated plainly, because a tool about honest reporting that oversold itself would be a poor joke."
+    },
+    {
+      "signal": "emphasis-word",
+      "line": 787,
+      "quote": "entirely",
+      "sentence": "A question phrased entirely in synonyms of a gap's description will not trigger a refusal."
+    },
+    {
+      "signal": "hedge",
+      "line": 872,
+      "quote": "Almost nothing",
+      "sentence": "Almost nothing checks that promise, and the failures are specifically the quiet kind — no crash, no warning, plausible output."
+    }
+  ],
+  "closers": [
+    {
+      "line": 317,
+      "section": "Double-Entry for Documents",
+      "text": "Here is a way to find out what was missed."
+    },
+    {
+      "line": 388,
+      "section": "Your files go in. Some of them don't arrive.",
+      "text": "The trouble is entirely in step one, and it is invisible from step four."
+    },
+    {
+      "line": 447,
+      "section": "Why nobody catches it",
+      "text": "It's a checksum."
+    },
+    {
+      "line": 522,
+      "section": "Count it twice, on purpose, by different routes",
+      "text": "Everything else in the tool exists to preserve it."
+    },
+    {
+      "line": 564,
+      "section": "Five stages, in order",
+      "text": "These are numbered because they genuinely are a sequence — each one consumes what the last produced."
+    },
+    {
+      "line": 644,
+      "section": "Why the second index is the interesting part",
+      "text": "If a gap wins, the tool refuses."
+    },
+    {
+      "line": 655,
+      "section": "What it actually prints",
+      "text": "All output below is real, produced by CODE against a corpus of deliberately broken files the repository generates for the purpose."
+    },
+    {
+      "line": 763,
+      "section": "Two things found by building it",
+      "text": "So pdfmux's verdict is recorded as evidence in the ledger, never as the status, and a page counts as missing if either signal says so."
+    },
+    {
+      "line": 776,
+      "section": "What this does not do",
+      "text": "Stated plainly, because a tool about honest reporting that oversold itself would be a poor joke."
+    },
+    {
+      "line": 873,
+      "section": "The point, restated",
+      "text": "Counting twice by two routes is an old, unglamorous answer, and it works here for the same reason it worked for bookkeepers: one number cannot be wrong, it can only be the number."
+    }
+  ]
+}

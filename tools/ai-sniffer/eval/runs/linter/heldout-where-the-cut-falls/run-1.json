@@ -1,0 +1,489 @@
+{
+  "path": "draft-1.html",
+  "format": "html",
+  "metrics": {
+    "words": 4918,
+    "sentences": 362,
+    "paragraphs": 150,
+    "contractions": 14,
+    "contractions_per_100_words": 0.3,
+    "sentence_length": {
+      "mean": 13.6,
+      "cv": 0.59
+    },
+    "detail": {
+      "numbers": 41,
+      "dates": 2,
+      "quoted": 29,
+      "code": 8,
+      "per_100_words": 1.6
+    }
+  },
+  "findings": [
+    {
+      "signal": "reader-instruction",
+      "line": 269,
+      "quote": "Suppose",
+      "sentence": "Suppose you want a program to answer questions about your company's documents."
+    },
+    {
+      "signal": "hedge",
+      "line": 274,
+      "quote": "Most systems",
+      "sentence": "Most systems default to something arbitrary: every 800 characters, say."
+    },
+    {
+      "signal": "one-sentence-paragraph",
+      "line": 303,
+      "quote": "Four stages, and it is worth seeing them separately, because the whole argument of this piece is about isolating one of them.",
+      "sentence": "Four stages, and it is worth seeing them separately, because the whole argument of this piece is about isolating one of them."
+    },
+    {
+      "signal": "emphasis-word",
+      "line": 372,
+      "quote": "entirely",
+      "sentence": "A chunk starting “It files annually instead” has lost the word Northeast entirely."
+    },
+    {
+      "signal": "emphasis-word",
+      "line": 408,
+      "quote": "exactly",
+      "sentence": "It leaves the cuts exactly where they were and changes something else: what gets stored for searching need not be what gets handed to the model."
+    },
+    {
+      "signal": "one-sentence-paragraph",
+      "line": 468,
+      "quote": "Given where this chunker put its boundaries, what is the best any search engine could possibly do?",
+      "sentence": "Given where this chunker put its boundaries, what is the best any search engine could possibly do?"
+    },
+    {
+      "signal": "emphasis-word",
+      "line": 470,
+      "quote": "perfectly",
+      "sentence": "Take every chunk that contains any part of the answer, imagine you retrieved all of them perfectly, and ask what fraction of the text you'd be holding is actually the answer."
+    },
+    {
+      "signal": "emphasis-word",
+      "line": 470,
+      "quote": "actually",
+      "sentence": "Take every chunk that contains any part of the answer, imagine you retrieved all of them perfectly, and ask what fraction of the text you'd be holding is actually the answer."
+    },
+    {
+      "signal": "reader-instruction",
+      "line": 576,
+      "quote": "Notice",
+      "sentence": "Notice what overlap does — it is supposed to stop answers being severed, and it does, but every extra copy of the text is more padding you have to carry."
+    },
+    {
+      "signal": "emphasis-word",
+      "line": 589,
+      "quote": "exactly",
+      "sentence": "Run it on a transcript of a speech — which has no headings — and it produces exactly one chunk: the whole document."
+    },
+    {
+      "signal": "emphasis-word",
+      "line": 606,
+      "quote": "completely",
+      "sentence": "Perfect recall, and completely useless: to answer “when does the Northeast file?” it hands over the entire speech."
+    },
+    {
+      "signal": "one-sentence-paragraph",
+      "line": 669,
+      "quote": "Our test suite keeps five of these documents and marks them CODE: if a strategy ever stops failing one, that is treated as the fixture having drifted, not as an improvement.",
+      "sentence": "Our test suite keeps five of these documents and marks them CODE: if a strategy ever stops failing one, that is treated as the fixture having drifted, not as an improvement."
+    },
+    {
+      "signal": "emphasis-word",
+      "line": 684,
+      "quote": "actually",
+      "sentence": "It actually means every chunk containing any part of the answer."
+    },
+    {
+      "signal": "reader-instruction",
+      "line": 706,
+      "quote": "Look at",
+      "sentence": "Look at the last column."
+    },
+    {
+      "signal": "emphasis-word",
+      "line": 706,
+      "quote": "exactly",
+      "sentence": "With no overlap it is almost exactly right."
+    },
+    {
+      "signal": "emphasis-word",
+      "line": 706,
+      "quote": "precisely",
+      "sentence": "With overlap it is about 28% too high — and overlap is precisely the setting people reach for when answers keep getting severed."
+    },
+    {
+      "signal": "emphasis-word",
+      "line": 708,
+      "quote": "entirely",
+      "sentence": "The wrong version would have passed every test we thought to write, looked entirely reasonable, and quietly recommended turning overlap up."
+    },
+    {
+      "signal": "one-sentence-paragraph",
+      "line": 721,
+      "quote": "Three things, none of which is what the marketing around this topic suggests.",
+      "sentence": "Three things, none of which is what the marketing around this topic suggests."
+    },
+    {
+      "signal": "one-sentence-paragraph",
+      "line": 743,
+      "quote": "Which is the entire argument for measuring rather than choosing: the ranking depends on your corpus, so it has to be computed on your corpus.",
+      "sentence": "Which is the entire argument for measuring rather than choosing: the ranking depends on your corpus, so it has to be computed on your corpus."
+    },
+    {
+      "signal": "emphasis-word",
+      "line": 768,
+      "quote": "actually",
+      "sentence": "They cannot tell you which of two reasonable configurations is better — “good chunking” is only defined relative to the questions people actually ask."
+    },
+    {
+      "signal": "hedge",
+      "line": 783,
+      "quote": "roughly",
+      "sentence": "If the free checks are any good, they should put configurations in roughly the same order the expensive measurement does."
+    },
+    {
+      "signal": "one-sentence-paragraph",
+      "line": 789,
+      "quote": "Three of the four answers were not what we expected.",
+      "sentence": "Three of the four answers were not what we expected."
+    },
+    {
+      "signal": "one-sentence-paragraph",
+      "line": 797,
+      "quote": "Which meant every other signal had to be re-checked with size held constant, to ask a sharper question: once you already know how big the chunks are, does this signal tell you anything more?",
+      "sentence": "Which meant every other signal had to be re-checked with size held constant, to ask a sharper question: once you already know how big the chunks are, does this signal tell you anything more?"
+    },
+    {
+      "signal": "hedge",
+      "line": 804,
+      "quote": "tend to",
+      "sentence": "Size had been masking it: strategies that cut cleanly also tend to cut larger, and the two effects were cancelling out."
+    },
+    {
+      "signal": "one-sentence-paragraph",
+      "line": 814,
+      "quote": "That looked like a broken signal until we drew it.",
+      "sentence": "That looked like a broken signal until we drew it."
+    },
+    {
+      "signal": "emphasis-word",
+      "line": 853,
+      "quote": "exactly",
+      "sentence": "Cutting through a table row destroys it — the numbers lose their column headings — but it also shrinks the text surrounding the answer, and shrinking that is exactly what raises a precision ceiling."
+    },
+    {
+      "signal": "emphasis-word",
+      "line": 864,
+      "quote": "perfectly",
+      "sentence": "“Tables are being shredded” is still a perfectly good reason to reject a configuration."
+    },
+    {
+      "signal": "one-sentence-paragraph",
+      "line": 966,
+      "quote": "They have different answers, and separating them is most of the way to knowing what to do.",
+      "sentence": "They have different answers, and separating them is most of the way to knowing what to do."
+    },
+    {
+      "signal": "reader-instruction",
+      "line": 989,
+      "quote": "Look at",
+      "sentence": "Look at the table above: that single piece of knowledge moves a strategy between first and thirteenth."
+    },
+    {
+      "signal": "emphasis-word",
+      "line": 994,
+      "quote": "exactly",
+      "sentence": "Write a few documents where you plant the answers yourself, so their positions are known exactly — free and immediate."
+    },
+    {
+      "signal": "emphasis-word",
+      "line": 998,
+      "quote": "actually",
+      "sentence": "Then, once you have traffic, use what people actually asked."
+    },
+    {
+      "signal": "emphasis-word",
+      "line": 1007,
+      "quote": "exactly",
+      "sentence": "Models are bad at counting characters, so those numbers are often off — and here is the problem: a wrong position looks exactly like a right one."
+    },
+    {
+      "signal": "emphasis-word",
+      "line": 1009,
+      "quote": "perfectly",
+      "sentence": "Every strategy then gets scored against the wrong stretch of text, and the whole evaluation is quietly meaningless while appearing to work perfectly."
+    },
+    {
+      "signal": "hedge",
+      "line": 1036,
+      "quote": "almost all",
+      "sentence": "Three quarters of what a small local model produced was unusable — and almost all of it for the same reason: told to copy text exactly, it rewrote it slightly instead."
+    },
+    {
+      "signal": "emphasis-word",
+      "line": 1036,
+      "quote": "exactly",
+      "sentence": "Three quarters of what a small local model produced was unusable — and almost all of it for the same reason: told to copy text exactly, it rewrote it slightly instead."
+    },
+    {
+      "signal": "emphasis-word",
+      "line": 1040,
+      "quote": "exactly",
+      "sentence": "The two questions that survived are exactly right."
+    },
+    {
+      "signal": "one-sentence-paragraph",
+      "line": 1179,
+      "quote": "One more, because it is the most useful mistake in this whole piece and it very nearly got published as a result.",
+      "sentence": "One more, because it is the most useful mistake in this whole piece and it very nearly got published as a result."
+    },
+    {
+      "signal": "emphasis-word",
+      "line": 1182,
+      "quote": "actually",
+      "sentence": "So we ran four of them on the same documents and counted how many questions each produced that we could actually verify."
+    },
+    {
+      "signal": "reader-instruction",
+      "line": 1200,
+      "quote": "Look at",
+      "sentence": "Look at the last row."
+    },
+    {
+      "signal": "emphasis-word",
+      "line": 1201,
+      "quote": "genuinely",
+      "sentence": "That is a genuinely interesting claim — bigger models being worse at copying text exactly, perhaps because they are more inclined to “improve” what they read — and it is the kind of thing that gets written up and repeated."
+    },
+    {
+      "signal": "emphasis-word",
+      "line": 1201,
+      "quote": "exactly",
+      "sentence": "That is a genuinely interesting claim — bigger models being worse at copying text exactly, perhaps because they are more inclined to “improve” what they read — and it is the kind of thing that gets written up and repeated."
+    },
+    {
+      "signal": "one-sentence-paragraph",
+      "line": 1205,
+      "quote": "It was our fault.",
+      "sentence": "It was our fault."
+    },
+    {
+      "signal": "emphasis-word",
+      "line": 1218,
+      "quote": "perfectly",
+      "sentence": "And a slightly reworded quote reads perfectly well."
+    },
+    {
+      "signal": "emphasis-word",
+      "line": 1220,
+      "quote": "exactly",
+      "sentence": "That is also exactly why it looked like a size effect."
+    },
+    {
+      "signal": "emphasis-word",
+      "line": 1298,
+      "quote": "entirely",
+      "sentence": "A default you never made a decision about is still a variable in your experiment — and this one produced a clean, plausible, publishable result that was entirely wrong."
+    },
+    {
+      "signal": "emphasis-word",
+      "line": 1324,
+      "quote": "actually",
+      "sentence": "Storing positions instead of strings is what makes it possible to ask \"how much of this chunk is actually the answer?\""
+    },
+    {
+      "signal": "hedge",
+      "line": 1334,
+      "quote": "almost always",
+      "sentence": "Raising it almost always raises recall and always lowers precision, so a score quoted without its k means nothing."
+    },
+    {
+      "signal": "hedge",
+      "line": 1344,
+      "quote": "roughly",
+      "sentence": "The unit a model actually reads — roughly a short word or a fragment of one."
+    },
+    {
+      "signal": "emphasis-word",
+      "line": 1344,
+      "quote": "actually",
+      "sentence": "The unit a model actually reads — roughly a short word or a fragment of one."
+    },
+    {
+      "signal": "emphasis-word",
+      "line": 1415,
+      "quote": "actually",
+      "sentence": "Of the questions a model was asked to produce, the fraction that could actually be verified against the document."
+    },
+    {
+      "signal": "emphasis-word",
+      "line": 1421,
+      "quote": "actually",
+      "sentence": "The distribution of things people actually ask — narrow lookups, comparisons across a document, open synthesis."
+    },
+    {
+      "signal": "hedge",
+      "line": 1428,
+      "quote": "almost everything",
+      "sentence": "Here: chunk size affects almost everything, so the useful question is what a signal tells you after you already know how big the chunks are."
+    },
+    {
+      "signal": "emphasis-word",
+      "line": 1455,
+      "quote": "exactly",
+      "sentence": "What this one does differently is need no model to do it, and reproduce someone else's published numbers exactly, so you can tell whether to believe it."
+    }
+  ],
+  "closers": [
+    {
+      "line": 259,
+      "section": "Where the Cut Falls",
+      "text": "Here is what it costs, and how to measure it."
+    },
+    {
+      "line": 292,
+      "section": "The problem, in one paragraph",
+      "text": "Fetch either one and you get half a fact — “files annually instead, on 31” — which is worse than useless, because it looks like an answer."
+    },
+    {
+      "line": 303,
+      "section": "How a search system actually finds things",
+      "text": "Four stages, and it is worth seeing them separately, because the whole argument of this piece is about isolating one of them."
+    },
+    {
+      "line": 375,
+      "section": "Why you cannot just make the chunks smaller",
+      "text": "Which means it is something to measure, not something to have an opinion about."
+    },
+    {
+      "line": 408,
+      "section": "Six ways to decide where to cut",
+      "text": "It leaves the cuts exactly where they were and changes something else: what gets stored for searching need not be what gets handed to the model."
+    },
+    {
+      "line": 576,
+      "section": "The measurement",
+      "text": "Notice what overlap does — it is supposed to stop answers being severed, and it does, but every extra copy of the text is more padding you have to carry."
+    },
+    {
+      "line": 608,
+      "section": "Why recall lies",
+      "text": "You have to measure inside the chunk to see the problem at all."
+    },
+    {
+      "line": 669,
+      "section": "Two ways a chunk goes wrong",
+      "text": "Our test suite keeps five of these documents and marks them CODE: if a strategy ever stops failing one, that is treated as the fixture having drifted, not as an improvement."
+    },
+    {
+      "line": 713,
+      "section": "The part where we got it wrong",
+      "text": "The one check that could catch this, and it cost a 1.6 MB download."
+    },
+    {
+      "line": 721,
+      "section": "What the evidence actually says",
+      "text": "Three things, none of which is what the marketing around this topic suggests."
+    },
+    {
+      "line": 727,
+      "section": "The boring default is hard to beat",
+      "text": "Most of the elaborate alternatives are competing for the remainder."
+    },
+    {
+      "line": 733,
+      "section": "Overlap is not free",
+      "text": "It is a real trade, not a safety setting to leave on."
+    },
+    {
+      "line": 743,
+      "section": "“Semantic” chunking depends entirely on your documents",
+      "text": "Which is the entire argument for measuring rather than choosing: the ranking depends on your corpus, so it has to be computed on your corpus."
+    },
+    {
+      "line": 789,
+      "section": "Do the cheap checks actually work?",
+      "text": "Three of the four answers were not what we expected."
+    },
+    {
+      "line": 797,
+      "section": "Chunk size “predicts” the score, and it means nothing",
+      "text": "Which meant every other signal had to be re-checked with size held constant, to ask a sharper question: once you already know how big the chunks are, does this signal tell you anything more?"
+    },
+    {
+      "line": 806,
+      "section": "The check that looked useless was the one that held up",
+      "text": "A correlation near zero is not evidence of no relationship — it can be two relationships in opposite directions."
+    },
+    {
+      "line": 865,
+      "section": "The table check does not work at all — and the reason is the good part",
+      "text": "It is just not a prediction of where that configuration will place, and we would have gone on assuming it was."
+    },
+    {
+      "line": 913,
+      "section": "But you don’t have the questions yet",
+      "text": "The tool will not print a ranking by question type unless the corpus says what kind each question is — a ranking that hides its question mix is the thing this whole section is warning about."
+    },
+    {
+      "line": 922,
+      "section": "Why the question decides",
+      "text": "Every word of that is load-bearing, and “self-contained” is the one that moves."
+    },
+    {
+      "line": 966,
+      "section": "The objection is actually two objections",
+      "text": "They have different answers, and separating them is most of the way to knowing what to do."
+    },
+    {
+      "line": 973,
+      "section": "“There is no search engine yet”",
+      "text": "The same goes for every cheap check: none of them has ever needed a search engine."
+    },
+    {
+      "line": 999,
+      "section": "“Nobody has asked anything yet”",
+      "text": "Each step is closer to the truth and none of them blocks shipping."
+    },
+    {
+      "line": 1063,
+      "section": "The middle step has a trap, and avoiding it costs you data",
+      "text": "If it does not tell you which, it is not a simpler answer — it is the same answer with the assumption hidden."
+    },
+    {
+      "line": 1162,
+      "section": "Is chunking even the part worth fixing?",
+      "text": "It collapsed."
+    },
+    {
+      "line": 1205,
+      "section": "The bug that looked like a discovery",
+      "text": "It was our fault."
+    },
+    {
+      "line": 1222,
+      "section": "The setting nobody set",
+      "text": "The apparent finding about model size was a finding about our configuration, wearing a costume."
+    },
+    {
+      "line": 1293,
+      "section": "What was actually true",
+      "text": "A question whose answer was matched character-for-character rests on a firmer footing than one recovered by quietly fixing up the spacing — and if you only read the percentage, those look identical."
+    },
+    {
+      "line": 1310,
+      "section": "The words, in plain language",
+      "text": "If you only read one entry, read the last one."
+    },
+    {
+      "line": 1462,
+      "section": "The tool",
+      "text": "None of that was available by reasoning about it."
+    }
+  ]
+}

@@ -1,0 +1,167 @@
+{
+  "path": "draft-4.html",
+  "format": "html",
+  "metrics": {
+    "words": 1461,
+    "sentences": 120,
+    "paragraphs": 52,
+    "contractions": 57,
+    "contractions_per_100_words": 3.9,
+    "sentence_length": {
+      "mean": 12.2,
+      "cv": 0.67
+    },
+    "detail": {
+      "numbers": 2,
+      "dates": 2,
+      "quoted": 1,
+      "code": 28,
+      "per_100_words": 2.3
+    }
+  },
+  "findings": [
+    {
+      "signal": "even-rhythm",
+      "line": 276,
+      "quote": "Most SQL-over-MCP servers decide whether a query is safe by reading the query.",
+      "sentence": "Most SQL-over-MCP servers decide whether a query is safe by reading the query."
+    },
+    {
+      "signal": "hedge",
+      "line": 288,
+      "quote": "Nearly all",
+      "sentence": "Nearly all of it went on one question that turned out to be harder than it looks — when an agent hands you a SQL statement, how do you decide whether to run it?"
+    },
+    {
+      "signal": "reader-instruction",
+      "line": 296,
+      "quote": "Look at",
+      "sentence": "Look at the statement."
+    },
+    {
+      "signal": "even-rhythm",
+      "line": 303,
+      "quote": "Here's what mine already needed to get right, before anything unusual turned up:",
+      "sentence": "Here's what mine already needed to get right, before anything unusual turned up:"
+    },
+    {
+      "signal": "one-sentence-paragraph",
+      "line": 310,
+      "quote": "CODE — starts with CODE, and in several engines that's a write.",
+      "sentence": "CODE — starts with CODE, and in several engines that's a write."
+    },
+    {
+      "signal": "one-sentence-paragraph",
+      "line": 314,
+      "quote": "CODE — no forbidden keyword anywhere, and it changes the database.",
+      "sentence": "CODE — no forbidden keyword anywhere, and it changes the database."
+    },
+    {
+      "signal": "one-sentence-paragraph",
+      "line": 318,
+      "quote": "CODE — starts with CODE, if you only check the front.",
+      "sentence": "CODE — starts with CODE, if you only check the front."
+    },
+    {
+      "signal": "one-sentence-paragraph",
+      "line": 322,
+      "quote": "CODE — a keyword scan says no to an ordinary query.",
+      "sentence": "CODE — a keyword scan says no to an ordinary query."
+    },
+    {
+      "signal": "one-sentence-paragraph",
+      "line": 338,
+      "quote": "SQLite will answer the question for you, using two things that have been in there for years and don't come up much.",
+      "sentence": "SQLite will answer the question for you, using two things that have been in there for years and don't come up much."
+    },
+    {
+      "signal": "one-sentence-paragraph",
+      "line": 387,
+      "quote": "The chained CODE, twice over — one call carries one statement anyway.",
+      "sentence": "The chained CODE, twice over — one call carries one statement anyway."
+    },
+    {
+      "signal": "emphasis-word",
+      "line": 427,
+      "quote": "actually",
+      "sentence": "What's actually going on is that CODE is one authorizer action covering everything from CODE, which reads metadata, to CODE, which changes the database."
+    },
+    {
+      "signal": "emphasis-word",
+      "line": 448,
+      "quote": "perfectly",
+      "sentence": "The obvious move is to raise an error — the protocol has a perfectly good error channel and it's right there."
+    },
+    {
+      "signal": "emphasis-word",
+      "line": 456,
+      "quote": "exactly",
+      "sentence": "The server did exactly what it was built to do."
+    },
+    {
+      "signal": "emphasis-word",
+      "line": 494,
+      "quote": "exactly",
+      "sentence": "What matters is that a truncated result which doesn't mention it was truncated is worse than no result at all, because the first page of an answer looks exactly like the entire answer."
+    },
+    {
+      "signal": "emphasis-word",
+      "line": 530,
+      "quote": "genuinely",
+      "sentence": "What the protocol contributes is narrower: write the server once and every client can use it, which is genuinely the problem it exists to solve, and why the spec keeps comparing itself to the language server protocol."
+    },
+    {
+      "signal": "hedge",
+      "line": 555,
+      "quote": "arguably",
+      "sentence": "Three tools felt obvious, but MCP has resources and prompts too, and a schema listing is arguably a resource I turned into a tool without thinking about it."
+    }
+  ],
+  "closers": [
+    {
+      "line": 273,
+      "section": "",
+      "text": "data-tools · building #11"
+    },
+    {
+      "line": 288,
+      "section": "Let the Database Say No",
+      "text": "Nearly all of it went on one question that turned out to be harder than it looks — when an agent hands you a SQL statement, how do you decide whether to run it?"
+    },
+    {
+      "line": 331,
+      "section": "First attempt: read the SQL",
+      "text": "The server keeps returning results and you keep believing it's read-only."
+    },
+    {
+      "line": 406,
+      "section": "Letting SQLite decide",
+      "text": "Same idea, different engine."
+    },
+    {
+      "line": 439,
+      "section": "The guard's first victim was me",
+      "text": "Instead the allowlist broke my own code in development, which is the cheapest place for it to break."
+    },
+    {
+      "line": 472,
+      "section": "How do you say no?",
+      "text": "Since the result isn't an error, nothing downstream treats it as a blip worth retrying."
+    },
+    {
+      "line": 506,
+      "section": "If you truncate, say so",
+      "text": "On Snowflake it's the whole bill — the compute dwarfs the token spend by more than people expect, and the agent's loop is what drives it."
+    },
+    {
+      "line": 530,
+      "section": "Was it worth building?",
+      "text": "What the protocol contributes is narrower: write the server once and every client can use it, which is genuinely the problem it exists to solve, and why the spec keeps comparing itself to the language server protocol."
+    },
+    {
+      "line": 580,
+      "section": "Loose ends",
+      "text": "If a tutorial you're reading mentions either, it predates this."
+    }
+  ]
+}
