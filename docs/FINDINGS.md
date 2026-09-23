@@ -13,6 +13,42 @@ we're building or parking, and why. Append a new `## Iteration N` section at the
 
 ---
 
+## Iteration 10 — 2026-09-23 — kimball-lab
+
+### F19 — time travel and SCD2 answer different questions, and expiry deletes one of them
+Verdict on idea #220, built on 2026-09-23 as `tools/kimball-lab`.
+
+**What was run.** `make demo-kimball` (seed 42, scale 10, 410,779
+transactions, DuckLake 1.0 on duckdb 1.5.5). Then, on a copy of the lake,
+`ducklake_expire_snapshots` on every snapshot but the last, followed by
+`ducklake_cleanup_old_files`.
+
+**The number.** Q4 2025 fee revenue by segment was 33,248.00 as reported at the
+December close and 33,635.00 as known now. The 387.00 gap is 37 fee
+transactions that arrived after the close. On top of that, a backdated
+correction moved 125.00 between segments and re-keyed 790 facts. Reading
+today's type 2 tables gives the as-known figure for both questions. Reading the
+year-end snapshot gives the as-reported figure for both. After expiry, the
+as-reported query failed with `No snapshot found at version 26`. Only the
+cleanup freed storage: 465,376 bytes, 2.4% of the lake.
+
+**What was expected.** That SCD2 "keeps history" was enough to reproduce a past
+report. It keeps the customer's history. The warehouse's own history went when
+the correction overwrote `valid_to` and the re-key rewrote `customer_sk`.
+
+**Direction.** The other twelve techniques reproduce the textbook, each with a
+measured error, and are kept as a reference, not a finding. Technique 13 is the
+result worth building on: a regulator-facing figure needs either snapshot
+retention as long as the figure must be reproducible, or recorded time modelled
+in the tables. That links to #212 `snapshot-mcp`, which pins an agent session to
+a snapshot. Its reproducibility claim holds only until retention expires the
+snapshot.
+
+**On the build.** Three Sonnet agents built eleven of the thirteen techniques
+from one template, in parallel worktrees. Every figure in their reports
+matched a clean rerun. The one design fault their work surfaced was in the
+test's comparison (LEARNINGS, iteration 11).
+
 ## Iteration 9 — 2026-09-07 — closing the chunking topic
 
 ### F18 — chunking-lab is a measuring instrument, and the recommender was never the value
