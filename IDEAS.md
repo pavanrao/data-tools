@@ -1209,6 +1209,28 @@ repository's own documentation.
        run the ai-sniffer agent from a script on the Claude Code sign-in, with no API
        key; confirm the flags for choosing an agent before relying on it.
 
+### 220. `kimball-lab` — the wrong number each Kimball technique prevents ✅ ⭐⭐ 💻 ⚠️
+A seeded retail bank arrives as eighteen monthly extracts. Plain-SQL ETL loads it
+into a star schema on DuckLake, and thirteen dimensional-modelling techniques each
+get two queries: the one written without the technique, and the one that uses it.
+The seed computes each figure's correct value in Python, so a wrong query cannot
+agree with itself. Covers grain; SCD types 1, 2 and 6; periodic and accumulating
+snapshots; factless facts; bridges with weighting factors; junk and role-playing
+dimensions; conformed dimensions and drill-across; late-arriving facts and
+inferred members; multi-currency facts; and DuckLake time travel against SCD2.
+Not novel on purpose: a ready reckoner you can run.
+- **Learn:** why each technique exists, as a measured error rather than a rule;
+  what a lakehouse snapshot records that a type 2 dimension does not.
+- **Cost note:** DuckDB and DuckLake locally, no model. The full demo takes 14 s.
+- **Covers:** §17 Parquet, Delta & maintenance operations (the lakehouse half) · §18 CDC, MERGE & idempotency (the
+  batch marker) · warehouse modelling, which the concept map had no card for.
+- **Built:** [`tools/kimball-lab/`](./tools/kimball-lab/), 2026-09-23. Errors range
+  from 3 transactions in 24,199 (role-playing date) to a factor of 29 (summing a
+  balance across days). The one finding: Q4 fees were reported at 33,248.00 and are
+  now known to be 33,635.00. Each of time travel and SCD2 gives the wrong one of those
+  two figures, and expiring snapshots removes the as-reported figure for good.
+  [`docs/015`](docs/015_kimball-lab.md), FINDINGS F19.
+
 ## G. Concept notes (markdown, not code)
 
 Concepts where the honest deliverable is a written position plus a prompt you

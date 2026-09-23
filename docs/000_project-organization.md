@@ -14,7 +14,7 @@ replaced.
 
 A collection of small, independent data-pipeline tools, built one at a time, as
 a way to learn MCP and RAG in anger. [`IDEAS.md`](../IDEAS.md) holds the running
-backlog of 218 ideas; sections A–D are RAG/MCP tools and infrastructure, section
+backlog of 220 ideas; sections A–D are RAG/MCP tools and infrastructure, section
 E is generic pipeline plumbing, and F onward are the later axes described in
 [`../README.md`](../README.md).
 

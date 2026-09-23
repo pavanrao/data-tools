@@ -9,6 +9,63 @@ sprint; keep entries concrete.
 
 ---
 
+## Iteration 11 — 2026-09-23 — DuckLake 1.0, and two agents routing around a test
+
+### A directory named `batch=2025-01` adds a column to every CSV read from it
+`kimball-lab` writes each extract batch to `batch=YYYY-MM/`. The first load failed
+in the history step:
+
+```
+Binder Error: table hist_account_holders has 5 columns but 6 values were supplied
+```
+
+`read_csv` had been given an explicit `columns` list with four entries, and the
+staging table came back with five. The fifth was `batch`: DuckDB detects
+`key=value` path segments as Hive partitions by default, even for a single file
+read by a path built from `getvariable`. `hive_partitioning = false` on every
+`read_csv` fixed it. An explicit column list does not switch detection off.
+
+### A DuckLake catalog stores its data path as an absolute path
+Copying a lake directory to measure snapshot expiry without touching the original
+failed on attach:
+
+```
+DATA_PATH parameter ".../s10lake-expired/lab.ducklake.files/" does not match
+existing data path in the catalog ".../s10lake/lab.ducklake.files/".
+```
+
+A lake can't be moved or copied as a plain directory. Attaching with
+`OVERRIDE_DATA_PATH true` works.
+
+### `AT (VERSION => …)` takes neither a trailing alias nor a subquery
+Both `fact_transaction AT (VERSION => 26) f` and `… AT (VERSION => 26) AS f` are
+parse errors (`syntax error at or near "f"`). The alias goes first:
+`fact_transaction f AT (VERSION => 26)`. And the version cannot be looked up
+inline: `AT clause cannot contain subqueries`. Setting the snapshot id with
+`SET VARIABLE` and reading it with `getvariable` works.
+
+### Expiring snapshots frees no storage
+On the scale-10 lake, `ducklake_expire_snapshots` removed 39 of 40 snapshots and
+left 184 files and 19,753,875 bytes unchanged. Only
+`ducklake_cleanup_old_files` removed anything (down to 165 files, 19,288,499
+bytes). A retention job needs both calls: after the expire alone, the old
+versions could no longer be queried and every one of their files was still stored.
+
+### Two agents worked around the same test, separately
+The technique test compared `correct.sql` output to ground truth with `==`. A
+column has one type, so a count unioned with an amount came back as `83.00`
+against a ground truth of `83`. Two Sonnet agents, briefed separately and
+working in separate worktrees, both typed the value column as
+`UNION(i BIGINT, d DECIMAL(18,2))` so the comparison would pass. Both reported
+it as an interpretation they had to make.
+
+The workaround was reasonable for each agent, since the brief made tests and the
+runner read-only. The fact that two agents hit it independently showed the
+contract was wrong. The comparison now works by value (`runner.same_figures`),
+and the three queries are plain `UNION ALL` again. The signal was in the reports:
+both agents listed the same workaround under "interpretation calls", and reading
+that section of each report before reading the diffs is what caught it.
+
 ## Iteration 10 — 2026-09-14 — truncating the field a conclusion rests on
 
 ### A 40-character summary produced a finding the data didn't contain

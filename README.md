@@ -48,6 +48,11 @@ Every tool in this repo aims to be:
   against what it actually does. Found that which protocol era a server speaks
   comes down to one dependency line, and that none of the official reference
   servers had moved to it.
+- [`kimball-lab`](./tools/kimball-lab/) (#220) — a runnable Kimball reference:
+  seeded bank data, plain-SQL ETL on DuckLake, and for each of thirteen
+  techniques the wrong number the naive query gives beside the right one. Found
+  that lakehouse time travel and SCD type 2 each answer the other's question
+  wrongly, and that expiring snapshots deletes last year's reported figure.
 
 Parked means built and installed, but not under active development;
 [`docs/FINDINGS.md`](./docs/FINDINGS.md) records why.
@@ -56,7 +61,7 @@ Parked means built and installed, but not under active development;
 five-minute walkthrough that ends with the tool refusing to answer a question —
 no prior RAG knowledge needed.
 
-See [`IDEAS.md`](./IDEAS.md) for the running backlog of **218** tool ideas. Pick
+See [`IDEAS.md`](./IDEAS.md) for the running backlog of **220** tool ideas. Pick
 one, move it into a `tools/<name>/` directory, and build.
 
 **Before adding a tool**, read
