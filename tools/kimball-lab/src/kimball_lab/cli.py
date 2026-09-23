@@ -39,6 +39,8 @@ def _cmd_load(args) -> int:
         snap = "" if r.snapshot_id is None else f"  snapshot {r.snapshot_id}"
         staged, loaded = r.staged_transactions, r.loaded_transactions
         print(f"{r.batch_id}  staged {staged:>7}  loaded {loaded:>7}{snap}")
+    if not results:
+        print("every batch was already loaded; nothing to do")
     print(f"engine: {engine.kind}")
     return 0
 

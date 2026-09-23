@@ -1,7 +1,7 @@
 .PHONY: help sync lint test demo demo-reconcile demo-compare demo-ask \
         demo-chunking chunking-benchmark chunking-correlate \
         chunking-correlate-structured chunking-axes chunking-models \
-        demo-slopify clean
+        demo-slopify demo-kimball clean
 
 help:
 	@echo "sync   install the whole collection in a dev venv"
@@ -15,6 +15,7 @@ help:
 	@echo "chunking-axes       is the chunker the big knob, or the retriever?"
 	@echo "chunking-models     which local model annotates best? (needs ollama)"
 	@echo "demo-slopify        inject habits into YOUR draft, then look for them again"
+	@echo "demo-kimball        a seeded bank, loaded with plain SQL; the number each Kimball technique fixes"
 
 sync:
 	uv sync --all-extras
@@ -171,8 +172,23 @@ demo-slopify:
 	@echo "\n=== what the model-free linter finds ===\n"
 	uv run ai-sniffer check .slopify/slopped.md
 
+# A retail bank in 18 monthly batches, loaded with plain SQL onto DuckLake, then
+# every Kimball technique's naive answer beside the correct one and the ground
+# truth the seed computed in Python. Seed 42, scale 10: ~410k transactions,
+# about 15 seconds. The ducklake extension downloads once, on first use.
+#
+#   make demo-kimball
+#   make demo-kimball KIMBALL_ENGINE=duckdb   # no extension, no technique 13
+KIMBALL_ENGINE ?= ducklake
+demo-kimball:
+	@rm -rf .kimball
+	uv run kimball-lab seed --out .kimball/bank
+	uv run kimball-lab load .kimball/bank --db .kimball/lake/lab.ducklake --engine $(KIMBALL_ENGINE)
+	@echo
+	uv run kimball-lab demo --db .kimball/lake/lab.ducklake
+
 clean:
-	rm -rf .slopify tools/ingest-ledger/corpus/hostile tools/ingest-ledger/corpus/rfp \
+	rm -rf .slopify .kimball tools/ingest-ledger/corpus/hostile tools/ingest-ledger/corpus/rfp \
 	       tools/chunking-lab/corpus/hostile tools/chunking-lab/corpus/structured \
 	       chunking-results.jsonl chunking-structured-results.jsonl \
 	       chunking-axes-results.jsonl .model-compare \

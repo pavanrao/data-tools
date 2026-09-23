@@ -89,10 +89,13 @@ def load(engine: Engine, seed_dir: Path, through: str | None = None) -> list[Bat
     engine.execute(f"SET VARIABLE lab_start = '{LAB_START}'")
     results = []
     core = [(p.name, p.read_text()) for p in core_files()]
+    done = {r[0] for r in engine.rows("SELECT batch_id FROM etl_batch_log")}
     for d in batch_dirs(seed_dir):
         batch_id = d.name.removeprefix("batch=")
         if through is not None and batch_id > through:
             break
+        if batch_id in done:
+            continue
         engine.execute(f"SET VARIABLE batch_id = '{batch_id}'")
         engine.execute(f"SET VARIABLE batch_dir = '{d.as_posix()}'")
         engine.execute("BEGIN TRANSACTION")
@@ -110,14 +113,21 @@ def load(engine: Engine, seed_dir: Path, through: str | None = None) -> list[Bat
                 raise ReconciliationError(
                     f"batch {batch_id}: staged {staged} transactions, loaded {loaded}"
                 )
+            # The marker commits with the data, so a batch is either loaded and
+            # marked or neither, and a re-run skips it rather than loading it twice.
+            engine.execute(
+                "INSERT INTO etl_batch_log VALUES (?, ?, ?, NULL)", [batch_id, staged, loaded]
+            )
             engine.execute("COMMIT")
         except BaseException:
             engine.execute("ROLLBACK")
             raise
+        # The snapshot id exists only after the commit, so it is filled in after.
         snapshot = engine.latest_snapshot()
-        engine.execute(
-            "INSERT INTO etl_batch_log VALUES (?, ?, ?, ?)", [batch_id, staged, loaded, snapshot]
-        )
+        if snapshot is not None:
+            engine.execute(
+                "UPDATE etl_batch_log SET snapshot_id = ? WHERE batch_id = ?", [snapshot, batch_id]
+            )
         results.append(BatchResult(batch_id, staged, loaded, snapshot))
     build(engine)
     return results
