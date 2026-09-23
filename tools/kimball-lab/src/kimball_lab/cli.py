@@ -6,6 +6,7 @@ import argparse
 import json
 import sys
 from collections.abc import Sequence
+from decimal import Decimal
 from pathlib import Path
 
 from . import runner, seed
@@ -64,8 +65,16 @@ def _render(d: runner.Demo) -> str:
     keys = sorted(set(d.truth) | set(d.naive or {}) | set(d.correct or {}))
     width = max((len(k) for k in keys), default=10)
     lines.append(f"    {'figure':<{width}}  {'naive':>16}  {'correct':>16}  {'truth':>16}")
+
+    def shown(figures, k):
+        v = figures.get(k, "-")
+        # A count computed beside an amount comes back as DECIMAL; show it as the count.
+        if isinstance(d.truth.get(k), int) and v != "-":
+            return str(int(Decimal(str(v))))
+        return str(v)
+
     for k in keys:
-        n, c, g = (str(x.get(k, "-")) for x in (d.naive or {}, d.correct or {}, d.truth))
+        n, c, g = (shown(x, k) for x in (d.naive or {}, d.correct or {}, d.truth))
         lines.append(f"    {k:<{width}}  {n:>16}  {c:>16}  {g:>16}")
     verdict = "correct matches truth" if d.correct_matches_truth else "CORRECT DOES NOT MATCH TRUTH"
     naive = "naive is wrong" if d.naive_differs else "naive happens to agree"
