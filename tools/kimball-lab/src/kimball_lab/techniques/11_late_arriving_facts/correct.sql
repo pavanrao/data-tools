@@ -6,10 +6,6 @@
 -- when the fact loaded -- which core/30_dim_account.sql records permanently
 -- in resolved_in_batch, even after the placeholder is overwritten. Both
 -- figures come straight from those stamps; no re-derivation needed.
---
--- The value column mixes two counts and a money amount, so it is cast to a
--- DuckDB UNION type: each row keeps its own native type (BIGINT or DECIMAL)
--- instead of every row being upcast to one shared type.
 
 WITH early AS (
     SELECT f.txn_id, f.amount_usd
@@ -18,17 +14,12 @@ WITH early AS (
     WHERE a.resolved_in_batch IS NOT NULL AND f.etl_batch_id < a.resolved_in_batch
 )
 SELECT 'late_facts' AS key,
-       CAST(union_value(n := (
-           SELECT count(*) FROM fact_transaction f
-           JOIN dim_date pd ON pd.date_key = f.posting_date_key
-           WHERE f.etl_batch_id > pd.year_month
-       )) AS UNION(n BIGINT, m DECIMAL(18, 2))) AS value
+       (SELECT count(*) FROM fact_transaction f
+        JOIN dim_date pd ON pd.date_key = f.posting_date_key
+        WHERE f.etl_batch_id > pd.year_month) AS value
 UNION ALL
-SELECT 'inferred_member_facts' AS key,
-       CAST(union_value(n := (SELECT count(*) FROM early))
-            AS UNION(n BIGINT, m DECIMAL(18, 2))) AS value
+SELECT 'inferred_member_facts' AS key, (SELECT count(*) FROM early) AS value
 UNION ALL
 SELECT 'inferred_member_amount_usd' AS key,
-       CAST(union_value(m := (SELECT round(coalesce(sum(amount_usd), 0), 2) FROM early))
-            AS UNION(n BIGINT, m DECIMAL(18, 2))) AS value
+       (SELECT round(coalesce(sum(amount_usd), 0), 2) FROM early) AS value
 ORDER BY key;

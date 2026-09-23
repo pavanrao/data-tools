@@ -18,8 +18,10 @@ def _check(engine, technique, truth):
     d = runner.demo(engine, technique, truth)
     if d.skipped:
         pytest.skip(d.skipped)
-    assert d.correct == d.truth, f"{technique.number} correct.sql disagrees with ground truth"
-    assert d.naive != d.truth, f"{technique.number} naive.sql agrees with ground truth"
+    assert d.correct_matches_truth, (
+        f"{technique.number} correct.sql disagrees with ground truth: {d.correct} vs {d.truth}"
+    )
+    assert d.naive_differs, f"{technique.number} naive.sql agrees with ground truth"
     assert set(d.naive) & set(d.truth), f"{technique.number} naive.sql shares no keys with truth"
 
 

@@ -1,11 +1,5 @@
 -- Correct: read the pipeline off fact_loan_application, one row per
 -- application, already resolved to its first-occurrence milestones.
---
--- The value column holds both integer counts and a two-decimal average, so it
--- is typed as a two-member union (i for the counts, d for the average). Without
--- it, DuckDB would pick one common type for the whole column -- decimal, since
--- that is the only type that can hold both -- and every count would come back
--- as a Decimal like 42.00 instead of the integer 42 the ground truth expects.
 
 WITH counts AS (
     SELECT
@@ -19,15 +13,9 @@ WITH counts AS (
         ) AS avg_days
     FROM fact_loan_application
 )
-SELECT 'in_underwriting_2026-06-30' AS key,
-       union_value(i := in_underwriting)::UNION(i BIGINT, d DECIMAL(18,2)) AS value
-FROM counts
+SELECT 'in_underwriting_2026-06-30' AS key, in_underwriting AS value FROM counts
 UNION ALL
-SELECT 'funded' AS key,
-       union_value(i := funded)::UNION(i BIGINT, d DECIMAL(18,2)) AS value
-FROM counts
+SELECT 'funded' AS key, funded AS value FROM counts
 UNION ALL
-SELECT 'avg_days_applied_to_funded' AS key,
-       union_value(d := avg_days)::UNION(i BIGINT, d DECIMAL(18,2)) AS value
-FROM counts
+SELECT 'avg_days_applied_to_funded' AS key, avg_days AS value FROM counts
 ORDER BY key;

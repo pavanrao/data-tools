@@ -7,10 +7,6 @@
 -- dimension. branch_id means the same thing in both, assigned from the same
 -- dim_branch, so the two totals can sit side by side even though neither
 -- fact knows the other exists.
---
--- The value column mixes a count and a money amount, so it is cast to a
--- DuckDB UNION type; each branch keeps its own native type (BIGINT for a
--- count, DECIMAL for money) instead of both being upcast to one shared type.
 
 WITH txn_by_branch AS (
     SELECT b.branch_id, count(*) AS n
@@ -28,11 +24,9 @@ bal_by_branch AS (
     WHERE fb.date_key = 20251231
     GROUP BY b.branch_id
 )
-SELECT 'txn_count_2025-12|' || branch_id AS key,
-       CAST(union_value(n := n) AS UNION(n BIGINT, m DECIMAL(18, 2))) AS value
+SELECT 'txn_count_2025-12|' || branch_id AS key, n AS value
 FROM txn_by_branch
 UNION ALL
-SELECT 'month_end_balance_usd_2025-12|' || branch_id AS key,
-       CAST(union_value(m := m) AS UNION(n BIGINT, m DECIMAL(18, 2))) AS value
+SELECT 'month_end_balance_usd_2025-12|' || branch_id AS key, m AS value
 FROM bal_by_branch
 ORDER BY key;

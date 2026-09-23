@@ -173,11 +173,23 @@ class Demo:
 
     @property
     def correct_matches_truth(self) -> bool:
-        return self.correct == self.truth
+        return same_figures(self.correct, self.truth)
 
     @property
     def naive_differs(self) -> bool:
-        return self.naive != self.truth
+        return not same_figures(self.naive, self.truth)
+
+
+def same_figures(a: dict | None, b: dict | None) -> bool:
+    """Same keys, and the same number under each: 83 and 83.00 agree.
+
+    A SQL result with a count and an amount in one column comes back with both as
+    DECIMAL, because a column has one type. Comparing by value keeps that a
+    non-issue, so technique SQL does not need type tricks to satisfy the test.
+    """
+    if a is None or b is None or set(a) != set(b):
+        return False
+    return all(Decimal(str(a[k])) == Decimal(str(b[k])) for k in a)
 
 
 def seed_dir_of(engine: Engine) -> Path:
