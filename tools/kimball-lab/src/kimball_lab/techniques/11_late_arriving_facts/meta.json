@@ -1,0 +1,4 @@
+{
+  "title": "Late-arriving facts and inferred members",
+  "question": "How many facts arrived after their posting month, and how many were loaded against an account the warehouse hadn't been told about yet?"
+}
