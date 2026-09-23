@@ -1,0 +1,31 @@
+[project]
+name = "data-tools-kimball-lab"
+version = "0.1.0"
+description = "A runnable Kimball reference: seeded bank data, plain-SQL ETL, and the wrong number each technique fixes."
+requires-python = ">=3.13"
+dependencies = [
+    "data-tools-core",
+    # Not an extra: the engine is the whole tool. Pinned exactly (CONVENTIONS
+    # rule 4) because the ducklake extension is built per DuckDB release, and
+    # isolated behind engine.py. DuckLake 1.0 first shipped with 1.5.2.
+    "duckdb==1.5.5",
+]
+
+[project.scripts]
+kimball-lab = "kimball_lab.cli:main"
+
+[project.entry-points."data_tools.tools"]
+kimball-lab = "kimball_lab.cli:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/kimball_lab"]
+
+# Dev-only: resolve the shared library from the workspace. uv strips
+# [tool.uv.sources] from built wheels, so deleting this one block is the entire
+# "decouple from the workspace" step. See docs/000 (the spin-out seam).
+[tool.uv.sources]
+data-tools-core = { workspace = true }
