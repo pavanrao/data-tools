@@ -93,9 +93,11 @@ use (DuckLake 1.0). No model is used anywhere.
 
 The Kimball Group's [Dimensional Modeling
 Techniques](https://www.kimballgroup.com/data-warehouse-business-intelligence-resources/kimball-techniques/dimensional-modeling-techniques/)
-page is the canonical list, in prose. The runnable examples found on 2026-09-23
-([dbt-dimensional-modelling](https://github.com/Data-Engineer-Camp/dbt-dimensional-modelling)
-is the most used) cover the basics on AdventureWorks. The closest in scope, a
-Snowflake-only portfolio repo, lists most of the techniques here with some
-financial-services examples. None of them runs locally on seeded data and shows
-a technique through the wrong number it prevents.
+page is the canonical list, in prose. Of the runnable examples found on
+2026-09-23,
+[dbt-dimensional-modelling](https://github.com/Data-Engineer-Camp/dbt-dimensional-modelling)
+(about 181 stars) covers facts, dimensions and surrogate keys on AdventureWorks.
+A Snowflake-only portfolio repo with no stars lists ten of the thirteen
+techniques here in its README, with some financial-services examples; it was
+not run. Neither puts a naive query's figure beside the correct one. The search
+is in [`docs/015`](../../docs/015_kimball-lab.md) §1.

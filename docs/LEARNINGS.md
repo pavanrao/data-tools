@@ -48,8 +48,8 @@ inline: `AT clause cannot contain subqueries`. Setting the snapshot id with
 On the scale-10 lake, `ducklake_expire_snapshots` removed 39 of 40 snapshots and
 left 184 files and 19,753,875 bytes unchanged. Only
 `ducklake_cleanup_old_files` removed anything (down to 165 files, 19,288,499
-bytes). A retention job that calls only the expire function gives up time travel
-and keeps paying for every old file.
+bytes). A retention job needs both calls: after the expire alone, the old
+versions could no longer be queried and every one of their files was still stored.
 
 ### Two agents worked around the same test, separately
 The technique test compared `correct.sql` output to ground truth with `==`. A

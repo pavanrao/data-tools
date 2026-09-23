@@ -1,10 +1,9 @@
 # 015 — `kimball-lab`: the wrong number each technique prevents
 
-Idea **#220**. A runnable reference for Kimball dimensional modelling on seeded
-retail-bank data, with plain-SQL ETL on DuckLake. It is not a novel tool, and
-unlike most of section F it is not a measurement of something unknown. It is a
-reference you can run, and it is built to the section F rule anyway: every
-technique ends in a number.
+Idea **#220** builds a runnable reference for Kimball dimensional modelling on
+seeded retail-bank data, with plain-SQL ETL on DuckLake. Most of section F
+measures something nobody has measured; this lab reproduces well-known
+techniques, and still follows the section's rule that every lab ends in a number.
 
 ---
 
@@ -19,8 +18,9 @@ semi-additive" is easy to agree with. Seeing a month-end balance of
 A prior-art search on 2026-09-23 turned up
 [dbt-dimensional-modelling](https://github.com/Data-Engineer-Camp/dbt-dimensional-modelling)
 (about 181 stars, AdventureWorks, facts and dimensions only), a Snowflake-only
-portfolio repo with no stars that lists most techniques, and several sets of
-chapter notes. None runs locally on seeded data with a naive query beside the
+portfolio repo with no stars whose README lists ten of the thirteen techniques
+here (not run; the grain, multi-currency facts and time travel are absent), and
+several sets of chapter notes. None runs locally on seeded data with a naive query beside the
 correct one. That pairing is what this tool adds.
 
 ## 2. Shape
@@ -54,7 +54,7 @@ date, a balance as opening plus postings, a rate lookup. The first core load
 matched it on every figure checked (02, 04, 12, 01) before any technique
 existed, which is evidence that the core is right and not merely consistent.
 
-**D2 — Plain SQL, run by a small Python CLI.** Pavan's call. The runner passes
+**D2 — Plain SQL, run by a small Python CLI**, as Pavan asked. The runner passes
 three values through `SET VARIABLE` (`batch_id`, `batch_dir`, `lab_start`).
 The SQL reads them with `getvariable`, so every file can be read and run on its
 own, with no templating.
@@ -111,8 +111,8 @@ spike, seed, core, runner, CLI and technique 02 as the template, then 13.
 Three Sonnet agents, each in its own worktree branched from the template
 commit, built 01, 03–12. They were allowed to edit only their own technique
 directories. Every number in the docs comes from a clean `make demo-kimball`
-run by Opus after the merges, not from the agents' reports. The reports and
-that run agreed on every figure.
+run by Opus after the merges, and the agents' reported figures matched it
+for all eleven techniques.
 
 ## 4. Results
 
@@ -135,12 +135,12 @@ answers the other's question wrongly:
   correction re-keyed 790 facts.
 
 Once the correction closed the old dimension row and the re-key rewrote the
-facts, the current tables held no record of what December's report said. Only
-the snapshot did. After `ducklake_expire_snapshots`, the as-reported query
-fails with `No snapshot found at version 26`. Expiry deleted no files.
-`ducklake_cleanup_old_files` then took the lake from 184 files and 19,753,875
-bytes to 165 files and 19,288,499 bytes, so eighteen months of recorded-time
-history cost 2.4% of storage here.
+facts, the snapshot of batch 2025-12 was the only place December's report
+could be read from. After `ducklake_expire_snapshots`, the as-reported query
+fails with `No snapshot found at version 26`, though every file was still on
+disk. `ducklake_cleanup_old_files` then took the lake from 184 files and
+19,753,875 bytes to 165 files and 19,288,499 bytes: 465,376 bytes, 2.4%, for
+eighteen months of recorded-time history on this workload.
 
 ## 5. Limits
 

@@ -33,8 +33,9 @@ as-reported query failed with `No snapshot found at version 26`. Only the
 cleanup freed storage: 465,376 bytes, 2.4% of the lake.
 
 **What was expected.** That SCD2 "keeps history" was enough to reproduce a past
-report. It keeps the customer's history. The warehouse's own history went when
-the correction overwrote `valid_to` and the re-key rewrote `customer_sk`.
+report. The type 2 rows record when each segment was true for the customer; the
+record of what the warehouse held in December was lost when the correction
+overwrote `valid_to` and the re-key rewrote `customer_sk`.
 
 **Direction.** The other twelve techniques reproduce the textbook, each with a
 measured error, and are kept as a reference, not a finding. Technique 13 is the
